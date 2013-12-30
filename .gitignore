@@ -1,0 +1,13 @@
+*~
+\#*#
+*.DS_Store
+*.class
+.com.apple.timemachine.supported
+.import-temp/
+
+nbproject/private/
+nbbuild/
+nbdist/
+dist/
+target/
+/src/test/resources/log4j.properties
