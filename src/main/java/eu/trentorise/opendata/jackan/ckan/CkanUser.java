@@ -17,7 +17,12 @@
 */   
 package eu.trentorise.opendata.jackan.ckan;
 
+import java.util.ArrayList;
 import javax.annotation.Nullable;
+
+
+
+
 
 /**
  *
@@ -27,12 +32,23 @@ public class CkanUser {
 
     
     private @Nullable String about;
+    /**
+     * You can obtain it with getUser(id)
+     */
+    private @Nullable ArrayList<CkanActivity> activity;
     private boolean activityStreamsEmailNotifications;
 
+    /**
+     * 
+     * i.e. "admin" 
+     */
+    private @Nullable String capacity;
+    
     /**
      * Should be a Date
      */
     private String created;
+    
     /**
      * i.e. David Leoni
      */
@@ -60,6 +76,9 @@ public class CkanUser {
 
     private int numberAdministeredPackages;
     private int numberOfEdits;
+    
+    private @Nullable int numFollowers;
+    
     /**
      * Should be a CkanState
      */
@@ -168,5 +187,29 @@ public class CkanUser {
 
     public void setSysadmin(boolean sysadmin) {
         this.sysadmin = sysadmin;
+    }
+
+    public @Nullable ArrayList<CkanActivity> getActivity() {
+        return activity;
+    }
+
+    public void setActivity(ArrayList<CkanActivity> activity) {
+        this.activity = activity;
+    }
+
+    public @Nullable String getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(@Nullable String capacity) {
+        this.capacity = capacity;
+    }
+
+    public @Nullable Integer getNumFollowers() {
+        return numFollowers;
+    }
+
+    public void setNumFollowers(@Nullable Integer numFollowers) {
+        this.numFollowers = numFollowers;
     }
 }

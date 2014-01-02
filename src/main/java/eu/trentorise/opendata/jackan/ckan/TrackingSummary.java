@@ -19,7 +19,6 @@ package eu.trentorise.opendata.jackan.ckan;
 
 /**
  * Don't know what it is. 
- * Lombok Data candidate.
  * @author David Leoni
  */
 public class TrackingSummary {

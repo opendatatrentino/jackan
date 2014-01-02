@@ -19,7 +19,6 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import java.io.IOException;
-import java.util.List;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -21,6 +21,7 @@ package eu.trentorise.opendata.jackan.ckan;
 import eu.trentorise.opendata.jackan.dcat.DcatDataset;
 import java.util.ArrayList;
 import javax.annotation.Nullable;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 
 /**
@@ -53,6 +54,10 @@ public class CkanDataset {
     private String notes;
     private String notesRendered;
     private String ownerOrg;
+    /**
+     * Actually it is named 'private' in api. Appears in searches.
+    */
+    private @Nullable Boolean priv;
     private String revisionId;
     /**
      * This should be a Date - couldn't find format documentation in Ckan api 2.2a
@@ -289,4 +294,17 @@ public class CkanDataset {
          
          return ret;
     }    
+
+    /**
+     * Actually it is named "private" in the API. Appears in dataset searches.
+     * @return
+     */
+    @JsonProperty("private")
+    public Boolean getPriv() {
+        return priv;
+    }
+
+    public void setPriv(Boolean priv) {
+        this.priv = priv;
+    }
 }

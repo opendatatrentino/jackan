@@ -19,6 +19,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import eu.trentorise.opendata.jackan.JackanException;
+import eu.trentorise.opendata.jackan.SearchResults;
 import static eu.trentorise.opendata.jackan.ckan.CkanJacksonTest.DATI_TRENTINO;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,18 +75,59 @@ public class CkanClientTest {
    
     @Test
     public void testDataset()  {
-                
-        
+                        
         CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
         assertEquals(dataset.getName(),LAGHI_MONITORATI_TRENTO_NAME);
     }
     
+    
+    
     @Test
-    public void testUserList(){
-                     
+    public void testUserList(){                     
         ArrayList<CkanUser> ul = client.getUserList();
         assertTrue(ul.size() > 0);    
     }
+
+    @Test
+    public void testUser(){
+        CkanUser u = client.getUser("admin");
+        assertEquals(u.getName(), "admin");    
+    }
+            
+    
+    @Test
+    public void testGroupList(){                     
+        ArrayList<CkanGroup> gl = client.getGroupList();
+        assertTrue(gl.size() > 0);    
+    }
+
+    @Test
+    public void testGroup(){                     
+        CkanGroup g = client.getGroup("gestione-del-territorio");
+        assertEquals(g.getName(), "gestione-del-territorio");
+    }
+
+    @Test
+    public void testTagList(){                     
+        ArrayList<CkanTag> tl = client.getTagList();
+        assertTrue(tl.size() > 0);    
+    }
+
+    @Test
+    public void testTagNamesList(){                     
+        ArrayList<String> tl = client.getTagNamesList("serviz");
+        assertTrue(tl.size() > 0);
+        assertTrue(tl.get(0).toLowerCase().contains("serviz"));
+    }
+    
+    
+    
+    @Test
+    public void testSearchDatasets(){
+        SearchResults<CkanDataset> r = client.searchDatasets("laghi", 10, 0);
+        assertTrue(r.getCount() > 0);
+        assertTrue("I should get at least one result", r.getResults().size() > 0 );
+    }    
     
     
     

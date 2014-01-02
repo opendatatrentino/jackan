@@ -16,17 +16,23 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public class SearchResults<T> {
-    private final int count;
-    private final ArrayList<T> results;
+    private int count;
+    private ArrayList<T> results;
 
-    /**
-     *
-     * @param results
-     * @param count
-     */
     public SearchResults(ArrayList<T> results, int count) {
         this.count = count;
         this.results = results;
+    }
+
+    private SearchResults(){
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public ArrayList<T> getResults() {
+        return results;
     }
     
     

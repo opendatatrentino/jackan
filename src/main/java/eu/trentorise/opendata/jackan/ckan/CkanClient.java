@@ -136,6 +136,15 @@ public class CkanClient {
     synchronized ArrayList<CkanUser> getUserList(){
         return getHttp(UserListResponse.class, "/api/3/action/user_list").result;
     }
+
+    /**
+     * Throws JackanException on error.
+     * @param id i.e. 'admin'
+     * @return 
+     */             
+    synchronized CkanUser getUser(String id){
+        return getHttp(UserResponse.class, "/api/3/action/user_show","id", id).result;
+    }    
     
     /**
      * Throws JackanException on error.
@@ -177,7 +186,7 @@ public class CkanClient {
      * @param vocabularyId
      * @return 
      */
-    synchronized ArrayList<CkanTag> getTagList(String vocabularyId){
+    synchronized ArrayList<CkanTag> getTagList(){
         return getHttp(TagListResponse.class, "/api/3/action/tag_list", "all_fields", "True").result;
     }    
 
@@ -188,8 +197,8 @@ public class CkanClient {
      * @param vocabularyId 
      * @return 
      */
-    synchronized ArrayList<CkanTag> getTagNamesList(String query){
-        return getHttp(TagListResponse.class, "/api/3/action/tag_list", "query",query).result;
+    synchronized ArrayList<String> getTagNamesList(String query){
+        return getHttp(TagNamesResponse.class, "/api/3/action/tag_list", "query",query).result;
     }    
     
     /**
@@ -209,8 +218,8 @@ public class CkanClient {
      * @return 
      */
     synchronized SearchResults<CkanDataset> searchDatasets(String text, int limit, int offset){
-        DatasetSearchResponse dsr =  getHttp(DatasetSearchResponse.class, "/api/3/action/package_search", "q",text, "rows", limit,"start",offset);
-        return new SearchResults<CkanDataset>(dsr.results, dsr.count);        
+        DatasetSearchResponse dsr =  getHttp(DatasetSearchResponse.class, "/api/3/action/package_search", "q",text, "rows", limit,"start",offset);        
+        return dsr.result;
     }        
 }
 
@@ -291,6 +300,10 @@ class UserListResponse extends CkanResponse {
     public ArrayList<CkanUser> result;
 }
 
+class UserResponse extends CkanResponse {
+    public CkanUser result;
+}
+
 class TagListResponse extends CkanResponse {
     public ArrayList<CkanTag> result;
 }
@@ -311,9 +324,7 @@ class TagNamesResponse extends CkanResponse {
     public ArrayList<String> result;
 }
 
-
-
-class DatasetSearchResponse extends CkanResponse {
-    public int count;
-    public ArrayList<CkanDataset> results;
+class DatasetSearchResponse extends CkanResponse {    
+    public SearchResults<CkanDataset> result;
 }
+

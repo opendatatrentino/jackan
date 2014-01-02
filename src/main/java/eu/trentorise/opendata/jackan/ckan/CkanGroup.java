@@ -67,7 +67,8 @@ public class CkanGroup {
     
     private int packageCount;
     
-    private ArrayList<CkanDataset> packages;
+    // better to comment it as it can also be an int according to which web api is called
+    // private ArrayList<CkanDataset> packages;
     
     private String revisionId;
     
@@ -190,13 +191,6 @@ public class CkanGroup {
         this.packageCount = packageCount;
     }
 
-    public ArrayList<CkanDataset> getPackages() {
-        return packages;
-    }
-
-    public void setPackages(ArrayList<CkanDataset> packages) {
-        this.packages = packages;
-    }
 
     public String getRevisionId() {
         return revisionId;
