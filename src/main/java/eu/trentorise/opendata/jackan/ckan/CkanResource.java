@@ -24,6 +24,8 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 
 
@@ -46,15 +48,16 @@ public class CkanResource {
     private String datasetName; // laghi-monitorati-trento
     private String datasetTitle; // Laghi monitorati Trento
     */
+  
     /**
-     * Should be a Date
-     */    
-    private String cacheUrlUpdated;
+     * DateTime in UTC timezone
+     */
+    private DateTime cacheUrlUpdated;
     
     /**
      * i.e. "2013-05-09T14:08:32.666477"
      */
-    private String created;
+    private DateTime created;
     
     private String description;
     
@@ -78,7 +81,7 @@ public class CkanResource {
     /**
      * i.e. "2013-05-09T14:33:26.643040"
      */
-    private String lastModified;
+    private DateTime lastModified;
     
     /**
      * i.e. text/csv
@@ -138,7 +141,7 @@ public class CkanResource {
     /**
      * Should be a Date
      */
-    private @Nullable String webstoreLastUpdated;
+    private @Nullable DateTime webstoreLastUpdated;
 
     /**
      * found "active" as value. Maybe it is a CkanState
@@ -153,6 +156,7 @@ public class CkanResource {
     
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
+     * @return 
     */ 
     @JsonAnyGetter
     public Map<String,Object> getOthers() {
@@ -180,21 +184,28 @@ public class CkanResource {
     public void setCacheUrl(@Nullable String cacheUrl) {
         this.cacheUrl = cacheUrl;
     }
-
-    public @Nullable String getCacheUrlUpdated() {
+    
+    public @Nullable DateTime getCacheUrlUpdated() {
         return cacheUrlUpdated;
     }
 
-    public void setCacheUrlUpdated(String cacheUrlUpdated) {
-        this.cacheUrlUpdated = cacheUrlUpdated;
+    /**
+       internally date is stored with UTC timezone
+    */   
+
+    public void setCacheUrlUpdated(DateTime cacheUrlUpdated) {
+        this.cacheUrlUpdated = cacheUrlUpdated.toDateTime(DateTimeZone.UTC);
     }
 
-    public String getCreated() {
+    public DateTime getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    /**
+       internally date is stored with UTC timezone
+    */       
+    public void setCreated(DateTime created) {
+        this.created = created.toDateTime(DateTimeZone.UTC);
     }
 
     public String getDescription() {
@@ -237,12 +248,15 @@ public class CkanResource {
         this.id = id;
     }
 
-    public String getLastModified() {
+    public DateTime getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(String lastModified) {
-        this.lastModified = lastModified;
+    /**
+       internally date is stored with UTC timezone
+    */       
+    public void setLastModified(DateTime lastModified) {
+        this.lastModified = lastModified.toDateTime(DateTimeZone.UTC);
     }
 
     public String getMimetype() {
@@ -357,12 +371,19 @@ public class CkanResource {
         this.urlType = urlType;
     }
 
-    public @Nullable String getWebstoreLastUpdated() {
+    public @Nullable DateTime getWebstoreLastUpdated() {
         return webstoreLastUpdated;
     }
 
-    public void setWebstoreLastUpdated(@Nullable String webstoreLastUpdated) {
-        this.webstoreLastUpdated = webstoreLastUpdated;
+    /**
+       internally date is stored with UTC timezone
+    */       
+    public void setWebstoreLastUpdated(@Nullable DateTime webstoreLastUpdated) {
+        if (webstoreLastUpdated != null) {
+            this.webstoreLastUpdated = webstoreLastUpdated.toDateTime(DateTimeZone.UTC);
+        } else {
+            this.webstoreLastUpdated = null;
+        }
     }
 
     public @Nullable String getWebstoreUrl() {

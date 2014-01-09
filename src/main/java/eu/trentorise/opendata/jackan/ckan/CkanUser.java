@@ -19,6 +19,7 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import java.util.ArrayList;
 import javax.annotation.Nullable;
+import org.joda.time.DateTime;
 
 
 
@@ -45,9 +46,9 @@ public class CkanUser {
     private @Nullable String capacity;
     
     /**
-     * Should be a Date
-     */
-    private String created;
+       internally date is stored with UTC timezone
+    */
+    private DateTime created;
     
     /**
      * i.e. David Leoni
@@ -70,8 +71,7 @@ public class CkanUser {
 
     /**
      * Actually I don't know the format
-     */
-    
+     */    
     private @Nullable String openid;
 
     private int numberAdministeredPackages;
@@ -101,11 +101,11 @@ public class CkanUser {
         this.activityStreamsEmailNotifications = activityStreamsEmailNotifications;
     }
 
-    public String getCreated() {
+    public DateTime getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(DateTime created) {
         this.created = created;
     }
 

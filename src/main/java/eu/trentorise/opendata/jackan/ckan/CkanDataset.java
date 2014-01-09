@@ -27,6 +27,8 @@ import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 
 /**
@@ -48,13 +50,16 @@ public class CkanDataset {
     private String maintainer;
     private String maintainerEmail;
     /**
-     * This should be a Date - couldn't find format documentation in Ckan api 2.2a
+     * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
+     * i.e. "2013-11-11T04:12:11.110868"
      */
-    private String metadataCreated;
+    private DateTime metadataCreated;
     /**
-     * This should be a Date - couldn't find format documentation in Ckan api 2.2a
+     * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
+     * i.e. "2013-11-11T04:12:11.110868"
      */
-    private String metadataModified;
+
+    private DateTime metadataModified;
     private String name;
     private String notes;
     private String notesRendered;
@@ -62,12 +67,13 @@ public class CkanDataset {
     /**
      * Actually it is named 'private' in api. Appears in searches.
     */
-    private @Nullable Boolean priv;
+    private @Nullable Boolean priv;    
     private String revisionId;
     /**
-     * This should be a Date - couldn't find format documentation in Ckan api 2.2a
-    */
-    private String revisionTimestamp;
+     * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
+     * i.e. "2013-11-11T04:12:11.110868"
+     */
+    private DateTime revisionTimestamp;
     private String state; // todo what should it be?
     private ArrayList<CkanTag> tags;
     private String title;
@@ -198,20 +204,26 @@ public class CkanDataset {
         this.maintainerEmail = maintainerEmail;
     }
 
-    public String getMetadataCreated() {
+    public DateTime getMetadataCreated() {
         return metadataCreated;
     }
 
-    public void setMetadataCreated(String metadataCreated) {
-        this.metadataCreated = metadataCreated;
+    /**
+       internally date is stored with UTC timezone
+    */
+    public void setMetadataCreated(DateTime metadataCreated) {
+        this.metadataCreated = metadataCreated.toDateTime(DateTimeZone.UTC);
     }
 
-    public String getMetadataModified() {
+    public DateTime getMetadataModified() {
         return metadataModified;
     }
 
-    public void setMetadataModified(String metadataModified) {
-        this.metadataModified = metadataModified;
+    /**
+       internally date is stored with UTC timezone
+    */    
+    public void setMetadataModified(DateTime metadataModified) {
+        this.metadataModified = metadataModified.toDateTime(DateTimeZone.UTC);
     }
 
     public String getName() {
@@ -254,12 +266,16 @@ public class CkanDataset {
         this.revisionId = revisionId;
     }
 
-    public String getRevisionTimestamp() {
+    public DateTime getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
-    public void setRevisionTimestamp(String revisionTimestamp) {
-        this.revisionTimestamp = revisionTimestamp;
+    /**
+       internally date is stored with UTC timezone
+     * @param revisionTimestamp
+    */   
+    public void setRevisionTimestamp(DateTime revisionTimestamp) {
+        this.revisionTimestamp = revisionTimestamp.toDateTime(DateTimeZone.UTC);
     }
 
     public String getState() {

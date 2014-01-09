@@ -8,6 +8,8 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import java.util.ArrayList;
 import javax.annotation.Nullable;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -21,7 +23,7 @@ public class CkanActivity {
     /**
      * i.e. "2013-03-08T09:31:20.833590"
      */
-    private String timestamp;
+    private DateTime timestamp;
     /**
      * i.e. "Impostazioni modificate."
      */
@@ -30,7 +32,7 @@ public class CkanActivity {
      * i.e. "admin"
      */
     private String author;
-    private @Nullable String approved_timestamp;
+    private @Nullable DateTime approvedTimestamp;
     private ArrayList<CkanDataset> packages;
     private ArrayList<CkanGroup> groups;
     private CkanState state;       
@@ -43,11 +45,14 @@ public class CkanActivity {
         this.id = id;
     }
 
-    public String getTimestamp() {
+    public DateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    /**
+       internally date is stored with UTC timezone
+    */    
+    public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -67,12 +72,20 @@ public class CkanActivity {
         this.author = author;
     }
 
-    public @Nullable String getApproved_timestamp() {
-        return approved_timestamp;
+    public @Nullable DateTime getApprovedTimestamp() {
+        return approvedTimestamp;
     }
 
-    public void setApproved_timestamp(@Nullable String approved_timestamp) {
-        this.approved_timestamp = approved_timestamp;
+    /**
+       internally date is stored with UTC timezone
+     * @param approvedTimestamp
+    */    
+    public void setApprovedTimestamp(@Nullable DateTime approvedTimestamp) {
+        if (approvedTimestamp != null) {
+            this.approvedTimestamp = approvedTimestamp.toDateTime(DateTimeZone.UTC);
+        } else {
+            this.approvedTimestamp = null;
+        }
     }
 
     public ArrayList<CkanDataset> getPackages() {

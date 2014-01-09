@@ -19,6 +19,8 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import javax.annotation.Nullable;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -28,7 +30,8 @@ public class CkanTag {
     private String vocabularyId;
     private String displayName;
     private String name;
-    private @Nullable String revisionTimestamp;
+    
+    private @Nullable DateTime revisionTimestamp;
     private @Nullable CkanState state;
     private String id;
 
@@ -56,12 +59,16 @@ public class CkanTag {
         this.name = name;
     }
 
-    public @Nullable String getRevisionTimestamp() {
+    public @Nullable DateTime getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
-    public void setRevisionTimestamp(@Nullable String revisionTimestamp) {
-        this.revisionTimestamp = revisionTimestamp;
+    public void setRevisionTimestamp(@Nullable DateTime revisionTimestamp) {
+        if (revisionTimestamp != null) {
+            this.revisionTimestamp = revisionTimestamp.toDateTime(DateTimeZone.UTC);
+        } else {
+            this.revisionTimestamp = null;
+        }
     }
 
     public @Nullable CkanState getState() {

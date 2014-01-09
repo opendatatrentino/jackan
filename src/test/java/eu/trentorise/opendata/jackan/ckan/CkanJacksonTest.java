@@ -19,7 +19,12 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -119,6 +124,10 @@ public class CkanJacksonTest {
         assertEquals("b", er.getType());
     }  
 
+    /**
+     * Tests the 'others' field that collects fields sometimes errouneously present in jsons from ckan
+     * @throws IOException 
+     */
     @Test
     public void testOthers() throws IOException{                
         String json = "{\"name\":\"n\",\"z\":1}";
@@ -127,16 +136,38 @@ public class CkanJacksonTest {
         assertEquals(1, cd.getOthers().get("z"));        
     }    
     
-    
-/**    
-    @Test
-    public void testCalendar(){
-        Calendar c = new Gre
-        String json = CkanClient.getObjectMapper().writeValueAsString(cg);
-        assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());    
+    static public class JodaA {
+        private DateTime dt;
+
+        public DateTime getDt() {
+            return dt;
+        }
+
+        public void setDt(DateTime dt) {
+            this.dt = dt;
+        }
         
+    }    
+    
+    @Test
+    public void testJoda_1() throws IOException{
+        ObjectMapper om = CkanClient.getObjectMapper();
+        JodaA ja = new JodaA();
+        
+        ja.setDt(new DateTime(123, DateTimeZone.UTC));
+        String json = om.writeValueAsString(ja);
+        logger.debug("json = " + json);
+        // todo Since we are using Joda jackson is not respecting the date format config without the 'Z' we set in the object mapper.        
+        // see https://github.com/opendatatrentino/Jackan/issues/1
+        assertEquals("1970-01-01T00:00:00.123Z", om.readTree(json).get("dt").asText());
+        
+        JodaA ja2 = om.readValue(json, JodaA.class);        
+        logger.debug("ja = " + ja.getDt().toString());
+        logger.debug("ja2 = " + ja2.getDt().toString());
+        assertTrue(ja.getDt().equals(ja2.getDt()));        
     }
-*/     
+    
+
     
   /*  @Test
     public void testDataGovUkDatasetList() throws CKANException {
@@ -157,3 +188,5 @@ public class CkanJacksonTest {
     }
     */
 }
+
+

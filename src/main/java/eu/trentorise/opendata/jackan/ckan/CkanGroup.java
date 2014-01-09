@@ -20,6 +20,8 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import java.util.ArrayList;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 
 
@@ -32,10 +34,7 @@ public class CkanGroup {
      * can be "approved" or what? Bah 
      */
     private String approvalStatus;
-    /**
-     * Should be a Date
-     */
-    private String created;
+    private DateTime created;
     private String description;
     /**
      * i.e. Gestione del Territorio
@@ -53,9 +52,6 @@ public class CkanGroup {
     
     private String imageUrl;
     
-    /**
-     * todo check this
-     */
     private boolean organization;
     
     /**
@@ -94,12 +90,15 @@ public class CkanGroup {
         this.approvalStatus = approvalStatus;
     }
 
-    public String getCreated() {
+    public DateTime getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    /**
+       internally date is stored with UTC timezone
+    */    
+    public void setCreated(DateTime created) {
+        this.created = created.toDateTime(DateTimeZone.UTC);
     }
 
     public String getDescription() {
