@@ -1,43 +1,90 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<!--  
-/**
-* *****************************************************************************
-* Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
-*
-* All rights reserved. This program and the accompanying materials are made
-* available under the terms of the GNU Lesser General Public License (LGPL)
-* version 2.1 which accompanies this distribution, and is available at
-*
-* http://www.gnu.org/licenses/lgpl-2.1.html
-*
-* This library is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-* details.
-*
-*******************************************************************************
-*/    
--->
+    <!--  
+    /**
+    * *****************************************************************************
+    * Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
+    *
+    * All rights reserved. This program and the accompanying materials are made
+    * available under the terms of the GNU Lesser General Public License (LGPL)
+    * version 2.1 which accompanies this distribution, and is available at
+    *
+    * http://www.gnu.org/licenses/lgpl-2.1.html
+    *
+    * This library is distributed in the hope that it will be useful, but WITHOUT
+    * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+    * details.
+    *
+    *******************************************************************************
+    */    
+    -->
     
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>eu.trentorise.opendata</groupId>
-  <artifactId>Jackan</artifactId>
-  <version>0.3-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>eu.trentorise.opendata</groupId>
+    <artifactId>Jackan</artifactId>
+    <version>0.3-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>Jackan</name>
-  <url>http://maven.apache.org</url>
+    <name>Jackan</name>
+    <url>https://github.com/opendatatrentino/Jackan</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 2.1</name>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
 
-  <build>
-     <plugins>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+<profiles>
+  <profile>
+    <id>release-sign-artifacts</id>
+    <activation>
+      <property>
+        <name>performRelease</name>
+        <value>true</value>
+      </property>
+    </activation>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+</profiles>
+
+
+    <build>
+        <plugins>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -67,21 +114,92 @@
                     </excludes>
                 </configuration>
             </plugin>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-compiler-plugin</artifactId>
-         <version>2.3.2</version>
-         <configuration>
-           <source>1.5</source>
-           <target>1.5</target>
-         </configuration>
-       </plugin>
-     </plugins>      
-      
-  </build>
-    
+            
+		
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+		            
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>      
 
-  <dependencies>
+	<pluginManagement>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-release-plugin</artifactId>
+	            <version>2.1</version>
+	            <configuration>
+	                <mavenExecutorId>forked-path</mavenExecutorId>
+	                <useReleaseProfile>false</useReleaseProfile>
+	                <arguments>${arguments} -Psonatype-oss-release</arguments>
+	            </configuration>
+	        </plugin>
+	    </plugins>
+	</pluginManagement>      
+                  
+    </build>
+    
+    <scm>
+            <url>git@github.com:opendatatrentino/Jackan.git</url>
+            <connection>scm:git:git@github.com:opendatatrentino/Jackan.git</connection>
+            <developerConnection>scm:git:git@github.com:opendatatrentino/Jackan.git</developerConnection>
+    </scm>
+    <description>Java client to access CKAN repositories. LGPL licensed. </description>
+
+    <developers>
+            <developer>
+                    <id>d.leoni</id>
+                    <name>David Leoni</name>
+                    <email>david.leoni@trentorise.eu</email>
+                    <organization>Trento Rise</organization>
+            </developer>
+        
+            <developer>
+                    <id>a.zanella</id>
+                    <name>Alberto Zanella</name>
+                    <email>a.zanella@trentorise.eu</email>
+                    <organization>Trento Rise</organization>
+            </developer>
+    </developers>
+
+
+    <dependencies>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -133,7 +251,7 @@
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.12</version>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.9.12</version>
@@ -153,15 +271,15 @@
             <artifactId>annotations</artifactId>
             <version>2.0.1</version>
         </dependency>        
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>fluent-hc</artifactId>
-      <version>4.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.3</version>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>fluent-hc</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+        </dependency>
+    </dependencies>
 </project>
