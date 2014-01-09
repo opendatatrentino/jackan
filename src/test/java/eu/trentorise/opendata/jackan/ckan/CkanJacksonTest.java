@@ -118,8 +118,25 @@ public class CkanJacksonTest {
         CkanError er = CkanError.read(json);
         assertEquals("b", er.getType());
     }  
+
+    @Test
+    public void testOthers() throws IOException{                
+        String json = "{\"name\":\"n\",\"z\":1}";
+        CkanDataset cd = CkanClient.getObjectMapper().readValue(json, CkanDataset.class);
+        assertEquals( "n", cd.getName());    
+        assertEquals(1, cd.getOthers().get("z"));        
+    }    
     
     
+/**    
+    @Test
+    public void testCalendar(){
+        Calendar c = new Gre
+        String json = CkanClient.getObjectMapper().writeValueAsString(cg);
+        assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());    
+        
+    }
+*/     
     
   /*  @Test
     public void testDataGovUkDatasetList() throws CKANException {

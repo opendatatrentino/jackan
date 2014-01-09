@@ -14,11 +14,14 @@ Features:
   * ckan 2.2+ compliance
   * dependency handling with Maven
   * has a liberal LGPL 2.1 license
+  * proper logging with slf4j/log4j
+  * unit tested
 
 
 Credits:
 
 * David Leoni - Trento Rise - david.leoni@trentorise.eu 
+* Alberto Zanella - Trento Rise - alberto.zanella@trentorise.eu
 
 
 

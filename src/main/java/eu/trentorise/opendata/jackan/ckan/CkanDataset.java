@@ -20,7 +20,12 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import eu.trentorise.opendata.jackan.dcat.DcatDataset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
+import org.codehaus.jackson.annotate.JsonAnyGetter;
+import org.codehaus.jackson.annotate.JsonAnySetter;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
@@ -32,9 +37,9 @@ public class CkanDataset {
     private String author;
     private String authorEmail;  
     private @Nullable String creatorUserId;
-    private ArrayList<CkanGroup> groups;
     private String downloadUrl;
     private ArrayList<CkanPair> extras;
+    private ArrayList<CkanGroup> groups;    
     private String id;
     private boolean isOpen;
     private String license;
@@ -45,11 +50,11 @@ public class CkanDataset {
     /**
      * This should be a Date - couldn't find format documentation in Ckan api 2.2a
      */
-    private String metadata;
+    private String metadataCreated;
     /**
      * This should be a Date - couldn't find format documentation in Ckan api 2.2a
      */
-    private String metadata_modified;
+    private String metadataModified;
     private String name;
     private String notes;
     private String notesRendered;
@@ -69,9 +74,34 @@ public class CkanDataset {
     private String type;
     private String url;
     private @Nullable String version;
+
+    /**
+     * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. They will end up here.
+     */
+    protected Map<String,Object> others = new HashMap<String,Object>();
     
+    /**
+     * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
+    */ 
+    @JsonAnyGetter
+    public Map<String,Object> getOthers() {
+        return others;
+    }
 
+    @JsonAnySetter
+    public void setOthers(String name, Object value) {
+        others.put(name, value);
+    }
 
+    @JsonIgnore
+    public HashMap<String,String> getExtrasAsHashMap(){
+        HashMap<String,String> hm = new HashMap();
+        for (CkanPair cp : extras){
+            hm.put(cp.getKey(), cp.getValue());
+        }
+        return hm;
+    }
+    
     public String getAuthor() {
         return author;
     }
@@ -168,20 +198,20 @@ public class CkanDataset {
         this.maintainerEmail = maintainerEmail;
     }
 
-    public String getMetadata() {
-        return metadata;
+    public String getMetadataCreated() {
+        return metadataCreated;
     }
 
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
+    public void setMetadataCreated(String metadataCreated) {
+        this.metadataCreated = metadataCreated;
     }
 
-    public String getMetadata_modified() {
-        return metadata_modified;
+    public String getMetadataModified() {
+        return metadataModified;
     }
 
-    public void setMetadata_modified(String metadata_modified) {
-        this.metadata_modified = metadata_modified;
+    public void setMetadataModified(String metadataModified) {
+        this.metadataModified = metadataModified;
     }
 
     public String getName() {

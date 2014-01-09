@@ -19,7 +19,11 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
+import org.codehaus.jackson.annotate.JsonAnyGetter;
+import org.codehaus.jackson.annotate.JsonAnySetter;
 
 
 
@@ -29,14 +33,13 @@ import javax.annotation.Nullable;
 public class CkanResource {
     /**
      * Should be a Date
-     */
-    @Nullable
-    private String cacheLastUpdated;
+     */    
+    private @Nullable String cacheLastUpdated;
     /**
      * God only knows what this is
      */
-    @Nullable 
-    private String cacheUrl;
+    
+    private @Nullable String cacheUrl;
     /*
     not in rest api 
      
@@ -47,7 +50,10 @@ public class CkanResource {
      * Should be a Date
      */    
     private String cacheUrlUpdated;
-            
+    
+    /**
+     * i.e. "2013-05-09T14:08:32.666477"
+     */
     private String created;
     
     private String description;
@@ -69,9 +75,14 @@ public class CkanResource {
      */
     private String id;
     
-    
+    /**
+     * i.e. "2013-05-09T14:33:26.643040"
+     */
     private String lastModified;
     
+    /**
+     * i.e. text/csv
+     */
     private String mimetype;
     
     /**
@@ -134,9 +145,24 @@ public class CkanResource {
      */
     private @Nullable String webstoreUrl;
     
-    
+    /**
+     * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. They will end up here.
+     */
+    protected Map<String,Object> others = new HashMap<String,Object>();    
 
     
+    /**
+     * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
+    */ 
+    @JsonAnyGetter
+    public Map<String,Object> getOthers() {
+        return others;
+    }
+
+    @JsonAnySetter
+    public void setOthers(String name, Object value) {
+        others.put(name, value);
+    }
     
 
     public @Nullable String getCacheLastUpdated() {
