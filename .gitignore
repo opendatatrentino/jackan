@@ -11,3 +11,4 @@ nbdist/
 dist/
 target/
 /src/test/resources/log4j.properties
+/nbactions.xml

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * todo make this an integration test
  * @author David Leoni
  */
-public class CkanClientTest {
+public class CkanClientITCase {
     static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
     public static final String LAGHI_MONITORATI_TRENTO_NAME = "laghi-monitorati-trento";
     public static final String LAGHI_MONITORATI_TRENTO_ID = "96b8aae4e211f3e5a70cdbcbb722264256ae2e7d";

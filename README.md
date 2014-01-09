@@ -14,8 +14,8 @@ Features:
   * ckan 2.2+ compliance
   * dependency handling with Maven
   * has a liberal LGPL 2.1 license
-  * proper logging with slf4j/log4j
-  * unit tested
+  * logging with slf4j/log4j
+  * unit tested with proper integration tests
 
 
 Credits:
