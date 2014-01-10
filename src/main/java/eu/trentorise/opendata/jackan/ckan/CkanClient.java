@@ -48,7 +48,7 @@ public class CkanClient {
             .getLogger(CkanClient.class);
 
     /**
-     * @return 
+
      */
     public static ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
@@ -81,12 +81,6 @@ public class CkanClient {
         this.url = url;
     }
 
-    /**
-     * Closes all the connections.
-     */
-    void close() {
-        // doing nothing for now
-    }
 
     /**
      *
@@ -95,7 +89,7 @@ public class CkanClient {
      * @param path something like /api/3/package_show
      * @param params list of key, value parameters. They must be not be url
      * encoded. i.e. "id","laghi-monitorati-trento"
-     * @return
+
      */
     <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
             Object... params) {
@@ -160,7 +154,7 @@ public class CkanClient {
     /**
      * Throws JackanException on error.
      *
-     * @return
+
      */
     public synchronized ArrayList<CkanUser> getUserList() {
         return getHttp(UserListResponse.class, "/api/3/action/user_list").result;
@@ -170,7 +164,6 @@ public class CkanClient {
      * Throws JackanException on error.
      *
      * @param id i.e. 'admin'
-     * @return
      */
     public synchronized CkanUser getUser(String id) {
         return getHttp(UserResponse.class, "/api/3/action/user_show", "id", id).result;
@@ -180,7 +173,6 @@ public class CkanClient {
      * Throws JackanException on error.
      *
      * @param id
-     * @return
      */
     public synchronized CkanResource getResource(String id) {
         return getHttp(ResourceResponse.class, "/api/3/action/resource_show",
@@ -190,7 +182,6 @@ public class CkanClient {
     /**
      * Throws JackanException on error.
      *
-     * @return
      */
     public synchronized ArrayList<CkanGroup> getGroupList() {
         return getHttp(GroupListResponse.class, "/api/3/action/group_list",
@@ -200,7 +191,7 @@ public class CkanClient {
     /**
      * Throws JackanException on error.
      *
-     * @return
+
      */
     public synchronized ArrayList<String> getGroupNames() {
         return getHttp(GroupNamesResponse.class, "/api/3/action/group_List").result;
@@ -210,7 +201,6 @@ public class CkanClient {
      * Throws JackanException on error.
      *
      * @param id
-     * @return
      */
     public synchronized CkanGroup getGroup(String id) {
         return getHttp(GroupResponse.class, "/api/3/action/group_show", "id",
@@ -220,8 +210,6 @@ public class CkanClient {
     /**
      * Throws JackanException on error.
      *
-     * @param vocabularyId
-     * @return
      */
     public synchronized ArrayList<CkanTag> getTagList() {
         return getHttp(TagListResponse.class, "/api/3/action/tag_list",
@@ -233,8 +221,6 @@ public class CkanClient {
      * JackanException on error.
      *
      * @param query
-     * @param vocabularyId
-     * @return
      */
     public synchronized ArrayList<String> getTagNamesList(String query) {
         return getHttp(TagNamesResponse.class, "/api/3/action/tag_list",
@@ -244,7 +230,7 @@ public class CkanClient {
     /**
      * Throws JackanException on error.
      *
-     * @return
+
      */
     public synchronized ArrayList<String> getTagNamesList() {
         return getHttp(TagNamesResponse.class, "/api/3/action/tag_list").result;
@@ -257,7 +243,7 @@ public class CkanClient {
      * @param text
      * @param limit maximum results to return
      * @param offset search begins from offset
-     * @return
+
      */
     public synchronized SearchResults<CkanDataset> searchDatasets(String text,
             int limit, int offset) {
@@ -304,7 +290,6 @@ class CkanError {
      * not collaborating here, even if in Group.isOrganization case setting the
      * JsonProperty("is_organization") did work.
      *
-     * @return
      */
     static CkanError read(String json) {
         try {

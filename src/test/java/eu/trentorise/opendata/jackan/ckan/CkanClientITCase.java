@@ -52,8 +52,7 @@ public class CkanClientITCase {
     }
     
     @After
-    public void tearDown() {
-        client.close();
+    public void tearDown() {        
         client = null;
     }    
     

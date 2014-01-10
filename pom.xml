@@ -49,38 +49,39 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
 
-<profiles>
-  <profile>
-    <id>release-sign-artifacts</id>
-    <activation>
-      <property>
-        <name>performRelease</name>
-        <value>true</value>
-      </property>
-    </activation>
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.1</version>
-          <executions>
-            <execution>
-              <id>sign-artifacts</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>sign</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
-</profiles>
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 
     <build>
@@ -158,44 +159,44 @@
             </plugin>
         </plugins>      
 
-	<pluginManagement>
-	    <plugins>
-	        <plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-release-plugin</artifactId>
-	            <version>2.1</version>
-	            <configuration>
-	                <mavenExecutorId>forked-path</mavenExecutorId>
-	                <useReleaseProfile>false</useReleaseProfile>
-	                <arguments>${arguments} -Psonatype-oss-release</arguments>
-	            </configuration>
-	        </plugin>
-	    </plugins>
-	</pluginManagement>      
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <mavenExecutorId>forked-path</mavenExecutorId>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <arguments>${arguments} -Psonatype-oss-release</arguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>      
                   
     </build>
     
     <scm>
-            <url>git@github.com:opendatatrentino/Jackan.git</url>
-            <connection>scm:git:git@github.com:opendatatrentino/Jackan.git</connection>
-            <developerConnection>scm:git:git@github.com:opendatatrentino/Jackan.git</developerConnection>
+        <url>git@github.com:opendatatrentino/Jackan.git</url>
+        <connection>scm:git:git@github.com:opendatatrentino/Jackan.git</connection>
+        <developerConnection>scm:git:git@github.com:opendatatrentino/Jackan.git</developerConnection>
     </scm>
     <description>Java client to access CKAN repositories. LGPL licensed. </description>
 
     <developers>
-            <developer>
-                    <id>d.leoni</id>
-                    <name>David Leoni</name>
-                    <email>david.leoni@trentorise.eu</email>
-                    <organization>Trento Rise</organization>
-            </developer>
+        <developer>
+            <id>d.leoni</id>
+            <name>David Leoni</name>
+            <email>david.leoni@trentorise.eu</email>
+            <organization>Trento Rise</organization>
+        </developer>
         
-            <developer>
-                    <id>a.zanella</id>
-                    <name>Alberto Zanella</name>
-                    <email>a.zanella@trentorise.eu</email>
-                    <organization>Trento Rise</organization>
-            </developer>
+        <developer>
+            <id>a.zanella</id>
+            <name>Alberto Zanella</name>
+            <email>a.zanella@trentorise.eu</email>
+            <organization>Trento Rise</organization>
+        </developer>
     </developers>
 
 

@@ -156,14 +156,14 @@ public class CkanJacksonTest {
         
         ja.setDt(new DateTime(123, DateTimeZone.UTC));
         String json = om.writeValueAsString(ja);
-        logger.debug("json = " + json);
+        //logger.debug("json = " + json);
         // todo Since we are using Joda jackson is not respecting the date format config without the 'Z' we set in the object mapper.        
         // see https://github.com/opendatatrentino/Jackan/issues/1
         assertEquals("1970-01-01T00:00:00.123Z", om.readTree(json).get("dt").asText());
         
         JodaA ja2 = om.readValue(json, JodaA.class);        
-        logger.debug("ja = " + ja.getDt().toString());
-        logger.debug("ja2 = " + ja2.getDt().toString());
+        //logger.debug("ja = " + ja.getDt().toString());
+        //logger.debug("ja2 = " + ja2.getDt().toString());
         assertTrue(ja.getDt().equals(ja2.getDt()));        
     }
     

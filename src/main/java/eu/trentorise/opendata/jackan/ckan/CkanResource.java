@@ -156,7 +156,6 @@ public class CkanResource {
     
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
-     * @return 
     */ 
     @JsonAnyGetter
     public Map<String,Object> getOthers() {

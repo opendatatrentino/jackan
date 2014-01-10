@@ -343,7 +343,6 @@ public class CkanDataset {
 
     /**
      * Actually it is named "private" in the API. Appears in dataset searches.
-     * @return
      */
     @JsonProperty("private")
     public Boolean getPriv() {
