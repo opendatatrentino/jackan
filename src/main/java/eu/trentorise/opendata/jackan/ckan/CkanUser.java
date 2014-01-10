@@ -17,7 +17,7 @@
 */   
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 
@@ -32,18 +32,18 @@ import org.joda.time.DateTime;
 public class CkanUser {
 
     
-    private @Nullable String about;
+    @Nullable private String about;
     /**
      * You can obtain it with getUser(id)
      */
-    private @Nullable ArrayList<CkanActivity> activity;
+    @Nullable private List<CkanActivity> activity;
     private boolean activityStreamsEmailNotifications;
 
     /**
      * 
      * i.e. "admin" 
      */
-    private @Nullable String capacity;
+    @Nullable private String capacity;
     
     /**
        internally date is stored with UTC timezone
@@ -53,13 +53,13 @@ public class CkanUser {
     /**
      * i.e. David Leoni
      */
-    private String display_name;
+    private String displayName;
     private String emailHash;
     /**
      * seems quite useless something like i.e. Mr David Leoni the Third ?
      */
     
-    private @Nullable String fullname;
+    @Nullable private String fullname;
     /**
      * alphanumerical id. i.e. "01ab5c4e-6d6b-46bc-8cn7-e37drs9aeb00"
      */
@@ -72,12 +72,12 @@ public class CkanUser {
     /**
      * Actually I don't know the format
      */    
-    private @Nullable String openid;
+    @Nullable private String openid;
 
     private int numberAdministeredPackages;
     private int numberOfEdits;
     
-    private @Nullable int numFollowers;
+    @Nullable private int numFollowers;
     
     /**
      * Should be a CkanState
@@ -85,7 +85,7 @@ public class CkanUser {
     private CkanState state;
     private boolean sysadmin;
 
-    public @Nullable String getAbout() {
+    @Nullable public String getAbout() {
         return about;
     }
 
@@ -109,12 +109,12 @@ public class CkanUser {
         this.created = created;
     }
 
-    public String getDisplay_name() {
-        return display_name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setDisplay_name(String display_name) {
-        this.display_name = display_name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getEmailHash() {
@@ -125,7 +125,7 @@ public class CkanUser {
         this.emailHash = emailHash;
     }
 
-    public @Nullable String getFullname() {
+    @Nullable public String getFullname() {
         return fullname;
     }
 
@@ -149,7 +149,7 @@ public class CkanUser {
         this.name = name;
     }
 
-    public @Nullable String getOpenid() {
+    @Nullable public String getOpenid() {
         return openid;
     }
 
@@ -189,15 +189,15 @@ public class CkanUser {
         this.sysadmin = sysadmin;
     }
 
-    public @Nullable ArrayList<CkanActivity> getActivity() {
+    @Nullable public List<CkanActivity> getActivity() {
         return activity;
     }
 
-    public void setActivity(ArrayList<CkanActivity> activity) {
+    public void setActivity(List<CkanActivity> activity) {
         this.activity = activity;
     }
 
-    public @Nullable String getCapacity() {
+    @Nullable public String getCapacity() {
         return capacity;
     }
 
@@ -205,7 +205,7 @@ public class CkanUser {
         this.capacity = capacity;
     }
 
-    public @Nullable Integer getNumFollowers() {
+    @Nullable public Integer getNumFollowers() {
         return numFollowers;
     }
 

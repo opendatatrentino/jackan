@@ -17,8 +17,6 @@
 */   
 package eu.trentorise.opendata.jackan.dcat;
 
-import java.util.ArrayList;
-
 
 /**
     
@@ -26,8 +24,9 @@ import java.util.ArrayList;
  */
 public class DcatCatalog {
 
+    // property in Dcat standard, but not convenient in Java
+    // private List<DcatDataset> datasets;
     
-    private ArrayList<DcatDataset> datasets;
     
     /**
      * dct:description
@@ -64,7 +63,8 @@ public class DcatCatalog {
      */
     private FoafAgent publisher;
     
-    private ArrayList<DcatCatalogRecord> records;    
+    // property in Dcat standard, but not convenient in Java
+    // private List<DcatCatalogRecord> records;    
     
    /**
      * dct:rights
@@ -75,14 +75,6 @@ public class DcatCatalog {
      * dct:title
      */
     private String title;    
-
-    public ArrayList<DcatDataset> getDatasets() {
-        return datasets;
-    }
-
-    public void setDatasets(ArrayList<DcatDataset> datasets) {
-        this.datasets = datasets;
-    }
 
     public String getDescription() {
         return description;
@@ -140,13 +132,6 @@ public class DcatCatalog {
         this.publisher = publisher;
     }
 
-    public ArrayList<DcatCatalogRecord> getRecords() {
-        return records;
-    }
-
-    public void setRecords(ArrayList<DcatCatalogRecord> records) {
-        this.records = records;
-    }
 
     public String getRights() {
         return rights;

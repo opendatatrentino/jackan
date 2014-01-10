@@ -6,7 +6,7 @@
 
 package eu.trentorise.opendata.jackan;
 
-import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -17,9 +17,9 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class SearchResults<T> {
     private int count;
-    private ArrayList<T> results;
+    private List<T> results;
 
-    public SearchResults(ArrayList<T> results, int count) {
+    public SearchResults(List<T> results, int count) {
         this.count = count;
         this.results = results;
     }
@@ -31,7 +31,7 @@ public class SearchResults<T> {
         return count;
     }
 
-    public ArrayList<T> getResults() {
+    public List<T> getResults() {
         return results;
     }
     

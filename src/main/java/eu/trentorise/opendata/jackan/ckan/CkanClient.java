@@ -19,7 +19,7 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.client.fluent.Request;
 import org.codehaus.jackson.JsonNode;
@@ -126,7 +126,7 @@ public class CkanClient {
      *
      * @return list of strings like i.e. limestone-pavement-orders
      */
-    public synchronized ArrayList<String> getDatasetList() {
+    public synchronized List<String> getDatasetList() {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list").result;
     }
 
@@ -135,7 +135,7 @@ public class CkanClient {
      *
      * @return list of data names like i.e. limestone-pavement-orders
      */
-    public synchronized ArrayList<String> getDatasetList(Integer limit,
+    public synchronized List<String> getDatasetList(Integer limit,
             Integer offset) {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list",
                 "limit", limit, "offset", offset).result;
@@ -156,7 +156,7 @@ public class CkanClient {
      *
 
      */
-    public synchronized ArrayList<CkanUser> getUserList() {
+    public synchronized List<CkanUser> getUserList() {
         return getHttp(UserListResponse.class, "/api/3/action/user_list").result;
     }
 
@@ -183,7 +183,7 @@ public class CkanClient {
      * Throws JackanException on error.
      *
      */
-    public synchronized ArrayList<CkanGroup> getGroupList() {
+    public synchronized List<CkanGroup> getGroupList() {
         return getHttp(GroupListResponse.class, "/api/3/action/group_list",
                 "all_fields", "True").result;
     }
@@ -193,7 +193,7 @@ public class CkanClient {
      *
 
      */
-    public synchronized ArrayList<String> getGroupNames() {
+    public synchronized List<String> getGroupNames() {
         return getHttp(GroupNamesResponse.class, "/api/3/action/group_List").result;
     }
 
@@ -211,7 +211,7 @@ public class CkanClient {
      * Throws JackanException on error.
      *
      */
-    public synchronized ArrayList<CkanTag> getTagList() {
+    public synchronized List<CkanTag> getTagList() {
         return getHttp(TagListResponse.class, "/api/3/action/tag_list",
                 "all_fields", "True").result;
     }
@@ -222,7 +222,7 @@ public class CkanClient {
      *
      * @param query
      */
-    public synchronized ArrayList<String> getTagNamesList(String query) {
+    public synchronized List<String> getTagNamesList(String query) {
         return getHttp(TagNamesResponse.class, "/api/3/action/tag_list",
                 "query", query).result;
     }
@@ -232,7 +232,7 @@ public class CkanClient {
      *
 
      */
-    public synchronized ArrayList<String> getTagNamesList() {
+    public synchronized List<String> getTagNamesList() {
         return getHttp(TagNamesResponse.class, "/api/3/action/tag_list").result;
     }
 
@@ -264,8 +264,7 @@ class CkanError {
 
     @Override
     public String toString() {
-        return "";// Ckan error of type: " + getType() + "\t message:" +
-        // getMessage() ;
+        return "Ckan error of type: " + getType() + "\t message:" + getMessage();
     }
 
     public String getMessage() {
@@ -326,12 +325,12 @@ class ResourceResponse extends CkanResponse {
 
 class DatasetListResponse extends CkanResponse {
 
-    public ArrayList<String> result;
+    public List<String> result;
 }
 
 class UserListResponse extends CkanResponse {
 
-    public ArrayList<CkanUser> result;
+    public List<CkanUser> result;
 }
 
 class UserResponse extends CkanResponse {
@@ -341,7 +340,7 @@ class UserResponse extends CkanResponse {
 
 class TagListResponse extends CkanResponse {
 
-    public ArrayList<CkanTag> result;
+    public List<CkanTag> result;
 }
 
 class GroupResponse extends CkanResponse {
@@ -351,17 +350,17 @@ class GroupResponse extends CkanResponse {
 
 class GroupListResponse extends CkanResponse {
 
-    public ArrayList<CkanGroup> result;
+    public List<CkanGroup> result;
 }
 
 class GroupNamesResponse extends CkanResponse {
 
-    public ArrayList<String> result;
+    public List<String> result;
 }
 
 class TagNamesResponse extends CkanResponse {
 
-    public ArrayList<String> result;
+    public List<String> result;
 }
 
 class DatasetSearchResponse extends CkanResponse {

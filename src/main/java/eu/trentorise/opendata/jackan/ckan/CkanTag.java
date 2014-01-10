@@ -31,8 +31,8 @@ public class CkanTag {
     private String displayName;
     private String name;
     
-    private @Nullable DateTime revisionTimestamp;
-    private @Nullable CkanState state;
+    @Nullable private DateTime revisionTimestamp;
+    @Nullable private CkanState state;
     private String id;
 
     public String getVocabularyId() {
@@ -59,7 +59,7 @@ public class CkanTag {
         this.name = name;
     }
 
-    public @Nullable DateTime getRevisionTimestamp() {
+    @Nullable public DateTime getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
@@ -71,7 +71,7 @@ public class CkanTag {
         }
     }
 
-    public @Nullable CkanState getState() {
+    @Nullable public CkanState getState() {
         return state;
     }
 

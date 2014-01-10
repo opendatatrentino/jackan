@@ -17,7 +17,7 @@
 
 package eu.trentorise.opendata.jackan.dcat;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -37,7 +37,7 @@ public class DcatDataset {
     private String contactPoint;    
     private String description;
         
-    private ArrayList<DcatDistribution> distributions;
+    private List<DcatDistribution> distributions;
     /**
      * Let's keep it a String for now
      * i.e. dct:issued "2011-12-05"^^xsd:date ;
@@ -47,7 +47,7 @@ public class DcatDataset {
     /**
      * i.e. dcat:keyword "accountability","transparency" ,"payments" ;
      */
-    private ArrayList<String> keywords;
+    private List<String> keywords;
     
     /**
      * For relation with Distribution.accessURL and downloadURL see http://www.w3.org/TR/vocab-dcat/#a-dataset-available-only-behind-some-web-page
@@ -113,11 +113,11 @@ public class DcatDataset {
         this.description = description;
     }
 
-    public ArrayList<DcatDistribution> getDistributions() {
+    public List<DcatDistribution> getDistributions() {
         return distributions;
     }
 
-    public void setDistributions(ArrayList<DcatDistribution> distributions) {
+    public void setDistributions(List<DcatDistribution> distributions) {
         this.distributions = distributions;
     }
 
@@ -137,11 +137,11 @@ public class DcatDataset {
         this.identifier = identifier;
     }
 
-    public ArrayList<String> getKeywords() {
+    public List<String> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(ArrayList<String> keywords) {
+    public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
     }
 

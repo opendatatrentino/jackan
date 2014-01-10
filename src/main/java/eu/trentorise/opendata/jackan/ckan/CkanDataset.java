@@ -19,7 +19,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import eu.trentorise.opendata.jackan.dcat.DcatDataset;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -38,10 +38,10 @@ import org.joda.time.DateTimeZone;
 public class CkanDataset {
     private String author;
     private String authorEmail;  
-    private @Nullable String creatorUserId;
+    @Nullable private String creatorUserId;
     private String downloadUrl;
-    private ArrayList<CkanPair> extras;
-    private ArrayList<CkanGroup> groups;    
+    private List<CkanPair> extras;
+    private List<CkanGroup> groups;    
     private String id;
     private boolean isOpen;
     private String license;
@@ -67,7 +67,7 @@ public class CkanDataset {
     /**
      * Actually it is named 'private' in api. Appears in searches.
     */
-    private @Nullable Boolean priv;    
+    @Nullable private Boolean priv;    
     private String revisionId;
     /**
      * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
@@ -75,16 +75,16 @@ public class CkanDataset {
      */
     private DateTime revisionTimestamp;
     private String state; // todo what should it be?
-    private ArrayList<CkanTag> tags;
+    private List<CkanTag> tags;
     private String title;
     private String type;
     private String url;
-    private @Nullable String version;
+    @Nullable private String version;
 
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. They will end up here.
      */
-    protected Map<String,Object> others = new HashMap<String,Object>();
+    private Map<String,Object> others = new HashMap<String,Object>();
     
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
@@ -100,7 +100,7 @@ public class CkanDataset {
     }
 
     @JsonIgnore
-    public HashMap<String,String> getExtrasAsHashMap(){
+    public Map<String,String> getExtrasAsHashMap(){
         HashMap<String,String> hm = new HashMap();
         for (CkanPair cp : extras){
             hm.put(cp.getKey(), cp.getValue());
@@ -124,7 +124,7 @@ public class CkanDataset {
         this.authorEmail = authorEmail;
     }
 
-    public @Nullable String getCreatorUserId() {
+    @Nullable public String getCreatorUserId() {
         return creatorUserId;
     }
 
@@ -132,11 +132,11 @@ public class CkanDataset {
         this.creatorUserId = creatorUserId;
     }
 
-    public ArrayList<CkanGroup> getGroups() {
+    public List<CkanGroup> getGroups() {
         return groups;
     }
 
-    public void setGroups(ArrayList<CkanGroup> groups) {
+    public void setGroups(List<CkanGroup> groups) {
         this.groups = groups;
     }
 
@@ -286,11 +286,11 @@ public class CkanDataset {
         this.state = state;
     }
 
-    public ArrayList<CkanTag> getTags() {
+    public List<CkanTag> getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList<CkanTag> tags) {
+    public void setTags(List<CkanTag> tags) {
         this.tags = tags;
     }
 
@@ -319,7 +319,7 @@ public class CkanDataset {
     }
 
 
-    public @Nullable String getVersion() {
+    @Nullable public String getVersion() {
         return version;
     }
 
@@ -327,11 +327,11 @@ public class CkanDataset {
         this.version = version;
     }
 
-    public ArrayList<CkanPair> getExtras() {
+    public List<CkanPair> getExtras() {
         return extras;
     }
 
-    public void setExtras(ArrayList<CkanPair> extras) {
+    public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }
     

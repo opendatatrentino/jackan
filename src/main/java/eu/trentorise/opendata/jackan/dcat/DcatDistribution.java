@@ -17,8 +17,6 @@
 
 package eu.trentorise.opendata.jackan.dcat;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author David Leoni
@@ -33,7 +31,10 @@ public class DcatDistribution {
      */
     private String accessURL;
     
-    
+    /**
+     * not in standard, added for convenience
+    */
+    private String datasetIdentifier;
     
     /**
      * dct:description
@@ -79,6 +80,7 @@ public class DcatDistribution {
     private String spatial;   
     
     /**
+     * Human readable name
      * i.e. dct:title "CSV distribution of imaginary dataset 001" ;
      */
     private String title;
@@ -86,7 +88,9 @@ public class DcatDistribution {
     public int getByteSize() {
         return byteSize;
     }
-
+    
+    
+    
     public void setByteSize(int byteSize) {
         this.byteSize = byteSize;
     }
@@ -169,6 +173,28 @@ public class DcatDistribution {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * Property not in Dcat standard, added for convenience
+    */
+    public String getDatasetIdentifier() {
+        return datasetIdentifier;
+    }
+
+    /**
+     * Property not in Dcat standard, added for convenience
+    */
+    public void setDatasetIdentifier(String datasetIdentifier) {
+        this.datasetIdentifier = datasetIdentifier;
+    }
+
+    public String getSpatial() {
+        return spatial;
+    }
+
+    public void setSpatial(String spatial) {
+        this.spatial = spatial;
     }
     
 }

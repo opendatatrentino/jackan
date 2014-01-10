@@ -18,7 +18,7 @@
 
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -40,11 +40,11 @@ public class CkanGroup {
      * i.e. Gestione del Territorio
      */
     private String displayName;
-    private ArrayList<CkanPair> extras;
+    private List<CkanPair> extras;
     /**
      * Have no idea what this could mean inside a group!
      */
-    private ArrayList<CkanGroup> groups;
+    private List<CkanGroup> groups;
     
     private String id;
     
@@ -64,7 +64,7 @@ public class CkanGroup {
     private int packageCount;
     
     // better to comment it as it can also be an int according to which web api is called
-    // private ArrayList<CkanDataset> packages;
+    // private List<CkanDataset> packages;
     
     private String revisionId;
     
@@ -80,7 +80,7 @@ public class CkanGroup {
      */
     private String type;
     
-    private ArrayList<CkanUser> users;
+    private List<CkanUser> users;
 
     public String getApprovalStatus() {
         return approvalStatus;
@@ -117,19 +117,19 @@ public class CkanGroup {
         this.displayName = displayName;
     }
 
-    public ArrayList<CkanPair> getExtras() {
+    public List<CkanPair> getExtras() {
         return extras;
     }
 
-    public void setExtras(ArrayList<CkanPair> extras) {
+    public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }
 
-    public ArrayList<CkanGroup> getGroups() {
+    public List<CkanGroup> getGroups() {
         return groups;
     }
 
-    public void setGroups(ArrayList<CkanGroup> groups) {
+    public void setGroups(List<CkanGroup> groups) {
         this.groups = groups;
     }
 
@@ -223,11 +223,11 @@ public class CkanGroup {
         this.type = type;
     }
 
-    public ArrayList<CkanUser> getUsers() {
+    public List<CkanUser> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<CkanUser> users) {
+    public void setUsers(List<CkanUser> users) {
         this.users = users;
     }
     

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  */
 public class CkanPair{
     private String key;
-    private @Nullable String value;
+    @Nullable private String value;
 
     public String getKey() {
         return key;
@@ -35,7 +35,7 @@ public class CkanPair{
         this.key = key;
     }
 
-    public @Nullable String getValue() {
+    @Nullable public String getValue() {
         return value;
     }
 

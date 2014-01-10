@@ -18,12 +18,13 @@
 
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -36,12 +37,12 @@ public class CkanResource {
     /**
      * Should be a Date
      */    
-    private @Nullable String cacheLastUpdated;
+    @Nullable private String cacheLastUpdated;
     /**
      * God only knows what this is
      */
     
-    private @Nullable String cacheUrl;
+    @Nullable private String cacheUrl;
     /*
     not in rest api 
      
@@ -61,7 +62,7 @@ public class CkanResource {
     
     private String description;
     
-    private ArrayList<CkanPair> extras;
+    private List<CkanPair> extras;
     
     /**
      * In Ckan 1.8 was lowercase, 2.2a seems capitalcase. 
@@ -91,7 +92,7 @@ public class CkanResource {
     /**
      * Unknown meaning, as usual. Can be the empty string or null
      */
-    private @Nullable String mimetypeInner;
+    @Nullable private String mimetypeInner;
     
     /**
      * Human readable name, i.e. "Apple Production 2013 in CSV format"
@@ -101,7 +102,7 @@ public class CkanResource {
     /**
      * username of the owner i.e. 
      */
-    private @Nullable String owner;
+    @Nullable private String owner;
     
     /**
      * Position inside the dataset?
@@ -123,7 +124,7 @@ public class CkanResource {
     /**
      * Should be a Date
      */
-    private @Nullable String revisionTimestamp;
+    @Nullable private String revisionTimestamp;
     /**
      * file size in bytes. Note ckan returns a string, we hope it's always an integer.
      */
@@ -136,22 +137,22 @@ public class CkanResource {
     /**
      * Don't know what it is
      */
-    private @Nullable String urlType;
+    @Nullable private String urlType;
     
     /**
      * Should be a Date
      */
-    private @Nullable DateTime webstoreLastUpdated;
+    @Nullable private DateTime webstoreLastUpdated;
 
     /**
      * found "active" as value. Maybe it is a CkanState
      */
-    private @Nullable String webstoreUrl;
+    @Nullable private String webstoreUrl;
     
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. They will end up here.
      */
-    protected Map<String,Object> others = new HashMap<String,Object>();    
+    private Map<String,Object> others = new HashMap<String,Object>();    
 
     
     /**
@@ -168,7 +169,7 @@ public class CkanResource {
     }
     
 
-    public @Nullable String getCacheLastUpdated() {
+    @Nullable public String getCacheLastUpdated() {
         return cacheLastUpdated;
     }
 
@@ -176,7 +177,7 @@ public class CkanResource {
         this.cacheLastUpdated = cacheLastUpdated;
     }
 
-    public @Nullable String getCacheUrl() {
+    @Nullable public String getCacheUrl() {
         return cacheUrl;
     }
 
@@ -184,7 +185,7 @@ public class CkanResource {
         this.cacheUrl = cacheUrl;
     }
     
-    public @Nullable DateTime getCacheUrlUpdated() {
+    @Nullable public DateTime getCacheUrlUpdated() {
         return cacheUrlUpdated;
     }
 
@@ -215,11 +216,20 @@ public class CkanResource {
         this.description = description;
     }
 
-    public ArrayList<CkanPair> getExtras() {
+    @JsonIgnore
+    public Map<String,String> getExtrasAsHashMap(){
+        HashMap<String,String> hm = new HashMap();
+        for (CkanPair cp : extras){
+            hm.put(cp.getKey(), cp.getValue());
+        }
+        return hm;
+    }    
+    
+    public List<CkanPair> getExtras() {
         return extras;
     }
 
-    public void setExtras(ArrayList<CkanPair> extras) {
+    public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }    
     
@@ -266,7 +276,7 @@ public class CkanResource {
         this.mimetype = mimetype;
     }
 
-    public @Nullable String getMimetypeInner() {
+    @Nullable public String getMimetypeInner() {
         return mimetypeInner;
     }
 
@@ -282,7 +292,7 @@ public class CkanResource {
         this.name = name;
     }
 
-    public @Nullable String getOwner() {
+    @Nullable public String getOwner() {
         return owner;
     }
 
@@ -322,7 +332,7 @@ public class CkanResource {
         this.revisionId = revisionId;
     }
 
-    public @Nullable String getRevisionTimestamp() {
+    @Nullable public String getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
@@ -362,7 +372,7 @@ public class CkanResource {
         this.url = url;
     }
 
-    public @Nullable String getUrlType() {
+    @Nullable public String getUrlType() {
         return urlType;
     }
 
@@ -370,7 +380,7 @@ public class CkanResource {
         this.urlType = urlType;
     }
 
-    public @Nullable DateTime getWebstoreLastUpdated() {
+    @Nullable public DateTime getWebstoreLastUpdated() {
         return webstoreLastUpdated;
     }
 
@@ -385,7 +395,7 @@ public class CkanResource {
         }
     }
 
-    public @Nullable String getWebstoreUrl() {
+    @Nullable public String getWebstoreUrl() {
         return webstoreUrl;
     }
 

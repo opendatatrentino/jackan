@@ -83,7 +83,7 @@ public class CkanClientITCase {
     
     @Test
     public void testUserList(){                     
-        ArrayList<CkanUser> ul = client.getUserList();
+        List<CkanUser> ul = client.getUserList();
         assertTrue(ul.size() > 0);    
     }
 
@@ -96,7 +96,7 @@ public class CkanClientITCase {
     
     @Test
     public void testGroupList(){                     
-        ArrayList<CkanGroup> gl = client.getGroupList();
+        List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);    
     }
 
@@ -108,13 +108,13 @@ public class CkanClientITCase {
 
     @Test
     public void testTagList(){                     
-        ArrayList<CkanTag> tl = client.getTagList();
+        List<CkanTag> tl = client.getTagList();
         assertTrue(tl.size() > 0);    
     }
 
     @Test
     public void testTagNamesList(){                     
-        ArrayList<String> tl = client.getTagNamesList("serviz");
+        List<String> tl = client.getTagNamesList("serviz");
         assertTrue(tl.size() > 0);
         assertTrue(tl.get(0).toLowerCase().contains("serviz"));
     }
