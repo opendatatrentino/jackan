@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.trentorise.opendata</groupId>
-    <artifactId>Jackan</artifactId>
+    <artifactId>jackan</artifactId>
     <version>0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
