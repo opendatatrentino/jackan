@@ -67,7 +67,10 @@ public class CkanDataset {
     /**
      * Actually it is named 'private' in api. Appears in searches.
     */
-    @Nullable private Boolean priv;    
+    @Nullable private Boolean priv;   
+    
+    private List<CkanResource> resources;
+    
     private String revisionId;
     /**
      * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
@@ -351,5 +354,13 @@ public class CkanDataset {
 
     public void setPriv(Boolean priv) {
         this.priv = priv;
+    }
+
+    public List<CkanResource> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<CkanResource> resources) {
+        this.resources = resources;
     }
 }

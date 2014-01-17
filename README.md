@@ -23,6 +23,7 @@ Credits:
 * David Leoni - Trento Rise - david.leoni@trentorise.eu 
 * Alberto Zanella - Trento Rise - alberto.zanella@trentorise.eu
 
+We also wish to thank our very first beta tester Giulio Pilotto
 
 
 

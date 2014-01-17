@@ -43,8 +43,10 @@ public class CkanClientITCase {
     static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
     public static final String LAGHI_MONITORATI_TRENTO_NAME = "laghi-monitorati-trento";
     public static final String LAGHI_MONITORATI_TRENTO_ID = "96b8aae4e211f3e5a70cdbcbb722264256ae2e7d";
+    public static final String LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME = "Metadati in formato XML";
     
     CkanClient client;
+    
         
     @Before
     public void setUp() {                
@@ -76,10 +78,22 @@ public class CkanClientITCase {
     public void testDataset()  {
                         
         CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
-        assertEquals(dataset.getName(),LAGHI_MONITORATI_TRENTO_NAME);
+        assertEquals(LAGHI_MONITORATI_TRENTO_NAME, dataset.getName());
     }
     
-    
+    @Test 
+    public void testResourceInsideDataset() {
+        CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
+        List<CkanResource> resources = dataset.getResources();   
+        for (CkanResource r : resources){
+            if (r.getFormat().equals("XML")){
+                assertEquals(LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME, resources.get(0).getName());
+                return;
+            }
+        }
+        fail("Couldn't find xml resource in "+LAGHI_MONITORATI_TRENTO_NAME+" dataset");
+        
+    }
     
     @Test
     public void testUserList(){                     
@@ -90,7 +104,7 @@ public class CkanClientITCase {
     @Test
     public void testUser(){
         CkanUser u = client.getUser("admin");
-        assertEquals(u.getName(), "admin");    
+        assertEquals("admin", u.getName());    
     }
             
     
@@ -103,7 +117,7 @@ public class CkanClientITCase {
     @Test
     public void testGroup(){                     
         CkanGroup g = client.getGroup("gestione-del-territorio");
-        assertEquals(g.getName(), "gestione-del-territorio");
+        assertEquals("gestione-del-territorio", g.getName());
     }
 
     @Test
