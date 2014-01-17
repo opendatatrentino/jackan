@@ -82,11 +82,13 @@ public class CkanResource {
     /**
      * i.e. "2013-05-09T14:33:26.643040"
      */
+    @Nullable
     private DateTime lastModified;
     
     /**
      * i.e. text/csv
      */
+    @Nullable
     private String mimetype;
     
     /**
@@ -126,9 +128,11 @@ public class CkanResource {
      */
     @Nullable private String revisionTimestamp;
     /**
-     * file size in bytes. Note ckan returns a string, we hope it's always an integer.
+     * File size in bytes, if calculated by ckan for files in storage. 
+     * Otherwise it can be anything a human can insert. i.e. "242344"
      */
-    private int size;
+    @Nullable
+    private String size;
     
     private CkanState state;
     
@@ -257,6 +261,7 @@ public class CkanResource {
         this.id = id;
     }
 
+    @Nullable
     public DateTime getLastModified() {
         return lastModified;
     }
@@ -264,15 +269,20 @@ public class CkanResource {
     /**
        internally date is stored with UTC timezone
     */       
-    public void setLastModified(DateTime lastModified) {
-        this.lastModified = lastModified.toDateTime(DateTimeZone.UTC);
+    public void setLastModified(@Nullable DateTime lastModified) {
+        if (lastModified != null){
+            this.lastModified = lastModified.toDateTime(DateTimeZone.UTC);  
+        } else {
+            this.lastModified = null;
+        }
     }
 
+    @Nullable
     public String getMimetype() {
         return mimetype;
     }
 
-    public void setMimetype(String mimetype) {
+    public void setMimetype(@Nullable String mimetype) {
         this.mimetype = mimetype;
     }
 
@@ -340,11 +350,16 @@ public class CkanResource {
         this.revisionTimestamp = revisionTimestamp;
     }
 
-    public int getSize() {
+    /**
+     * @return File size in bytes, if calculated by ckan for files in storage. i.e. "242344" 
+     * Otherwise it can be anything a human can insert.
+     */
+    @Nullable
+    public String getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(@Nullable String size) {
         this.size = size;
     }
 
