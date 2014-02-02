@@ -86,6 +86,33 @@ public class CkanJacksonTest {
         CkanDataset cd = om.readValue(json, CkanDataset.class);
         assertEquals(email, cd.getAuthorEmail());
     } 
+
+    /**
+     * 
+     * @throws IOException 
+     */
+    @Test
+    public void testReadNullString() throws IOException{
+        ObjectMapper om = CkanClient.getObjectMapper();        
+        String json = "{\"size\":null}";        
+        CkanResource r = om.readValue(json, CkanResource.class);
+        
+        assertTrue(r.getSize() == null);
+    }
+
+    /**
+     * 
+     * @throws IOException 
+     */
+    @Test
+    public void testReadEmptyString() throws IOException{
+        ObjectMapper om = CkanClient.getObjectMapper();        
+        String json = "{\"size\":\"\"}";        
+        CkanResource r = om.readValue(json, CkanResource.class);
+        
+        assertTrue(r.getSize().equals(""));
+    }    
+    
     
     /**
      * Tests the ObjectMapper underscore conversion

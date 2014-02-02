@@ -30,6 +30,9 @@ package eu.trentorise.opendata.jackan.dcat;
  * @author David Leoni
  */
 public class DcatCatalogRecord {
+    
+    private String URI;
+    
     /**
      * dct:title
      */
@@ -87,5 +90,13 @@ public class DcatCatalogRecord {
 
     public void setPrimaryTopic(DcatDataset primaryTopic) {
         this.primaryTopic = primaryTopic;
+    }
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
 }

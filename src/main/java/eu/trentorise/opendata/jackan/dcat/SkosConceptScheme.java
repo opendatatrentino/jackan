@@ -23,6 +23,7 @@ package eu.trentorise.opendata.jackan.dcat;
  * @author David Leoni
  */
 public class SkosConceptScheme {
+        private String URI;
     /**
      * skos:prefLabel
      * i.e. "A set of domains to classify documents"
@@ -35,6 +36,14 @@ public class SkosConceptScheme {
 
     public void setPrefLabel(String prefLabel) {
         this.prefLabel = prefLabel;
+    }
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
         
 }

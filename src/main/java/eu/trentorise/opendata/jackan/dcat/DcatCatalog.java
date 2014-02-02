@@ -24,6 +24,8 @@ package eu.trentorise.opendata.jackan.dcat;
  */
 public class DcatCatalog {
 
+    private String URI;
+    
     // property in Dcat standard, but not convenient in Java
     // private List<DcatDataset> datasets;
     
@@ -147,6 +149,14 @@ public class DcatCatalog {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
 
 }

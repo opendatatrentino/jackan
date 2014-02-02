@@ -22,6 +22,7 @@ package eu.trentorise.opendata.jackan.dcat;
  * @author David Leoni
  */
 public class SkosConcept {
+    private String URI;
     /**
      * skos:prefLabel
      * i.e. "Accountability"
@@ -47,5 +48,13 @@ public class SkosConcept {
 
     public void setInScheme(SkosConceptScheme inScheme) {
         this.inScheme = inScheme;
+    }
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
 }

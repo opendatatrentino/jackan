@@ -24,6 +24,9 @@ import java.util.List;
  * @author David Leoni
  */
 public class DcatDataset {
+    
+    private String URI;
+    
     /**
     i.e. dct:accrualPeriodicity <http://purl.org/linked-data/sdmx/2009/code#freq-W>  ;
     * 
@@ -207,6 +210,14 @@ public class DcatDataset {
 
     public void setTheme(SkosConcept theme) {
         this.theme = theme;
+    }
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
 
     

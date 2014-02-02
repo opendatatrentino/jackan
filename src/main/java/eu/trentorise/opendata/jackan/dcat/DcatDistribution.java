@@ -22,6 +22,8 @@ package eu.trentorise.opendata.jackan.dcat;
  * @author David Leoni
  */
 public class DcatDistribution {
+    
+    private String URI;    
     /**
      * i.e. dcat:byteSize "5120"^^xsd:decimal ;
      */
@@ -195,6 +197,14 @@ public class DcatDistribution {
 
     public void setSpatial(String spatial) {
         this.spatial = spatial;
+    }
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
     
 }

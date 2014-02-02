@@ -24,5 +24,13 @@ package eu.trentorise.opendata.jackan.dcat;
  * @author David Leoni 
  */
 public class FoafAgent {
-    
+    private String URI;
+
+    public String getURI() {
+        return URI;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
+    }
 }
