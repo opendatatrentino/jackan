@@ -1,3 +1,6 @@
+# example config to silence noisy libraries such as httpclient
+# rename this file to log4j.properties to make it work
+
 log4j.rootLogger=INFO, console
 
 log4j.appender.console=org.apache.log4j.ConsoleAppender

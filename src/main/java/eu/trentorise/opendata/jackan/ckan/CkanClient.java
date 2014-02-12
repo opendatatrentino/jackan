@@ -31,26 +31,41 @@ import org.slf4j.LoggerFactory;
 
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Nullable;
 import org.codehaus.jackson.map.SerializationConfig;
 
 /**
- * Threadsafe
+ * Class to access a ckan instance. Threadsafe.
  *
  * @author David Leoni
  *
  */
 public class CkanClient {
-
+    @Nullable
     private static ObjectMapper objectMapper;
     private final String url;
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(CkanClient.class);
 
     /**
-
+     * @return a clone of the json object mapper used internally.
      */
-    public static ObjectMapper getObjectMapper() {
+    static public ObjectMapper getObjectMapperClone() {
+        ObjectMapper om = getObjectMapper();
+        return new ObjectMapper()
+                .setSerializationConfig(om.getSerializationConfig())
+                .setDeserializationConfig(om.getDeserializationConfig());
+    }
+
+    /**
+     * Retrieves the Jackson object mapper. Internally, Object mapper is initialized at first call.
+     */
+    static ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
             objectMapper
@@ -66,7 +81,6 @@ public class CkanClient {
 
             // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQDateHandling
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"                            so we removed it here
-            
             objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"));
 
         }
@@ -81,15 +95,14 @@ public class CkanClient {
         this.url = url;
     }
 
-
     /**
-     *
+     * Method for http GET
      * @param <T>
      * @param responseType a descendant of CkanResponse
      * @param path something like /api/3/package_show
      * @param params list of key, value parameters. They must be not be url
      * encoded. i.e. "id","laghi-monitorati-trento"
-
+     * @throws JackanException on error
      */
     <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
             Object... params) {
@@ -122,18 +135,18 @@ public class CkanClient {
     }
 
     /**
-     * Throws JackanException on error.
      *
      * @return list of strings like i.e. limestone-pavement-orders
+     * @throws JackanException on error
      */
     public synchronized List<String> getDatasetList() {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list").result;
     }
 
     /**
-     * Throws JackanException on error.
      *
      * @return list of data names like i.e. limestone-pavement-orders
+     * @throws JackanException on error
      */
     public synchronized List<String> getDatasetList(Integer limit,
             Integer offset) {
@@ -144,7 +157,9 @@ public class CkanClient {
     /**
      * id should be the alphanumerical id like
      * 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d. Using the mnemonic like
-     * laghi-monitorati-trento is discouraged. Throws JackanException on error.
+     * laghi-monitorati-trento is discouraged. 
+     *
+     * @throws JackanException on error
      */
     public synchronized CkanDataset getDataset(String id) {
         return getHttp(DatasetResponse.class, "/api/3/action/package_show",
@@ -152,27 +167,24 @@ public class CkanClient {
     }
 
     /**
-     * Throws JackanException on error.
-     *
-
+     * @throws JackanException on error
      */
     public synchronized List<CkanUser> getUserList() {
         return getHttp(UserListResponse.class, "/api/3/action/user_list").result;
     }
 
-    /**
-     * Throws JackanException on error.
+    /**     
      *
+     * @throws JackanException on error
      * @param id i.e. 'admin'
      */
     public synchronized CkanUser getUser(String id) {
         return getHttp(UserResponse.class, "/api/3/action/user_show", "id", id).result;
     }
 
-    /**
-     * Throws JackanException on error.
-     *
-     * @param id
+    /**     
+     * @param id The alphanumerical id of the resource, such as d0892ada-b8b9-43b6-81b9-47a86be126db. It is also possible to pass the name, such 
+     * @throws JackanException on error     
      */
     public synchronized CkanResource getResource(String id) {
         return getHttp(ResourceResponse.class, "/api/3/action/resource_show",
@@ -180,7 +192,7 @@ public class CkanClient {
     }
 
     /**
-     * Throws JackanException on error.
+     * @throws JackanException on error
      *
      */
     public synchronized List<CkanGroup> getGroupList() {
@@ -189,16 +201,14 @@ public class CkanClient {
     }
 
     /**
-     * Throws JackanException on error.
-     *
-
+     * @throws JackanException on erroR
      */
     public synchronized List<String> getGroupNames() {
         return getHttp(GroupNamesResponse.class, "/api/3/action/group_List").result;
     }
 
     /**
-     * Throws JackanException on error.
+     * @throws JackanException on error
      *
      * @param id
      */
@@ -208,8 +218,40 @@ public class CkanClient {
     }
 
     /**
-     * Throws JackanException on error.
      *
+     * @throws JackanException on error
+     *
+     */
+    public synchronized List<CkanGroup> getOrganizationList() {
+        return getHttp(GroupListResponse.class, "/api/3/action/organization_list",
+                "all_fields", "True").result;
+    }
+
+    /**
+     * @throws JackanException on erroR
+     */
+    public synchronized List<String> getOrganizationNames() {
+        return getHttp(GroupNamesResponse.class, "/api/3/action/organization_List").result;
+    }
+
+    /**
+     * In Ckan an organization is actually a group
+     *
+     * @throws JackanException on error
+     *
+     * @param id
+     */
+    public synchronized CkanGroup getOrganization(String id) {
+        return getHttp(GroupResponse.class, "/api/3/action/organization_show", "id",
+                id).result;
+    }
+
+    /**
+     * Returns a list of tags names, i.e. "gp-practice-earnings","Aid Project
+     * Evaluation", "tourism-satellite-account" We think names SHOULD be
+     * lowercase with minuses instead of spaces, but in some cases they aren't.
+     *
+     * @throws JackanException on error
      */
     public synchronized List<CkanTag> getTagList() {
         return getHttp(TagListResponse.class, "/api/3/action/tag_list",
@@ -221,6 +263,8 @@ public class CkanClient {
      * JackanException on error.
      *
      * @param query
+     *
+     * @throws JackanException on error
      */
     public synchronized List<String> getTagNamesList(String query) {
         return getHttp(TagNamesResponse.class, "/api/3/action/tag_list",
@@ -228,30 +272,102 @@ public class CkanClient {
     }
 
     /**
-     * Throws JackanException on error.
-     *
-
+     * @throws JackanException on error
      */
     public synchronized List<String> getTagNamesList() {
         return getHttp(TagNamesResponse.class, "/api/3/action/tag_list").result;
     }
 
     /**
-     * Search datasets containg param text in the metadata Throws
-     * JackanException on error.
+     * Search datasets containg param text in the metadata
      *
-     * @param text
+     *
+     * @param text The query string
      * @param limit maximum results to return
      * @param offset search begins from offset
-
+     * @throws JackanException on error
      */
     public synchronized SearchResults<CkanDataset> searchDatasets(String text,
             int limit, int offset) {
-        DatasetSearchResponse dsr = getHttp(DatasetSearchResponse.class,
-                "/api/3/action/package_search", "q", text, "rows", limit,
-                "start", offset);
+        return searchDatasets(CkanQuery.filter().byText(text), limit, offset);
+    }
+
+    /**
+     *
+     * @param fqPrefix either "" or " AND "
+     * @param list list of names of ckan objects
+
+     */
+    private static String appendNamesList(String fqPrefix, String key, List<String> list, StringBuilder fq) {
+        if (list.size() > 0) {
+            fq.append(fqPrefix)
+                    .append("(");
+            String prefix = "";
+            for (String n : list) {
+                fq.append(prefix).append(key).append(":");
+                fq.append( '"' + n + '"' ) ;
+                prefix = " AND ";
+            }
+            fq.append(")");
+            return " AND ";
+        } else {
+            return "";
+        }
+
+    }
+
+    private static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException ex) {
+            throw new JackanException("Unsupported encoding", ex);
+        }
+    }
+
+    /**
+     * Search datasets containg param text in the metadata
+     *
+     * @param query The query object
+     * @param limit maximum results to return
+     * @param offset search begins from offset
+     * @throws JackanException on error
+     */
+    public synchronized SearchResults<CkanDataset> searchDatasets(
+            CkanQuery query,
+            int limit,
+            int offset
+    ) {               
+
+        StringBuilder params = new StringBuilder();
+
+        params.append("rows=").append(limit)
+                .append("&start=").append(offset);
+
+        if (query.getText().length() > 0) {
+            params.append("&q=");
+            params.append(urlEncode(query.getText()));
+        }
+
+        StringBuilder fq = new StringBuilder();
+        String fqPrefix = "";
+
+        fqPrefix = appendNamesList(fqPrefix, "groups", query.getGroupNames(), fq);
+        fqPrefix = appendNamesList(fqPrefix, "organization", query.getOrganizationNames(), fq);
+        fqPrefix = appendNamesList(fqPrefix, "tags", query.getTagNames(), fq);
+        fqPrefix = appendNamesList(fqPrefix, "license_id", query.getLicenseIds(), fq);
+
+        if (fq.length() > 0) {
+            params.append("&fq=")
+                    .append(urlEncode(fq.insert(0, "(").append(")").toString()));                    
+        }
+
+        DatasetSearchResponse dsr;
+        dsr = getHttp(DatasetSearchResponse.class,
+                "/api/3/action/package_search?" + params.toString());
+
         return dsr.result;
     }
+
 }
 
 class CkanError {

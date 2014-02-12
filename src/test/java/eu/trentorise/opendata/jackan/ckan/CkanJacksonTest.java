@@ -19,10 +19,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.After;
@@ -35,13 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * White box testing
  * @author David Leoni
  */
 public class CkanJacksonTest {
-    static String DATI_TRENTINO = "http://dati.trentino.it";
     static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
-    static String DATA_GOV_UK = "http://data.gov.uk";
     
     public CkanJacksonTest() {
     }
@@ -68,11 +63,18 @@ public class CkanJacksonTest {
     */
     @Test
     public void testGetDatasetList() throws IOException{
-        DatasetListResponse dlr = CkanClient.getObjectMapper().readValue("{\"help\":\"bla bla\", \"success\":true, \"result\":[\"a\",\"b\"]}", DatasetListResponse.class);
+        DatasetListResponse dlr = CkanClient.getObjectMapperClone().readValue("{\"help\":\"bla bla\", \"success\":true, \"result\":[\"a\",\"b\"]}", DatasetListResponse.class);
         assertTrue(dlr.result.size() == 2);
         assertEquals( "a",dlr.result.get(0));
         assertEquals( "b",dlr.result.get(1));
     }
+    
+    @Test
+    public void testReadError() throws IOException{                
+        String json = "{\"message\": \"a\",\"__type\":\"b\"}";        
+        CkanError er = CkanError.read(json);
+        assertEquals("b", er.getType());
+    }      
     
     /**
      * Tests the ObjectMapper underscore conversion
@@ -80,7 +82,7 @@ public class CkanJacksonTest {
      */
     @Test
     public void testRead() throws IOException{
-        ObjectMapper om = CkanClient.getObjectMapper();
+        ObjectMapper om = CkanClient.getObjectMapperClone();
         String email = "a@b.org";
         String json = "{\"author_email\":\""+email+"\"}";        
         CkanDataset cd = om.readValue(json, CkanDataset.class);
@@ -93,7 +95,7 @@ public class CkanJacksonTest {
      */
     @Test
     public void testReadNullString() throws IOException{
-        ObjectMapper om = CkanClient.getObjectMapper();        
+        ObjectMapper om = CkanClient.getObjectMapperClone();        
         String json = "{\"size\":null}";        
         CkanResource r = om.readValue(json, CkanResource.class);
         
@@ -106,7 +108,7 @@ public class CkanJacksonTest {
      */
     @Test
     public void testReadEmptyString() throws IOException{
-        ObjectMapper om = CkanClient.getObjectMapper();        
+        ObjectMapper om = CkanClient.getObjectMapperClone();        
         String json = "{\"size\":\"\"}";        
         CkanResource r = om.readValue(json, CkanResource.class);
         
@@ -123,7 +125,7 @@ public class CkanJacksonTest {
         String email = "a@b.org";        
         CkanDataset cd = new CkanDataset();
         cd.setAuthorEmail(email);
-        String json = CkanClient.getObjectMapper().writeValueAsString(cd);
+        String json = CkanClient.getObjectMapperClone().writeValueAsString(cd);
         assertEquals(email, new ObjectMapper().readTree(json).get("author_email").asText());        
     } 
         
@@ -131,7 +133,7 @@ public class CkanJacksonTest {
     @Test
     public void testReadGroup() throws IOException{                
         String json = "{\"is_organization\":true}";        
-        CkanGroup g = CkanClient.getObjectMapper().readValue(json, CkanGroup.class);
+        CkanGroup g = CkanClient.getObjectMapperClone().readValue(json, CkanGroup.class);
         assertTrue(g.isOrganization());
     }     
 
@@ -140,16 +142,11 @@ public class CkanJacksonTest {
         
         CkanGroup cg = new CkanGroup();
         cg.setOrganization(true);
-        String json = CkanClient.getObjectMapper().writeValueAsString(cg);
+        String json = CkanClient.getObjectMapperClone().writeValueAsString(cg);
         assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());    
     }     
 
-    @Test
-    public void testReadError() throws IOException{                
-        String json = "{\"message\": \"a\",\"__type\":\"b\"}";        
-        CkanError er = CkanError.read(json);
-        assertEquals("b", er.getType());
-    }  
+
 
     /**
      * Tests the 'others' field that collects fields sometimes errouneously present in jsons from ckan
@@ -158,7 +155,7 @@ public class CkanJacksonTest {
     @Test
     public void testOthers() throws IOException{                
         String json = "{\"name\":\"n\",\"z\":1}";
-        CkanDataset cd = CkanClient.getObjectMapper().readValue(json, CkanDataset.class);
+        CkanDataset cd = CkanClient.getObjectMapperClone().readValue(json, CkanDataset.class);
         assertEquals( "n", cd.getName());    
         assertEquals(1, cd.getOthers().get("z"));        
     }    
@@ -178,7 +175,7 @@ public class CkanJacksonTest {
     
     @Test
     public void testJoda_1() throws IOException{
-        ObjectMapper om = CkanClient.getObjectMapper();
+        ObjectMapper om = CkanClient.getObjectMapperClone();
         JodaA ja = new JodaA();
         
         ja.setDt(new DateTime(123, DateTimeZone.UTC));
@@ -196,24 +193,7 @@ public class CkanJacksonTest {
     
 
     
-  /*  @Test
-    public void testDataGovUkDatasetList() throws CKANException {
-        
-        Connection c = new Connection(DATA_GOV_UK);
-        Client cl = new Client(c, null);
-        List<String> dsl = cl.getDatasetList().result;
-        assertTrue(dsl.size() > 0);          
-        
-    } */    
-/*    
-    @Test
-    public void testGetDataset() throws CKANException {
-        Connection c = new Connection(DATI_TRENTINO);
-        CkanClient cl = new CkanClient(c, null);
-        CkanDataset dataset = cl.getCkanDataset("anagrafica-sensori-ufficio-dighe");
-        logger.debug("dataset = " + dataset);
-    }
-    */
+
 }
 
 

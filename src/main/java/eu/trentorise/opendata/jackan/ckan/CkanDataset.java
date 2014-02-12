@@ -44,7 +44,7 @@ public class CkanDataset {
     private List<CkanGroup> groups;    
     private String id;
     private boolean isOpen;
-    private String license;
+    private String licenseId;
     private String licenseTitle;
     private String licenseUrl;
     private String maintainer;
@@ -167,12 +167,12 @@ public class CkanDataset {
         this.isOpen = isOpen;
     }
 
-    public String getLicense() {
-        return license;
+    public String getLicenseId() {
+        return licenseId;
     }
 
-    public void setLicense(String license) {
-        this.license = license;
+    public void setLicenseId(String licenseId) {
+        this.licenseId = licenseId;
     }
 
     public String getLicenseTitle() {

@@ -26,24 +26,17 @@ import org.joda.time.DateTimeZone;
 
 
 /**
- *
+ * A Ckan group can also be an organization. To tell the difference, use isOrganization().
  * @author David Leoni
  */
 public class CkanGroup {
-    /**
-     * can be "approved" or what? Bah 
-     */
+
     private String approvalStatus;
     private DateTime created;
     private String description;
-    /**
-     * i.e. Gestione del Territorio
-     */
     private String displayName;
     private List<CkanPair> extras;
-    /**
-     * Have no idea what this could mean inside a group!
-     */
+
     private List<CkanGroup> groups;
     
     private String id;
@@ -54,9 +47,6 @@ public class CkanGroup {
     
     private boolean organization;
     
-    /**
-     * name in the url. i.e. gestione-del-territorio
-     */
     private String name;
     
     private int numFollowers;
@@ -70,18 +60,15 @@ public class CkanGroup {
     
     private CkanState state;
     
-    /**
-     * i.e. "Gestione del territorio"
-     */
     private String title;
     
-    /**
-     * Don't know possible ckan types
-     */
     private String type;
     
     private List<CkanUser> users;
 
+    /**
+     * can be "approved" or what? Bah 
+     */    
     public String getApprovalStatus() {
         return approvalStatus;
     }
@@ -109,6 +96,9 @@ public class CkanGroup {
         this.description = description;
     }
 
+    /**
+     * i.e. Gestione del Territorio
+     */    
     public String getDisplayName() {
         return displayName;
     }
@@ -125,6 +115,9 @@ public class CkanGroup {
         this.extras = extras;
     }
 
+    /**
+     * Have no idea what this could mean inside a group!
+     */    
     public List<CkanGroup> getGroups() {
         return groups;
     }
@@ -157,6 +150,9 @@ public class CkanGroup {
         this.imageUrl = imageUrl;
     }
 
+    /**
+     * A ckan group can also be an organization.
+     */
     @JsonProperty("is_organization")
     public boolean isOrganization() {
         return organization;
@@ -166,6 +162,9 @@ public class CkanGroup {
         this.organization = organization;
     }
 
+    /**
+     * name in the url. i.e. gestione-del-territorio
+     */    
     public String getName() {
         return name;
     }
@@ -207,6 +206,9 @@ public class CkanGroup {
         this.state = state;
     }
 
+    /**
+     * i.e. "Gestione del territorio"
+     */    
     public String getTitle() {
         return title;
     }
@@ -219,6 +221,9 @@ public class CkanGroup {
         return type;
     }
 
+    /**
+     * Don't know possible ckan types
+     */    
     public void setType(String type) {
         this.type = type;
     }
