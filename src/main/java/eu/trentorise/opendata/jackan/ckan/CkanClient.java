@@ -33,9 +33,6 @@ import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import org.codehaus.jackson.map.SerializationConfig;
 
@@ -55,7 +52,7 @@ public class CkanClient {
     /**
      * @return a clone of the json object mapper used internally.
      */
-    static public ObjectMapper getObjectMapperClone() {
+    public static ObjectMapper getObjectMapperClone() {
         ObjectMapper om = getObjectMapper();
         return new ObjectMapper()
                 .setSerializationConfig(om.getSerializationConfig())

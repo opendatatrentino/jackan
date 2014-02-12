@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author David Leoni
  */
-public class CkanQuery {
+public final class CkanQuery {
 
     private String text;
     private List<String> groupNames;
