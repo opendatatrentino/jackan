@@ -5,10 +5,44 @@
 .com.apple.timemachine.supported
 .import-temp/
 
-nbproject/private/
-nbbuild/
-nbdist/
-dist/
 target/
-/src/test/resources/log4j.properties
-/nbactions.xml
+
+##### NETBEANS
+
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+##### ECLIPSE 
+
+
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+/src/main/resources/rebel.xml
+# External tool builders
+.externalToolBuilders/
+ 
+# Locally stored "Eclipse launch configurations"
+*.launch
+ 
+# CDT-specific
+.cproject
+ 
+# PDT-specific
+.buildpath
