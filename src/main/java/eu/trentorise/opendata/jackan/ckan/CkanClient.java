@@ -17,11 +17,23 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.fluent.Content;
+import org.apache.http.client.fluent.Response;
+
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.protocol.HTTP;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -31,15 +43,22 @@ import org.slf4j.LoggerFactory;
 
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
-import java.io.UnsupportedEncodingException;
+
 import java.text.SimpleDateFormat;
 import javax.annotation.Nullable;
+import javax.swing.text.AbstractDocument;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.codehaus.jackson.map.SerializationConfig;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Class to access a ckan instance. Threadsafe.
  *
- * @author David Leoni
+ * @author David Leoni, Ivan Tankoyeu
  *
  */
 public class CkanClient {
@@ -48,6 +67,7 @@ public class CkanClient {
     private final String url;
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(CkanClient.class);
+
 
     /**
      * @return a clone of the json object mapper used internally.
@@ -85,24 +105,25 @@ public class CkanClient {
     }
 
     /**
-     *
      * @param url i.e. http://data.gov.uk
      */
     public CkanClient(String url) {
         this.url = url;
     }
 
+
     /**
      * Method for http GET
+     *
      * @param <T>
      * @param responseType a descendant of CkanResponse
-     * @param path something like /api/3/package_show
-     * @param params list of key, value parameters. They must be not be url
-     * encoded. i.e. "id","laghi-monitorati-trento"
+     * @param path         something like /api/3/package_show
+     * @param params       list of key, value parameters. They must be not be url
+     *                     encoded. i.e. "id","laghi-monitorati-trento"
      * @throws JackanException on error
      */
     <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
-            Object... params) {
+                                       Object... params) {
         try {
 
             StringBuilder sb = new StringBuilder().append(url).append(path);
@@ -111,7 +132,7 @@ public class CkanClient {
                         .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
                         .append("=")
                         .append(URLEncoder.encode(params[i + 1].toString(),
-                                        "UTF-8"));
+                                "UTF-8"));
             }
             String fullUrl = sb.toString();
             logger.debug("getting " + fullUrl);
@@ -122,8 +143,9 @@ public class CkanClient {
                 // monkey patching error type
                 throw new JackanException(
                         "Reading from the catalog was not successful. Reason: "
-                        + CkanError.read(getObjectMapper()
-                                .readTree(json).get("error").asText()));
+                                + CkanError.read(getObjectMapper()
+                                .readTree(json).get("error").asText())
+                );
             }
             return dr;
         } catch (Exception ex) {
@@ -131,8 +153,40 @@ public class CkanClient {
         }
     }
 
+    <T extends CkanResponse> T postHttp(Class<T> responseType, String path, String input, ContentType contentType,
+                                        Object... params) {
+        try {
+
+            StringBuilder sb = new StringBuilder().append(url).append(path);
+            for (int i = 0; i < params.length; i += 2) {
+                sb.append(i == 0 ? "?" : "&")
+                        .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
+                        .append("=")
+                        .append(URLEncoder.encode(params[i + 1].toString(),
+                                "UTF-8"));
+            }
+            String fullUrl = sb.toString();
+            System.out.println("url: " + fullUrl);
+            logger.debug("getting " + fullUrl);
+            String json = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", "9630625b-43e1-45f0-baa2-35bc7e685f5a").execute().returnContent ().asString();
+            logger.info("getting " + json);
+            T dr = getObjectMapper().readValue(json, responseType);
+            if (!dr.success) {
+                // monkey patching error type
+                throw new JackanException(
+                        "Reading from the catalog was not successful. Reason: "
+                                + CkanError.read(getObjectMapper()
+                                .readTree(json).get("error").asText())
+                );
+            }
+            return dr;
+        } catch (Exception ex) {
+            throw new JackanException("Error while uploading the semantified dataset.", ex);
+        }
+    }
+
+
     /**
-     *
      * @return list of strings like i.e. limestone-pavement-orders
      * @throws JackanException on error
      */
@@ -141,12 +195,11 @@ public class CkanClient {
     }
 
     /**
-     *
      * @return list of data names like i.e. limestone-pavement-orders
      * @throws JackanException on error
      */
     public synchronized List<String> getDatasetList(Integer limit,
-            Integer offset) {
+                                                    Integer offset) {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list",
                 "limit", limit, "offset", offset).result;
     }
@@ -154,7 +207,7 @@ public class CkanClient {
     /**
      * id should be the alphanumerical id like
      * 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d. Using the mnemonic like
-     * laghi-monitorati-trento is discouraged. 
+     * laghi-monitorati-trento is discouraged.
      *
      * @throws JackanException on error
      */
@@ -170,18 +223,17 @@ public class CkanClient {
         return getHttp(UserListResponse.class, "/api/3/action/user_list").result;
     }
 
-    /**     
-     *
-     * @throws JackanException on error
+    /**
      * @param id i.e. 'admin'
+     * @throws JackanException on error
      */
     public synchronized CkanUser getUser(String id) {
         return getHttp(UserResponse.class, "/api/3/action/user_show", "id", id).result;
     }
 
-    /**     
-     * @param id The alphanumerical id of the resource, such as d0892ada-b8b9-43b6-81b9-47a86be126db. It is also possible to pass the name, such 
-     * @throws JackanException on error     
+    /**
+     * @param id The alphanumerical id of the resource, such as d0892ada-b8b9-43b6-81b9-47a86be126db. It is also possible to pass the name, such
+     * @throws JackanException on error
      */
     public synchronized CkanResource getResource(String id) {
         return getHttp(ResourceResponse.class, "/api/3/action/resource_show",
@@ -190,7 +242,6 @@ public class CkanClient {
 
     /**
      * @throws JackanException on error
-     *
      */
     public synchronized List<CkanGroup> getGroupList() {
         return getHttp(GroupListResponse.class, "/api/3/action/group_list",
@@ -205,9 +256,8 @@ public class CkanClient {
     }
 
     /**
-     * @throws JackanException on error
-     *
      * @param id
+     * @throws JackanException on error
      */
     public synchronized CkanGroup getGroup(String id) {
         return getHttp(GroupResponse.class, "/api/3/action/group_show", "id",
@@ -215,9 +265,7 @@ public class CkanClient {
     }
 
     /**
-     *
      * @throws JackanException on error
-     *
      */
     public synchronized List<CkanGroup> getOrganizationList() {
         return getHttp(GroupListResponse.class, "/api/3/action/organization_list",
@@ -234,9 +282,8 @@ public class CkanClient {
     /**
      * In Ckan an organization is actually a group
      *
-     * @throws JackanException on error
-     *
      * @param id
+     * @throws JackanException on error
      */
     public synchronized CkanGroup getOrganization(String id) {
         return getHttp(GroupResponse.class, "/api/3/action/organization_show", "id",
@@ -260,7 +307,6 @@ public class CkanClient {
      * JackanException on error.
      *
      * @param query
-     *
      * @throws JackanException on error
      */
     public synchronized List<String> getTagNamesList(String query) {
@@ -278,22 +324,19 @@ public class CkanClient {
     /**
      * Search datasets containg param text in the metadata
      *
-     *
-     * @param text The query string
-     * @param limit maximum results to return
+     * @param text   The query string
+     * @param limit  maximum results to return
      * @param offset search begins from offset
      * @throws JackanException on error
      */
     public synchronized SearchResults<CkanDataset> searchDatasets(String text,
-            int limit, int offset) {
+                                                                  int limit, int offset) {
         return searchDatasets(CkanQuery.filter().byText(text), limit, offset);
     }
 
     /**
-     *
      * @param fqPrefix either "" or " AND "
-     * @param list list of names of ckan objects
-
+     * @param list     list of names of ckan objects
      */
     private static String appendNamesList(String fqPrefix, String key, List<String> list, StringBuilder fq) {
         if (list.size() > 0) {
@@ -302,7 +345,7 @@ public class CkanClient {
             String prefix = "";
             for (String n : list) {
                 fq.append(prefix).append(key).append(":");
-                fq.append( '"' + n + '"' ) ;
+                fq.append('"' + n + '"');
                 prefix = " AND ";
             }
             fq.append(")");
@@ -324,8 +367,8 @@ public class CkanClient {
     /**
      * Search datasets containg param text in the metadata
      *
-     * @param query The query object
-     * @param limit maximum results to return
+     * @param query  The query object
+     * @param limit  maximum results to return
      * @param offset search begins from offset
      * @throws JackanException on error
      */
@@ -333,7 +376,7 @@ public class CkanClient {
             CkanQuery query,
             int limit,
             int offset
-    ) {               
+    ) {
 
         StringBuilder params = new StringBuilder();
 
@@ -355,7 +398,7 @@ public class CkanClient {
 
         if (fq.length() > 0) {
             params.append("&fq=")
-                    .append(urlEncode(fq.insert(0, "(").append(")").toString()));                    
+                    .append(urlEncode(fq.insert(0, "(").append(")").toString()));
         }
 
         DatasetSearchResponse dsr;
@@ -366,117 +409,117 @@ public class CkanClient {
     }
 
 }
+    class CkanError {
 
-class CkanError {
+        private String message;
+        /**
+         * actually the original is __type
+         */
+        private String type;
 
-    private String message;
-    /**
-     * actually the original is __type
-     */
-    private String type;
+        @Override
+        public String toString() {
+            return "Ckan error of type: " + getType() + "\t message:" + getMessage();
+        }
 
-    @Override
-    public String toString() {
-        return "Ckan error of type: " + getType() + "\t message:" + getMessage();
-    }
+        public String getMessage() {
+            return message;
+        }
 
-    public String getMessage() {
-        return message;
-    }
+        public void setMessage(String message) {
+            this.message = message;
+        }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+        @JsonProperty("__type")
+        public String getType() {
+            return type;
+        }
 
-    @JsonProperty("__type")
-    public String getType() {
-        return type;
-    }
+        public void setType(String type) {
+            this.type = type;
+        }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * To overcome the __type problem. Tried many combinations but Jackson is
-     * not collaborating here, even if in Group.isOrganization case setting the
-     * JsonProperty("is_organization") did work.
-     *
-     */
-    static CkanError read(String json) {
-        try {
-            CkanError ce = new CkanError();
-            JsonNode jn = CkanClient.getObjectMapper().readTree(json);
-            ce.setMessage(jn.get("message").asText());
-            ce.setType(jn.get("__type").asText());
-            return ce;
-        } catch (IOException ex) {
-            throw new JackanException("Couldn parse CkanError.", ex);
+        /**
+         * To overcome the __type problem. Tried many combinations but Jackson is
+         * not collaborating here, even if in Group.isOrganization case setting the
+         * JsonProperty("is_organization") did work.
+         */
+        static CkanError read(String json) {
+            try {
+                CkanError ce = new CkanError();
+                JsonNode jn = CkanClient.getObjectMapper().readTree(json);
+                ce.setMessage(jn.get("message").asText());
+                ce.setType(jn.get("__type").asText());
+                return ce;
+            } catch (IOException ex) {
+                throw new JackanException("Couldn parse CkanError.", ex);
+            }
         }
     }
-}
 
-/**
- * @author David Leoni
- */
-class CkanResponse {
+    /**
+     * @author David Leoni
+     */
+    class CkanResponse {
 
-    public String help;
-    public boolean success;
-    public CkanError error;
-}
+        public String help;
+        public boolean success;
+        public CkanError error;
 
-class DatasetResponse extends CkanResponse {
+    }
 
-    public CkanDataset result;
-}
+    class DatasetResponse extends CkanResponse {
 
-class ResourceResponse extends CkanResponse {
+        public CkanDataset result;
+    }
 
-    public CkanResource result;
-}
+    class ResourceResponse extends CkanResponse {
 
-class DatasetListResponse extends CkanResponse {
+        public CkanResource result;
+    }
 
-    public List<String> result;
-}
+    class DatasetListResponse extends CkanResponse {
 
-class UserListResponse extends CkanResponse {
+        public List<String> result;
+    }
 
-    public List<CkanUser> result;
-}
+    class UserListResponse extends CkanResponse {
 
-class UserResponse extends CkanResponse {
+        public List<CkanUser> result;
+    }
 
-    public CkanUser result;
-}
+    class UserResponse extends CkanResponse {
 
-class TagListResponse extends CkanResponse {
+        public CkanUser result;
+    }
 
-    public List<CkanTag> result;
-}
+    class TagListResponse extends CkanResponse {
 
-class GroupResponse extends CkanResponse {
+        public List<CkanTag> result;
+    }
 
-    public CkanGroup result;
-}
+    class GroupResponse extends CkanResponse {
 
-class GroupListResponse extends CkanResponse {
+        public CkanGroup result;
+    }
 
-    public List<CkanGroup> result;
-}
+    class GroupListResponse extends CkanResponse {
 
-class GroupNamesResponse extends CkanResponse {
+        public List<CkanGroup> result;
+    }
 
-    public List<String> result;
-}
+    class GroupNamesResponse extends CkanResponse {
 
-class TagNamesResponse extends CkanResponse {
+        public List<String> result;
+    }
 
-    public List<String> result;
-}
+    class TagNamesResponse extends CkanResponse {
 
-class DatasetSearchResponse extends CkanResponse {
+        public List<String> result;
+    }
 
-    public SearchResults<CkanDataset> result;
-}
+    class DatasetSearchResponse extends CkanResponse {
+
+        public SearchResults<CkanDataset> result;
+    }
+

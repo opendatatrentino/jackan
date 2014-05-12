@@ -18,7 +18,14 @@
 
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.entity.ContentType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -69,7 +76,7 @@ public class CkanJacksonTest {
         assertEquals( "b",dlr.result.get(1));
     }
     
-    @Test
+   @Test
     public void testReadError() throws IOException{                
         String json = "{\"message\": \"a\",\"__type\":\"b\"}";        
         CkanError er = CkanError.read(json);
@@ -130,7 +137,7 @@ public class CkanJacksonTest {
     } 
         
     
-    @Test
+   @Test
     public void testReadGroup() throws IOException{                
         String json = "{\"is_organization\":true}";        
         CkanGroup g = CkanClient.getObjectMapperClone().readValue(json, CkanGroup.class);
@@ -190,10 +197,36 @@ public class CkanJacksonTest {
         //logger.debug("ja2 = " + ja2.getDt().toString());
         assertTrue(ja.getDt().equals(ja2.getDt()));        
     }
-    
 
-    
+   // @Test
+    public void testUpload(){
 
+        CkanClient cClient =new CkanClient("http://10.206.38.164:6004");
+
+        CkanPair ckanPair = new CkanPair();
+        ckanPair.setKey("test key");
+        ckanPair.setValue("test value");
+        List<CkanPair> extras = new ArrayList<CkanPair>();
+        extras.add(ckanPair);
+
+        URI uri = null;
+        try {
+            uri = new URI("http","www.google.com",null,null);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        CkanResource ckanResource = new CkanResource("name3",uri.toASCIIString(), extras);
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json=null;
+        try {
+            json =objectMapper.writeValueAsString(ckanResource);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+         cClient.postHttp(DatasetListResponse.class,"/api/3/action/package_create", json ,ContentType.APPLICATION_JSON);
+    }
 }
 
 
