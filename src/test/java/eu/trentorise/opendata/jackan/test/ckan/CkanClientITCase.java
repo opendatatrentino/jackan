@@ -84,19 +84,19 @@ public class CkanClientITCase {
         assertEquals(LAGHI_MONITORATI_TRENTO_NAME, dataset.getName());
     }
 
-    @Test
-    public void testResourceInsideDataset() {
-        CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
-        List<CkanResource> resources = dataset.getResources();
-        for (CkanResource r : resources) {
-            if (r.getFormat().equals("XML")) {
-                assertEquals(LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME, resources.get(0).getName());
-                return;
-            }
-        }
-        fail("Couldn't find xml resource in " + LAGHI_MONITORATI_TRENTO_NAME + " dataset");
-
-    }
+    //@Test
+//    public void testResourceInsideDataset() {
+//        CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
+//        List<CkanResource> resources = dataset.getResources();
+//        for (CkanResource r : resources) {
+//            if (r.getFormat().equals("XML")) {
+//                assertEquals(LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME, resources.get(0).getName());
+//                return;
+//            }
+//        }
+//        fail("Couldn't find xml resource in " + LAGHI_MONITORATI_TRENTO_NAME + " dataset");
+//
+//    }
 
     @Test
     public void testUserList() {

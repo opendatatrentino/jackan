@@ -168,8 +168,15 @@ public class CkanClient {
             String fullUrl = sb.toString();
             System.out.println("url: " + fullUrl);
             logger.debug("getting " + fullUrl);
-            String json = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", "9630625b-43e1-45f0-baa2-35bc7e685f5a").execute().returnContent ().asString();
+            Response  response = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", "9630625b-43e1-45f0-baa2-35bc7e685f5a").execute();
+//            HttpResponse entity =response.returnResponse();
+//            System.out.println(entity.toString());
+
+            Content out = response.returnContent();
+            String json = out.asString();
+            System.out.println(out.asString());
             logger.info("getting " + json);
+
             T dr = getObjectMapper().readValue(json, responseType);
             if (!dr.success) {
                 // monkey patching error type
@@ -183,8 +190,45 @@ public class CkanClient {
         } catch (Exception ex) {
             throw new JackanException("Error while uploading the semantified dataset.", ex);
         }
+
     }
 
+
+    /**The method aims to create ckan resource on the server
+     *
+     * @param ckanResourceMinimized ckan resource object with theminimal set of parameters
+     */
+    public void createCkanResource(CkanResourceMinimized ckanResourceMinimized){
+
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json=null;
+        try {
+            json =objectMapper.writeValueAsString(ckanResourceMinimized);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ResourceResponse resourceResponse= postHttp(ResourceResponse.class,"/api/3/action/resource_create", json ,ContentType.APPLICATION_JSON);
+
+
+    }
+
+    /** The method aims to create CkanDataset on the server
+     *
+     * @param ckanDataset data set with a given parameters
+     * @return id of a newly created dataset
+     */
+    public String createCkanDataSet(CkanDatasetMinimized ckanDataset){
+
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json=null;
+        try {
+            json =objectMapper.writeValueAsString(ckanDataset);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DatasetResponse datasetresponse= postHttp(DatasetResponse.class,"/api/3/action/package_create", json ,ContentType.APPLICATION_JSON);
+        return  datasetresponse.result.getId();
+    }
 
     /**
      * @return list of strings like i.e. limestone-pavement-orders
@@ -409,117 +453,118 @@ public class CkanClient {
     }
 
 }
-    class CkanError {
+class CkanError {
 
-        private String message;
-        /**
-         * actually the original is __type
-         */
-        private String type;
+    private String message;
+    /**
+     * actually the original is __type
+     */
+    private String type;
 
-        @Override
-        public String toString() {
-            return "Ckan error of type: " + getType() + "\t message:" + getMessage();
-        }
+    @Override
+    public String toString() {
+        return "Ckan error of type: " + getType() + "\t message:" + getMessage();
+    }
 
-        public String getMessage() {
-            return message;
-        }
+    public String getMessage() {
+        return message;
+    }
 
-        public void setMessage(String message) {
-            this.message = message;
-        }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-        @JsonProperty("__type")
-        public String getType() {
-            return type;
-        }
+    @JsonProperty("__type")
+    public String getType() {
+        return type;
+    }
 
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        /**
-         * To overcome the __type problem. Tried many combinations but Jackson is
-         * not collaborating here, even if in Group.isOrganization case setting the
-         * JsonProperty("is_organization") did work.
-         */
-        static CkanError read(String json) {
-            try {
-                CkanError ce = new CkanError();
-                JsonNode jn = CkanClient.getObjectMapper().readTree(json);
-                ce.setMessage(jn.get("message").asText());
-                ce.setType(jn.get("__type").asText());
-                return ce;
-            } catch (IOException ex) {
-                throw new JackanException("Couldn parse CkanError.", ex);
-            }
-        }
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
-     * @author David Leoni
+     * To overcome the __type problem. Tried many combinations but Jackson is
+     * not collaborating here, even if in Group.isOrganization case setting the
+     * JsonProperty("is_organization") did work.
      */
-    class CkanResponse {
-
-        public String help;
-        public boolean success;
-        public CkanError error;
-
+    static CkanError read(String json) {
+        try {
+            CkanError ce = new CkanError();
+            JsonNode jn = CkanClient.getObjectMapper().readTree(json);
+            ce.setMessage(jn.get("message").asText());
+            ce.setType(jn.get("__type").asText());
+            return ce;
+        } catch (IOException ex) {
+            throw new JackanException("Couldn parse CkanError.", ex);
+        }
     }
 
-    class DatasetResponse extends CkanResponse {
+}
 
-        public CkanDataset result;
-    }
+/**
+ * @author David Leoni
+ */
+class CkanResponse {
 
-    class ResourceResponse extends CkanResponse {
+    public String help;
+    public boolean success;
+    public CkanError error;
 
-        public CkanResource result;
-    }
+}
 
-    class DatasetListResponse extends CkanResponse {
+class DatasetResponse extends CkanResponse {
 
-        public List<String> result;
-    }
+    public CkanDataset result;
+}
 
-    class UserListResponse extends CkanResponse {
+class ResourceResponse extends CkanResponse {
 
-        public List<CkanUser> result;
-    }
+    public CkanResource result;
+}
 
-    class UserResponse extends CkanResponse {
+class DatasetListResponse extends CkanResponse {
 
-        public CkanUser result;
-    }
+    public List<String> result;
+}
 
-    class TagListResponse extends CkanResponse {
+class UserListResponse extends CkanResponse {
 
-        public List<CkanTag> result;
-    }
+    public List<CkanUser> result;
+}
 
-    class GroupResponse extends CkanResponse {
+class UserResponse extends CkanResponse {
 
-        public CkanGroup result;
-    }
+    public CkanUser result;
+}
 
-    class GroupListResponse extends CkanResponse {
+class TagListResponse extends CkanResponse {
 
-        public List<CkanGroup> result;
-    }
+    public List<CkanTag> result;
+}
 
-    class GroupNamesResponse extends CkanResponse {
+class GroupResponse extends CkanResponse {
 
-        public List<String> result;
-    }
+    public CkanGroup result;
+}
 
-    class TagNamesResponse extends CkanResponse {
+class GroupListResponse extends CkanResponse {
 
-        public List<String> result;
-    }
+    public List<CkanGroup> result;
+}
 
-    class DatasetSearchResponse extends CkanResponse {
+class GroupNamesResponse extends CkanResponse {
 
-        public SearchResults<CkanDataset> result;
-    }
+    public List<String> result;
+}
+
+class TagNamesResponse extends CkanResponse {
+
+    public List<String> result;
+}
+
+class DatasetSearchResponse extends CkanResponse {
+
+    public SearchResults<CkanDataset> result;
+}
 
