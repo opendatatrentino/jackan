@@ -41,7 +41,8 @@ public class CkanDataset {
     @Nullable private String creatorUserId;
     private String downloadUrl;
     private List<CkanPair> extras;
-    private List<CkanGroup> groups;    
+   //
+    private List<CkanGroup> groups;
     private String id;
     private boolean isOpen;
     private String licenseId;
@@ -320,8 +321,6 @@ public class CkanDataset {
     public void setUrl(String url) {
         this.url = url;
     }
-
-
     @Nullable public String getVersion() {
         return version;
     }

@@ -36,7 +36,7 @@ import org.joda.time.DateTimeZone;
 public class CkanResource {
     /**
      * Should be a Date
-     */    
+     */
     @Nullable private String cacheLastUpdated;
     /**
      * God only knows what this is
@@ -152,13 +152,22 @@ public class CkanResource {
      * found "active" as value. Maybe it is a CkanState
      */
     @Nullable private String webstoreUrl;
-    
+
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. They will end up here.
      */
-    private Map<String,Object> others = new HashMap<String,Object>();    
+    private Map<String,Object> others = new HashMap<String,Object>();
+    public CkanResource(){}
 
-    
+//   Custom constructor for dataset creation purpose
+    public CkanResource( String name, String url, List<CkanPair> extras) {
+       // this.description = description;
+        this.name = name;
+        this.url = url;
+        this.extras = extras;
+
+    }
+
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
     */ 
