@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * todo make this an integration test
+ * 
  *
  * @author David Leoni
  */
@@ -70,6 +70,9 @@ public class CkanClientITCase {
         assertTrue(dsl.size() > 0);
     }
 
+    /**
+     * Ckan docs don't tell offset starts with 0
+     */
     @Test
     public void testDatasetListWithLimit() {
 

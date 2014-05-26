@@ -132,7 +132,7 @@ public class CkanClient {
     }
 
     /**
-     *
+     * 
      * @return list of strings like i.e. limestone-pavement-orders
      * @throws JackanException on error
      */
@@ -142,6 +142,8 @@ public class CkanClient {
 
     /**
      *
+     * @param limit
+     * @param offset Starts with 0 included. getDatasetList(1,0) will return exactly one dataset, if catalog is not empty.
      * @return list of data names like i.e. limestone-pavement-orders
      * @throws JackanException on error
      */
