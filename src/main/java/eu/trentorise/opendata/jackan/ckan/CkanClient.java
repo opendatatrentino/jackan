@@ -21,19 +21,11 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Response;
 
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.protocol.HTTP;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -46,14 +38,8 @@ import eu.trentorise.opendata.jackan.SearchResults;
 
 import java.text.SimpleDateFormat;
 import javax.annotation.Nullable;
-import javax.swing.text.AbstractDocument;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.codehaus.jackson.map.SerializationConfig;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Class to access a ckan instance. Threadsafe.
@@ -62,12 +48,14 @@ import org.xml.sax.SAXException;
  *
  */
 public class CkanClient {
+
     @Nullable
     private static ObjectMapper objectMapper;
-    private final String url;
+    private final String catalogURL;
+    @Nullable
+    private final String ckanToken;
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(CkanClient.class);
-
 
     /**
      * @return a clone of the json object mapper used internally.
@@ -80,7 +68,8 @@ public class CkanClient {
     }
 
     /**
-     * Retrieves the Jackson object mapper. Internally, Object mapper is initialized at first call.
+     * Retrieves the Jackson object mapper. Internally, Object mapper is
+     * initialized at first call.
      */
     static ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
@@ -108,31 +97,39 @@ public class CkanClient {
      * @param url i.e. http://data.gov.uk
      */
     public CkanClient(String url) {
-        this.url = url;
+        this(url, null);
     }
 
+    /**
+     * @param url i.e. http://data.gov.uk
+     * URL token the private token string for ckan repository
+     */
+    public CkanClient(String URL, @Nullable String token) {
+        this.catalogURL = URL;
+        this.ckanToken = token;
+    }
 
     /**
      * Method for http GET
      *
      * @param <T>
      * @param responseType a descendant of CkanResponse
-     * @param path         something like /api/3/package_show
-     * @param params       list of key, value parameters. They must be not be url
-     *                     encoded. i.e. "id","laghi-monitorati-trento"
+     * @param path something like /api/3/package_show
+     * @param params list of key, value parameters. They must be not be url
+     * encoded. i.e. "id","laghi-monitorati-trento"
      * @throws JackanException on error
      */
     <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
-                                       Object... params) {
+            Object... params) {
         try {
 
-            StringBuilder sb = new StringBuilder().append(url).append(path);
+            StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
             for (int i = 0; i < params.length; i += 2) {
                 sb.append(i == 0 ? "?" : "&")
                         .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
                         .append("=")
                         .append(URLEncoder.encode(params[i + 1].toString(),
-                                "UTF-8"));
+                                        "UTF-8"));
             }
             String fullUrl = sb.toString();
             logger.debug("getting " + fullUrl);
@@ -142,8 +139,8 @@ public class CkanClient {
             if (!dr.success) {
                 // monkey patching error type
                 throw new JackanException(
-                        "Reading from the catalog was not successful. Reason: "
-                                + CkanError.read(getObjectMapper()
+                        "Reading from catalog " + catalogURL + " was not successful. Reason: "
+                        + CkanError.read(getObjectMapper()
                                 .readTree(json).get("error").asText())
                 );
             }
@@ -154,21 +151,21 @@ public class CkanClient {
     }
 
     <T extends CkanResponse> T postHttp(Class<T> responseType, String path, String input, ContentType contentType,
-                                        Object... params) {
+            Object... params) {
         try {
 
-            StringBuilder sb = new StringBuilder().append(url).append(path);
+            StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
             for (int i = 0; i < params.length; i += 2) {
                 sb.append(i == 0 ? "?" : "&")
                         .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
                         .append("=")
                         .append(URLEncoder.encode(params[i + 1].toString(),
-                                "UTF-8"));
+                                        "UTF-8"));
             }
             String fullUrl = sb.toString();
             System.out.println("url: " + fullUrl);
             logger.debug("getting " + fullUrl);
-            Response  response = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", "9630625b-43e1-45f0-baa2-35bc7e685f5a").execute();
+            Response response = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", ckanToken).execute();
 //            HttpResponse entity =response.returnResponse();
 //            System.out.println(entity.toString());
 
@@ -181,8 +178,8 @@ public class CkanClient {
             if (!dr.success) {
                 // monkey patching error type
                 throw new JackanException(
-                        "Reading from the catalog was not successful. Reason: "
-                                + CkanError.read(getObjectMapper()
+                        "posting to catalog " + catalogURL + " was not successful. Reason: "
+                        + CkanError.read(getObjectMapper()
                                 .readTree(json).get("error").asText())
                 );
             }
@@ -193,41 +190,62 @@ public class CkanClient {
 
     }
 
-
-    /**The method aims to create ckan resource on the server
-     *
-     * @param ckanResourceMinimized ckan resource object with theminimal set of parameters
-     */
-    public void createCkanResource(CkanResourceMinimized ckanResourceMinimized){
-
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
-        String json=null;
-        try {
-            json =objectMapper.writeValueAsString(ckanResourceMinimized);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ResourceResponse resourceResponse= postHttp(ResourceResponse.class,"/api/3/action/resource_create", json ,ContentType.APPLICATION_JSON);
-
-
+    public String getCatalogURL() {
+        return catalogURL;
+    }
+    
+    
+    public String getCkanToken() {
+        return ckanToken;
     }
 
-    /** The method aims to create CkanDataset on the server
+    /**
+     * The method aims to create ckan resource on the server
      *
-     * @param ckanDataset data set with a given parameters
-     * @return id of a newly created dataset
+     * @param resource ckan resource object with theminimal set of
+     * parameters
+     * @return the newly created resource
+     * @throws JackanException
      */
-    public String createCkanDataSet(CkanDatasetMinimized ckanDataset){
-
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
-        String json=null;
-        try {
-            json =objectMapper.writeValueAsString(ckanDataset);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public synchronized CkanResource createResource(CkanResourceMinimized resource) {
+        
+        if (ckanToken == null){
+            throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
-        DatasetResponse datasetresponse= postHttp(DatasetResponse.class,"/api/3/action/package_create", json ,ContentType.APPLICATION_JSON);
-        return  datasetresponse.result.getId();
+        
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(resource);
+        } catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+        }
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
+    }
+
+    /**
+     * The method aims to create CkanDataset on the server
+     *
+     * @param dataset data set with a given parameters
+     * @return the newly created dataset
+     * @throws JackanException
+     */
+    public synchronized CkanDataset createDataset(CkanDatasetMinimized dataset) {
+
+        if (ckanToken == null){
+            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
+        }
+        
+        
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(dataset);
+        } catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", e);
+        }
+        DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+        return datasetresponse.result;
     }
 
     /**
@@ -241,12 +259,13 @@ public class CkanClient {
     /**
      *
      * @param limit
-     * @param offset Starts with 0 included. getDatasetList(1,0) will return exactly one dataset, if catalog is not empty.
+     * @param offset Starts with 0 included. getDatasetList(1,0) will return
+     * exactly one dataset, if catalog is not empty.
      * @return list of data names like i.e. limestone-pavement-orders
      * @throws JackanException on error
      */
     public synchronized List<String> getDatasetList(Integer limit,
-                                                    Integer offset) {
+            Integer offset) {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list",
                 "limit", limit, "offset", offset).result;
     }
@@ -279,7 +298,9 @@ public class CkanClient {
     }
 
     /**
-     * @param id The alphanumerical id of the resource, such as d0892ada-b8b9-43b6-81b9-47a86be126db. It is also possible to pass the name, such
+     * @param id The alphanumerical id of the resource, such as
+     * d0892ada-b8b9-43b6-81b9-47a86be126db. It is also possible to pass the
+     * name, such
      * @throws JackanException on error
      */
     public synchronized CkanResource getResource(String id) {
@@ -371,19 +392,19 @@ public class CkanClient {
     /**
      * Search datasets containg param text in the metadata
      *
-     * @param text   The query string
-     * @param limit  maximum results to return
+     * @param text The query string
+     * @param limit maximum results to return
      * @param offset search begins from offset
      * @throws JackanException on error
      */
     public synchronized SearchResults<CkanDataset> searchDatasets(String text,
-                                                                  int limit, int offset) {
+            int limit, int offset) {
         return searchDatasets(CkanQuery.filter().byText(text), limit, offset);
     }
 
     /**
      * @param fqPrefix either "" or " AND "
-     * @param list     list of names of ckan objects
+     * @param list list of names of ckan objects
      */
     private static String appendNamesList(String fqPrefix, String key, List<String> list, StringBuilder fq) {
         if (list.size() > 0) {
@@ -414,8 +435,8 @@ public class CkanClient {
     /**
      * Search datasets containg param text in the metadata
      *
-     * @param query  The query object
-     * @param limit  maximum results to return
+     * @param query The query object
+     * @param limit maximum results to return
      * @param offset search begins from offset
      * @throws JackanException on error
      */
@@ -455,7 +476,11 @@ public class CkanClient {
         return dsr.result;
     }
 
+    
 }
+
+
+
 class CkanError {
 
     private String message;
@@ -570,4 +595,3 @@ class DatasetSearchResponse extends CkanResponse {
 
     public SearchResults<CkanDataset> result;
 }
-

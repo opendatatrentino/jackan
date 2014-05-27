@@ -21,12 +21,9 @@ package eu.trentorise.opendata.jackan.ckan;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.mail.iap.Response;
-import org.apache.http.entity.ContentType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -199,48 +196,7 @@ public class CkanJacksonTest {
         assertTrue(ja.getDt().equals(ja2.getDt()));        
     }
 
-    @Test
-    public  void testCreateDataSet(){
-
-        CkanClient cClient =new CkanClient("http://10.206.38.164:6004");
-
-        CkanPair ckanPair = new CkanPair();
-        ckanPair.setKey("test key");
-        ckanPair.setValue("test value");
-        List<CkanPair> extras = new ArrayList<CkanPair>();
-        extras.add(ckanPair);
-
-        URI uri = null;
-        try {
-            uri = new URI("http","www.google.com",null,null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized("firsttest2",uri.toASCIIString(), extras);
-
-        String dataSetID = cClient.createCkanDataSet(ckanDataset);
-
-        System.out.println(dataSetID);
-        assertNotNull(dataSetID);
-    }
-
-    @Test
-    public void testCreateResource(){
-        CkanClient cClient =new CkanClient("http://10.206.38.164:6004");
-
-        URI uri = null;
-        try {
-            uri = new URI("http","www.google.com",null,null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD","ivanresource",uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
-        cClient.createCkanResource(ckanResource);
-
-       // System.out.println(ckanResource.getName());
-    }
+    
 }
 
 

@@ -22,14 +22,21 @@ import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
+import eu.trentorise.opendata.jackan.ckan.CkanDatasetMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
+import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.ckan.CkanResourceMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanTag;
 import eu.trentorise.opendata.jackan.ckan.CkanUser;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -44,6 +51,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CkanClientITCase {
 
+    /** todo store it somewhere*/
+    private static final String TEST_CATALOG = "http://10.206.38.164:6004";
+    private static final String TEST_TOKEN = "9630625b-43e1-45f0-baa2-35bc7e685f5a";
     static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
     static String DATI_TRENTINO = "http://dati.trentino.it";
     static String DATA_GOV_UK = "http://data.gov.uk";
@@ -205,4 +215,47 @@ public class CkanClientITCase {
         }
 
     }
+    
+    
+    @Test
+    public  void testCreateDataSet() throws URISyntaxException{
+
+        CkanClient cClient = new CkanClient(TEST_CATALOG, TEST_TOKEN);
+
+        CkanPair ckanPair = new CkanPair();
+        ckanPair.setKey("test key");
+        ckanPair.setValue("test value");
+        List<CkanPair> extras = new ArrayList<CkanPair>();
+        extras.add(ckanPair);
+
+        URI uri = null;
+        
+        uri = new URI("http","www.google.com",null,null);
+        
+        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized("firsttest2",uri.toASCIIString(), extras, "The first test 2", "CC");
+
+        CkanDataset retDataset = cClient.createDataset(ckanDataset);
+                                        
+        assertNotNull(retDataset.getId());
+        assertTrue(retDataset.getId().length() > 0);
+        logger.info("created dataset with id " + retDataset.getId() + " in catalog " + TEST_CATALOG);
+    }
+
+    @Test
+    public void testCreateResource() throws URISyntaxException{
+        
+        CkanClient cClient =new CkanClient(TEST_CATALOG,TEST_TOKEN);
+
+        URI uri = null;
+
+        uri = new URI("http","www.google.com",null,null);
+
+        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD","ivanresource",uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
+        CkanResource retCkanRes = cClient.createResource(ckanResource);
+
+        assertNotNull(retCkanRes.getId());
+        assertTrue(retCkanRes.getId().length() > 0);
+        logger.info("created dataset with id " + retCkanRes.getId() + " in catalog " + TEST_CATALOG);
+       
+    }    
 }
