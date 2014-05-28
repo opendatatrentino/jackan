@@ -9,15 +9,15 @@ public class CkanResourceMinimized {
     private String name;
     private String url;
     private String description;
-    private String package_id;
+    private String packageId;
     private String mimetype;
 
-    public CkanResourceMinimized(String format, String name, String url, String description, String package_id, String mimetype) {
+    public CkanResourceMinimized(String format, String name, String url, String description, String packageId, String mimetype) {
         this.format = format;
         this.name = name;
         this.url = url;
         this.description = description;
-        this.package_id = package_id;
+        this.packageId = packageId;
         this.mimetype = mimetype;
     }
 
@@ -41,6 +41,7 @@ public class CkanResourceMinimized {
         return url;
     }
 
+   
     public void setUrl(String url) {
         this.url = url;
     }
@@ -53,12 +54,12 @@ public class CkanResourceMinimized {
         this.description = description;
     }
 
-    public String getPackage_id() {
-        return package_id;
+    public String getPackageId() {
+        return packageId;
     }
 
-    public void setPackage_id(String package_id) {
-        this.package_id = package_id;
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
     }
 
     public String getMimetype() {
