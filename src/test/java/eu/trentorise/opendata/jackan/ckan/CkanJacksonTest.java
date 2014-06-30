@@ -199,7 +199,7 @@ public class CkanJacksonTest {
         assertTrue(ja.getDt().equals(ja2.getDt()));        
     }
 
-    @Test
+    //Test
     public  void testCreateDataSet(){
 
         CkanClient cClient =new CkanClient("http://10.206.38.164:6004");
