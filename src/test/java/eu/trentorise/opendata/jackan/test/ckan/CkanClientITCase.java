@@ -17,20 +17,31 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import eu.trentorise.opendata.jackan.ckan.CkanJacksonTest;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
+import eu.trentorise.opendata.jackan.ckan.CkanDatasetMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
+import eu.trentorise.opendata.jackan.ckan.CkanJacksonTest;
+import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.ckan.CkanResourceMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanTag;
 import eu.trentorise.opendata.jackan.ckan.CkanUser;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,12 +49,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * todo make this an integration test
+ * 
  *
  * @author David Leoni
  */
 public class CkanClientITCase {
 
+    /** todo store it somewhere*/
+    private static final String TEST_CATALOG = "http://10.206.38.164:6004";
+    private static final String TEST_TOKEN = "9630625b-43e1-45f0-baa2-35bc7e685f5a";
     static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
     static String DATI_TRENTINO = "http://dati.trentino.it";
     static String DATA_GOV_UK = "http://data.gov.uk";
@@ -70,6 +84,9 @@ public class CkanClientITCase {
         assertTrue(dsl.size() > 0);
     }
 
+    /**
+     * Ckan docs don't tell offset starts with 0
+     */
     @Test
     public void testDatasetListWithLimit() {
 
@@ -202,4 +219,58 @@ public class CkanClientITCase {
         }
 
     }
+    
+    @Test
+    public  void testCreateDataSet() throws URISyntaxException{
+
+        CkanClient cClient = new CkanClient(TEST_CATALOG, TEST_TOKEN);
+
+        CkanPair ckanPair = new CkanPair();
+        ckanPair.setKey("test key");
+        ckanPair.setValue("test value");
+        List<CkanPair> extras = new ArrayList<CkanPair>();
+        extras.add(ckanPair);
+
+        String uri = "http://github.com/opendatatrentino/Jackan";
+                
+        long uuid = UUID.randomUUID().getMostSignificantBits();
+        
+        String datasetName = "test-dataset-jackan-" + uuid;
+        
+        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName, uri, extras, "Test Jackan Dataset " + uuid, "cc-zero");
+
+        CkanDataset retDataset = cClient.createDataset(ckanDataset);
+                                        
+        assertNotNull(retDataset.getId());
+        assertTrue(retDataset.getId().length() > 0);
+        logger.info("created dataset with id " + retDataset.getId() + " in catalog " + TEST_CATALOG);
+    }
+
+    @Test
+    public void testCreateResource() throws URISyntaxException{
+        
+        CkanClient cClient =new CkanClient(TEST_CATALOG,TEST_TOKEN);
+
+        String uri = "http://github.com/opendatatrentino/Jackan";
+        
+        long uuidDataset = UUID.randomUUID().getMostSignificantBits();
+        String datasetName = "test-dataset-jackan-" + uuidDataset;
+        
+        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName, uri, new ArrayList<CkanPair>(), "Test Jackan Dataset " + uuidDataset, "cc-zero");
+        CkanDataset retDataset = cClient.createDataset(ckanDataset);
+        
+
+        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD","Jackan test resource " + UUID.randomUUID().getMostSignificantBits() + uuidDataset, 
+                uri, 
+                "Most interesting test resource in the universe", 
+                retDataset.getId(), 
+                null);
+        
+        CkanResource retCkanRes = cClient.createResource(ckanResource);
+
+        assertNotNull(retCkanRes.getId());
+        assertTrue(retCkanRes.getId().length() > 0);
+        logger.info("Created resource with id " + retCkanRes.getId() + " in catalog " + TEST_CATALOG);
+       
+    }    
 }

@@ -10,14 +10,36 @@ public class CkanDatasetMinimized {
     private String name;
     private String url;
     private List<CkanPair> extras;
+    private String title;
+    private String licenseId;
 
 
-    public CkanDatasetMinimized(String name, String url, List<CkanPair> extras) {
+    public CkanDatasetMinimized(String name, String url, List<CkanPair> extras, String title, String licenseId) {
         this.name = name;
         this.url = url;
+        this.title = title;
+        this.licenseId = licenseId;
         this.extras = extras;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getLicenseId() {
+        return licenseId;
+    }
+
+    public void setLicenseId(String licenseId) {
+        this.licenseId = licenseId;
+    }
+
+    
+    
     public String getName() {
         return name;
     }

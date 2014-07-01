@@ -303,11 +303,22 @@ public class CkanResource {
         this.mimetypeInner = mimetypeInner;
     }
 
+    /**
+     * We found name null in data.gov.uk datasets... i.e. 
+     * http://data.gov.uk/api/3/action/resource_show?id=77d2dba8-d0d9-49ef-9fd2-37a4a8bc5a17
+     * taken from this dataset search:
+     * http://data.gov.uk/api/3/action/package_search?rows=20&start=0
+     * They use description field instead
+     */
+    @Nullable
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    /**
+     * We found name null in data.gov.uk datasets... i.e. http://data.gov.uk/api/3/action/resource_show?id=77d2dba8-d0d9-49ef-9fd2-37a4a8bc5a17
+     */    
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 
