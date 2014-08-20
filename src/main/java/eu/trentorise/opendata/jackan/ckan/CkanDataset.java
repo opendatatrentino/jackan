@@ -18,7 +18,7 @@
 
 package eu.trentorise.opendata.jackan.ckan;
 
-import eu.trentorise.opendata.jackan.dcat.DcatDataset;
+import eu.trentorise.opendata.traceprov.impl.dcat.DcatDataset;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;

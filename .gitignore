@@ -9,6 +9,15 @@ target/
 
 src/test/resources/log4j.properties
 
+##### INTELLIJ
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+
+
 ##### NETBEANS
 
 nbproject/private/

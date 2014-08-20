@@ -56,8 +56,8 @@ import org.slf4j.LoggerFactory;
 public class CkanClientITCase {
 
     /** todo store it somewhere*/
-    private static final String TEST_CATALOG = "http://10.206.38.164:6004";
-    private static final String TEST_TOKEN = "9630625b-43e1-45f0-baa2-35bc7e685f5a";
+    private static final String TEST_CATALOG = "http://192.168.213.196:8001";
+    private static final String TEST_TOKEN = "b7592183-56cc-479a-9c52-5b1cb84db9db";
     static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
     static String DATI_TRENTINO = "http://dati.trentino.it";
     static String DATA_GOV_UK = "http://data.gov.uk";

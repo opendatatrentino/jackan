@@ -14,6 +14,17 @@ public class CkanDatasetMinimized {
     private String licenseId;
 
 
+    /**
+     * 
+     * @param name
+     * 
+     * @param url A page URL containg a description of the semantified dataset columns and the trasformations done on the original dataset. This URL will be also displayed as metadata in the catalog under dcat:landingPage
+               
+
+     * @param extras
+     * @param title
+     * @param licenseId 
+     */
     public CkanDatasetMinimized(String name, String url, List<CkanPair> extras, String title, String licenseId) {
         this.name = name;
         this.url = url;
