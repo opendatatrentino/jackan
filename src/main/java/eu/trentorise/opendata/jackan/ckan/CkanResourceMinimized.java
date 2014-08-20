@@ -11,6 +11,7 @@ public class CkanResourceMinimized {
     private String description;
     private String packageId;
     private String mimetype;
+    private String id;
 
     public CkanResourceMinimized(String format, String name, String url, String description, String packageId, String mimetype) {
         this.format = format;
@@ -19,7 +20,18 @@ public class CkanResourceMinimized {
         this.description = description;
         this.packageId = packageId;
         this.mimetype = mimetype;
+
     }
+
+    public CkanResourceMinimized(String format, String name, String url, String description, String packageId, String mimetype, String resourceId) {
+        this.format = format;
+        this.name = name;
+        this.url = url;
+        this.description = description;
+        this.packageId = packageId;
+        this.mimetype = mimetype;
+        this.id = resourceId;
+           }
 
     public String getFormat() {
         return format;
@@ -66,7 +78,15 @@ public class CkanResourceMinimized {
         return mimetype;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {return id;}
+
     public void setMimetype(String mimetype) {
         this.mimetype = mimetype;
     }
+
+
 }

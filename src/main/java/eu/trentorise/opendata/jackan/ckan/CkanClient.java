@@ -223,6 +223,33 @@ public class CkanClient {
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
 
+
+    /**
+     * The method aims to update ckan resource on the server
+     *
+     * @param resource ckan resource object with theminimal set of
+     * parameters
+     * @return the updated resource
+     * @throws JackanException
+     */
+    public synchronized  CkanResource updateResource(CkanResourceMinimized resource){
+
+        if (ckanToken == null){
+            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+        }
+
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(resource);
+        } catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+        }
+
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+
+    }
+
     /**
      * The method aims to create CkanDataset on the server
      *
