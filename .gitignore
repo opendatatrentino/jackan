@@ -7,7 +7,7 @@
 
 target/
 
-src/test/resources/log4j.properties
+src/test/resources/logging.properties
 
 ##### INTELLIJ
 .idea/workspace.xml

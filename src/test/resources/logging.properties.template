@@ -1,0 +1,3 @@
+handlers=java.util.logging.ConsoleHandler, java.util.logging.FileHandler
+java.util.logging.ConsoleHandler.level=FINEST
+eu.trentorise.opendata.jackan.level=FINEST

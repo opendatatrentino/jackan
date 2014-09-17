@@ -1,21 +1,20 @@
 /**
-* *****************************************************************************
-* Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
-*
+ * *****************************************************************************
+ * Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
+ * 
 * All rights reserved. This program and the accompanying materials are made
-* available under the terms of the GNU Lesser General Public License (LGPL)
-* version 2.1 which accompanies this distribution, and is available at
-*
+ * available under the terms of the GNU Lesser General Public License (LGPL)
+ * version 2.1 which accompanies this distribution, and is available at
+ * 
 * http://www.gnu.org/licenses/lgpl-2.1.html
-*
+ * 
 * This library is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-* details.
-*
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
 *******************************************************************************
-*/   
-
+ */
 package eu.trentorise.opendata.jackan.ckan;
 
 import eu.trentorise.opendata.traceprov.impl.dcat.DcatDataset;
@@ -23,25 +22,25 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.codehaus.jackson.annotate.JsonAnyGetter;
-import org.codehaus.jackson.annotate.JsonAnySetter;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
 
 /**
  *
  * @author David Leoni
  */
 public class CkanDataset {
+
     private String author;
-    private String authorEmail;  
-    @Nullable private String creatorUserId;
+    private String authorEmail;
+    @Nullable
+    private String creatorUserId;
     private String downloadUrl;
     private List<CkanPair> extras;
-   //
     private List<CkanGroup> groups;
     private String id;
     private boolean isOpen;
@@ -50,16 +49,7 @@ public class CkanDataset {
     private String licenseUrl;
     private String maintainer;
     private String maintainerEmail;
-    /**
-     * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
-     * i.e. "2013-11-11T04:12:11.110868"
-     */
     private DateTime metadataCreated;
-    /**
-     * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
-     * i.e. "2013-11-11T04:12:11.110868"
-     */
-
     private DateTime metadataModified;
     private String name;
     private String notes;
@@ -67,34 +57,35 @@ public class CkanDataset {
     private String ownerOrg;
     /**
      * Actually it is named 'private' in api. Appears in searches.
-    */
-    @Nullable private Boolean priv;   
-    
-    private List<CkanResource> resources;
-    
-    private String revisionId;
-    /**
-     * In Ckan it is stored in ISO-8601 defaulted to UTC timezone
-     * i.e. "2013-11-11T04:12:11.110868"
      */
+    @Nullable
+    private Boolean priv;
+
+    private List<CkanResource> resources;
+
+    private String revisionId;
     private DateTime revisionTimestamp;
-    private String state; // todo what should it be?
+    private String state; 
     private List<CkanTag> tags;
     private String title;
     private String type;
     private String url;
-    @Nullable private String version;
+    @Nullable
+    private String version;
 
     /**
-     * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. They will end up here.
+     * Custom CKAN instances might sometimes gift us with properties that don't
+     * end up in extras as they should. They will end up here.
      */
-    private Map<String,Object> others = new HashMap<String,Object>();
-    
+    private Map<String, Object> others = new HashMap<String, Object>();
+
     /**
-     * Custom CKAN instances might sometimes gift us with properties that don't end up in extras as they should. In this case, they end up in 'others' field
-    */ 
+     * Custom CKAN instances might sometimes gift us with properties that don't
+     * end up in extras as they should. In this case, they end up in 'others'
+     * field
+     */
     @JsonAnyGetter
-    public Map<String,Object> getOthers() {
+    public Map<String, Object> getOthers() {
         return others;
     }
 
@@ -104,14 +95,14 @@ public class CkanDataset {
     }
 
     @JsonIgnore
-    public Map<String,String> getExtrasAsHashMap(){
-        HashMap<String,String> hm = new HashMap();
-        for (CkanPair cp : extras){
+    public Map<String, String> getExtrasAsHashMap() {
+        HashMap<String, String> hm = new HashMap();
+        for (CkanPair cp : extras) {
             hm.put(cp.getKey(), cp.getValue());
         }
         return hm;
     }
-    
+
     public String getAuthor() {
         return author;
     }
@@ -128,7 +119,8 @@ public class CkanDataset {
         this.authorEmail = authorEmail;
     }
 
-    @Nullable public String getCreatorUserId() {
+    @Nullable
+    public String getCreatorUserId() {
         return creatorUserId;
     }
 
@@ -208,24 +200,30 @@ public class CkanDataset {
         this.maintainerEmail = maintainerEmail;
     }
 
+    /**
+     * Returns date in UTC timezone
+     */    
     public DateTime getMetadataCreated() {
         return metadataCreated;
     }
 
     /**
-       internally date is stored with UTC timezone
-    */
+     * Internally date is stored with UTC timezone
+     */
     public void setMetadataCreated(DateTime metadataCreated) {
         this.metadataCreated = metadataCreated.toDateTime(DateTimeZone.UTC);
     }
 
+    /**
+     * Returns date in UTC timezone
+     */        
     public DateTime getMetadataModified() {
         return metadataModified;
     }
 
     /**
-       internally date is stored with UTC timezone
-    */    
+     * Internally date is stored with UTC timezone
+     */
     public void setMetadataModified(DateTime metadataModified) {
         this.metadataModified = metadataModified.toDateTime(DateTimeZone.UTC);
     }
@@ -254,38 +252,62 @@ public class CkanDataset {
         this.notesRendered = notesRendered;
     }
 
+    /**
+     * Returns the owner organization alphanunmerical id, like "b112ed55-01b7-4ca4-8385-f66d6168efcc",
+     */    
     public String getOwnerOrg() {
         return ownerOrg;
     }
 
+    /**
+     * Sets the owner organization alphanunmerical id, like "b112ed55-01b7-4ca4-8385-f66d6168efcc",
+     */
     public void setOwnerOrg(String ownerOrg) {
         this.ownerOrg = ownerOrg;
     }
 
+    /** 
+     * Returns the alphanumerical id, like "39d94b20-ea72-4c5e-bd8f-967a77e03946"
+     */
     public String getRevisionId() {
         return revisionId;
     }
 
+    /** 
+     * Sets the alphanumerical id, like "39d94b20-ea72-4c5e-bd8f-967a77e03946"
+     */    
     public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
 
+    /**
+     * Returns date in UTC timezone. Probably it is automatically calculated by
+     * CKAN.
+     */
     public DateTime getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
     /**
-       internally date is stored with UTC timezone
+     * Internally date is stored with UTC timezone. Probably it is automatically
+     * calculated by CKAN.
+     *
      * @param revisionTimestamp
-    */   
+     */
     public void setRevisionTimestamp(DateTime revisionTimestamp) {
         this.revisionTimestamp = revisionTimestamp.toDateTime(DateTimeZone.UTC);
     }
 
+    /**
+     * todo don't know meaning, found "active" as one value
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * todo don't know meaning, found "active" as one value
+     */
     public void setState(String state) {
         this.state = state;
     }
@@ -298,10 +320,16 @@ public class CkanDataset {
         this.tags = tags;
     }
 
+    /**
+     * Returns the title, like "Hospitals of Trento"
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Sets the title, like "Hospitals of Trento"
+     */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -314,14 +342,24 @@ public class CkanDataset {
         this.type = type;
     }
 
+    /**
+     * Should be the landing page on original data provider website describing
+     * the dataset.
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Should be the landing page on original data provider website describing
+     * the dataset.
+     */
     public void setUrl(String url) {
         this.url = url;
     }
-    @Nullable public String getVersion() {
+
+    @Nullable
+    public String getVersion() {
         return version;
     }
 
@@ -336,21 +374,24 @@ public class CkanDataset {
     public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }
-    
-    public DcatDataset toDcatDataset(){
-         DcatDataset ret = new DcatDataset();
-         
-         return ret;
-    }    
+
+    public DcatDataset toDcatDataset() {
+        DcatDataset ret = new DcatDataset();
+
+        return ret;
+    }
 
     /**
-     * Actually it is named "private" in the API. Appears in dataset searches.
+     * Actually it is named "private" in the CKAN API. Appears in dataset searches.
      */
     @JsonProperty("private")
     public Boolean getPriv() {
         return priv;
     }
 
+    /**
+     * Actually it is named "private" in the CKAN API. Appears in dataset searches.
+     */    
     public void setPriv(Boolean priv) {
         this.priv = priv;
     }

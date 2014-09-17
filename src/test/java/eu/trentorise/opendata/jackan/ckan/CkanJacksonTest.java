@@ -18,40 +18,36 @@
 
 package eu.trentorise.opendata.jackan.ckan;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.trentorise.opendata.jackan.Configuration;
+import eu.trentorise.opendata.jackan.test.TestConfig;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.codehaus.jackson.map.ObjectMapper;
+import java.util.logging.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * White box testing
  * @author David Leoni, Ivan Tankoyeu
  */
 public class CkanJacksonTest {
-    static Logger logger = LoggerFactory.getLogger(CkanJacksonTest.class);
-    private static final String TEST_TOKEN = "9630625b-43e1-45f0-baa2-35bc7e685f5a";
-    private static final String TEST_RESOURCE_ID="1aff9c7a-895a-4c12-b02b-e0f9548afc90";
+    public static Logger logger = Logger.getLogger(CkanJacksonTest.class.getName());
+
+
 
     public CkanJacksonTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info("To see debug logging messages set \tlog4j.rootLogger=DEBUG, console\t in src/test/resources/log4j.properties");
-    }
+        TestConfig.initLogger();
+    } 
 
     @AfterClass
     public static void tearDownClass() {
@@ -190,7 +186,7 @@ public class CkanJacksonTest {
         //logger.debug("json = " + json);
         // todo Since we are using Joda jackson is not respecting the date format config without the 'Z' we set in the object mapper.        
         // see https://github.com/opendatatrentino/Jackan/issues/1
-        assertEquals("1970-01-01T00:00:00.123Z", om.readTree(json).get("dt").asText());
+        assertEquals("1970-01-01T00:00:00.123", om.readTree(json).get("dt").asText());
 
         JodaA ja2 = om.readValue(json, JodaA.class);
         //logger.debug("ja = " + ja.getDt().toString());
@@ -200,68 +196,12 @@ public class CkanJacksonTest {
 
 
 
-  //  @Test
-    public void testCreateDataSet() {
-
-        CkanClient cClient = new CkanClient("http://10.206.38.164:6004", TEST_TOKEN );
-
-        CkanPair ckanPair = new CkanPair();
-        ckanPair.setKey("test key");
-        ckanPair.setValue("test value");
-        List<CkanPair> extras = new ArrayList<CkanPair>();
-        extras.add(ckanPair);
-
-        URI uri = null;
-        try {
-            uri = new URI("http", "www.google.com", null, null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized("firsttest3", uri.toASCIIString(), extras, "ivantitle", "cc");
-
-        CkanDataset dataSetID = cClient.createDataset(ckanDataset);
-
-        System.out.println(dataSetID.getId());
-        assertNotNull(dataSetID);
-    }
-
-   // @Test
-    public void testCreateResource() {
-        CkanClient cClient = new CkanClient("http://10.206.38.164:6004", TEST_TOKEN );
-
-        URI uri = null;
-        try {
-            uri = new URI("http", "www.google.com", null, null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
-       CkanResource cResource = cClient.createResource(ckanResource);
 
 
-        System.out.println("Ckan Resource id:"+cResource.getId());
 
-    }
 
-    //@Test
-    public void testUpdateResource(){
-        CkanClient cClient = new CkanClient("http://10.206.38.164:6004", TEST_TOKEN );
 
-        URI uri = null;
-        try {
-            uri = new URI("http", "www.unitn.it", null, null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
 
-        ckanResource.setId(TEST_RESOURCE_ID);
-        CkanResource cResource = cClient.updateResource(ckanResource);
-        System.out.println("Ckan Resource URL changed:"+cResource.getUrl());
-
-    }
 
 }
 

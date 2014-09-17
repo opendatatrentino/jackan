@@ -17,29 +17,35 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.List;
-
-import org.apache.http.client.fluent.Content;
-import org.apache.http.client.fluent.Response;
-
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.PropertyNamingStrategy;
-import org.slf4j.LoggerFactory;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
-
+import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.removeTrailingSlash;
+import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nullable;
-
-import org.codehaus.jackson.map.SerializationConfig;
+import org.apache.http.client.fluent.Content;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
+import org.apache.http.entity.ContentType;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * Class to access a ckan instance. Threadsafe.
@@ -49,22 +55,23 @@ import org.codehaus.jackson.map.SerializationConfig;
  */
 public class CkanClient {
 
+    public static final String CKAN_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
     @Nullable
     private static ObjectMapper objectMapper;
     private final String catalogURL;
     @Nullable
     private final String ckanToken;
-    private static final org.slf4j.Logger logger = LoggerFactory
-            .getLogger(CkanClient.class);
+    
+    public static Logger logger = Logger.getLogger(CkanClient.class.getName());
 
+    
+    
     /**
      * @return a clone of the json object mapper used internally.
      */
     public static ObjectMapper getObjectMapperClone() {
-        ObjectMapper om = getObjectMapper();
-        return new ObjectMapper()
-                .setSerializationConfig(om.getSerializationConfig())
-                .setDeserializationConfig(om.getDeserializationConfig());
+        return getObjectMapper().copy();
     }
 
     /**
@@ -78,17 +85,31 @@ public class CkanClient {
                     .setPropertyNamingStrategy(
                             PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
                     .configure(
-                            DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,
+                            DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                             false) // let's be tolerant
                     .configure(
-                            DeserializationConfig.Feature.USE_GETTERS_AS_SETTERS,
+                            MapperFeature.USE_GETTERS_AS_SETTERS,
                             false) // not good for unmodifiable collections, if we will ever use any
-                    .configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
             // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQDateHandling
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"                            so we removed it here
-            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+            objectMapper.setDateFormat(new SimpleDateFormat(CKAN_DATE_PATTERN)); // but this only works for Java Dates
 
+            // taken solution from here: http://www.lorrin.org/blog/2013/06/28/custom-joda-time-dateformatter-in-jackson/
+            objectMapper.registerModule(new JodaModule());
+
+            objectMapper.registerModule(new SimpleModule() {
+                {
+                    addSerializer(DateTime.class, new StdSerializer<DateTime>(DateTime.class) {
+                        @Override
+                        public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+                            jgen.writeString(DateTimeFormat.forPattern(CKAN_DATE_PATTERN).print(value));
+                        }
+
+                    });
+                }
+            });
         }
         return objectMapper;
     }
@@ -101,11 +122,11 @@ public class CkanClient {
     }
 
     /**
-     * @param url i.e. http://data.gov.uk
-     * URL token the private token string for ckan repository
+     * @param URL i.e. http://data.gov.uk
+     * @param token the private token string for ckan repository
      */
     public CkanClient(String URL, @Nullable String token) {
-        this.catalogURL = URL;
+        this.catalogURL = removeTrailingSlash(URL);
         this.ckanToken = token;
     }
 
@@ -132,7 +153,7 @@ public class CkanClient {
                                         "UTF-8"));
             }
             String fullUrl = sb.toString();
-            logger.debug("getting " + fullUrl);
+            logger.log(Level.FINE, "getting {0}", fullUrl);
             String json = Request.Get(fullUrl).execute().returnContent()
                     .asString();
             T dr = getObjectMapper().readValue(json, responseType);
@@ -163,16 +184,15 @@ public class CkanClient {
                                         "UTF-8"));
             }
             String fullUrl = sb.toString();
-            System.out.println("url: " + fullUrl);
-            logger.debug("getting " + fullUrl);
+            
+            logger.log(Level.FINE, "posting {0}", fullUrl);
             Response response = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", ckanToken).execute();
 //            HttpResponse entity =response.returnResponse();
 //            System.out.println(entity.toString());
 
             Content out = response.returnContent();
-            String json = out.asString();
-            System.out.println(out.asString());
-            logger.info("getting " + json);
+            String json = out.asString();            
+            logger.log(Level.FINE, "json {0}", json);
 
             T dr = getObjectMapper().readValue(json, responseType);
             if (!dr.success) {
@@ -193,26 +213,63 @@ public class CkanClient {
     public String getCatalogURL() {
         return catalogURL;
     }
-    
-    
+
     public String getCkanToken() {
         return ckanToken;
     }
 
     /**
-     * The method aims to create ckan resource on the server
+     * Given some dataset parameters, reconstruct the URL of dataset page in the
+     * catalog website.
      *
-     * @param resource ckan resource object with theminimal set of
-     * parameters
+     * Valid URLs have this format with the name:
+     * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013
+     *
+     * but it is preferable to use the id:
+     * http://dati.trentino.it/dataset/418d662e-aa94-44bc-b281-d689aeec27ac
+     *
+     * @param datasetIdentifier either the alphanumerical id of the dataset or
+     * the name. Using the id is preferable.
+     * @return
+     */
+    public static String makeDatasetURL(String catalogUrl, String datasetIdentifier) {
+        return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdentifier;
+    }
+
+    /**
+
+     * Given some resource parameters, reconstruct the URL of resource page in the
+     * catalog website.
+     *
+     * Valid URLs have this format with the name:
+     * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
+     *
+     * but it is preferable to use the id:
+     * http://dati.trentino.it/dataset/418d662e-aa94-44bc-b281-d689aeec27ac/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
+     *
+     * @param catalogUrl i.e. http://data.gov.uk
+     * @param datasetIdentifier alphanumerical id or the dataset name. The id is
+     * preferable.
+     * @param resourceId the alphanumerical id of the resource
+     * @return
+     */
+    public static String makeResourceURL(String catalogUrl, String datasetIdentifier, String resourceId) {
+        return catalogUrl + "/" + datasetIdentifier + "/resource/" + resourceId;
+    }
+
+    /**
+     * Creates ckan resource on the server
+     *
+     * @param resource ckan resource object with theminimal set of parameters
      * @return the newly created resource
      * @throws JackanException
      */
     public synchronized CkanResource createResource(CkanResourceMinimized resource) {
-        
-        if (ckanToken == null){
+
+        if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
-        
+
         ObjectMapper objectMapper = CkanClient.getObjectMapper();
         String json = null;
         try {
@@ -223,18 +280,16 @@ public class CkanClient {
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
 
-
     /**
-     * The method aims to update ckan resource on the server
+     * Updates ckan resource on the server
      *
-     * @param resource ckan resource object with theminimal set of
-     * parameters
+     * @param resource ckan resource object with theminimal set of parameters
      * @return the updated resource
      * @throws JackanException
      */
-    public synchronized  CkanResource updateResource(CkanResourceMinimized resource){
+    public synchronized CkanResource updateResource(CkanResourceMinimized resource) {
 
-        if (ckanToken == null){
+        if (ckanToken == null) {
             throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
         }
 
@@ -251,7 +306,7 @@ public class CkanClient {
     }
 
     /**
-     * The method aims to create CkanDataset on the server
+     * Creates CkanDataset on the server
      *
      * @param dataset data set with a given parameters
      * @return the newly created dataset
@@ -259,11 +314,10 @@ public class CkanClient {
      */
     public synchronized CkanDataset createDataset(CkanDatasetMinimized dataset) {
 
-        if (ckanToken == null){
+        if (ckanToken == null) {
             throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
         }
-        
-        
+
         ObjectMapper objectMapper = CkanClient.getObjectMapper();
         String json = null;
         try {
@@ -298,15 +352,19 @@ public class CkanClient {
     }
 
     /**
-     * id should be the alphanumerical id like
+     * @param id should be the alphanumerical id like
      * 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d. Using the mnemonic like
      * laghi-monitorati-trento is discouraged.
      *
      * @throws JackanException on error
      */
     public synchronized CkanDataset getDataset(String id) {
-        return getHttp(DatasetResponse.class, "/api/3/action/package_show",
+        CkanDataset cd = getHttp(DatasetResponse.class, "/api/3/action/package_show",
                 "id", id).result;
+        for (CkanResource cr : cd.getResources()) {
+            cr.setDatasetId(cd.getId());
+        }
+        return cd;
     }
 
     /**
@@ -500,13 +558,18 @@ public class CkanClient {
         dsr = getHttp(DatasetSearchResponse.class,
                 "/api/3/action/package_search?" + params.toString());
 
+        if (dsr.success) {
+            for (CkanDataset ds : dsr.result.getResults()) {
+                for (CkanResource cr : ds.getResources()) {
+                    cr.setDatasetId(ds.getId());
+                }
+            }
+        }
+
         return dsr.result;
     }
 
-    
 }
-
-
 
 class CkanError {
 
