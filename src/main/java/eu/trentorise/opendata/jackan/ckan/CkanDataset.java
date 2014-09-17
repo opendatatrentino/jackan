@@ -17,15 +17,19 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import eu.trentorise.opendata.traceprov.impl.dcat.DcatDataset;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
+import eu.trentorise.opendata.traceprov.impl.dcat.DcatDataset;
+import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
+import eu.trentorise.opendata.traceprov.impl.dcat.FoafAgent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -375,11 +379,65 @@ public class CkanDataset {
         this.extras = extras;
     }
 
-    public DcatDataset toDcatDataset() {
-        DcatDataset ret = new DcatDataset();
+    public DcatDataset ToDcatDataset(String catalogURL, String locale){
+        
+        String nCatalogUrl = TraceProvUtils.removeTrailingSlash(catalogURL);
+        
+        CkanClient.logger.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
+        
+        DcatDataset dd = new DcatDataset();
+        
+        
+        
+        CkanClient.logger.warning("TODO - SKIPPED ACCRUAL PERIODICITY WHILE CONVERTING FROM CKAN TO DCAT");  
+        // dd.setAccrualPeriodicity(null);
+        CkanClient.logger.warning("TODO - SKIPPED CONTACT POINT WHILE CONVERTING FROM CKAN TO DCAT");
+        // dd.setContactPoint(null);
+        
+        dd.setDescription(this.getNotes());
+        
+        
+        List<DcatDistribution> distribs = new ArrayList();
+        for (CkanResource cr : this.getResources()){
+            distribs.add(cr.toDcatDistribution(nCatalogUrl, this.getId(), this.getLicenseId()));
+        }
+        
+        dd.setDistributions(distribs);        
+        dd.setIdentifier(this.getName());
+        
+        dd.setIssued(this.getMetadataCreated().toString());
+        
+        List<String> keywords = new ArrayList();
+        for (CkanTag tag : this.getTags()){
+            keywords.add(tag.getName());
+        }
+        dd.setKeywords(keywords);
+        
+        dd.setLandingPage(this.getUrl());
+        dd.setLanguage(locale);
+        dd.setModified(this.getMetadataModified().toString());
+        FoafAgent publisher = new FoafAgent();
+        publisher.setURI(locale);
+        publisher.setName(this.getMaintainer());
+        publisher.setMbox(this.getMaintainerEmail());
+        dd.setPublisher(publisher);
+        // dd.setSpatial(catalogURL);
+        CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");        
+        
+        //dd.setTemporal(catalogURL);
+        CkanClient.logger.warning("TODO - SKIPPED 'TEMPORAL' WHILE CONVERTING FROM CKAN TO DCAT");        
+                
+        CkanClient.logger.warning("TODO - SKIPPED 'THEME' WHILE CONVERTING FROM CKAN TO DCAT");        
+        // dd.setTheme(null);
+        
+        dd.setTitle(this.getTitle());
+        
+        // let's set URI to ckan page
+        dd.setURI(CkanClient.makeDatasetURL(nCatalogUrl, this.getId()));
+        return dd;
+    };
 
-        return ret;
-    }
+    
 
     /**
      * Actually it is named "private" in the CKAN API. Appears in dataset searches.

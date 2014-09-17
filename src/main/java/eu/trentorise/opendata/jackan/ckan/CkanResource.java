@@ -20,9 +20,12 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
+import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -554,4 +557,54 @@ public class CkanResource {
         this.webstoreUrl = webstoreUrl;
     }
 
+   
+    /** TODO this converter is largely incomplete!!! */
+    public DcatDistribution toDcatDistribution(String catalogURL, @Nullable String datasetId, @Nullable String license){
+        CkanClient.logger.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
+    
+        String nCatalogUrl = TraceProvUtils.removeTrailingSlash(catalogURL);
+        
+        DcatDistribution dd = new DcatDistribution();
+        
+        
+        
+        dd.setAccessURL(this.getUrl());
+        
+        try {
+            if (this.getSize() != null){
+                dd.setByteSize(Integer.parseInt(this.getSize()));
+            }
+            
+        } catch (NumberFormatException ex){
+            CkanClient.logger.log(Level.WARNING, "COULDN'T CONVERT CKAN RESOURCE SIZE TO DCAT! REQUIRED AN INTEGER, FOUND {0} (ALTHOUGH STRINGS ARE VALID CKAN SIZES)", this.getSize());
+        }
+        
+        
+        dd.setDatasetIdentifier(this.getDatasetId());
+        dd.setDescription(this.getDescription());
+        
+        CkanClient.logger.warning("TODO - SKIPPED 'DOWNLOAD URL' WHILE CONVERTING FROM CKAN TO DCAT");        
+        //dd.setDownloadURL(null);
+        
+        dd.setFormat(this.getFormat());
+        DateTime lastModified = this.getLastModified();
+        if (lastModified != null){
+            dd.setIssued(lastModified.toString());
+        }                        
+        dd.setLicense(license);
+        dd.setMediaType(this.getMimetype());
+        dd.setModified(this.getRevisionTimestamp());
+        CkanClient.logger.warning("TODO - SKIPPED 'RIGHTS' WHILE CONVERTING FROM CKAN TO DCAT");        
+        //dd.setRights(null);        
+        
+        CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");        
+        // dd.setSpatial(null);
+        
+        dd.setTitle(this.getName());
+        
+        dd.setURI(CkanClient.makeResourceURL(nCatalogUrl, datasetId, this.getId()));
+        
+        return dd;
+    }    
+    
 }
