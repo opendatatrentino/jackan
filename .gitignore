@@ -7,9 +7,9 @@
 
 target/
 
-!/src/test/resources/conf/README.txt
-#/src/test/resources/conf/
 
+/src/test/resources/conf/
+!/src/test/resources/conf/README.txt
 
 ##### INTELLIJ
 .idea/workspace.xml
