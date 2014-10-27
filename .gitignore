@@ -8,6 +8,7 @@
 target/
 
 src/test/resources/logging.properties
+src/test/resources/jackan-test.properties
 
 ##### INTELLIJ
 .idea/workspace.xml

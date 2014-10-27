@@ -1,0 +1,8 @@
+# in order for tests that write into catalogs to pass you need to 
+# 1. copy this file in the same directory where it is
+# 2. rename the copy to jackan-test.properties   (It won't be under version control)
+# 3. fill the copy with your catalog parameters. 
+
+jackan.test.ckan.output=http://myckancatalog
+jackan.test.ckan.output-token=mytoken
+

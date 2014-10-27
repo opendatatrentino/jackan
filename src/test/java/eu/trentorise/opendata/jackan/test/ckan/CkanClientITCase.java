@@ -17,14 +17,12 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import eu.trentorise.opendata.jackan.Configuration;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanDatasetMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
-import eu.trentorise.opendata.jackan.ckan.CkanJacksonTest;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
@@ -41,14 +39,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.fail;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -62,13 +54,8 @@ import org.junit.Test;
  */
 public class CkanClientITCase {
 
-    /**
-     * todo store it somewhere
-     */
-    private static final String TEST_CATALOG = "http://192.168.213.196:8001";
-    private static final String TEST_TOKEN = "b7592183-56cc-479a-9c52-5b1cb84db9db";
-    private static final String TEST_RESOURCE_ID="1aff9c7a-895a-4c12-b02b-e0f9548afc90";    
-    
+    private static final String TEST_RESOURCE_ID="1aff9c7a-895a-4c12-b02b-e0f9548afc90";        
+       
     public static Logger logger = Logger.getLogger(CkanClientITCase.class.getName());
     static String DATI_TRENTINO = "http://dati.trentino.it";
     static String DATA_GOV_UK = "http://data.gov.uk";
@@ -81,6 +68,7 @@ public class CkanClientITCase {
     @BeforeClass
     public static void setUpClass() {        
         TestConfig.initLogger();
+        TestConfig.initProperties();
     }
     
     @Before
@@ -239,7 +227,7 @@ public class CkanClientITCase {
     @Test
     public void testCreateDataSet() throws URISyntaxException {
 
-        CkanClient cClient = new CkanClient(TEST_CATALOG, TEST_TOKEN);
+        CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
 
         CkanPair ckanPair = new CkanPair();
         ckanPair.setKey("test key");
@@ -259,13 +247,13 @@ public class CkanClientITCase {
 
         assertNotNull(retDataset.getId());
         assertTrue(retDataset.getId().length() > 0);
-        logger.info("created dataset with id " + retDataset.getId() + " in catalog " + TEST_CATALOG);
+        logger.info("created dataset with id " + retDataset.getId() + " in catalog " + TestConfig.getOutputCkan());
     }
 
     @Test
     public void testCreateResource() throws URISyntaxException {
 
-        CkanClient cClient = new CkanClient(TEST_CATALOG, TEST_TOKEN);
+        CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
 
         String uri = "http://github.com/opendatatrentino/jackan";
 
@@ -285,7 +273,7 @@ public class CkanClientITCase {
 
         assertNotNull(retCkanRes.getId());
         assertTrue(retCkanRes.getId().length() > 0);
-        logger.info("Created resource with id " + retCkanRes.getId() + " in catalog " + TEST_CATALOG);
+        logger.info("Created resource with id " + retCkanRes.getId() + " in catalog " + TestConfig.getOutputCkan());
 
     }
 
@@ -296,7 +284,7 @@ public class CkanClientITCase {
     @Test
     @Ignore
     public void testUpdateResource() throws URISyntaxException {
-        CkanClient cClient = new CkanClient(TEST_CATALOG, TEST_TOKEN);
+        CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
 
         URI uri = null;
 

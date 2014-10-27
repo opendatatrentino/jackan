@@ -10,11 +10,11 @@ import java.util.logging.Logger;
  *
  * @author David Leoni
  */
-public class Configuration {
+public class Config {
 
     static public String JACKAN_LOG_PROPERTIES = "logging.properties";
 
-    private static Logger logger = Logger.getLogger(Configuration.class.getName());
+    private static Logger logger = Logger.getLogger(Config.class.getName());
     
     private static boolean initialized = false;
 
@@ -23,11 +23,11 @@ public class Configuration {
             logger.info("Logger is already initialized.");
         } else {
             System.out.println("Jackan: Going to initialize logging...");
-            final InputStream inputStream = Configuration.class.getResourceAsStream("/" + JACKAN_LOG_PROPERTIES);
+            final InputStream inputStream = Config.class.getResourceAsStream("/" + JACKAN_LOG_PROPERTIES);
             try {
                 if (inputStream == null) {
                     throw new IOException("JACKAN ERROR! COULDN'T FIND LOG CONFIGURATION FILE: " + JACKAN_LOG_PROPERTIES);
-                }
+                } 
                 LogManager.getLogManager().readConfiguration(inputStream);
                 
                 logger.info("Configured logger with file: " + JACKAN_LOG_PROPERTIES);
