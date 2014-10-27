@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  */
 public class Config {
 
-    static public String JACKAN_LOG_PROPERTIES = "logging.properties";
+    static public String JACKAN_LOG_PROPERTIES = "conf/logging.properties";
 
     private static Logger logger = Logger.getLogger(Config.class.getName());
     

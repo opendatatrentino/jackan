@@ -7,8 +7,8 @@
 
 target/
 
-src/test/resources/logging.properties
-src/test/resources/jackan-test.properties
+/src/test/resources/conf/
+!/src/test/resources/conf/README.txt
 
 ##### INTELLIJ
 .idea/workspace.xml

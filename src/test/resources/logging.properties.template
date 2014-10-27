@@ -1,8 +1,0 @@
-# in order to configure logging during testing you need to 
-# 1. copy this file in the same directory where it is
-# 2. rename the copy to jackan-test.properties   (It won't be under version control)
-# 3. fill the copy with your catalog parameters. 
-
-handlers=java.util.logging.ConsoleHandler, java.util.logging.FileHandler
-java.util.logging.ConsoleHandler.level=FINEST
-eu.trentorise.opendata.jackan.level=FINEST

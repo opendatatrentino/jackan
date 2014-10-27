@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class TestConfig {
     
-    static public String JACKAN_TEST_PROPERTIES = "jackan-test.properties";
+    static public String JACKAN_TEST_PROPERTIES = "conf/jackan-test.properties";
     
     static private String OUTPUT_CKAN_PROPERTY = "jackan.test.ckan.output";
     static private String OUTPUT_CKAN_TOKEN_PROPERTY = "jackan.test.ckan.output-token";
