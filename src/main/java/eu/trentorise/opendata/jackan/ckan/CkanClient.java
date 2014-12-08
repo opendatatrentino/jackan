@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
+import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonEmpty;
 import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.removeTrailingSlash;
 import java.io.*;
 import java.net.URLEncoder;
@@ -254,6 +255,9 @@ public class CkanClient {
      * @return
      */
     public static String makeResourceURL(String catalogUrl, String datasetIdentifier, String resourceId) {
+        checkNonEmpty(catalogUrl, "catalog url");
+        checkNonEmpty(datasetIdentifier, "dataset identifier");
+        checkNonEmpty(resourceId, "resource id");
         return catalogUrl + "/" + datasetIdentifier + "/resource/" + resourceId;
     }
 

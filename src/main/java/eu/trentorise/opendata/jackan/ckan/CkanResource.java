@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
+import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
+import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.isNonEmpty;
 import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
 import java.util.HashMap;
 import java.util.List;
@@ -558,18 +560,37 @@ public class CkanResource {
     }
 
    
-    /** TODO this converter is largely incomplete!!! */
-    public DcatDistribution toDcatDistribution(String catalogURL, @Nullable String datasetId, @Nullable String license){
+    /** TODO this converter is largely incomplete!!! 
+     * 
+     * @param catalogURL may be an empty string
+     * @param datasetId may be an empty string
+     * @param license may be an empty string
+     * 
+     */
+    public DcatDistribution toDcatDistribution(String catalogURL, String datasetId, String license){
         CkanClient.logger.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
-    
+        checkNonNull(catalogURL, "catalog URL");        
+        checkNonNull(datasetId, "dataset id");        
+        checkNonNull(license, "license");        
+        
         String nCatalogUrl = TraceProvUtils.removeTrailingSlash(catalogURL);
         
-        DcatDistribution dd = new DcatDistribution();
+        DcatDistribution dd = new DcatDistribution();                
         
+        String resURL = "";
         
+        if (isNonEmpty(catalogURL) && isNonEmpty(datasetId) && isNonEmpty(license)){
+            resURL = CkanClient.makeResourceURL(nCatalogUrl, datasetId, this.getId());  
+        }
         
-        dd.setAccessURL(this.getUrl());
+        if (resURL.length() > 0){
+            dd.setAccessURL(resURL);
+        }
         
+        if (this.getUrl() != null){
+            dd.setDownloadURL(this.getUrl());
+        }
+                
         try {
             if (this.getSize() != null){
                 dd.setByteSize(Integer.parseInt(this.getSize()));
@@ -579,31 +600,50 @@ public class CkanResource {
             CkanClient.logger.log(Level.WARNING, "COULDN'T CONVERT CKAN RESOURCE SIZE TO DCAT! REQUIRED AN INTEGER, FOUND {0} (ALTHOUGH STRINGS ARE VALID CKAN SIZES)", this.getSize());
         }
         
+        if (this.getDatasetId() != null){
+            dd.setDatasetIdentifier(this.getDatasetId());
+        }
         
-        dd.setDatasetIdentifier(this.getDatasetId());
-        dd.setDescription(this.getDescription());
+        if (this.getDescription() != null){
+            dd.setDescription(this.getDescription());
+        }
+        
         
         CkanClient.logger.warning("TODO - SKIPPED 'DOWNLOAD URL' WHILE CONVERTING FROM CKAN TO DCAT");        
         //dd.setDownloadURL(null);
         
-        dd.setFormat(this.getFormat());
+        if (this.getFormat() != null){
+            dd.setFormat(this.getFormat());
+        }
+        
         DateTime lastModified = this.getLastModified();
         if (lastModified != null){
             dd.setIssued(lastModified.toString());
-        }                        
-        dd.setLicense(license);
-        dd.setMediaType(this.getMimetype());
-        dd.setModified(this.getRevisionTimestamp());
+        }     
+        if (license != null){
+            dd.setLicense(license);
+        }
+        if (this.getMimetype() != null){
+            dd.setMediaType(this.getMimetype());
+        }
+        if (this.getRevisionTimestamp() != null){
+            dd.setModified(this.getRevisionTimestamp());
+        }
+        
         CkanClient.logger.warning("TODO - SKIPPED 'RIGHTS' WHILE CONVERTING FROM CKAN TO DCAT");        
-        //dd.setRights(null);        
+        //dd.setRights("");        
         
         CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");        
-        // dd.setSpatial(null);
+        // dd.setSpatial("");
         
-        dd.setTitle(this.getName());
+        if (this.getName() != null){
+            dd.setTitle(this.getName());
+        }
         
-        dd.setURI(CkanClient.makeResourceURL(nCatalogUrl, datasetId, this.getId()));
-        
+        if (resURL.length() > 0){
+            dd.setURI(resURL);
+        }
+                
         return dd;
     }    
     
