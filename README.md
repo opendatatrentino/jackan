@@ -3,7 +3,7 @@ Jackan
 
 Java client library for CKAN catalogs. Supports Ckan 2.2+ 
 
-**Project status**: developing [milestone 0.3](https://github.com/opendatatrentino/Jackan/issues?milestone=1&state=open)
+**Project status**: developing [milestone 0.4](https://github.com/opendatatrentino/Jackan/issues?milestone=2&state=open)
 
 **Roadmap**: see [project issues](https://github.com/opendatatrentino/Jackan/issues)
 
