@@ -1,11 +1,16 @@
 package eu.trentorise.opendata.jackan.ckan;
 
+import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonEmpty;
+import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
+import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.concurrent.Immutable;
 
-/** The class contains a  minmum set of fields that are used to create dataset
+/** The class contains a  minimum set of fields that are used to create dataset
  * Created by Ivan Tankoyeu on 24/05/2014.
  */
-public class CkanDatasetMinimized {
+@Immutable
+public final class CkanDatasetMinimized {
 
     private String name;
     private String url;
@@ -14,18 +19,29 @@ public class CkanDatasetMinimized {
     private String licenseId;
 
 
+    public CkanDatasetMinimized(){
+        this.name = "";
+        this.url = "";
+        this.extras = new ArrayList();
+        this.title = "";
+        this.licenseId = "";
+    }
+    
     /**
      * 
      * @param name
-     * 
      * @param url A page URL containg a description of the semantified dataset columns and the trasformations done on the original dataset. This URL will be also displayed as metadata in the catalog under dcat:landingPage
-               
-
      * @param extras
      * @param title
      * @param licenseId 
      */
     public CkanDatasetMinimized(String name, String url, List<CkanPair> extras, String title, String licenseId) {
+        this();
+        checkNonEmpty(name, "ckan dataset name");
+        checkNonNull(url, "ckan dataset url to description page");
+        checkNonNull(extras, "ckan dataset extras");
+        checkNonEmpty(title, "ckan dataset title");
+        checkNonNull(licenseId, "ckan dataset license id");
         this.name = name;
         this.url = url;
         this.title = title;
@@ -37,41 +53,27 @@ public class CkanDatasetMinimized {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    
 
     public String getLicenseId() {
         return licenseId;
     }
 
-    public void setLicenseId(String licenseId) {
-        this.licenseId = licenseId;
-    }
-
-    
     
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+    
 
     public List<CkanPair> getExtras() {
         return extras;
     }
-
-    public void setExtras(List<CkanPair> extras) {
-        this.extras = extras;
-    }
+    
 }

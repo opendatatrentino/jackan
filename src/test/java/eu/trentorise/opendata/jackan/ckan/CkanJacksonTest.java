@@ -19,7 +19,6 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.opendata.jackan.Config;
 import eu.trentorise.opendata.jackan.test.TestConfig;
 import java.io.*;
 import java.util.logging.Logger;

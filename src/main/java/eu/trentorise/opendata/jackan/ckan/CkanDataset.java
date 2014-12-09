@@ -69,7 +69,7 @@ public class CkanDataset {
 
     private String revisionId;
     private DateTime revisionTimestamp;
-    private String state; 
+    private String state;
     private List<CkanTag> tags;
     private String title;
     private String type;
@@ -83,9 +83,21 @@ public class CkanDataset {
      */
     private Map<String, Object> others = new HashMap<String, Object>();
 
+    public CkanDataset() {
+    }
+
+    /**
+     * @param id The alphanumerical id of the dataaset,
+     * i.e."c4577b8f-5603-4098-917e-da03e8ddf461"
+     */
+    public CkanDataset(String id) {
+        this();
+        this.id = id;
+    }
+
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't
-     * end up in extras as they should. In this case, they end up in 'others'
+     * end up in extras as they should. In this case, they go to in 'others'
      * field
      */
     @JsonAnyGetter
@@ -148,10 +160,17 @@ public class CkanDataset {
         this.downloadUrl = downloadUrl;
     }
 
+    /**
+     * Returns the alphanumerical id, i.e.
+     * "c4577b8f-5603-4098-917e-da03e8ddf461"
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the alphanumerical id, i.e. "c4577b8f-5603-4098-917e-da03e8ddf461"
+     */
     public void setId(String id) {
         this.id = id;
     }
@@ -206,7 +225,7 @@ public class CkanDataset {
 
     /**
      * Returns date in UTC timezone
-     */    
+     */
     public DateTime getMetadataCreated() {
         return metadataCreated;
     }
@@ -220,7 +239,7 @@ public class CkanDataset {
 
     /**
      * Returns date in UTC timezone
-     */        
+     */
     public DateTime getMetadataModified() {
         return metadataModified;
     }
@@ -257,29 +276,32 @@ public class CkanDataset {
     }
 
     /**
-     * Returns the owner organization alphanunmerical id, like "b112ed55-01b7-4ca4-8385-f66d6168efcc",
-     */    
+     * Returns the owner organization alphanunmerical id, like
+     * "b112ed55-01b7-4ca4-8385-f66d6168efcc",
+     */
     public String getOwnerOrg() {
         return ownerOrg;
     }
 
     /**
-     * Sets the owner organization alphanunmerical id, like "b112ed55-01b7-4ca4-8385-f66d6168efcc",
+     * Sets the owner organization alphanunmerical id, like
+     * "b112ed55-01b7-4ca4-8385-f66d6168efcc",
      */
     public void setOwnerOrg(String ownerOrg) {
         this.ownerOrg = ownerOrg;
     }
 
-    /** 
-     * Returns the alphanumerical id, like "39d94b20-ea72-4c5e-bd8f-967a77e03946"
+    /**
+     * Returns the alphanumerical id, like
+     * "39d94b20-ea72-4c5e-bd8f-967a77e03946"
      */
     public String getRevisionId() {
         return revisionId;
     }
 
-    /** 
+    /**
      * Sets the alphanumerical id, like "39d94b20-ea72-4c5e-bd8f-967a77e03946"
-     */    
+     */
     public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
     }
@@ -379,68 +401,94 @@ public class CkanDataset {
         this.extras = extras;
     }
 
-    public DcatDataset ToDcatDataset(String catalogURL, String locale){
-        
+    public DcatDataset ToDcatDataset(String catalogURL, String locale) {
+
+        TraceProvUtils.checkNonEmpty(catalogURL, "dcat dataset catalo URL");
+        TraceProvUtils.checkNonNull(locale, "dcat dataset locale");
+
         String nCatalogUrl = TraceProvUtils.removeTrailingSlash(catalogURL);
-        
+
         CkanClient.logger.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
-        
+
         DcatDataset dd = new DcatDataset();
-        
-        
-        
-        CkanClient.logger.warning("TODO - SKIPPED ACCRUAL PERIODICITY WHILE CONVERTING FROM CKAN TO DCAT");  
+
+        CkanClient.logger.warning("TODO - SKIPPED ACCRUAL PERIODICITY WHILE CONVERTING FROM CKAN TO DCAT");
         // dd.setAccrualPeriodicity(null);
         CkanClient.logger.warning("TODO - SKIPPED CONTACT POINT WHILE CONVERTING FROM CKAN TO DCAT");
         // dd.setContactPoint(null);
-        
-        dd.setDescription(this.getNotes());
-        
-        
+
+        if (this.getNotes() != null) {
+            dd.setDescription(this.getNotes());
+        }
+
         List<DcatDistribution> distribs = new ArrayList();
-        for (CkanResource cr : this.getResources()){
-            distribs.add(cr.toDcatDistribution(nCatalogUrl, this.getId(), this.getLicenseId()));
+        if (this.getResources() != null) {
+            for (CkanResource cr : this.getResources()) {
+                distribs.add(cr.toDcatDistribution(nCatalogUrl, this.getId(), this.getLicenseId()));
+            }
         }
-        
-        dd.setDistributions(distribs);        
-        dd.setIdentifier(this.getName());
-        
-        dd.setIssued(this.getMetadataCreated().toString());
-        
+
+        dd.setDistributions(distribs);
+        if (this.getName() != null) {
+            dd.setIdentifier(this.getName());
+        }
+
+        if (this.getMetadataCreated() != null) {
+            dd.setIssued(this.getMetadataCreated().toString());
+        }
+
         List<String> keywords = new ArrayList();
-        for (CkanTag tag : this.getTags()){
-            keywords.add(tag.getName());
+        if (this.getTags() != null) {
+            for (CkanTag tag : this.getTags()) {
+                keywords.add(tag.getName());
+            }
+            dd.setKeywords(keywords);
         }
-        dd.setKeywords(keywords);
-        
-        dd.setLandingPage(this.getUrl());
+
+        if (this.getUrl() != null) {
+            dd.setLandingPage(this.getUrl());
+        }
+
         dd.setLanguage(locale);
-        dd.setModified(this.getMetadataModified().toString());
+
+        if (this.getMetadataModified() != null) {
+            dd.setModified(this.getMetadataModified().toString());
+        }
+
         FoafAgent publisher = new FoafAgent();
         publisher.setURI(locale);
-        publisher.setName(this.getMaintainer());
-        publisher.setMbox(this.getMaintainerEmail());
+        if (this.getMaintainer() != null) {
+            publisher.setName(this.getMaintainer());
+        }
+        if (this.getMaintainerEmail() != null) {
+            publisher.setMbox(this.getMaintainerEmail());
+        }
+
         dd.setPublisher(publisher);
         // dd.setSpatial(catalogURL);
-        CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");        
-        
-        //dd.setTemporal(catalogURL);
-        CkanClient.logger.warning("TODO - SKIPPED 'TEMPORAL' WHILE CONVERTING FROM CKAN TO DCAT");        
-                
-        CkanClient.logger.warning("TODO - SKIPPED 'THEME' WHILE CONVERTING FROM CKAN TO DCAT");        
-        // dd.setTheme(null);
-        
-        dd.setTitle(this.getTitle());
-        
-        // let's set URI to ckan page
-        dd.setURI(CkanClient.makeDatasetURL(nCatalogUrl, this.getId()));
-        return dd;
-    };
+        CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");
 
-    
+        //dd.setTemporal(catalogURL);
+        CkanClient.logger.warning("TODO - SKIPPED 'TEMPORAL' WHILE CONVERTING FROM CKAN TO DCAT");
+
+        CkanClient.logger.warning("TODO - SKIPPED 'THEME' WHILE CONVERTING FROM CKAN TO DCAT");
+        // dd.setTheme(null);
+
+        if (this.getTitle() != null) {
+            dd.setTitle(this.getTitle());
+        }
+
+        // let's set URI to ckan page
+        if (this.getId() != null) {
+            dd.setURI(CkanClient.makeDatasetURL(nCatalogUrl, this.getId()));
+        }
+
+        return dd;
+    }
 
     /**
-     * Actually it is named "private" in the CKAN API. Appears in dataset searches.
+     * Actually it is named "private" in the CKAN API. Appears in dataset
+     * searches.
      */
     @JsonProperty("private")
     public Boolean getPriv() {
@@ -448,8 +496,9 @@ public class CkanDataset {
     }
 
     /**
-     * Actually it is named "private" in the CKAN API. Appears in dataset searches.
-     */    
+     * Actually it is named "private" in the CKAN API. Appears in dataset
+     * searches.
+     */
     public void setPriv(Boolean priv) {
         this.priv = priv;
     }

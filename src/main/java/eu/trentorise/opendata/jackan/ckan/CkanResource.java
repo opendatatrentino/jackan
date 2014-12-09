@@ -24,6 +24,7 @@ import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
 import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
 import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.isNonEmpty;
 import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +112,12 @@ public class CkanResource {
      */
     @Nullable
     private String datasetId;
+    
+    /**
+     * Custom CKAN instances might sometimes gift us with properties that don't
+     * end up in extras as they should. They will end up here.
+     */
+    private Map<String, Object> others;    
 
     /**
      * Returns the dataset this resource belongs to. Convenience getter not
@@ -131,19 +138,15 @@ public class CkanResource {
         this.datasetId = datasetId;
     }
 
-    /**
-     * Custom CKAN instances might sometimes gift us with properties that don't
-     * end up in extras as they should. They will end up here.
-     */
-    private Map<String, Object> others = new HashMap<String, Object>();
-
-    public CkanResource() {
+    public CkanResource() {        
+        others = new HashMap();
     }
 
     /**
      * Custom constructor for dataset creation purpose. todo add stuff.
      */
     public CkanResource(String name, String url, List<CkanPair> extras) {
+        this();
         this.name = name;
         this.url = url;
         this.extras = extras;
