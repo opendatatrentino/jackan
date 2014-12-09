@@ -340,6 +340,7 @@ public class CkanClient {
     public synchronized List<String> getDatasetList() {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list").result;
     }
+            
 
     /**
      *
@@ -354,6 +355,13 @@ public class CkanClient {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list",
                 "limit", limit, "offset", offset).result;
     }
+    
+    /** 
+     * Returns the list of available licenses in the ckan catalog.
+     */
+    public synchronized List<CkanLicense> getLicenseList(){
+        return getHttp(LicenseListResponse.class, "/api/3/action/license_list").result;
+    }    
 
     /**
      * @param id should be the alphanumerical id like
@@ -572,6 +580,8 @@ public class CkanClient {
 
         return dsr.result;
     }
+    
+
 
 }
 
@@ -636,32 +646,26 @@ class CkanResponse {
 }
 
 class DatasetResponse extends CkanResponse {
-
     public CkanDataset result;
 }
 
 class ResourceResponse extends CkanResponse {
-
     public CkanResource result;
 }
 
 class DatasetListResponse extends CkanResponse {
-
     public List<String> result;
 }
 
 class UserListResponse extends CkanResponse {
-
     public List<CkanUser> result;
 }
 
 class UserResponse extends CkanResponse {
-
     public CkanUser result;
 }
 
 class TagListResponse extends CkanResponse {
-
     public List<CkanTag> result;
 }
 
@@ -671,21 +675,22 @@ class GroupResponse extends CkanResponse {
 }
 
 class GroupListResponse extends CkanResponse {
-
     public List<CkanGroup> result;
 }
 
 class GroupNamesResponse extends CkanResponse {
-
     public List<String> result;
 }
 
 class TagNamesResponse extends CkanResponse {
-
     public List<String> result;
 }
 
 class DatasetSearchResponse extends CkanResponse {
-
     public SearchResults<CkanDataset> result;
+}
+
+
+class LicenseListResponse extends CkanResponse {
+    public List<CkanLicense> result;
 }

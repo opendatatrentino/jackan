@@ -491,7 +491,8 @@ public class CkanDataset {
      * searches.
      */
     @JsonProperty("private")
-    public Boolean getPriv() {
+    @Nullable
+    public Boolean isPriv() {
         return priv;
     }
 
@@ -499,7 +500,7 @@ public class CkanDataset {
      * Actually it is named "private" in the CKAN API. Appears in dataset
      * searches.
      */
-    public void setPriv(Boolean priv) {
+    public void setPriv(@Nullable Boolean priv) {
         this.priv = priv;
     }
 

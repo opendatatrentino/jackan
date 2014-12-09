@@ -23,6 +23,7 @@ import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanDatasetMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
+import eu.trentorise.opendata.jackan.ckan.CkanLicense;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
@@ -37,8 +38,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import junit.framework.Assert;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -225,7 +228,7 @@ public class CkanClientITCase {
     }
 
     @Test
-    public void testCreateDataSet() throws URISyntaxException {
+    public void testCreateDataset() throws URISyntaxException {
 
         CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
 
@@ -296,5 +299,21 @@ public class CkanClientITCase {
         CkanResource cResource = cClient.updateResource(ckanResource);
         logger.log(Level.INFO, "Ckan Resource URL changed:{0}", cResource.getUrl());
 
+    }
+    
+    @Test
+    public void testLicenseList(){
+        CkanClient cc = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
+        
+        List<CkanLicense> licenses = cc.getLicenseList();
+        assertTrue(licenses.size() > 0);
+        for (CkanLicense cl : licenses){
+            if ("cc-by".equals(cl.getId())){
+                assertTrue(cl.isOkdCompliant());
+                assertFalse(cl.isOsiCompliant());
+                return;
+            }
+        }
+        Assert.fail("Should have found cc-by license");
     }
 }

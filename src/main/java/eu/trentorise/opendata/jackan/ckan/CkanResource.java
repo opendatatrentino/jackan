@@ -24,7 +24,6 @@ import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
 import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
 import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.isNonEmpty;
 import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

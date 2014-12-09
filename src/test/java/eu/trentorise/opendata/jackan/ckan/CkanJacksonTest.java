@@ -123,14 +123,13 @@ public class CkanJacksonTest {
      * @throws IOException
      */
     @Test
-    public void testWrite() throws IOException {
-        String email = "a@b.org";
+    public void testDatasetWrite() throws IOException {
+        String email = "a@b.org";        
         CkanDataset cd = new CkanDataset();
-        cd.setAuthorEmail(email);
+        cd.setAuthorEmail(email);        
         String json = CkanClient.getObjectMapperClone().writeValueAsString(cd);
-        assertEquals(email, new ObjectMapper().readTree(json).get("author_email").asText());
-    }
-
+        assertEquals(email, new ObjectMapper().readTree(json).get("author_email").asText());                                
+    }          
 
     @Test
     public void testReadGroup() throws IOException {
