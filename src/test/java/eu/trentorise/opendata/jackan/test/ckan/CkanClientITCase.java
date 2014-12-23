@@ -35,6 +35,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,8 +58,6 @@ import org.junit.Test;
  */
 public class CkanClientITCase {
 
-    private static final String TEST_RESOURCE_ID="1aff9c7a-895a-4c12-b02b-e0f9548afc90";        
-       
     public static Logger logger = Logger.getLogger(CkanClientITCase.class.getName());
     static String DATI_TRENTINO = "http://dati.trentino.it";
     static String DATA_GOV_UK = "http://data.gov.uk";
@@ -67,13 +66,13 @@ public class CkanClientITCase {
     public static final String LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME = "Metadati in formato XML";
 
     CkanClient client;
-    
+
     @BeforeClass
-    public static void setUpClass() {        
+    public static void setUpClass() {
         TestConfig.initLogger();
         TestConfig.initProperties();
     }
-    
+
     @Before
     public void setUp() {
         client = new CkanClient(DATI_TRENTINO);
@@ -121,7 +120,6 @@ public class CkanClientITCase {
 //        fail("Couldn't find xml resource in " + LAGHI_MONITORATI_TRENTO_NAME + " dataset");
 //
 //    }
-    
     @Test
     public void testUserList() {
         List<CkanUser> ul = client.getUserList();
@@ -221,7 +219,8 @@ public class CkanClientITCase {
         try {
             CkanDataset dataset = client.getDataset("666");
             fail();
-        } catch (JackanException ex) {
+        }
+        catch (JackanException ex) {
 
         }
 
@@ -244,13 +243,18 @@ public class CkanClientITCase {
 
         String datasetName = "test-dataset-jackan-" + uuid;
 
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName, uri, extras, "Test Jackan Dataset " + uuid, "cc-zero");
+        CkanDataset ckanDataset = new CkanDataset();
+        ckanDataset.setName(datasetName);
+        ckanDataset.setUrl(uri);
+        ckanDataset.setExtras(extras);
+        ckanDataset.setTitle("Test Jackan Dataset " + uuid);
+        ckanDataset.setLicenseId("cc-zero");
 
         CkanDataset retDataset = cClient.createDataset(ckanDataset);
 
         assertNotNull(retDataset.getId());
         assertTrue(retDataset.getId().length() > 0);
-        logger.info("created dataset with id " + retDataset.getId() + " in catalog " + TestConfig.getOutputCkan());
+        logger.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), TestConfig.getOutputCkan()});
     }
 
     @Test
@@ -263,10 +267,16 @@ public class CkanClientITCase {
         long uuidDataset = UUID.randomUUID().getMostSignificantBits();
         String datasetName = "test-dataset-jackan-" + uuidDataset;
 
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName, uri, new ArrayList<CkanPair>(), "Test Jackan Dataset " + uuidDataset, "cc-zero");
+        CkanDataset ckanDataset = new CkanDataset(datasetName,
+                uri,
+                new ArrayList(),
+                "Test Jackan Dataset " + uuidDataset,
+                "cc-zero");
+
         CkanDataset retDataset = cClient.createDataset(ckanDataset);
 
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "Jackan test resource " + UUID.randomUUID().getMostSignificantBits() + uuidDataset,
+        CkanResource ckanResource = new CkanResource("JSONLD",
+                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits() + uuidDataset,
                 uri,
                 "Most interesting test resource in the universe",
                 retDataset.getId(),
@@ -276,44 +286,80 @@ public class CkanClientITCase {
 
         assertNotNull(retCkanRes.getId());
         assertTrue(retCkanRes.getId().length() > 0);
-        logger.info("Created resource with id " + retCkanRes.getId() + " in catalog " + TestConfig.getOutputCkan());
+        logger.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retCkanRes.getId(), TestConfig.getOutputCkan()});
 
     }
 
     /**
      * todo review this!!!
-     * @throws URISyntaxException 
+     *
+     * @throws URISyntaxException
      */
     @Test
     @Ignore
-    public void testUpdateResource() throws URISyntaxException {
+    public void testUpdateDataset() throws URISyntaxException {
         CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
 
         URI uri = null;
 
         uri = new URI("http", "www.unitn.it", null, null);
+        
+        
+        
+        CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + UUID.randomUUID().getMostSignificantBits(),
+                "http://jackan-land-of-dreams.org",
+                new ArrayList(),
+                "Test Jackan Dataset " + UUID.randomUUID().getMostSignificantBits(),
+                "cc-zero");
+        
+        // CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
+        CkanResource resource1 = new CkanResource("JSONLD",
+                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
+                "http://go-play-with-jackan.org/myfile_1.jsonld",
+                "First most interesting test resource in the universe",
+                dataset.getId(),
+                null);
 
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
+        CkanDataset createdDataset = cClient.createDataset(dataset);
+        CkanResource createdResource = cClient.createResource(resource1);
+        
 
-        ckanResource.setId(TEST_RESOURCE_ID);
-        CkanResource cResource = cClient.updateResource(ckanResource);
+        CkanResource resource2 = new CkanResource("JSONLD",
+                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
+                "http://go-play-with-jackan.org/myfile_2.jsonld",
+                "Second most interesting test resource in the universe",
+                dataset.getId(),
+                null);
+        
+        createdDataset.setAuthor("Jackan enthusiast");
+        createdDataset.getResources().add(resource2);
+        
+        CkanDataset updatedDataset = cClient.updateDataset(createdDataset);
+        
         logger.log(Level.INFO, "Ckan Resource URL changed:{0}", cResource.getUrl());
 
     }
-    
+
     @Test
-    public void testLicenseList(){
+    public void testLicenseList() {
         CkanClient cc = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
-        
+
         List<CkanLicense> licenses = cc.getLicenseList();
         assertTrue(licenses.size() > 0);
-        for (CkanLicense cl : licenses){
-            if ("cc-by".equals(cl.getId())){
+        for (CkanLicense cl : licenses) {
+            if ("cc-by".equals(cl.getId())) {
                 assertTrue(cl.isOkdCompliant());
                 assertFalse(cl.isOsiCompliant());
                 return;
             }
         }
         Assert.fail("Should have found cc-by license");
+    }
+
+    @Test
+    public void testFormatList() {
+        Set<String> formats = client.getFormats();
+        assertTrue(formats.size() > 0);
+        assertTrue(formats.contains("csv"));
     }
 }

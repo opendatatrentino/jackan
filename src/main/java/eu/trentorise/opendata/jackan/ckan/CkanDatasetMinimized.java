@@ -7,6 +7,8 @@ import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
 /** The class contains a  minimum set of fields that are used to create dataset
+ * 
+ * @deprecated use {@link eu.trentorise.opendata.jackan.ckan.CkanDataset} instead.
  * Created by Ivan Tankoyeu on 24/05/2014.
  */
 @Immutable

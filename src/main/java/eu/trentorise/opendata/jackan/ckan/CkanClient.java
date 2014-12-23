@@ -38,6 +38,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
@@ -95,9 +96,9 @@ public class CkanClient {
 
             // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQDateHandling
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"                            so we removed it here
-            objectMapper.setDateFormat(new SimpleDateFormat(CKAN_DATE_PATTERN)); // but this only works for Java Dates
+            objectMapper.setDateFormat(new SimpleDateFormat(CKAN_DATE_PATTERN)); // but this only works for Java Dates...
 
-            // taken solution from here: http://www.lorrin.org/blog/2013/06/28/custom-joda-time-dateformatter-in-jackson/
+            // ...so taken solution from here: http://www.lorrin.org/blog/2013/06/28/custom-joda-time-dateformatter-in-jackson/
             objectMapper.registerModule(new JodaModule());
 
             objectMapper.registerModule(new SimpleModule() {
@@ -127,6 +128,7 @@ public class CkanClient {
      * @param token the private token string for ckan repository
      */
     public CkanClient(String URL, @Nullable String token) {
+        checkNonEmpty(URL, "ckan catalog url");        
         this.catalogURL = removeTrailingSlash(URL);
         this.ckanToken = token;
     }
@@ -236,13 +238,14 @@ public class CkanClient {
     public static String makeDatasetURL(String catalogUrl, String datasetIdentifier) {
         return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdentifier;
     }
+        
 
     /**
 
      * Given some resource parameters, reconstruct the URL of resource page in the
      * catalog website.
      *
-     * Valid URLs have this format with the name:
+     * Valid URLs have this format with the dataset name:
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
      *
      * but it is preferable to use the id:
@@ -261,6 +264,9 @@ public class CkanClient {
         return catalogUrl + "/" + datasetIdentifier + "/resource/" + resourceId;
     }
 
+    
+    
+    
     /**
      * Creates ckan resource on the server
      *
@@ -268,7 +274,7 @@ public class CkanClient {
      * @return the newly created resource
      * @throws JackanException
      */
-    public synchronized CkanResource createResource(CkanResourceMinimized resource) {
+    public synchronized CkanResource createResource(CkanResource resource) {
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
@@ -285,14 +291,16 @@ public class CkanClient {
     }
 
     /**
-     * Updates ckan resource on the server
+     * Updates a resource on the ckan server
      *
-     * @param resource ckan resource object with theminimal set of parameters
+     * @param resource ckan resource object 
      * @return the updated resource
      * @throws JackanException
      */
-    public synchronized CkanResource updateResource(CkanResourceMinimized resource) {
+    public synchronized CkanResource updateResource(CkanResource resource) {
 
+        throw new UnsupportedOperationException("todo 0.4 must implement parameters chck for this to work!");
+        /*
         if (ckanToken == null) {
             throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
         }
@@ -306,7 +314,19 @@ public class CkanClient {
         }
 
         return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
-
+        */
+    }
+    
+    
+    /**
+     * Updates a dataset on the ckan server
+     *
+     * @param dataset ckan dataset object with theminimal set of parameters
+     * @return the updated dataset
+     * @throws JackanException
+     */
+    public synchronized CkanResource updateDataset(CkanDataset dataset) {
+        throw new UnsupportedOperationException("todo 0.4 must implement parameters chck for this to work!");
     }
 
     /**
@@ -316,7 +336,7 @@ public class CkanClient {
      * @return the newly created dataset
      * @throws JackanException
      */
-    public synchronized CkanDataset createDataset(CkanDatasetMinimized dataset) {
+    public synchronized CkanDataset createDataset(CkanDataset dataset) {
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
@@ -341,7 +361,6 @@ public class CkanClient {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list").result;
     }
             
-
     /**
      *
      * @param limit
@@ -374,7 +393,7 @@ public class CkanClient {
         CkanDataset cd = getHttp(DatasetResponse.class, "/api/3/action/package_show",
                 "id", id).result;
         for (CkanResource cr : cd.getResources()) {
-            cr.setDatasetId(cd.getId());
+            cr.setPackageId(cd.getId());
         }
         return cd;
     }
@@ -414,14 +433,13 @@ public class CkanClient {
     }
 
     /**
-     * @throws JackanException on erroR
+     * @throws JackanException on error
      */
     public synchronized List<String> getGroupNames() {
         return getHttp(GroupNamesResponse.class, "/api/3/action/group_List").result;
     }
 
     /**
-     * @param id
      * @throws JackanException on error
      */
     public synchronized CkanGroup getGroup(String id) {
@@ -438,6 +456,14 @@ public class CkanClient {
     }
 
     /**
+     * Returns all the resource formats available in the catalog.
+     * @throws JackanException on error
+     */
+    public synchronized Set<String> getFormats() {
+        return getHttp(FormatListResponse.class, "/api/3/action/format_autocomplete", "q","", "limit","1000").result;
+    }
+    
+    /**
      * @throws JackanException on erroR
      */
     public synchronized List<String> getOrganizationNames() {
@@ -447,12 +473,11 @@ public class CkanClient {
     /**
      * In Ckan an organization is actually a group
      *
-     * @param id
      * @throws JackanException on error
      */
-    public synchronized CkanGroup getOrganization(String id) {
+    public synchronized CkanGroup getOrganization(String groupId) {
         return getHttp(GroupResponse.class, "/api/3/action/organization_show", "id",
-                id).result;
+                groupId).result;
     }
 
     /**
@@ -573,7 +598,7 @@ public class CkanClient {
         if (dsr.success) {
             for (CkanDataset ds : dsr.result.getResults()) {
                 for (CkanResource cr : ds.getResources()) {
-                    cr.setDatasetId(ds.getId());
+                    cr.setPackageId(ds.getId());
                 }
             }
         }
@@ -693,4 +718,8 @@ class DatasetSearchResponse extends CkanResponse {
 
 class LicenseListResponse extends CkanResponse {
     public List<CkanLicense> result;
+}
+
+class FormatListResponse extends CkanResponse {
+    public Set<String> result;
 }

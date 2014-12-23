@@ -1,6 +1,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 /**
+ * @deprecated use {@link eu.trentorise.opendata.jackan.ckan.CkanResource} instead
  * Created by Ivan Tankoyeu on 23/05/2014.
  */
 public class CkanResourceMinimized {

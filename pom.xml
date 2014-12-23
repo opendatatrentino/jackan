@@ -29,12 +29,12 @@
     <packaging>jar</packaging>
 
     <name>Jackan</name>
-    <url>https://github.com/opendatatrentino/Jackan</url>
+    <url>https://github.com/opendatatrentino/jackan</url>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>        
+        <version>9</version>        
     </parent>
 
     <licenses>
@@ -179,8 +179,8 @@
     
     <scm>
         <url>git@github.com:opendatatrentino/Jackan.git</url>
-        <connection>scm:git:git@github.com:opendatatrentino/Jackan.git</connection>
-        <developerConnection>scm:git:git@github.com:opendatatrentino/Jackan.git</developerConnection>
+        <connection>scm:git:git@github.com:opendatatrentino/jackan.git</connection>
+        <developerConnection>scm:git:git@github.com:opendatatrentino/jackan.git</developerConnection>
     </scm>
     <description>Java client to access CKAN repositories. LGPL licensed. </description>
 
