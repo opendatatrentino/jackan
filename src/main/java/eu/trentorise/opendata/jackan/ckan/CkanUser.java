@@ -85,6 +85,8 @@ public class CkanUser {
     private CkanState state;
     private boolean sysadmin;
 
+    public CkanUser(){}
+    
     @Nullable public String getAbout() {
         return about;
     }

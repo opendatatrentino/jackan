@@ -50,6 +50,10 @@ public class CkanActivity {
     private List<CkanGroup> groups;
     private CkanState state;
 
+    public CkanActivity(){
+        
+    }
+    
     public String getId() {
         return id;
     }

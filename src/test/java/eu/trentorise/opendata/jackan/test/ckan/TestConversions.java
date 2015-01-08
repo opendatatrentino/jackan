@@ -2,6 +2,8 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.dcat.DcatFactory;
+import java.util.Locale;
 import org.junit.Test;
 
 /**
@@ -11,11 +13,11 @@ import org.junit.Test;
 public class TestConversions {
     @Test
     public void testResourceToDcat(){
-        new CkanResource().toDcatDistribution("some-catalog", "", "");
+        DcatFactory.distribution(new CkanResource(), "some-catalog", "", "", Locale.ROOT);
     }
     
     @Test
     public void testDatasetToDcat(){
-        new CkanDataset().ToDcatDataset("some-catalog", "");
+        DcatFactory.dataset(new CkanDataset(), "some-catalog", Locale.ROOT);
     }
 }

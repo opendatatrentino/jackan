@@ -35,6 +35,8 @@ public class CkanTag {
     @Nullable private CkanState state;
     private String id;
 
+    public CkanTag(){}
+    
     public String getVocabularyId() {
         return vocabularyId;
     }

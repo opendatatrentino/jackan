@@ -32,11 +32,13 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonEmpty;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.removeTrailingSlash;
+import eu.trentorise.opendata.traceprov.TraceProvUtils;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonEmpty;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.removeTrailingSlash;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -48,6 +50,7 @@ import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Class to access a ckan instance. Threadsafe.
@@ -61,14 +64,13 @@ public class CkanClient {
 
     @Nullable
     private static ObjectMapper objectMapper;
+
     private final String catalogURL;
     @Nullable
     private final String ckanToken;
-    
+
     public static Logger logger = Logger.getLogger(CkanClient.class.getName());
 
-    
-    
     /**
      * @return a clone of the json object mapper used internally.
      */
@@ -128,11 +130,18 @@ public class CkanClient {
      * @param token the private token string for ckan repository
      */
     public CkanClient(String URL, @Nullable String token) {
-        checkNonEmpty(URL, "ckan catalog url");        
+        checkNonEmpty(URL, "ckan catalog url");
         this.catalogURL = removeTrailingSlash(URL);
         this.ckanToken = token;
     }
 
+    @Override
+    public String toString() {
+        return "CkanClient{" + "catalogURL=" + catalogURL + ", ckanToken=" + ckanToken + '}';
+    }
+
+    
+    
     /**
      * Method for http GET
      *
@@ -145,8 +154,9 @@ public class CkanClient {
      */
     <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
             Object... params) {
-        try {
+        String fullUrl;
 
+        try {
             StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
             for (int i = 0; i < params.length; i += 2) {
                 sb.append(i == 0 ? "?" : "&")
@@ -155,7 +165,13 @@ public class CkanClient {
                         .append(URLEncoder.encode(params[i + 1].toString(),
                                         "UTF-8"));
             }
-            String fullUrl = sb.toString();
+            fullUrl = sb.toString();
+        }
+        catch (Exception ex) {
+            throw new JackanException("Error while building url to perform GET! \n Response class:" + responseType.getClass()
+                    + " \n path: " + path + " \n params: " + Arrays.toString(params), ex);
+        }
+        try {
             logger.log(Level.FINE, "getting {0}", fullUrl);
             String json = Request.Get(fullUrl).execute().returnContent()
                     .asString();
@@ -169,8 +185,9 @@ public class CkanClient {
                 );
             }
             return dr;
-        } catch (Exception ex) {
-            throw new JackanException("Error while getting dataset.", ex);
+        }
+        catch (Exception ex) {
+            throw new JackanException("Error while performing GET. Request url was: " + fullUrl, ex);
         }
     }
 
@@ -187,14 +204,14 @@ public class CkanClient {
                                         "UTF-8"));
             }
             String fullUrl = sb.toString();
-            
+
             logger.log(Level.FINE, "posting {0}", fullUrl);
             Response response = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", ckanToken).execute();
 //            HttpResponse entity =response.returnResponse();
 //            System.out.println(entity.toString());
 
             Content out = response.returnContent();
-            String json = out.asString();            
+            String json = out.asString();
             logger.log(Level.FINE, "json {0}", json);
 
             T dr = getObjectMapper().readValue(json, responseType);
@@ -207,7 +224,8 @@ public class CkanClient {
                 );
             }
             return dr;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new JackanException("Error while uploading the semantified dataset.", ex);
         }
 
@@ -221,6 +239,11 @@ public class CkanClient {
         return ckanToken;
     }
 
+    public static DateTime parseRevisionTimestamp(String revisionTimestamp) {
+        checkNonEmpty(revisionTimestamp, "ckan revision timestamp");
+        return DateTime.parse(revisionTimestamp, ISODateTimeFormat.dateHourMinuteSecond());
+    }
+
     /**
      * Given some dataset parameters, reconstruct the URL of dataset page in the
      * catalog website.
@@ -228,49 +251,65 @@ public class CkanClient {
      * Valid URLs have this format with the name:
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013
      *
-     * but it is preferable to use the id:
-     * http://dati.trentino.it/dataset/418d662e-aa94-44bc-b281-d689aeec27ac
+     * @param datasetIdentifier either of name the dataset (preferred) or the
+     * alphanumerical id.
      *
-     * @param datasetIdentifier either the alphanumerical id of the dataset or
-     * the name. Using the id is preferable.
-     * @return
+     * @param catalogUrl i.e. http://dati.trentino.it
      */
     public static String makeDatasetURL(String catalogUrl, String datasetIdentifier) {
+        checkNonEmpty(catalogUrl, "catalog url");
+        checkNonEmpty(datasetIdentifier, "dataset Identifier");
         return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdentifier;
     }
-        
 
     /**
-
-     * Given some resource parameters, reconstruct the URL of resource page in the
-     * catalog website.
      *
-     * Valid URLs have this format with the dataset name:
+     * Given some resource parameters, reconstruct the URL of resource page in
+     * the catalog website.
+     *
+     * Valid URLs have this format with the dataset name
+     * 'impianti-di-risalita-vivifiemme-2013':
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
      *
-     * but it is preferable to use the id:
-     * http://dati.trentino.it/dataset/418d662e-aa94-44bc-b281-d689aeec27ac/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
-     *
-     * @param catalogUrl i.e. http://data.gov.uk
-     * @param datasetIdentifier alphanumerical id or the dataset name. The id is
-     * preferable.
-     * @param resourceId the alphanumerical id of the resource
-     * @return
+     * @param catalogUrl i.e. http://dati.trentino.it
+     * @param datasetIdentifier the dataset name (preferred) or the alphanumerical id
+     * 
+     * @param resourceId the alphanumerical id of the resource (DON'T use resource name)
      */
     public static String makeResourceURL(String catalogUrl, String datasetIdentifier, String resourceId) {
         checkNonEmpty(catalogUrl, "catalog url");
         checkNonEmpty(datasetIdentifier, "dataset identifier");
         checkNonEmpty(resourceId, "resource id");
-        return catalogUrl + "/" + datasetIdentifier + "/resource/" + resourceId;
+        return TraceProvUtils.removeTrailingSlash(catalogUrl)
+                + "/" + datasetIdentifier + "/resource/" + resourceId;
     }
 
-    
-    
-    
+    /**
+     *
+     * Given some group parameters, reconstruct the URL of group page in the
+     * catalog website.
+     *
+     * Valid URLs have this format with the group name
+     * 'gestione-del-territorio':
+     *
+     * http://dati.trentino.it/group/gestione-del-territorio
+     *
+     * @param catalogUrl i.e. http://dati.trentino.it
+     * @param groupId the group name as in {@link CkanGroup#getName()}
+     * (preferred), or the group's alphanumerical id.
+     */
+    public static String makeGroupURL(String catalogUrl, String groupId) {
+        checkNonEmpty(catalogUrl, "catalog url");
+        checkNonEmpty(groupId, "dataset identifier");
+        return TraceProvUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
+    }
+
     /**
      * Creates ckan resource on the server
      *
-     * @param resource ckan resource object with theminimal set of parameters
+     * @param resource ckan resource object with the minimal set of parameters
+     * required. See
+     * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
      * @return the newly created resource
      * @throws JackanException
      */
@@ -284,7 +323,8 @@ public class CkanClient {
         String json = null;
         try {
             json = objectMapper.writeValueAsString(resource);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
@@ -293,7 +333,7 @@ public class CkanClient {
     /**
      * Updates a resource on the ckan server
      *
-     * @param resource ckan resource object 
+     * @param resource ckan resource object
      * @return the updated resource
      * @throws JackanException
      */
@@ -301,23 +341,22 @@ public class CkanClient {
 
         throw new UnsupportedOperationException("todo 0.4 must implement parameters chck for this to work!");
         /*
-        if (ckanToken == null) {
-            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
-        }
+         if (ckanToken == null) {
+         throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+         }
 
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(resource);
-        } catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
-        }
+         ObjectMapper objectMapper = CkanClient.getObjectMapper();
+         String json = null;
+         try {
+         json = objectMapper.writeValueAsString(resource);
+         } catch (IOException e) {
+         throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+         }
 
-        return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
-        */
+         return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+         */
     }
-    
-    
+
     /**
      * Updates a dataset on the ckan server
      *
@@ -346,7 +385,8 @@ public class CkanClient {
         String json = null;
         try {
             json = objectMapper.writeValueAsString(dataset);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", e);
         }
         DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
@@ -360,7 +400,7 @@ public class CkanClient {
     public synchronized List<String> getDatasetList() {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list").result;
     }
-            
+
     /**
      *
      * @param limit
@@ -374,18 +414,17 @@ public class CkanClient {
         return getHttp(DatasetListResponse.class, "/api/3/action/package_list",
                 "limit", limit, "offset", offset).result;
     }
-    
-    /** 
-     * Returns the list of available licenses in the ckan catalog.
-     */
-    public synchronized List<CkanLicense> getLicenseList(){
-        return getHttp(LicenseListResponse.class, "/api/3/action/license_list").result;
-    }    
 
     /**
-     * @param id should be the alphanumerical id like
-     * 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d. Using the mnemonic like
-     * laghi-monitorati-trento is discouraged.
+     * Returns the list of available licenses in the ckan catalog.
+     */
+    public synchronized List<CkanLicense> getLicenseList() {
+        return getHttp(LicenseListResponse.class, "/api/3/action/license_list").result;
+    }
+
+    /**
+     * @param id either the dataset name (i.e. laghi-monitorati-trento) or the
+     * the alphanumerical id (i.e. 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d)
      *
      * @throws JackanException on error
      */
@@ -415,8 +454,8 @@ public class CkanClient {
 
     /**
      * @param id The alphanumerical id of the resource, such as
-     * d0892ada-b8b9-43b6-81b9-47a86be126db. It is also possible to pass the
-     * name, such
+     * d0892ada-b8b9-43b6-81b9-47a86be126db. 
+     * 
      * @throws JackanException on error
      */
     public synchronized CkanResource getResource(String id) {
@@ -425,6 +464,11 @@ public class CkanClient {
     }
 
     /**
+     * Returns the groups present in Ckan.
+     *
+     * Notice that organizations will <i>not</i> be returned by this method. To
+     * get them, use {@link #getOrganizationList() } instead.
+     *
      * @throws JackanException on error
      */
     public synchronized List<CkanGroup> getGroupList() {
@@ -440,44 +484,53 @@ public class CkanClient {
     }
 
     /**
+     * Returns a Ckan group. Do not pass an organization id, to get organization
+     * use {@link #getOrganization(java.lang.String) } instead.
+     *
      * @throws JackanException on error
      */
     public synchronized CkanGroup getGroup(String id) {
         return getHttp(GroupResponse.class, "/api/3/action/group_show", "id",
-                id).result;
+                id, "include_datasets", "false").result;
     }
 
     /**
+     * Returns the organizations present in CKAN.
+     *
+     * @see #getGroupList()
+     *
      * @throws JackanException on error
      */
-    public synchronized List<CkanGroup> getOrganizationList() {
-        return getHttp(GroupListResponse.class, "/api/3/action/organization_list",
+    public synchronized List<CkanOrganization> getOrganizationList() {
+        return getHttp(OrganizationListResponse.class, "/api/3/action/organization_list",
                 "all_fields", "True").result;
     }
 
     /**
      * Returns all the resource formats available in the catalog.
+     *
      * @throws JackanException on error
      */
     public synchronized Set<String> getFormats() {
-        return getHttp(FormatListResponse.class, "/api/3/action/format_autocomplete", "q","", "limit","1000").result;
+        return getHttp(FormatListResponse.class, "/api/3/action/format_autocomplete", "q", "", "limit", "1000").result;
     }
-    
+
     /**
-     * @throws JackanException on erroR
+     *
+     * @throws JackanException on error
      */
     public synchronized List<String> getOrganizationNames() {
         return getHttp(GroupNamesResponse.class, "/api/3/action/organization_List").result;
     }
 
     /**
-     * In Ckan an organization is actually a group
+     * Returns a Ckan organization. Do not pass it a group id.
      *
      * @throws JackanException on error
      */
-    public synchronized CkanGroup getOrganization(String groupId) {
-        return getHttp(GroupResponse.class, "/api/3/action/organization_show", "id",
-                groupId).result;
+    public synchronized CkanOrganization getOrganization(String organizationId) {
+        return getHttp(OrganizationResponse.class, "/api/3/action/organization_show", "id",
+                organizationId, "include_datasets", "false").result;
     }
 
     /**
@@ -549,7 +602,8 @@ public class CkanClient {
     private static String urlEncode(String s) {
         try {
             return URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException ex) {
+        }
+        catch (UnsupportedEncodingException ex) {
             throw new JackanException("Unsupported encoding", ex);
         }
     }
@@ -605,8 +659,6 @@ public class CkanClient {
 
         return dsr.result;
     }
-    
-
 
 }
 
@@ -652,7 +704,8 @@ class CkanError {
             ce.setMessage(jn.get("message").asText());
             ce.setType(jn.get("__type").asText());
             return ce;
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             throw new JackanException("Couldn parse CkanError.", ex);
         }
     }
@@ -671,27 +724,38 @@ class CkanResponse {
 }
 
 class DatasetResponse extends CkanResponse {
+
     public CkanDataset result;
 }
 
 class ResourceResponse extends CkanResponse {
+
     public CkanResource result;
 }
 
 class DatasetListResponse extends CkanResponse {
+
     public List<String> result;
 }
 
 class UserListResponse extends CkanResponse {
+
     public List<CkanUser> result;
 }
 
 class UserResponse extends CkanResponse {
+
     public CkanUser result;
 }
 
 class TagListResponse extends CkanResponse {
+
     public List<CkanTag> result;
+}
+
+class OrganizationResponse extends CkanResponse {
+
+    public CkanOrganization result;
 }
 
 class GroupResponse extends CkanResponse {
@@ -699,27 +763,37 @@ class GroupResponse extends CkanResponse {
     public CkanGroup result;
 }
 
+class OrganizationListResponse extends CkanResponse {
+
+    public List<CkanOrganization> result;
+}
+
 class GroupListResponse extends CkanResponse {
+
     public List<CkanGroup> result;
 }
 
 class GroupNamesResponse extends CkanResponse {
+
     public List<String> result;
 }
 
 class TagNamesResponse extends CkanResponse {
+
     public List<String> result;
 }
 
 class DatasetSearchResponse extends CkanResponse {
+
     public SearchResults<CkanDataset> result;
 }
 
-
 class LicenseListResponse extends CkanResponse {
+
     public List<CkanLicense> result;
 }
 
 class FormatListResponse extends CkanResponse {
+
     public Set<String> result;
 }

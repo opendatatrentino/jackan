@@ -33,6 +33,8 @@ public class CkanLicense {
      */
     private String id;
 
+    public CkanLicense(){}
+    
     /** 
      * Returns true if it complies with the OpenDefinition: http://opendefinition.org/
      */

@@ -19,18 +19,21 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonEmpty;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.isNonEmpty;
-import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
+import eu.trentorise.opendata.traceprov.Dict;
+import eu.trentorise.opendata.traceprov.TraceProvUtils;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonEmpty;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonNull;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.isNonEmpty;
+import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Class initializes almost nothing so to fully preserve all we get from ckan.
@@ -125,7 +128,6 @@ public class CkanResource {
      * Returns the dataset this resource belongs to. Not present when getting
      * resources but needed when uploading them.
      */
-    @JsonIgnore
     @Nullable
     public String getPackageId() {
         return packageId;
@@ -151,10 +153,11 @@ public class CkanResource {
      *
      * @param format i.e. file format in capital letters, i.e. "CSV"
      * @param name resource name, i.e. "My Cool resource"
-     * @param url the Url to the pyhsical file, i.e. http://dati.trentino.it/storage/f/2013-05-09T140831/TRENTO_Laghi_monitorati_UTM.csv
-     * @param description 
+     * @param url the Url to the pyhsical file, i.e.
+     * http://dati.trentino.it/storage/f/2013-05-09T140831/TRENTO_Laghi_monitorati_UTM.csv
+     * @param description
      * @param packageId id of the dataset that contains the resource
-     * @param mimetype 
+     * @param mimetype
      */
     public CkanResource(String format,
             String name,
@@ -166,9 +169,9 @@ public class CkanResource {
         checkNonEmpty(format, "ckan resource format");
         checkNonEmpty(name, "ckan resource name");
         checkNonEmpty(url, "ckan resource file url");
-        checkNonEmpty(description, "ckan resource description");        
+        checkNonEmpty(description, "ckan resource description");
         checkNonEmpty(packageId, "ckan dataset id (also called package id)");
-        
+
         this.format = format;
         this.name = name;
         this.url = url;
@@ -586,92 +589,5 @@ public class CkanResource {
         this.webstoreUrl = webstoreUrl;
     }
 
-    /**
-     * TODO this converter is largely incomplete!!!
-     *
-     * @param catalogURL may be an empty string
-     * @param datasetId may be an empty string
-     * @param license may be an empty string
-     *
-     */
-    public DcatDistribution toDcatDistribution(String catalogURL, String datasetId, String license) {
-        CkanClient.logger.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
-        checkNonNull(catalogURL, "catalog URL");
-        checkNonNull(datasetId, "dataset id");
-        checkNonNull(license, "license");
-
-        String nCatalogUrl = TraceProvUtils.removeTrailingSlash(catalogURL);
-
-        DcatDistribution dd = new DcatDistribution();
-
-        String resURL = "";
-
-        if (isNonEmpty(catalogURL) && isNonEmpty(datasetId) && isNonEmpty(license)) {
-            resURL = CkanClient.makeResourceURL(nCatalogUrl, datasetId, this.getId());
-        }
-
-        if (resURL.length() > 0) {
-            dd.setAccessURL(resURL);
-        }
-
-        if (this.getUrl() != null) {
-            dd.setDownloadURL(this.getUrl());
-        }
-
-        try {
-            if (this.getSize() != null) {
-                dd.setByteSize(Integer.parseInt(this.getSize()));
-            }
-
-        }
-        catch (NumberFormatException ex) {
-            CkanClient.logger.log(Level.WARNING, "COULDN'T CONVERT CKAN RESOURCE SIZE TO DCAT! REQUIRED AN INTEGER, FOUND {0} (ALTHOUGH STRINGS ARE VALID CKAN SIZES)", this.getSize());
-        }
-
-        if (this.getPackageId() != null) {
-            dd.setDatasetIdentifier(this.getPackageId());
-        }
-
-        if (this.getDescription() != null) {
-            dd.setDescription(this.getDescription());
-        }
-
-        CkanClient.logger.warning("TODO - SKIPPED 'DOWNLOAD URL' WHILE CONVERTING FROM CKAN TO DCAT");
-        //dd.setDownloadURL(null);
-
-        if (this.getFormat() != null) {
-            dd.setFormat(this.getFormat());
-        }
-
-        DateTime lastModified = this.getLastModified();
-        if (lastModified != null) {
-            dd.setIssued(lastModified.toString());
-        }
-        if (license != null) {
-            dd.setLicense(license);
-        }
-        if (this.getMimetype() != null) {
-            dd.setMediaType(this.getMimetype());
-        }
-        if (this.getRevisionTimestamp() != null) {
-            dd.setModified(this.getRevisionTimestamp());
-        }
-
-        CkanClient.logger.warning("TODO - SKIPPED 'RIGHTS' WHILE CONVERTING FROM CKAN TO DCAT");
-        //dd.setRights("");        
-
-        CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");
-        // dd.setSpatial("");
-
-        if (this.getName() != null) {
-            dd.setTitle(this.getName());
-        }
-
-        if (resURL.length() > 0) {
-            dd.setURI(resURL);
-        }
-
-        return dd;
-    }
 
 }

@@ -21,15 +21,17 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.trentorise.opendata.traceprov.impl.TraceProvUtils;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonEmpty;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
-import eu.trentorise.opendata.traceprov.impl.dcat.DcatDataset;
-import eu.trentorise.opendata.traceprov.impl.dcat.DcatDistribution;
-import eu.trentorise.opendata.traceprov.impl.dcat.FoafAgent;
-import java.util.ArrayList;
+import eu.trentorise.opendata.traceprov.Dict;
+import eu.trentorise.opendata.traceprov.TraceProvUtils;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonEmpty;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonNull;
+import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
+import eu.trentorise.opendata.traceprov.dcat.FoafAgent;
+import eu.trentorise.opendata.traceprov.dcat.SkosConcept;
+import eu.trentorise.opendata.traceprov.dcat.SkosConceptScheme;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.joda.time.DateTime;
@@ -62,6 +64,8 @@ public class CkanDataset {
     private String notes;
     private String notesRendered;
     private String ownerOrg;
+    private CkanOrganization organization;
+
     /**
      * Actually it is named 'private' in api. Appears in searches.
      */
@@ -98,15 +102,20 @@ public class CkanDataset {
         this();
         this.id = id;
     }
-    
+
     /**
-     
-     * Constructor with the minimal set of attributes required to successfully create a dataset on the server.
-     * @param name the dataset name with no spaces and dashes as separators, i.e. "comune-di-trento-raccolta-differenziata-2013"
-     * @param url A page URL containg a description of the semantified dataset columns and the trasformations done on the original dataset. This URL will be also displayed as metadata in the catalog under dcat:landingPage
+     *
+     * Constructor with the minimal set of attributes required to successfully
+     * create a dataset on the server.
+     *
+     * @param name the dataset name with no spaces and dashes as separators,
+     * i.e. "comune-di-trento-raccolta-differenziata-2013"
+     * @param url A page URL containg a description of the semantified dataset
+     * columns and the trasformations done on the original dataset. This URL
+     * will be also displayed as metadata in the catalog under dcat:landingPage
      * @param extras
      * @param title
-     * @param licenseId 
+     * @param licenseId
      */
     public CkanDataset(String name, String url, List<CkanPair> extras, String title, String licenseId) {
         this();
@@ -120,7 +129,7 @@ public class CkanDataset {
         this.title = title;
         this.licenseId = licenseId;
         this.extras = extras;
-    }    
+    }
 
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't
@@ -137,11 +146,16 @@ public class CkanDataset {
         others.put(name, value);
     }
 
+    /**
+     * Always returns a map (which might be empty)
+     */
     @JsonIgnore
     public Map<String, String> getExtrasAsHashMap() {
         HashMap<String, String> hm = new HashMap();
-        for (CkanPair cp : extras) {
-            hm.put(cp.getKey(), cp.getValue());
+        if (extras != null){
+            for (CkanPair cp : extras) {
+                hm.put(cp.getKey(), cp.getValue());
+            }
         }
         return hm;
     }
@@ -171,6 +185,12 @@ public class CkanDataset {
         this.creatorUserId = creatorUserId;
     }
 
+    /**
+     * Notice that if the dataset was obtained with a
+     * {@link CkanClient#getDataset(java.lang.String)} call, the returned group
+     * won't have all the params you would get with a
+     * {@link CkanClient#getGroup(java.lang.String)} call.
+     */
     public List<CkanGroup> getGroups() {
         return groups;
     }
@@ -279,15 +299,18 @@ public class CkanDataset {
     }
 
     /**
-     * returns the dataset name (contains no spaces and has dashes as separators, i.e. "comune-di-trento-raccolta-differenziata-2013")     
+     * returns the dataset name (contains no spaces and has dashes as
+     * separators, i.e. "comune-di-trento-raccolta-differenziata-2013")
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the dataset name. Name must not contain spaces and have dashes as separators, i.e. "comune-di-trento-raccolta-differenziata-2013"
-     * @param name 
+     * Sets the dataset name. Name must not contain spaces and have dashes as
+     * separators, i.e. "comune-di-trento-raccolta-differenziata-2013"
+     *
+     * @param name
      */
     public void setName(String name) {
         this.name = name;
@@ -311,10 +334,27 @@ public class CkanDataset {
 
     /**
      * Returns the owner organization alphanunmerical id, like
-     * "b112ed55-01b7-4ca4-8385-f66d6168efcc",
+     * "b112ed55-01b7-4ca4-8385-f66d6168efcc".
      */
     public String getOwnerOrg() {
         return ownerOrg;
+    }
+
+    /**
+     * Notice that if the dataset was obtained with a
+     * {@link CkanClient#getDataset(java.lang.String)} call, the returned
+     * organization won't have all the params you would get with a
+     * {@link CkanClient#getOrganization(java.lang.String)} call.
+     */
+    public CkanOrganization getOrganization() {
+        return organization;
+    }
+
+    /**
+     * Sets the organization the owns the dataset.
+     */
+    public void setOrganization(CkanOrganization organziation) {
+        this.organization = organziation;
     }
 
     /**
@@ -433,91 +473,6 @@ public class CkanDataset {
 
     public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
-    }
-
-    public DcatDataset ToDcatDataset(String catalogURL, String locale) {
-
-        TraceProvUtils.checkNonEmpty(catalogURL, "dcat dataset catalo URL");
-        TraceProvUtils.checkNonNull(locale, "dcat dataset locale");
-
-        String nCatalogUrl = TraceProvUtils.removeTrailingSlash(catalogURL);
-
-        CkanClient.logger.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
-
-        DcatDataset dd = new DcatDataset();
-
-        CkanClient.logger.warning("TODO - SKIPPED ACCRUAL PERIODICITY WHILE CONVERTING FROM CKAN TO DCAT");
-        // dd.setAccrualPeriodicity(null);
-        CkanClient.logger.warning("TODO - SKIPPED CONTACT POINT WHILE CONVERTING FROM CKAN TO DCAT");
-        // dd.setContactPoint(null);
-
-        if (this.getNotes() != null) {
-            dd.setDescription(this.getNotes());
-        }
-
-        List<DcatDistribution> distribs = new ArrayList();
-        if (this.getResources() != null) {
-            for (CkanResource cr : this.getResources()) {
-                distribs.add(cr.toDcatDistribution(nCatalogUrl, this.getId(), this.getLicenseId()));
-            }
-        }
-
-        dd.setDistributions(distribs);
-        if (this.getName() != null) {
-            dd.setIdentifier(this.getName());
-        }
-
-        if (this.getMetadataCreated() != null) {
-            dd.setIssued(this.getMetadataCreated().toString());
-        }
-
-        List<String> keywords = new ArrayList();
-        if (this.getTags() != null) {
-            for (CkanTag tag : this.getTags()) {
-                keywords.add(tag.getName());
-            }
-            dd.setKeywords(keywords);
-        }
-
-        if (this.getUrl() != null) {
-            dd.setLandingPage(this.getUrl());
-        }
-
-        dd.setLanguage(locale);
-
-        if (this.getMetadataModified() != null) {
-            dd.setModified(this.getMetadataModified().toString());
-        }
-
-        FoafAgent publisher = new FoafAgent();
-        publisher.setURI(locale);
-        if (this.getMaintainer() != null) {
-            publisher.setName(this.getMaintainer());
-        }
-        if (this.getMaintainerEmail() != null) {
-            publisher.setMbox(this.getMaintainerEmail());
-        }
-
-        dd.setPublisher(publisher);
-        // dd.setSpatial(catalogURL);
-        CkanClient.logger.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");
-
-        //dd.setTemporal(catalogURL);
-        CkanClient.logger.warning("TODO - SKIPPED 'TEMPORAL' WHILE CONVERTING FROM CKAN TO DCAT");
-
-        CkanClient.logger.warning("TODO - SKIPPED 'THEME' WHILE CONVERTING FROM CKAN TO DCAT");
-        // dd.setTheme(null);
-
-        if (this.getTitle() != null) {
-            dd.setTitle(this.getTitle());
-        }
-
-        // let's set URI to ckan page
-        if (this.getId() != null) {
-            dd.setURI(CkanClient.makeDatasetURL(nCatalogUrl, this.getId()));
-        }
-
-        return dd;
     }
 
     /**

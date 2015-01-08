@@ -15,7 +15,7 @@ Features:
   * dependency handling with Maven
   * has a liberal LGPL 2.1 license
   * unit tested with proper integration tests
-
+  * supports Java 6+
 
 Credits:
 

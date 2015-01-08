@@ -24,10 +24,10 @@ package eu.trentorise.opendata.jackan;
  */
 public class JackanException extends RuntimeException {
     public JackanException(String msg){
-        super(msg);
+        super("Jackan: " + msg);
     }
     
     public JackanException(String msg, Exception ex){
-        super(msg, ex);
+        super("Jackan: " + msg, ex);
     }
 }

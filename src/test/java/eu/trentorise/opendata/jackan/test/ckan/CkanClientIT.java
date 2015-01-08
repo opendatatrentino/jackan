@@ -17,17 +17,18 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanDatasetMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import eu.trentorise.opendata.jackan.ckan.CkanLicense;
+import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import eu.trentorise.opendata.jackan.ckan.CkanResourceMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanTag;
 import eu.trentorise.opendata.jackan.ckan.CkanUser;
 import eu.trentorise.opendata.jackan.test.TestConfig;
@@ -40,6 +41,9 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Assert;
+import static junitparams.JUnitParamsRunner.$;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -50,22 +54,47 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  *
  * @author David Leoni
  */
-public class CkanClientITCase {
+@RunWith(JUnitParamsRunner.class)
+public class CkanClientIT {
 
-    public static Logger logger = Logger.getLogger(CkanClientITCase.class.getName());
-    static String DATI_TRENTINO = "http://dati.trentino.it";
-    static String DATA_GOV_UK = "http://data.gov.uk";
+    public static Logger logger = Logger.getLogger(CkanClientIT.class.getName());
+
+    public static String DATI_TRENTINO = "http://dati.trentino.it";
+    public static String DATI_TOSCANA = "http://dati.toscana.it";
+    public static String DATI_MATERA = "http://dati.comune.matera.it";
+    public static String DATA_GOV_UK = "http://data.gov.uk";
+    public static String DATA_GOV_US = "http://catalog.data.gov";
+
+    /**
+     * Unfortunately this one uses old api version, we can't use it.
+     */
+    public static String DATI_PIEMONTE = "http://www.dati.piemonte.it/rpapisrv/api/rest";
+
     public static final String LAGHI_MONITORATI_TRENTO_NAME = "laghi-monitorati-trento-143675";
     public static final String LAGHI_MONITORATI_TRENTO_ID = "3745b44c-751f-40b3-8e97-ccd725bfbe8a";
     public static final String LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME = "Metadati in formato XML";
 
+    private Multimap<String, String> datasetList = LinkedListMultimap.create();
+
     CkanClient client;
+    private int TEST_ELEMENTS = 5;
+
+    private Object[] clients() {
+        return $(
+                $(new CkanClient(DATI_TRENTINO)),
+                $(new CkanClient(DATI_TOSCANA)),
+                $(new CkanClient(DATI_MATERA)),
+                $(new CkanClient(DATA_GOV_UK)),
+                $(new CkanClient(DATA_GOV_US))
+        );
+    }
 
     @BeforeClass
     public static void setUpClass() {
@@ -83,57 +112,119 @@ public class CkanClientITCase {
         client = null;
     }
 
-    @Test
-    public void testDatasetList() {
+    static class FailedResourceException extends RuntimeException {
 
+        CkanClient client;
+        String resourceId;
+        String datasetName;
+
+        public FailedResourceException(CkanClient client, String msg, String datasetName, String resourceName) {
+            super(msg);
+            this.client = client;
+            this.resourceId = resourceName;
+            this.datasetName = datasetName;
+        }
+
+        public FailedResourceException(CkanClient client, String msg, String datasetName, String resourceName, Throwable thrwbl) {
+            super(msg, thrwbl);
+            this.client = client;
+            this.resourceId = resourceName;
+            this.datasetName = datasetName;
+        }
+
+        public CkanClient getClient() {
+            return client;
+        }
+
+        public String getResourceId() {
+            return resourceId;
+        }
+
+        public String getDatasetName() {
+            return datasetName;
+        }
+
+        @Override
+        public String toString() {
+            String descr;
+            try {
+                descr = "resource ckan url=" + CkanClient.makeResourceURL(client.getCatalogURL(), datasetName, resourceId);
+            }
+            catch (Exception ex) {
+                descr = "datasetName: " + datasetName + "resourceId: " + resourceId;
+            }
+            return "FailedResource: \n"
+                    + "  client=" + client + "\n"
+                    + "  " + descr + "\n";
+        }
+
+    }
+    
+    @Test
+    @Parameters(method = "clients")
+    public void testDatasetList(CkanClient client) {
         List<String> dsl = client.getDatasetList();
         assertTrue(dsl.size() > 0);
     }
 
+    @Test
+    @Parameters(method = "clients")
+    public void testDatasets(CkanClient client) {
+        List<String> dsl = client.getDatasetList(TEST_ELEMENTS, 0);
+        assertTrue(dsl.size() > 0);
+
+        List<FailedResourceException> failedResources = new ArrayList();
+
+        for (String datasetName : dsl.subList(0, Math.min(dsl.size(), TEST_ELEMENTS))) {
+            CkanDataset dataset = client.getDataset(datasetName);
+            assertEquals(datasetName, dataset.getName());
+            for (CkanResource resource : dataset.getResources().subList(0, Math.min(dataset.getResources().size(), TEST_ELEMENTS))) {
+                try {
+                    client.getResource(resource.getId());
+                }
+                catch (Exception ex) {
+                    failedResources.add(new FailedResourceException(client, "Error while fetching resource!", datasetName, resource.getId(), ex));
+                }
+            }
+        }
+
+        if (!failedResources.isEmpty()) {
+            throw new RuntimeException("Couldn't fetch these resources: \n " + failedResources.toString());
+        }
+
+    }
+
     /**
      * Ckan docs don't tell offset starts with 0
+     *
+     * For some weird reason {@link #DATI_MATERA} claims to have api v3 but does
+     * not support limit & offset params
      */
     @Test
-    public void testDatasetListWithLimit() {
-
+    @Parameters(method = "clients")
+    public void testDatasetListWithLimit(CkanClient client) {
         List<String> dsl = client.getDatasetList(1, 0);
         assertEquals(1, dsl.size());
     }
 
-    @Test
-    public void testDataset() {
 
-        CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
-        assertEquals(LAGHI_MONITORATI_TRENTO_NAME, dataset.getName());
-    }
-
-    //@Test
-//    public void testResourceInsideDataset() {
-//        CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
-//        List<CkanResource> resources = dataset.getResources();
-//        for (CkanResource r : resources) {
-//            if (r.getFormat().equals("XML")) {
-//                assertEquals(LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME, resources.get(0).getName());
-//                return;
-//            }
-//        }
-//        fail("Couldn't find xml resource in " + LAGHI_MONITORATI_TRENTO_NAME + " dataset");
-//
-//    }
     @Test
-    public void testUserList() {
+    @Parameters(method = "clients")
+    public void testUserList(CkanClient client) {
         List<CkanUser> ul = client.getUserList();
         assertTrue(ul.size() > 0);
     }
 
     @Test
-    public void testUser() {
+    @Parameters(method = "clients")
+    public void testUser(CkanClient client) {
         CkanUser u = client.getUser("admin");
         assertEquals("admin", u.getName());
     }
 
     @Test
-    public void testGroupList() {
+    @Parameters(method = "clients")
+    public void testGroupList(CkanClient client) {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
     }
@@ -145,19 +236,21 @@ public class CkanClientITCase {
     }
 
     @Test
-    public void testOrganizationList() {
-        List<CkanGroup> gl = client.getOrganizationList();
+    @Parameters(method = "clients")
+    public void testOrganizationList(CkanClient client) {
+        List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
     }
 
     @Test
     public void testOrganization() {
-        CkanGroup g = client.getOrganization("comune-di-trento");
+        CkanOrganization g = client.getOrganization("comune-di-trento");
         assertEquals("comune-di-trento", g.getName());
     }
 
     @Test
-    public void testTagList() {
+    @Parameters(method = "clients")
+    public void testTagList(CkanClient client) {
         List<CkanTag> tl = client.getTagList();
         assertTrue(tl.size() > 0);
     }
@@ -191,7 +284,7 @@ public class CkanClientITCase {
 
     @Test
     public void testSearchDatasetsByTags() {
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames("strati prioritari", "cisis"), 10, 0);
+        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames("prodotti tipici", "enogastronomia"), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
@@ -205,10 +298,10 @@ public class CkanClientITCase {
     @Test
     public void testFullSearch() {
         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter()
-                .byText("viabilità ferroviaria")
-                .byGroupNames("gestione-del-territorio")
-                .byOrganizationName("pat-sistema-informativo-ambiente-e-territorio")
-                .byTagNames("strati prioritari", "cisis")
+                .byText("elenco dei prodotti trentini")
+                .byGroupNames("agricoltura")
+                .byOrganizationName("pat-s-sviluppo-rurale")
+                .byTagNames("prodotti tipici", "enogastronomia")
                 .byLicenseId("cc-zero"), 10, 0);
         assertEquals("cc-zero", r.getResults().get(0).getLicenseId());
         assertTrue("I should get at least one result", r.getResults().size() > 0);
@@ -303,15 +396,13 @@ public class CkanClientITCase {
         URI uri = null;
 
         uri = new URI("http", "www.unitn.it", null, null);
-        
-        
-        
+
         CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + UUID.randomUUID().getMostSignificantBits(),
                 "http://jackan-land-of-dreams.org",
                 new ArrayList(),
                 "Test Jackan Dataset " + UUID.randomUUID().getMostSignificantBits(),
                 "cc-zero");
-        
+
         // CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "07dfd366-2107-4c06-97f5-2acdeff49aff", null);
         CkanResource resource1 = new CkanResource("JSONLD",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
@@ -322,7 +413,6 @@ public class CkanClientITCase {
 
         CkanDataset createdDataset = cClient.createDataset(dataset);
         CkanResource createdResource = cClient.createResource(resource1);
-        
 
         CkanResource resource2 = new CkanResource("JSONLD",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
@@ -330,21 +420,18 @@ public class CkanClientITCase {
                 "Second most interesting test resource in the universe",
                 dataset.getId(),
                 null);
-        
+
         createdDataset.setAuthor("Jackan enthusiast");
         createdDataset.getResources().add(resource2);
-        
-        CkanDataset updatedDataset = cClient.updateDataset(createdDataset);
-        
-        logger.log(Level.INFO, "Ckan Resource URL changed:{0}", cResource.getUrl());
 
+        // CkanDataset updatedDataset = cClient.updateDataset(createdDataset);
+        // logger.log(Level.INFO, "Ckan Resource URL changed:{0}", cResource.getUrl());
     }
 
     @Test
     public void testLicenseList() {
-        CkanClient cc = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
 
-        List<CkanLicense> licenses = cc.getLicenseList();
+        List<CkanLicense> licenses = client.getLicenseList();
         assertTrue(licenses.size() > 0);
         for (CkanLicense cl : licenses) {
             if ("cc-by".equals(cl.getId())) {

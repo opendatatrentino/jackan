@@ -25,6 +25,8 @@ public class TrackingSummary {
     private int recent;
     private int total;
 
+    public TrackingSummary(){}
+    
     public int getRecent() {
         return recent;
     }

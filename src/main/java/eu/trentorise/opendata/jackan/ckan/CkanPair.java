@@ -24,9 +24,12 @@ import javax.annotation.Nullable;
  * @author David Leoni
  */
 public class CkanPair{
+        
     private String key;
     @Nullable private String value;
 
+    public CkanPair(){}
+    
     public String getKey() {
         return key;
     }

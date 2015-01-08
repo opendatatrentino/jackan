@@ -1,7 +1,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonEmpty;
-import static eu.trentorise.opendata.traceprov.impl.TraceProvUtils.checkNonNull;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonEmpty;
+import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonNull;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;

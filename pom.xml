@@ -94,7 +94,7 @@
                 <version>2.12.4</version>
                 <configuration>
                     <includes>
-                        <include>**/*ITCase*</include>
+                        <include>**/*IT*</include>
                     </includes>
                 </configuration>
                 <executions>
@@ -112,7 +112,7 @@
                 <version>2.12.1</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/*ITCase*</exclude>
+                        <exclude>**/*IT*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -223,9 +223,16 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>pl.pragmatists</groupId>
+            <artifactId>JUnitParams</artifactId>
+            <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>        
         
         <!-- the core, which includes Streaming API, shared low-level abstractions (but NOT data-binding) -->
         <dependency>
@@ -275,7 +282,12 @@
             <artifactId>joda-time</artifactId>
             <version>2.3</version>
         </dependency>
+        
+        
+        
     </dependencies>
+    
+    
     
     <reporting>
         <plugins>
