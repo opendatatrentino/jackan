@@ -232,7 +232,14 @@
             <artifactId>JUnitParams</artifactId>
             <version>1.0.3</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>    
+        
+        <dependency>
+            <groupId>org.rendersnake</groupId>
+            <artifactId>rendersnake</artifactId>
+            <version>1.8</version>
+            <scope>test</scope>
+        </dependency>                
         
         <!-- the core, which includes Streaming API, shared low-level abstractions (but NOT data-binding) -->
         <dependency>

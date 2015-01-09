@@ -159,7 +159,18 @@ public class CkanClientIT {
         }
 
     }
-    
+
+    /**
+     * todo we should do some ckan internal version detector (sic)
+     */
+    @Test
+    @Parameters(method = "clients")
+    public void testApiVersion(CkanClient client) {
+        int version = client.getApiVersion();
+        assertTrue("Found api version " + version + ", supported versions are: " + CkanClient.SUPPORTED_API_VERSIONS,
+                CkanClient.SUPPORTED_API_VERSIONS.contains(version));
+    }
+
     @Test
     @Parameters(method = "clients")
     public void testDatasetList(CkanClient client) {
@@ -207,10 +218,9 @@ public class CkanClientIT {
         assertEquals(1, dsl.size());
     }
 
-
     @Test
     @Parameters(method = "clients")
-    public void testUserList(CkanClient client) {
+    public void testUsers(CkanClient client) {
         List<CkanUser> ul = client.getUserList();
         assertTrue(ul.size() > 0);
     }
@@ -224,15 +234,14 @@ public class CkanClientIT {
 
     @Test
     @Parameters(method = "clients")
-    public void testGroupList(CkanClient client) {
+    public void testGroups(CkanClient client) {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
-    }
 
-    @Test
-    public void testGroup() {
-        CkanGroup g = client.getGroup("gestione-del-territorio");
-        assertEquals("gestione-del-territorio", g.getName());
+        for (CkanGroup g : gl.subList(0, Math.min(gl.size(), TEST_ELEMENTS))) {
+            CkanGroup fetchedGroup = client.getGroup(g.getId());
+            assertEquals(g.getName(), fetchedGroup.getName());
+        }
     }
 
     @Test
@@ -240,12 +249,11 @@ public class CkanClientIT {
     public void testOrganizationList(CkanClient client) {
         List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
-    }
 
-    @Test
-    public void testOrganization() {
-        CkanOrganization g = client.getOrganization("comune-di-trento");
-        assertEquals("comune-di-trento", g.getName());
+        for (CkanOrganization g : gl.subList(0, Math.min(gl.size(), TEST_ELEMENTS))) {
+            CkanOrganization fetchedOrganization = client.getOrganization(g.getId());
+            assertEquals(g.getName(), fetchedOrganization.getName());
+        }
     }
 
     @Test
@@ -256,10 +264,25 @@ public class CkanClientIT {
     }
 
     @Test
-    public void testTagNamesList() {
+    @Parameters(method = "clients")
+    public void testTagNamesList(CkanClient client) {
         List<String> tl = client.getTagNamesList("serviz");
 
         assertTrue(tl.get(0).toLowerCase().contains("serviz"));
+    }
+
+    @Test
+    @Parameters(method = "clients")
+    public void testLicenseList(CkanClient client) {
+        List<CkanLicense> licenses = client.getLicenseList();
+        assertTrue(licenses.size() > 0);
+    }
+
+    @Test
+    @Parameters(method = "clients")
+    public void testFormatList(CkanClient client) {
+        Set<String> formats = client.getFormats();
+        assertTrue(formats.size() > 0);
     }
 
     @Test
@@ -284,6 +307,7 @@ public class CkanClientIT {
 
     @Test
     public void testSearchDatasetsByTags() {
+
         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames("prodotti tipici", "enogastronomia"), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
@@ -428,25 +452,4 @@ public class CkanClientIT {
         // logger.log(Level.INFO, "Ckan Resource URL changed:{0}", cResource.getUrl());
     }
 
-    @Test
-    public void testLicenseList() {
-
-        List<CkanLicense> licenses = client.getLicenseList();
-        assertTrue(licenses.size() > 0);
-        for (CkanLicense cl : licenses) {
-            if ("cc-by".equals(cl.getId())) {
-                assertTrue(cl.isOkdCompliant());
-                assertFalse(cl.isOsiCompliant());
-                return;
-            }
-        }
-        Assert.fail("Should have found cc-by license");
-    }
-
-    @Test
-    public void testFormatList() {
-        Set<String> formats = client.getFormats();
-        assertTrue(formats.size() > 0);
-        assertTrue(formats.contains("csv"));
-    }
 }

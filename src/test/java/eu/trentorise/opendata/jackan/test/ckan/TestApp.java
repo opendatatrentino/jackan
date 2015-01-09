@@ -5,6 +5,7 @@ import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.test.TestConfig;
 import java.util.List;
 
 public class TestApp 

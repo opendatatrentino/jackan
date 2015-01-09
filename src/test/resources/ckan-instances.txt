@@ -1,0 +1,226 @@
+Africa Open Data
+http://africaopendata.org/
+Amsterdam Open Data.nl
+http://www.amsterdamopendata.nl/
+Annuario statistico del Comune di Firenze
+http://annuario.comune.fi.it/
+Aragón Open Data
+http://opendata.aragon.es/
+Berlin Open Data
+http://daten.berlin.de/
+Bermuda.io
+http://bermuda.io/
+Buenos Aires Data
+http://data.buenosaires.gob.ar/
+Catálogo de Datos Abiertos
+https://catalogodatos.gub.uy/
+cities open data hub
+http://cities.opendatahub.gr/
+City of Ottawa Open Data Catalog
+http://data.ottawa.ca/
+City of Surrey Open Data Catalogue
+http://data.surrey.ca/
+CivicData
+http://www.civicdata.io/
+CNMC Open Data
+http://opendata.cmt.es/
+Codeando México
+http://datos.codeandomexico.org/
+Copenhagen Data
+http://data.kk.dk/
+Dados Recife
+http://dados.recife.pe.gov.br/
+dados.gov.br
+http://dados.gov.br/
+DadosRS
+http://dados.rs.gov.br/
+Danube Reference Data and Service Infrastructure
+http://drdsi.jrc.ec.europa.eu/
+DART
+http://dartportal.leeds.ac.uk/
+DATA CITY Sabae
+http://ckan.sabae.jrrk.org/
+Data for Japan
+http://dataforjapan.org/
+data.bris Research Data Repository
+http://data.bris.ac.uk/data
+Data.gc.ca
+http://data.gc.ca/
+data.go.jp
+http://www.data.go.jp/
+Data.gov
+http://catalog.data.gov/
+data.gov.au
+http://data.gov.au/
+data.gov.ie
+http://data.gov.ie/
+data.gov.ro
+http://data.gov.ro/
+data.gov.sk
+http://data.gov.sk/
+Data.gov.uk
+http://data.gov.uk/
+data.gv.at
+http://data.gv.at/
+data.norge.no
+http://data.norge.no/
+data.NSW
+http://data.nsw.gov.au/
+Data.overheid.nl
+http://data.overheid.nl/
+Data.Rio
+http://data.rio.rj.gov.br/
+data.salzburgerland.com
+http://data.salzburgerland.com/
+datacatalogs.org
+http://datacatalogs.org/
+DataGM
+http://datagm.org.uk/
+datamx.io
+http://datamx.io/
+DataPOA
+http://datapoa.com.br/
+dati.gov.it
+http://dati.gov.it/
+Datos abiertos Málaga
+http://datosabiertos.malaga.eu/
+datos.gob.mx
+http://datos.gob.mx/
+datosabiertos.ec
+http://datosabiertos.ec/
+Denver Open Data Catalog
+http://data.denvergov.org/
+Edo State, Nigeria
+http://data.edostate.gov.ng/
+Energy Data eXchange
+https://edx.netl.doe.gov/
+EU Open Data
+http://open-data.europa.eu/
+Geospatial Information Clearinghouse
+http://ckan.gsi.go.jp/
+Glasgow Open Data
+http://data.glasgow.gov.uk/
+Gong.io
+http://gong.io/
+GovData
+http://govdata.de/
+Grand Rapids Open Data
+http://data.grcity.us/
+Graz Open Data
+http://data.graz.gv.at/
+Greek Open Data Hub
+http://open-data.okfn.gr/
+Greek Open Data Hub
+http://opendatahub.gr/
+HealthData.gov
+http://healthdata.gov/
+Helsinki Region Infoshare
+http://www.hri.fi/
+Houston Data Portal
+http://data.codeforhouston.com/
+Humanitarian Data Exchange Repository
+http://data.hdx.rwlabs.org/
+Il Portale Opendata della Provincia di Roma
+http://www.opendata.provincia.roma.it/
+Lexington's Open Data Portal
+http://data.lexingtonky.gov/
+Linz Open Data
+http://data.linz.gv.at/
+METI
+http://datameti.go.jp/data/
+Minnesota Geospatial Commons
+http://gisdata.mn.gov/
+Montréal Open Data
+http://donnees.ville.montreal.qc.ca/
+National Geothermal Data System
+http://geothermaldata.org/
+National Oceanic and Atmospheric Administration (United States)
+https://data.noaa.gov/dataset
+NosDonnées.fr
+http://www.nosdonnees.fr/
+Offene Daten Mettmann
+http://www.offene-daten.me/
+OffeneDaten.de
+http://offenedaten.de/
+Open Data Aarhus
+http://www.odaa.dk/
+Open Data Canarias
+http://opendatacanarias.es/
+Open Data della Regione Toscana
+http://dati.toscana.it/
+Open Data Gortynia
+http://opendatagortynia.gr/
+Open Data Hub Italia
+http://www.opendatahub.it/
+Open Data in Uganda
+http://data.ug/
+Open DATA METI
+http://datameti.go.jp/
+Open Data Portal Hamburg
+http://daten.hamburg.de/
+Open Data Trentino
+http://dati.trentino.it/
+Open Virginia
+http://data.openva.com/
+OpenBelgium
+http://portal.openbelgium.be/
+OpenColorado
+http://opencolorado.org/da
+Opendata Cáceres
+http://opendata.caceres.es/
+Opendata Lisra
+http://opendata.lisra.jp/
+opendata.awt.be
+http://opendata.awt.be/
+OpenData.HRO
+http://www.opendata-hro.de/
+opendata.hu
+http://opendata.hu/
+OpenDataDC
+http://opendatadc.org/
+OpenDataReno
+http://opendatareno.org/
+OpenGovData.ru
+http://hubofdata.ru/
+OpenUmea
+http://www.openumea.se/
+Opin Gögn
+http://opingogn.is/
+Portal de Datos Abiertos del Gobierno de Misiones
+http://www.datos.misiones.gov.ar/
+Portal de Datos Públicos
+http://datospublicos.gob.ar/
+Portale OpenData del Comune di Bari
+http://opendata.comune.bari.it/
+publicdata.eu
+http://publicdata.eu/
+Queensland Government data
+http://data.qld.gov.au/
+Ressourcerie Datalocale
+http://catalogue.datalocale.fr/
+Rheinland Pfalz Open Data Plattform
+http://www.daten.rlp.de/
+Rotterdam Open Data Store
+http://rotterdamopendata.nl/
+Santa Cruz Open Data
+http://data.cityofsantacruz.com/
+Sherbrooke Open Data
+http://donnees.ville.sherbrooke.qc.ca/
+South Australian Government Data Directory
+http://data.sa.gov.au/
+Swiss Open Government Data
+http://opendata.admin.ch/
+Taipei City Open Data
+http://data.tainan.gov.tw/
+The Brazilian Senate
+http://dadosabertos.senado.gov.br/
+The Datahub
+http://datahub.io/
+The International Aid Transparency Initiative
+http://iatiregistry.org/
+Urban Data Challenge on CKAN
+http://udct-data.aigid.jp/
+Yokohama Open Data Portal
+http://data.yokohamaopendata.jp/
+Öppna Data
+http://oppnadata.se/

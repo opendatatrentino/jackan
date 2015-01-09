@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.google.common.collect.ImmutableList;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.traceprov.TraceProvUtils;
@@ -64,6 +65,12 @@ public class CkanClient {
 
     @Nullable
     private static ObjectMapper objectMapper;
+
+    /**
+     * Notice that even for the same api version (at least for versions <= 3) different CKAN instances can
+     * behave quite differently (sic)
+     */
+    public static ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
 
     private final String catalogURL;
     @Nullable
@@ -140,8 +147,6 @@ public class CkanClient {
         return "CkanClient{" + "catalogURL=" + catalogURL + ", ckanToken=" + ckanToken + '}';
     }
 
-    
-    
     /**
      * Method for http GET
      *
@@ -272,9 +277,11 @@ public class CkanClient {
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
      *
      * @param catalogUrl i.e. http://dati.trentino.it
-     * @param datasetIdentifier the dataset name (preferred) or the alphanumerical id
-     * 
-     * @param resourceId the alphanumerical id of the resource (DON'T use resource name)
+     * @param datasetIdentifier the dataset name (preferred) or the
+     * alphanumerical id
+     *
+     * @param resourceId the alphanumerical id of the resource (DON'T use
+     * resource name)
      */
     public static String makeResourceURL(String catalogUrl, String datasetIdentifier, String resourceId) {
         checkNonEmpty(catalogUrl, "catalog url");
@@ -329,7 +336,7 @@ public class CkanClient {
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
-
+        
     /**
      * Updates a resource on the ckan server
      *
@@ -387,7 +394,7 @@ public class CkanClient {
             json = objectMapper.writeValueAsString(dataset);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", e);
+            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!",this,  e);
         }
         DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
         return datasetresponse.result;
@@ -423,6 +430,39 @@ public class CkanClient {
     }
 
     /**
+     * Returns the latest api version supported by the catalog
+     *
+     * @throws JackanException on error
+     */
+    public synchronized int getApiVersion() {
+        for (int i = 3; i >= 1; i--){
+            return getApiVersion(i); // this is demential. But /api always gives { "version": 1} ....
+        }
+        throw new JackanException("Error while getting api version!", this);
+    }
+    
+    /**
+     * Returns the latest api version supported by the catalog
+     *
+     * @throws JackanException on error
+     */
+    private synchronized int getApiVersion(int number) {
+        String fullUrl = catalogURL + "/api/" + number;
+        logger.log(Level.FINE, "getting {0}", fullUrl);
+        try {
+            String json = Request.Get(fullUrl).execute().returnContent()
+                    .asString();
+            ApiVersionResponse dr = getObjectMapper().readValue(json, ApiVersionResponse.class);
+            return dr.version;
+        }
+        catch (Exception ex) {
+            throw new JackanException("Error while fetching api version!", this, ex);
+        }
+
+    }
+    
+
+    /**
      * @param id either the dataset name (i.e. laghi-monitorati-trento) or the
      * the alphanumerical id (i.e. 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d)
      *
@@ -454,8 +494,8 @@ public class CkanClient {
 
     /**
      * @param id The alphanumerical id of the resource, such as
-     * d0892ada-b8b9-43b6-81b9-47a86be126db. 
-     * 
+     * d0892ada-b8b9-43b6-81b9-47a86be126db.
+     *
      * @throws JackanException on error
      */
     public synchronized CkanResource getResource(String id) {
@@ -487,11 +527,13 @@ public class CkanClient {
      * Returns a Ckan group. Do not pass an organization id, to get organization
      * use {@link #getOrganization(java.lang.String) } instead.
      *
+     * @param identifier either the group name (i.e.
+     * hospitals-in-trento-district) or the group alphanumerical id
      * @throws JackanException on error
      */
-    public synchronized CkanGroup getGroup(String id) {
+    public synchronized CkanGroup getGroup(String identifier) {
         return getHttp(GroupResponse.class, "/api/3/action/group_show", "id",
-                id, "include_datasets", "false").result;
+                identifier, "include_datasets", "false").result;
     }
 
     /**
@@ -604,7 +646,7 @@ public class CkanClient {
             return URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20");
         }
         catch (UnsupportedEncodingException ex) {
-            throw new JackanException("Unsupported encoding", ex);
+            throw new JackanException("Unsupported encoding",  ex);
         }
     }
 
@@ -796,4 +838,9 @@ class LicenseListResponse extends CkanResponse {
 class FormatListResponse extends CkanResponse {
 
     public Set<String> result;
+}
+
+class ApiVersionResponse {
+
+    public int version;
 }

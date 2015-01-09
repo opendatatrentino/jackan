@@ -19,8 +19,7 @@ Features:
 
 Credits:
 
-* David Leoni - Trento Rise - david.leoni@trentorise.eu 
-* Alberto Zanella - Trento Rise - alberto.zanella@trentorise.eu
+* David Leoni - DISI, University of Trento - david.leoni@unitn.it
 
 We also wish to thank our very first beta tester Giulio Pilotto
 
