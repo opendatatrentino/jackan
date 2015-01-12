@@ -1,5 +1,6 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
+import com.google.common.base.Optional;
 import javax.annotation.Nullable;
 
 /**
@@ -8,12 +9,19 @@ import javax.annotation.Nullable;
  */
 public class TestResult {
     private String testName;
-    @Nullable 
-    private Throwable error;
-    String catalogName;
-    String catalogURL;
+    
+    private Optional<Throwable> error;
+    private String catalogName;
+    private String catalogURL;
+    private int id;
 
-    public TestResult(String testName, String catalogName, String catalogURL, @Nullable Throwable error) {
+    /**
+     * 
+     * @param id The unique identifier of the test result
+     * @param error The throwable, if an erorr actually occurred. 
+     */
+    public TestResult(int id, String testName,  String catalogURL, String catalogName, Optional<Throwable> error) {
+        this.id = id;
         this.testName = testName;
         this.error = error;
         this.catalogName = catalogName;
@@ -25,14 +33,14 @@ public class TestResult {
     }
 
     boolean passed(){
-        return error == null;
+        return !error.isPresent();
     }
     
     public Throwable getError() {
         if (passed()){
             throw new RuntimeException("Test passed!");
         }
-        return error;
+        return error.get();
     }
 
     public String getCatalogName() {
@@ -42,8 +50,18 @@ public class TestResult {
     public String getCatalogURL() {
         return catalogURL;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "TestResult{" + "testName=" + testName + ", error=" + error + ", catalogName=" + catalogName + ", catalogURL=" + catalogURL + ", id=" + id + '}';
+    }
+
+
     
     
-    
-    
+        
 }

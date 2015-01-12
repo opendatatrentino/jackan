@@ -40,13 +40,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import junit.framework.Assert;
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -112,60 +110,12 @@ public class CkanClientIT {
         client = null;
     }
 
-    static class FailedResourceException extends RuntimeException {
-
-        CkanClient client;
-        String resourceId;
-        String datasetName;
-
-        public FailedResourceException(CkanClient client, String msg, String datasetName, String resourceName) {
-            super(msg);
-            this.client = client;
-            this.resourceId = resourceName;
-            this.datasetName = datasetName;
-        }
-
-        public FailedResourceException(CkanClient client, String msg, String datasetName, String resourceName, Throwable thrwbl) {
-            super(msg, thrwbl);
-            this.client = client;
-            this.resourceId = resourceName;
-            this.datasetName = datasetName;
-        }
-
-        public CkanClient getClient() {
-            return client;
-        }
-
-        public String getResourceId() {
-            return resourceId;
-        }
-
-        public String getDatasetName() {
-            return datasetName;
-        }
-
-        @Override
-        public String toString() {
-            String descr;
-            try {
-                descr = "resource ckan url=" + CkanClient.makeResourceURL(client.getCatalogURL(), datasetName, resourceId);
-            }
-            catch (Exception ex) {
-                descr = "datasetName: " + datasetName + "resourceId: " + resourceId;
-            }
-            return "FailedResource: \n"
-                    + "  client=" + client + "\n"
-                    + "  " + descr + "\n";
-        }
-
-    }
-
     /**
      * todo we should do some ckan internal version detector (sic)
      */
     @Test
     @Parameters(method = "clients")
-    public void testApiVersion(CkanClient client) {
+    public void testApiVersionSupported(CkanClient client) {
         int version = client.getApiVersion();
         assertTrue("Found api version " + version + ", supported versions are: " + CkanClient.SUPPORTED_API_VERSIONS,
                 CkanClient.SUPPORTED_API_VERSIONS.contains(version));
@@ -177,10 +127,32 @@ public class CkanClientIT {
         List<String> dsl = client.getDatasetList();
         assertTrue(dsl.size() > 0);
     }
-
+    
+    /**
+     * Ckan docs don't tell offset starts with 0
+     *
+     * For some weird reason {@link #DATI_MATERA} claims to have api v3 but does
+     * not support limit & offset params
+     */
     @Test
     @Parameters(method = "clients")
-    public void testDatasets(CkanClient client) {
+    public void testDatasetListWithLimit(CkanClient client) {
+        List<String> dsl = client.getDatasetList(1, 0);
+        assertEquals(1, dsl.size());
+    }        
+
+   @Test
+    @Parameters(method = "clients")
+    public void testLicenseList(CkanClient client) {
+        List<CkanLicense> licenses = client.getLicenseList();
+        assertTrue(licenses.size() > 0);
+    }    
+    
+
+    
+    @Test
+    @Parameters(method = "clients")
+    public void testDatasetAndResource(CkanClient client) {
         List<String> dsl = client.getDatasetList(TEST_ELEMENTS, 0);
         assertTrue(dsl.size() > 0);
 
@@ -205,26 +177,43 @@ public class CkanClientIT {
 
     }
 
+    @Test
+    @Parameters(method = "clients")
+    public void testTagList(CkanClient client) {
+        List<CkanTag> tl = client.getTagList();
+        assertTrue(tl.size() > 0);
+    }
+
     /**
-     * Ckan docs don't tell offset starts with 0
-     *
-     * For some weird reason {@link #DATI_MATERA} claims to have api v3 but does
-     * not support limit & offset params
+     * Searched by name
      */
     @Test
     @Parameters(method = "clients")
-    public void testDatasetListWithLimit(CkanClient client) {
-        List<String> dsl = client.getDatasetList(1, 0);
-        assertEquals(1, dsl.size());
+    public void testTagNamesList(CkanClient client) {
+        
+        List<CkanTag> tagList = client.getTagList();
+        assertTrue(tagList.size() > 0);                
+        
+        String firstTagName = tagList.get(0).getName();
+        assertTrue(firstTagName.length() > 0);
+        String searchText = firstTagName.substring(0,firstTagName.length()-1);
+                
+        List<String> tl = client.getTagNamesList(searchText);
+        
+        assertTrue(tl.get(0).toLowerCase().contains(searchText));
     }
+    
 
     @Test
     @Parameters(method = "clients")
-    public void testUsers(CkanClient client) {
+    public void testUsersList(CkanClient client) {
         List<CkanUser> ul = client.getUserList();
         assertTrue(ul.size() > 0);
     }
 
+    /**
+     * Tries to get the "admin" user.
+     */
     @Test
     @Parameters(method = "clients")
     public void testUser(CkanClient client) {
@@ -234,7 +223,14 @@ public class CkanClientIT {
 
     @Test
     @Parameters(method = "clients")
-    public void testGroups(CkanClient client) {
+    public void testGroupList(CkanClient client) {
+        List<CkanGroup> gl = client.getGroupList();
+        assertTrue(gl.size() > 0);
+    }
+    
+    @Test
+    @Parameters(method = "clients")
+    public void testGroup(CkanClient client) {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
 
@@ -242,11 +238,19 @@ public class CkanClientIT {
             CkanGroup fetchedGroup = client.getGroup(g.getId());
             assertEquals(g.getName(), fetchedGroup.getName());
         }
-    }
+    }    
 
     @Test
     @Parameters(method = "clients")
     public void testOrganizationList(CkanClient client) {
+        List<CkanOrganization> gl = client.getOrganizationList();
+        assertTrue(gl.size() > 0);
+    
+    }
+
+    @Test
+    @Parameters(method = "clients")
+    public void testOrganization(CkanClient client) {
         List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
 
@@ -254,29 +258,7 @@ public class CkanClientIT {
             CkanOrganization fetchedOrganization = client.getOrganization(g.getId());
             assertEquals(g.getName(), fetchedOrganization.getName());
         }
-    }
-
-    @Test
-    @Parameters(method = "clients")
-    public void testTagList(CkanClient client) {
-        List<CkanTag> tl = client.getTagList();
-        assertTrue(tl.size() > 0);
-    }
-
-    @Test
-    @Parameters(method = "clients")
-    public void testTagNamesList(CkanClient client) {
-        List<String> tl = client.getTagNamesList("serviz");
-
-        assertTrue(tl.get(0).toLowerCase().contains("serviz"));
-    }
-
-    @Test
-    @Parameters(method = "clients")
-    public void testLicenseList(CkanClient client) {
-        List<CkanLicense> licenses = client.getLicenseList();
-        assertTrue(licenses.size() > 0);
-    }
+    }    
 
     @Test
     @Parameters(method = "clients")
@@ -286,29 +268,46 @@ public class CkanClientIT {
     }
 
     @Test
-    public void testSearchDatasetsByText() {
-        SearchResults<CkanDataset> r = client.searchDatasets("laghi", 10, 0);
+    @Parameters(method = "clients")
+    public void testSearchDatasetsByText(CkanClient client) {
+        List<String> dsl = client.getDatasetList(1, 0);
+        assertTrue(dsl.size() > 0);
+        
+        
+        SearchResults<CkanDataset> r = client.searchDatasets(dsl.get(0), 10, 0);
 
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
     @Test
-    public void testSearchDatasetsByGroups() {
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byGroupNames("gestione-del-territorio"), 10, 0);
+    @Parameters(method = "clients")
+    public void testSearchDatasetsByGroups(CkanClient client) {
+        List<CkanGroup> groups = client.getGroupList();
+        assertTrue(groups.size() > 0);
+        
+        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byGroupNames(groups.get(0).getName()), 10, 0);
 
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
-    @Test
-    public void testSearchDatasetsByOrganization() {
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byOrganizationName("pat-sistema-informativo-ambiente-e-territorio"), 10, 0);
+    @Test  
+    @Parameters(method = "clients")
+    public void testSearchDatasetsByOrganization(CkanClient client) {
+        List<CkanOrganization> organizations = client.getOrganizationList();
+        assertTrue(organizations.size() > 0);
+        
+        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byOrganizationName(organizations.get(0).getName()), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
     @Test
-    public void testSearchDatasetsByTags() {
-
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames("prodotti tipici", "enogastronomia"), 10, 0);
+    @Parameters(method = "clients")
+    public void testSearchDatasetsByTags(CkanClient client) {
+        
+        List<String> tagNames = client.getTagNamesList();
+        assertTrue(tagNames.size() > 0);
+        
+        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tagNames.get(0)), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 

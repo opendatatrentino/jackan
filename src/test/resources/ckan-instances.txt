@@ -1,9 +1,31 @@
+dati.trentino.it
+http://dati.trentino.it/
+dati.toscana.it
+http://dati.toscana.it/
+dati.gov.it
+http://dati.gov.it/
+Annuario statistico del Comune di Firenze
+http://annuario.comune.fi.it/
+Il Portale Opendata della Provincia di Roma
+http://www.opendata.provincia.roma.it/
+Portale Dati aperti del Comune di Matera
+http://dati.comune.matera.it/
+Portale OpenData del Comune di Bari
+http://opendata.comune.bari.it/
+Swiss Open Government Data
+http://opendata.admin.ch/
+Open data Canada
+http://open.canada.ca/data
+Data.gov
+http://catalog.data.gov/
+Data.gov.uk
+http://data.gov.uk/
+Open Data Hub Italia
+http://www.opendatahub.it/
 Africa Open Data
 http://africaopendata.org/
 Amsterdam Open Data.nl
 http://www.amsterdamopendata.nl/
-Annuario statistico del Comune di Firenze
-http://annuario.comune.fi.it/
 Aragón Open Data
 http://opendata.aragon.es/
 Berlin Open Data
@@ -48,8 +70,6 @@ Data.gc.ca
 http://data.gc.ca/
 data.go.jp
 http://www.data.go.jp/
-Data.gov
-http://catalog.data.gov/
 data.gov.au
 http://data.gov.au/
 data.gov.ie
@@ -58,8 +78,6 @@ data.gov.ro
 http://data.gov.ro/
 data.gov.sk
 http://data.gov.sk/
-Data.gov.uk
-http://data.gov.uk/
 data.gv.at
 http://data.gv.at/
 data.norge.no
@@ -80,8 +98,6 @@ datamx.io
 http://datamx.io/
 DataPOA
 http://datapoa.com.br/
-dati.gov.it
-http://dati.gov.it/
 Datos abiertos Málaga
 http://datosabiertos.malaga.eu/
 datos.gob.mx
@@ -120,8 +136,6 @@ Houston Data Portal
 http://data.codeforhouston.com/
 Humanitarian Data Exchange Repository
 http://data.hdx.rwlabs.org/
-Il Portale Opendata della Provincia di Roma
-http://www.opendata.provincia.roma.it/
 Lexington's Open Data Portal
 http://data.lexingtonky.gov/
 Linz Open Data
@@ -146,20 +160,14 @@ Open Data Aarhus
 http://www.odaa.dk/
 Open Data Canarias
 http://opendatacanarias.es/
-Open Data della Regione Toscana
-http://dati.toscana.it/
 Open Data Gortynia
 http://opendatagortynia.gr/
-Open Data Hub Italia
-http://www.opendatahub.it/
 Open Data in Uganda
 http://data.ug/
 Open DATA METI
 http://datameti.go.jp/
 Open Data Portal Hamburg
 http://daten.hamburg.de/
-Open Data Trentino
-http://dati.trentino.it/
 Open Virginia
 http://data.openva.com/
 OpenBelgium
@@ -190,8 +198,6 @@ Portal de Datos Abiertos del Gobierno de Misiones
 http://www.datos.misiones.gov.ar/
 Portal de Datos Públicos
 http://datospublicos.gob.ar/
-Portale OpenData del Comune di Bari
-http://opendata.comune.bari.it/
 publicdata.eu
 http://publicdata.eu/
 Queensland Government data
@@ -208,8 +214,6 @@ Sherbrooke Open Data
 http://donnees.ville.sherbrooke.qc.ca/
 South Australian Government Data Directory
 http://data.sa.gov.au/
-Swiss Open Government Data
-http://opendata.admin.ch/
 Taipei City Open Data
 http://data.tainan.gov.tw/
 The Brazilian Senate

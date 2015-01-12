@@ -232,7 +232,14 @@
             <artifactId>JUnitParams</artifactId>
             <version>1.0.3</version>
             <scope>test</scope>
-        </dependency>    
+        </dependency>   
+        
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+            <scope>test</scope>
+        </dependency> 
         
         <dependency>
             <groupId>org.rendersnake</groupId>
@@ -246,7 +253,8 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson2.version}</version>
-        </dependency>
+        </dependency>                
+
 
         <!-- Just the annotations; use this dependency if you want to attach annotations
         to classes without connecting them to the code. -->

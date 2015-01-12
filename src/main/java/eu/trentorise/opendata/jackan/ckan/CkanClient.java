@@ -67,8 +67,8 @@ public class CkanClient {
     private static ObjectMapper objectMapper;
 
     /**
-     * Notice that even for the same api version (at least for versions <= 3) different CKAN instances can
-     * behave quite differently (sic)
+     * Notice that even for the same api version (at least for versions <= 3)
+     * different CKAN instances can behave quite differently (sic)
      */
     public static ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
 
@@ -336,7 +336,7 @@ public class CkanClient {
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
-        
+
     /**
      * Updates a resource on the ckan server
      *
@@ -394,7 +394,7 @@ public class CkanClient {
             json = objectMapper.writeValueAsString(dataset);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!",this,  e);
+            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", this, e);
         }
         DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
         return datasetresponse.result;
@@ -435,12 +435,12 @@ public class CkanClient {
      * @throws JackanException on error
      */
     public synchronized int getApiVersion() {
-        for (int i = 3; i >= 1; i--){
+        for (int i = 3; i >= 1; i--) {
             return getApiVersion(i); // this is demential. But /api always gives { "version": 1} ....
         }
         throw new JackanException("Error while getting api version!", this);
     }
-    
+
     /**
      * Returns the latest api version supported by the catalog
      *
@@ -460,17 +460,16 @@ public class CkanClient {
         }
 
     }
-    
 
     /**
-     * @param id either the dataset name (i.e. laghi-monitorati-trento) or the
-     * the alphanumerical id (i.e. 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d)
+     * @param idOrName either the dataset name (i.e. laghi-monitorati-trento) or
+     * the the alphanumerical id (i.e. 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d)
      *
      * @throws JackanException on error
      */
-    public synchronized CkanDataset getDataset(String id) {
+    public synchronized CkanDataset getDataset(String idOrName) {
         CkanDataset cd = getHttp(DatasetResponse.class, "/api/3/action/package_show",
-                "id", id).result;
+                "id", idOrName).result;
         for (CkanResource cr : cd.getResources()) {
             cr.setPackageId(cd.getId());
         }
@@ -527,13 +526,13 @@ public class CkanClient {
      * Returns a Ckan group. Do not pass an organization id, to get organization
      * use {@link #getOrganization(java.lang.String) } instead.
      *
-     * @param identifier either the group name (i.e.
-     * hospitals-in-trento-district) or the group alphanumerical id
+     * @param idOrName either the group name (i.e. hospitals-in-trento-district)
+     * or the group alphanumerical id
      * @throws JackanException on error
      */
-    public synchronized CkanGroup getGroup(String identifier) {
+    public synchronized CkanGroup getGroup(String idOrName) {
         return getHttp(GroupResponse.class, "/api/3/action/group_show", "id",
-                identifier, "include_datasets", "false").result;
+                idOrName, "include_datasets", "false").result;
     }
 
     /**
@@ -566,18 +565,21 @@ public class CkanClient {
     }
 
     /**
-     * Returns a Ckan organization. Do not pass it a group id.
+     * Returns a Ckan organization.
      *
+     * @param organizationIdOrName either the name of organization (i.e.
+     * culture-and-education) or the alphanumerical id (i.e.
+     * 232cad97-ecf2-447d-9656-63899023887f). Do not pass it a group id.
      * @throws JackanException on error
      */
-    public synchronized CkanOrganization getOrganization(String organizationId) {
+    public synchronized CkanOrganization getOrganization(String organizationIdOrName) {
         return getHttp(OrganizationResponse.class, "/api/3/action/organization_show", "id",
-                organizationId, "include_datasets", "false").result;
+                organizationIdOrName, "include_datasets", "false").result;
     }
 
     /**
      * Returns a list of tags names, i.e. "gp-practice-earnings","Aid Project
-     * Evaluation", "tourism-satellite-account" We think names SHOULD be
+     * Evaluation", "tourism-satellite-account". We think names SHOULD be
      * lowercase with minuses instead of spaces, but in some cases they aren't.
      *
      * @throws JackanException on error
@@ -588,8 +590,7 @@ public class CkanClient {
     }
 
     /**
-     * Only tags containg string given in query will be returned Throws
-     * JackanException on error.
+     * Returns tags containing the string given in query.
      *
      * @param query
      * @throws JackanException on error
@@ -607,11 +608,12 @@ public class CkanClient {
     }
 
     /**
-     * Search datasets containg param text in the metadata
+     * Search datasets containing provided text in the metadata
      *
      * @param text The query string
      * @param limit maximum results to return
-     * @param offset search begins from offset
+     * @param offset search begins from offset. Starts from 0, so that offset 0
+     * limit 1 returns exactly 1 result, if there is a matching dataset)
      * @throws JackanException on error
      */
     public synchronized SearchResults<CkanDataset> searchDatasets(String text,
@@ -641,12 +643,15 @@ public class CkanClient {
 
     }
 
+    /**
+     *  @params s a string to encode in a format suitable for URLs.
+     */
     private static String urlEncode(String s) {
         try {
             return URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20");
         }
         catch (UnsupportedEncodingException ex) {
-            throw new JackanException("Unsupported encoding",  ex);
+            throw new JackanException("Unsupported encoding", ex);
         }
     }
 
@@ -725,11 +730,13 @@ class CkanError {
         this.message = message;
     }
 
+    /** todo what are possible types? */
     @JsonProperty("__type")
     public String getType() {
         return type;
     }
 
+    /** todo what are possible types? */
     public void setType(String type) {
         this.type = type;
     }
