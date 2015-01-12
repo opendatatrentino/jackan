@@ -1,0 +1,29 @@
+Amsterdam Open Data.nl non trovo endpoint
+http://www.amsterdamopendata.nl/
+Berlin Open Data non trovo endpoint
+http://daten.berlin.de/
+cities open data hub non c'è il sito
+http://cities.opendatahub.gr/
+DATA CITY Sabae - host non risponde
+http://ckan.sabae.jrrk.org/
+data.norge.no -  non mi sembra tanto CKAN..
+http://data.norge.no/
+datacatalogs.org - can't find entrypoint
+http://datacatalogs.org/
+Denver Open Data Catalog - can't find entrypoint
+http://data.denvergov.org/
+GovData - can't find entrypoint
+http://govdata.de/
+Graz Open Data - can't find entrypoint
+http://data.graz.gv.at/
+Linz Open Data - can't find entrypoint
+http://data.linz.gv.at/
+Open Data in Uganda - data page http://catalog.data.ug didn't load
+http://data.ug/
+Yokohama Open Data Portal - seems very much a work in progress
+http://data.yokohamaopendata.jp/
+
+
+
+
+

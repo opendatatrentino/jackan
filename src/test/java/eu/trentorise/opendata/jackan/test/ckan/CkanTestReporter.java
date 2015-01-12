@@ -29,6 +29,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import static org.rendersnake.HtmlAttributesFactory.class_;
 import static org.rendersnake.HtmlAttributesFactory.href;
+import static org.rendersnake.HtmlAttributesFactory.style;
 import org.rendersnake.HtmlCanvas;
 
 /**
@@ -40,7 +41,7 @@ public class CkanTestReporter {
 
     private static final Logger logger = Logger.getLogger(CkanTestReporter.class.getName());
 
-    public static final List<String> testNames
+    public static final List<String> ALL_TEST_NAMES
             = ImmutableList.of("testApiVersionSupported",
                     "testDatasetList",
                     "testDatasetAndResource",
@@ -120,9 +121,13 @@ public class CkanTestReporter {
 
         Map<String, String> catalogsNames = readCatalogsList("ckan-instances.txt");
 
-        RunSuite testResults = runTests(catalogsNames);
+        
+        
+        List<String> testNames = ALL_TEST_NAMES.subList(0, 2);
+        
+        RunSuite testResults = runTests(catalogsNames, testNames);
 
-        String content = renderRunSuite(catalogsNames, testResults);
+        String content = renderRunSuite(catalogsNames, testNames, testResults);
 
         saveToDirectory(new File("reports/" + REPORT_PREFIX + "-" + new DateTime().toString("dd-MM-yyyy--HH-mm-ss")), content, testResults);
 
@@ -175,7 +180,7 @@ public class CkanTestReporter {
 
     }
 
-    public static RunSuite runTests(Map<String, String> catalogNames) {
+    public static RunSuite runTests(Map<String, String> catalogNames, List<String> testNames) {
 
         DateTime startTime = new DateTime();
 
@@ -212,7 +217,7 @@ public class CkanTestReporter {
         return date.toString(DateTimeFormat.shortDateTime().withLocale(Locale.ENGLISH));
     }
 
-    public static String renderRunSuite(Map<String, String> catalogs, RunSuite runSuite) {
+    public static String renderRunSuite(Map<String, String> catalogs, List<String> testNames, RunSuite runSuite) {
         String outputFileContent;
         try {
 
@@ -225,12 +230,19 @@ public class CkanTestReporter {
                     //.macros().stylesheet("htdocs/style-01.css"))
                     //.render(JQueryLibrary.core("1.4.3"))
                     //.render(JQueryLibrary.ui("1.8.6"))
-                    //.render(JQueryLibrary.baseTheme("1.8"))
+                    //.render(JQueryLibrary.baseTheme("1.8"))                    
                     .style()
                     .write("." + ERROR_CLASS + " {color:red}")
-                    .write("." + JACKAN_TABLE_CLASS + " { border-collapse:collapse }")
-                    .write("." + JACKAN_TABLE_CLASS + " th { border: 1px solid black; }")
-                    .write("." + JACKAN_TABLE_CLASS + " td { border: 1px solid black; }")
+                    .write("." + JACKAN_TABLE_CLASS + " { border-collapse:collapse; table-layout: fixed; width: 100%;  }")
+                    .write("." + JACKAN_TABLE_CLASS + " td, th { border: 1px solid black; vertical-align: top; padding:10px; width:100px;}")
+                    .write("." + JACKAN_TABLE_CLASS + " th { position:absolute; left:0;  width:200px;}")
+                    .write(".outer {position:relative}")
+                    .write(".inner {\n" +
+                            "  overflow-x:scroll;\n" +
+                            "  overflow-y:visible;\n" +
+                            "  width:400px; \n" +
+                            "  margin-left:220px;\n" +
+                            "}")
                     ._style()
                     ._head();
 
@@ -243,13 +255,15 @@ public class CkanTestReporter {
                     .br();
 
             Escaper escaper = HtmlEscapers.htmlEscaper();
-
+            
+            html.div(class_("outer"))
+                    .div(class_("inner"));
             html.table(class_(JACKAN_TABLE_CLASS))
                     .tr()
-                    .th().write("test")._th();
+                    .th(style("height:100%")).write("test")._th();
 
             for (String catalogUrl : catalogs.keySet()) {
-                html.th().a(href(catalogUrl).target("_blank")).write(escaper.escape(catalogs.get(catalogUrl)))._a()._th();
+                html.td().a(href(catalogUrl).target("_blank")).write(escaper.escape(catalogs.get(catalogUrl)))._a()._td();
             }
             html._tr();
 
@@ -257,7 +271,7 @@ public class CkanTestReporter {
 
             for (String testName : testNames) {
                 html.tr();
-                html.td().b().write(testName)._b()._td();
+                html.th().b().write(testName)._b()._th();
 
                 for (String catalogURL : catalogs.keySet()) {
 
@@ -283,6 +297,8 @@ public class CkanTestReporter {
 
             html
                     ._table()
+                    ._div()
+                    ._div()
                     ._body()
                     ._html();
 

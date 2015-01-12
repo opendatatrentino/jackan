@@ -3,7 +3,7 @@ http://dati.trentino.it/
 dati.toscana.it
 http://dati.toscana.it/
 dati.gov.it
-http://dati.gov.it/
+http://www.dati.gov.it/catalog/
 Annuario statistico del Comune di Firenze
 http://annuario.comune.fi.it/
 Il Portale Opendata della Provincia di Roma
@@ -24,20 +24,14 @@ Open Data Hub Italia
 http://www.opendatahub.it/
 Africa Open Data
 http://africaopendata.org/
-Amsterdam Open Data.nl
-http://www.amsterdamopendata.nl/
 Aragón Open Data
 http://opendata.aragon.es/
-Berlin Open Data
-http://daten.berlin.de/
 Bermuda.io
 http://bermuda.io/
 Buenos Aires Data
 http://data.buenosaires.gob.ar/
 Catálogo de Datos Abiertos
 https://catalogodatos.gub.uy/
-cities open data hub
-http://cities.opendatahub.gr/
 City of Ottawa Open Data Catalog
 http://data.ottawa.ca/
 City of Surrey Open Data Catalogue
@@ -60,16 +54,12 @@ Danube Reference Data and Service Infrastructure
 http://drdsi.jrc.ec.europa.eu/
 DART
 http://dartportal.leeds.ac.uk/
-DATA CITY Sabae
-http://ckan.sabae.jrrk.org/
 Data for Japan
 http://dataforjapan.org/
 data.bris Research Data Repository
 http://data.bris.ac.uk/data
-Data.gc.ca
-http://data.gc.ca/
 data.go.jp
-http://www.data.go.jp/
+http://www.data.go.jp/data
 data.gov.au
 http://data.gov.au/
 data.gov.ie
@@ -79,19 +69,15 @@ http://data.gov.ro/
 data.gov.sk
 http://data.gov.sk/
 data.gv.at
-http://data.gv.at/
-data.norge.no
-http://data.norge.no/
+https://www.data.gv.at/katalog
 data.NSW
-http://data.nsw.gov.au/
+http://data.nsw.gov.au/data/
 Data.overheid.nl
 http://data.overheid.nl/
 Data.Rio
 http://data.rio.rj.gov.br/
 data.salzburgerland.com
 http://data.salzburgerland.com/
-datacatalogs.org
-http://datacatalogs.org/
 DataGM
 http://datagm.org.uk/
 datamx.io
@@ -101,35 +87,29 @@ http://datapoa.com.br/
 Datos abiertos Málaga
 http://datosabiertos.malaga.eu/
 datos.gob.mx
-http://datos.gob.mx/
+http://catalogo.datos.gob.mx/
 datosabiertos.ec
 http://datosabiertos.ec/
-Denver Open Data Catalog
-http://data.denvergov.org/
 Edo State, Nigeria
 http://data.edostate.gov.ng/
 Energy Data eXchange
 https://edx.netl.doe.gov/
 EU Open Data
-http://open-data.europa.eu/
+http://open-data.europa.eu/data/api
 Geospatial Information Clearinghouse
 http://ckan.gsi.go.jp/
 Glasgow Open Data
 http://data.glasgow.gov.uk/
 Gong.io
 http://gong.io/
-GovData
-http://govdata.de/
 Grand Rapids Open Data
 http://data.grcity.us/
-Graz Open Data
-http://data.graz.gv.at/
 Greek Open Data Hub
-http://open-data.okfn.gr/
+http://ckan.okfn.gr/
 Greek Open Data Hub
 http://opendatahub.gr/
 HealthData.gov
-http://healthdata.gov/
+http://hub.healthdata.gov/
 Helsinki Region Infoshare
 http://www.hri.fi/
 Houston Data Portal
@@ -138,10 +118,6 @@ Humanitarian Data Exchange Repository
 http://data.hdx.rwlabs.org/
 Lexington's Open Data Portal
 http://data.lexingtonky.gov/
-Linz Open Data
-http://data.linz.gv.at/
-METI
-http://datameti.go.jp/data/
 Minnesota Geospatial Commons
 http://gisdata.mn.gov/
 Montréal Open Data
@@ -149,7 +125,7 @@ http://donnees.ville.montreal.qc.ca/
 National Geothermal Data System
 http://geothermaldata.org/
 National Oceanic and Atmospheric Administration (United States)
-https://data.noaa.gov/dataset
+https://data.noaa.gov
 NosDonnées.fr
 http://www.nosdonnees.fr/
 Offene Daten Mettmann
@@ -159,21 +135,19 @@ http://offenedaten.de/
 Open Data Aarhus
 http://www.odaa.dk/
 Open Data Canarias
-http://opendatacanarias.es/
+http://opendatacanarias.es/datos/
 Open Data Gortynia
 http://opendatagortynia.gr/
-Open Data in Uganda
-http://data.ug/
 Open DATA METI
-http://datameti.go.jp/
+http://datameti.go.jp/data/
 Open Data Portal Hamburg
-http://daten.hamburg.de/
+http://suche.transparenz.hamburg.de
 Open Virginia
 http://data.openva.com/
 OpenBelgium
 http://portal.openbelgium.be/
 OpenColorado
-http://opencolorado.org/da
+http://data.opencolorado.org/
 Opendata Cáceres
 http://opendata.caceres.es/
 Opendata Lisra
@@ -197,7 +171,7 @@ http://opingogn.is/
 Portal de Datos Abiertos del Gobierno de Misiones
 http://www.datos.misiones.gov.ar/
 Portal de Datos Públicos
-http://datospublicos.gob.ar/
+http://datospublicos.gob.ar/data/
 publicdata.eu
 http://publicdata.eu/
 Queensland Government data
@@ -224,7 +198,5 @@ The International Aid Transparency Initiative
 http://iatiregistry.org/
 Urban Data Challenge on CKAN
 http://udct-data.aigid.jp/
-Yokohama Open Data Portal
-http://data.yokohamaopendata.jp/
 Öppna Data
-http://oppnadata.se/
+http://opendata.opennorth.se/
