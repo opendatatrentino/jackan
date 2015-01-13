@@ -44,9 +44,23 @@ public class CkanTestReporter {
     public static final List<String> ALL_TEST_NAMES
             = ImmutableList.of("testApiVersionSupported",
                     "testDatasetList",
+                    "testDatasetListWithLimit",
+                    "testSearchDatasetsByText",
                     "testDatasetAndResource",
                     "testLicenseList",
-                    "testDatasetListWithLimit"
+                    "testTagList",
+                    "testTagNameList",
+                    "testUserList",
+                    "testUser",
+                    "testGroupList",
+                    "testGroup",
+                    "testOrganizationList",
+                    "testOrganization",
+                    "testFormatList",
+                    "testSearchDatasetsByGroups",
+                    "testSearchDatasetsByOrganization",
+                    "testSearchDatasetsByTags",
+                    "testSearchDatasetsByLicenseIds"
             );
 
     private static String ERROR_CLASS = "jackan-error";
@@ -119,12 +133,11 @@ public class CkanTestReporter {
         TestConfig.initLogger();
         TestConfig.initProperties();
 
-        Map<String, String> catalogsNames = readCatalogsList("ckan-instances.txt");
+        Map<String, String> catalogsNames =  readCatalogsList("ckan-instances.txt");
+                // ImmutableMap.of("http://dati.trentino.it", "dati.trentino.it", "http://dati.toscana.it", "dati.toscana.it");
 
-        
-        
-        List<String> testNames = ALL_TEST_NAMES.subList(0, 2);
-        
+        List<String> testNames = ALL_TEST_NAMES;//.subList(0, 2);
+
         RunSuite testResults = runTests(catalogsNames, testNames);
 
         String content = renderRunSuite(catalogsNames, testNames, testResults);
@@ -203,6 +216,7 @@ public class CkanTestReporter {
 
         return new RunSuite(startTime, new DateTime(), results.build());
     }
+
     /**
      * Formats date time up to the day, in English format
      */
@@ -237,17 +251,20 @@ public class CkanTestReporter {
                     .write("." + JACKAN_TABLE_CLASS + " td, th { border: 1px solid black; vertical-align: top; padding:10px; width:100px;}")
                     .write("." + JACKAN_TABLE_CLASS + " th { position:absolute; left:0;  width:200px;}")
                     .write(".outer {position:relative}")
-                    .write(".inner {\n" +
-                            "  overflow-x:scroll;\n" +
-                            "  overflow-y:visible;\n" +
-                            "  width:400px; \n" +
-                            "  margin-left:220px;\n" +
-                            "}")
+                    .write(".inner {\n"
+                            + "  overflow-x:scroll;\n"
+                            + "  overflow-y:visible;\n"
+                            + "  width:400px; \n"
+                            + "  margin-left:220px;\n"
+                            + "}")
                     ._style()
                     ._head();
 
             html.body()
-                    .h1().content("Jackan Report - " + formatDateUpToDay(runSuite.getStartTime()))
+                    .h1().a(href("https://github.com/opendatatrentino/jackan").target("_blank"))
+                    .write("Jackan Report - " + formatDateUpToDay(runSuite.getStartTime()))
+                    ._a()
+                    ._h1()
                     .b().write("Started: ")._b()
                     .span().write(formatDateUpToSecond(runSuite.getStartTime()))._span().br()
                     .b().write("Finished: ")._b()
@@ -255,7 +272,7 @@ public class CkanTestReporter {
                     .br();
 
             Escaper escaper = HtmlEscapers.htmlEscaper();
-            
+
             html.div(class_("outer"))
                     .div(class_("inner"));
             html.table(class_(JACKAN_TABLE_CLASS))

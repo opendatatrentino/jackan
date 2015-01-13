@@ -17,6 +17,7 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import eu.trentorise.opendata.jackan.JackanException;
@@ -44,6 +45,7 @@ import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -139,17 +141,20 @@ public class CkanClientIT {
     public void testDatasetListWithLimit(CkanClient client) {
         List<String> dsl = client.getDatasetList(1, 0);
         assertEquals(1, dsl.size());
-    }        
-
-   @Test
-    @Parameters(method = "clients")
-    public void testLicenseList(CkanClient client) {
-        List<CkanLicense> licenses = client.getLicenseList();
-        assertTrue(licenses.size() > 0);
     }    
     
+    @Test
+    @Parameters(method = "clients")
+    public void testSearchDatasetsByText(CkanClient client) {
+        List<String> dsl = client.getDatasetList(1, 0);
+        assertTrue(dsl.size() > 0);
 
-    
+        SearchResults<CkanDataset> r = client.searchDatasets(dsl.get(0), 10, 0);
+
+        assertTrue("I should get at least one result", r.getResults().size() > 0);
+    }     
+            
+
     @Test
     @Parameters(method = "clients")
     public void testDatasetAndResource(CkanClient client) {
@@ -177,6 +182,15 @@ public class CkanClientIT {
 
     }
 
+   
+
+    @Test
+    @Parameters(method = "clients")
+    public void testLicenseList(CkanClient client) {
+        List<CkanLicense> licenses = client.getLicenseList();
+        assertTrue(licenses.size() > 0);
+    }
+
     @Test
     @Parameters(method = "clients")
     public void testTagList(CkanClient client) {
@@ -189,24 +203,23 @@ public class CkanClientIT {
      */
     @Test
     @Parameters(method = "clients")
-    public void testTagNamesList(CkanClient client) {
-        
+    public void testTagNameList(CkanClient client) {
+
         List<CkanTag> tagList = client.getTagList();
-        assertTrue(tagList.size() > 0);                
-        
+        assertTrue(tagList.size() > 0);
+
         String firstTagName = tagList.get(0).getName();
         assertTrue(firstTagName.length() > 0);
-        String searchText = firstTagName.substring(0,firstTagName.length()-1);
-                
+        String searchText = firstTagName.substring(0, firstTagName.length() - 1);
+
         List<String> tl = client.getTagNamesList(searchText);
-        
+
         assertTrue(tl.get(0).toLowerCase().contains(searchText));
     }
-    
 
     @Test
     @Parameters(method = "clients")
-    public void testUsersList(CkanClient client) {
+    public void testUserList(CkanClient client) {
         List<CkanUser> ul = client.getUserList();
         assertTrue(ul.size() > 0);
     }
@@ -227,7 +240,7 @@ public class CkanClientIT {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
     }
-    
+
     @Test
     @Parameters(method = "clients")
     public void testGroup(CkanClient client) {
@@ -238,14 +251,14 @@ public class CkanClientIT {
             CkanGroup fetchedGroup = client.getGroup(g.getId());
             assertEquals(g.getName(), fetchedGroup.getName());
         }
-    }    
+    }
 
     @Test
     @Parameters(method = "clients")
     public void testOrganizationList(CkanClient client) {
         List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
-    
+
     }
 
     @Test
@@ -258,7 +271,7 @@ public class CkanClientIT {
             CkanOrganization fetchedOrganization = client.getOrganization(g.getId());
             assertEquals(g.getName(), fetchedOrganization.getName());
         }
-    }    
+    }
 
     @Test
     @Parameters(method = "clients")
@@ -269,33 +282,21 @@ public class CkanClientIT {
 
     @Test
     @Parameters(method = "clients")
-    public void testSearchDatasetsByText(CkanClient client) {
-        List<String> dsl = client.getDatasetList(1, 0);
-        assertTrue(dsl.size() > 0);
-        
-        
-        SearchResults<CkanDataset> r = client.searchDatasets(dsl.get(0), 10, 0);
+    public void testSearchDatasetsByGroups(CkanClient client) {
+        List<CkanGroup> groups = client.getGroupList();
+        assertTrue(groups.size() > 0);
+
+        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byGroupNames(groups.get(0).getName()), 10, 0);
 
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
     @Test
     @Parameters(method = "clients")
-    public void testSearchDatasetsByGroups(CkanClient client) {
-        List<CkanGroup> groups = client.getGroupList();
-        assertTrue(groups.size() > 0);
-        
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byGroupNames(groups.get(0).getName()), 10, 0);
-
-        assertTrue("I should get at least one result", r.getResults().size() > 0);
-    }
-
-    @Test  
-    @Parameters(method = "clients")
     public void testSearchDatasetsByOrganization(CkanClient client) {
         List<CkanOrganization> organizations = client.getOrganizationList();
         assertTrue(organizations.size() > 0);
-        
+
         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byOrganizationName(organizations.get(0).getName()), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
@@ -303,19 +304,26 @@ public class CkanClientIT {
     @Test
     @Parameters(method = "clients")
     public void testSearchDatasetsByTags(CkanClient client) {
-        
+
         List<String> tagNames = client.getTagNamesList();
         assertTrue(tagNames.size() > 0);
-        
+
         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tagNames.get(0)), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
     @Test
-    public void testSearchDatasetsByLicenseIds() {
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byLicenseId("cc-zero"), 10, 0);
-        assertEquals("cc-zero", r.getResults().get(0).getLicenseId());
-        assertTrue("I should get at least one result", r.getResults().size() > 0);
+    @Parameters(method = "clients")
+    public void testSearchDatasetsByLicenseIds(CkanClient client) throws JsonProcessingException {
+        List<CkanLicense> licenses = client.getLicenseList();
+        assertTrue(licenses.size() > 0);
+        for (CkanLicense license : licenses){
+            SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byLicenseId(license.getId()), 10, 0);
+            if (r.getResults().size() > 0){
+                return;
+            }
+        }        
+        Assert.fail("I should get at least one dataset matching some license! Tried licenses were: " + CkanClient.getObjectMapperClone().writeValueAsString(licenses));
     }
 
     @Test
