@@ -45,7 +45,7 @@ public class CkanActivity {
     @Nullable
     private DateTime approvedTimestamp;
     private List<CkanDataset> packages;
-    private List<CkanGroup> groups;
+    private List<String> groups;
     private CkanState state;
 
     public CkanActivity() {
@@ -113,11 +113,17 @@ public class CkanActivity {
         this.packages = packages;
     }
 
-    public List<CkanGroup> getGroups() {
+    /** 
+     * Returns list of group names (i.e. region-trentino)
+     */
+    public List<String> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<CkanGroup> groups) {
+    /** 
+     * Returns list of group names (i.e. region-trentino)
+     */    
+    public void setGroups(List<String> groups) {
         this.groups = groups;
     }
 

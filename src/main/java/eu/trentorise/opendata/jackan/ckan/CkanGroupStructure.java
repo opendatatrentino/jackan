@@ -21,8 +21,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 /**
- * This class models the same data structure that Ckan uses for both groups and
- * organizations. Since they are different things and work with different apis
+ * This abstract class models the same data structure that Ckan uses for both groups and
+ * organizations. Since they are different things and work with different APIs
  * we made two different implementations. For groups use {@link CkanGroup} and
  * organizations use {@link CkanOrganization} (Ckan way to tell the difference
  * is the {@link #isOrganization() } field).
@@ -170,12 +170,15 @@ public abstract class CkanGroupStructure {
     }
 
     /**
-     * name in the url. i.e. gestione-del-territorio
+     * name in the url. i.e. management-of-territory
      */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name name in the url. i.e. management-of-territory
+     */
     public void setName(String name) {
         this.name = name;
     }

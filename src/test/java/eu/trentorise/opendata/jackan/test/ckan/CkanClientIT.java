@@ -25,19 +25,14 @@ import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import eu.trentorise.opendata.jackan.ckan.CkanLicense;
 import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
-import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import eu.trentorise.opendata.jackan.ckan.CkanTag;
 import eu.trentorise.opendata.jackan.ckan.CkanUser;
 import eu.trentorise.opendata.jackan.test.TestConfig;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
@@ -45,12 +40,10 @@ import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -87,10 +80,11 @@ public class CkanClientIT {
     private Object[] clients() {
         return $(
                 $(new CkanClient(DATI_TRENTINO)),
-                $(new CkanClient(DATI_TOSCANA)),
+                $(new CkanClient(DATI_TOSCANA))
+                /*,
                 $(new CkanClient(DATI_MATERA)),
                 $(new CkanClient(DATA_GOV_UK)),
-                $(new CkanClient(DATA_GOV_US))
+                $(new CkanClient(DATA_GOV_US)) */
         );
     }
 
@@ -299,11 +293,27 @@ public class CkanClientIT {
     @Test
     @Parameters(method = "clients")
     public void testSearchDatasetsByTags(CkanClient client) {
+        
+        List<String> datasetNamesList = client.getDatasetList();
+        assertTrue(datasetNamesList.size() > 0);
 
-        List<String> tagNames = client.getTagNamesList();
-        assertTrue(tagNames.size() > 0);
-
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tagNames.get(0)), 10, 0);
+        List<CkanTag> tagList = client.getTagList();        
+        assertTrue(tagList.size() > 0);
+        
+        String tagName = "";
+        for (String datasetName : datasetNamesList){
+            CkanDataset dataset = client.getDataset(datasetName);
+            List<CkanTag> tags = dataset.getTags();
+            if (tags.size() > 0 &&  tags.get(0).getName().length() > 0){
+                tagName = tags.get(0).getName();
+                break;
+            }
+        }    
+        if (tagName.length() == 0){
+            Assert.fail("Coudln't find any tag!");
+        }
+        
+        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tagName), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
     }
 
