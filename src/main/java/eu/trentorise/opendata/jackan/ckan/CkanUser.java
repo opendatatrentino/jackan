@@ -1,29 +1,23 @@
-/**
-* *****************************************************************************
-* Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
-*
-* All rights reserved. This program and the accompanying materials are made
-* available under the terms of the GNU Lesser General Public License (LGPL)
-* version 2.1 which accompanies this distribution, and is available at
-*
-* http://www.gnu.org/licenses/lgpl-2.1.html
-*
-* This library is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-* details.
-*
-*******************************************************************************
-*/   
+/* 
+ * Copyright 2015 Trento Rise  (trentorise.eu) 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.trentorise.opendata.jackan.ckan;
 
 import java.util.List;
 import javax.annotation.Nullable;
 import org.joda.time.DateTime;
-
-
-
-
 
 /**
  *
@@ -31,25 +25,27 @@ import org.joda.time.DateTime;
  */
 public class CkanUser {
 
-    
-    @Nullable private String about;
+    @Nullable
+    private String about;
     /**
      * You can obtain it with getUser(id)
      */
-    @Nullable private List<CkanActivity> activity;
+    @Nullable
+    private List<CkanActivity> activity;
     private boolean activityStreamsEmailNotifications;
 
     /**
-     * 
-     * i.e. "admin" 
+     *
+     * i.e. "admin"
      */
-    @Nullable private String capacity;
-    
+    @Nullable
+    private String capacity;
+
     /**
-       internally date is stored with UTC timezone
-    */
+     * internally date is stored with UTC timezone
+     */
     private DateTime created;
-    
+
     /**
      * i.e. David Leoni
      */
@@ -58,8 +54,9 @@ public class CkanUser {
     /**
      * seems quite useless something like i.e. Mr David Leoni the Third ?
      */
-    
-    @Nullable private String fullname;
+
+    @Nullable
+    private String fullname;
     /**
      * alphanumerical id. i.e. "01ab5c4e-6d6b-46bc-8cn7-e37drs9aeb00"
      */
@@ -71,23 +68,27 @@ public class CkanUser {
 
     /**
      * Actually I don't know the format
-     */    
-    @Nullable private String openid;
+     */
+    @Nullable
+    private String openid;
 
     private int numberAdministeredPackages;
     private int numberOfEdits;
-    
-    @Nullable private int numFollowers;
-    
+
+    @Nullable
+    private int numFollowers;
+
     /**
      * Should be a CkanState
      */
     private CkanState state;
     private boolean sysadmin;
 
-    public CkanUser(){}
-    
-    @Nullable public String getAbout() {
+    public CkanUser() {
+    }
+
+    @Nullable
+    public String getAbout() {
         return about;
     }
 
@@ -127,7 +128,8 @@ public class CkanUser {
         this.emailHash = emailHash;
     }
 
-    @Nullable public String getFullname() {
+    @Nullable
+    public String getFullname() {
         return fullname;
     }
 
@@ -151,7 +153,8 @@ public class CkanUser {
         this.name = name;
     }
 
-    @Nullable public String getOpenid() {
+    @Nullable
+    public String getOpenid() {
         return openid;
     }
 
@@ -191,7 +194,8 @@ public class CkanUser {
         this.sysadmin = sysadmin;
     }
 
-    @Nullable public List<CkanActivity> getActivity() {
+    @Nullable
+    public List<CkanActivity> getActivity() {
         return activity;
     }
 
@@ -199,7 +203,8 @@ public class CkanUser {
         this.activity = activity;
     }
 
-    @Nullable public String getCapacity() {
+    @Nullable
+    public String getCapacity() {
         return capacity;
     }
 
@@ -207,7 +212,8 @@ public class CkanUser {
         this.capacity = capacity;
     }
 
-    @Nullable public Integer getNumFollowers() {
+    @Nullable
+    public Integer getNumFollowers() {
         return numFollowers;
     }
 

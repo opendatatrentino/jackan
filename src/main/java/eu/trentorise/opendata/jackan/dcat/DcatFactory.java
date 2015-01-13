@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright 2015 Trento Rise  (trentorise.eu) 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.trentorise.opendata.jackan.dcat;
 
@@ -65,7 +75,7 @@ public class DcatFactory {
 
         if (dataset.getResources() != null) {
             for (CkanResource cr : dataset.getResources()) {
-                ddb.addDistributions(distribution(cr,sanitizedCatalogUrl, sanitizedId, sanitizedLicenceId, locale));
+                ddb.addDistributions(distribution(cr, sanitizedCatalogUrl, sanitizedId, sanitizedLicenceId, locale));
             }
         }
 
@@ -143,7 +153,7 @@ public class DcatFactory {
     }
 
     /**
-     *  Returns a DcatDistribution out of a Ckan resource.
+     * Returns a DcatDistribution out of a Ckan resource.
      *
      * @param resource must be non null, but it may have missing or null fields.
      * @param catalogURL catalog string, i.e. http://dati.trentino.it

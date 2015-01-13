@@ -1,19 +1,17 @@
-/**
- * *****************************************************************************
- * Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
- * 
-* All rights reserved. This program and the accompanying materials are made
- * available under the terms of the GNU Lesser General Public License (LGPL)
- * version 2.1 which accompanies this distribution, and is available at
- * 
-* http://www.gnu.org/licenses/lgpl-2.1.html
- * 
-* This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
-*******************************************************************************
+/* 
+ * Copyright 2015 Trento Rise  (trentorise.eu) 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
@@ -129,7 +127,7 @@ public class CkanClientIT {
         List<String> dsl = client.getDatasetList();
         assertTrue(dsl.size() > 0);
     }
-    
+
     /**
      * Ckan docs don't tell offset starts with 0
      *
@@ -141,8 +139,8 @@ public class CkanClientIT {
     public void testDatasetListWithLimit(CkanClient client) {
         List<String> dsl = client.getDatasetList(1, 0);
         assertEquals(1, dsl.size());
-    }    
-    
+    }
+
     @Test
     @Parameters(method = "clients")
     public void testSearchDatasetsByText(CkanClient client) {
@@ -152,8 +150,7 @@ public class CkanClientIT {
         SearchResults<CkanDataset> r = client.searchDatasets(dsl.get(0), 10, 0);
 
         assertTrue("I should get at least one result", r.getResults().size() > 0);
-    }     
-            
+    }
 
     @Test
     @Parameters(method = "clients")
@@ -181,8 +178,6 @@ public class CkanClientIT {
         }
 
     }
-
-   
 
     @Test
     @Parameters(method = "clients")
@@ -317,12 +312,12 @@ public class CkanClientIT {
     public void testSearchDatasetsByLicenseIds(CkanClient client) throws JsonProcessingException {
         List<CkanLicense> licenses = client.getLicenseList();
         assertTrue(licenses.size() > 0);
-        for (CkanLicense license : licenses){
+        for (CkanLicense license : licenses) {
             SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byLicenseId(license.getId()), 10, 0);
-            if (r.getResults().size() > 0){
+            if (r.getResults().size() > 0) {
                 return;
             }
-        }        
+        }
         Assert.fail("I should get at least one dataset matching some license! Tried licenses were: " + CkanClient.getObjectMapperClone().writeValueAsString(licenses));
     }
 

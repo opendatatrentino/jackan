@@ -1,21 +1,18 @@
-/**
-* *****************************************************************************
-* Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
-*
-* All rights reserved. This program and the accompanying materials are made
-* available under the terms of the GNU Lesser General Public License (LGPL)
-* version 2.1 which accompanies this distribution, and is available at
-*
-* http://www.gnu.org/licenses/lgpl-2.1.html
-*
-* This library is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-* details.
-*
-*******************************************************************************
-*/   
-
+/* 
+ * Copyright 2015 Trento Rise  (trentorise.eu) 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,12 +30,12 @@ import org.junit.Test;
 
 /**
  * White box testing
+ *
  * @author David Leoni, Ivan Tankoyeu
  */
 public class CkanJacksonTest {
+
     public static Logger logger = Logger.getLogger(CkanJacksonTest.class.getName());
-
-
 
     public CkanJacksonTest() {
     }
@@ -46,7 +43,7 @@ public class CkanJacksonTest {
     @BeforeClass
     public static void setUpClass() {
         TestConfig.initLogger();
-    } 
+    }
 
     @AfterClass
     public static void tearDownClass() {
@@ -116,7 +113,6 @@ public class CkanJacksonTest {
         assertTrue(r.getSize().equals(""));
     }
 
-
     /**
      * Tests the ObjectMapper underscore conversion
      *
@@ -124,12 +120,12 @@ public class CkanJacksonTest {
      */
     @Test
     public void testDatasetWrite() throws IOException {
-        String email = "a@b.org";        
+        String email = "a@b.org";
         CkanDataset cd = new CkanDataset();
-        cd.setAuthorEmail(email);        
+        cd.setAuthorEmail(email);
         String json = CkanClient.getObjectMapperClone().writeValueAsString(cd);
-        assertEquals(email, new ObjectMapper().readTree(json).get("author_email").asText());                                
-    }          
+        assertEquals(email, new ObjectMapper().readTree(json).get("author_email").asText());
+    }
 
     @Test
     public void testReadGroup() throws IOException {
@@ -147,9 +143,9 @@ public class CkanJacksonTest {
         assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());
     }
 
-
     /**
-     * Tests the 'others' field that collects fields sometimes errouneously present in jsons from ckan
+     * Tests the 'others' field that collects fields sometimes errouneously
+     * present in jsons from ckan
      *
      * @throws IOException
      */
@@ -162,6 +158,7 @@ public class CkanJacksonTest {
     }
 
     static public class JodaA {
+
         private DateTime dt;
 
         public DateTime getDt() {
@@ -192,16 +189,4 @@ public class CkanJacksonTest {
         assertTrue(ja.getDt().equals(ja2.getDt()));
     }
 
-
-
-
-
-
-
-
-
-
 }
-
-
-

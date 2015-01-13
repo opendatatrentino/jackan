@@ -2,6 +2,8 @@ dati.trentino.it
 http://dati.trentino.it/
 dati.toscana.it
 http://dati.toscana.it/
+dati.piemonte.it
+http://www.dati.piemonte.it/rpapisrv/
 dati.gov.it
 http://www.dati.gov.it/catalog/
 Annuario statistico del Comune di Firenze
