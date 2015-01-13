@@ -23,7 +23,7 @@
 
     <groupId>eu.trentorise.opendata</groupId>
     <artifactId>jackan</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.3.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Jackan</name>
@@ -194,14 +194,14 @@
             <id>d.leoni</id>
             <name>David Leoni</name>
             <email>david.leoni@trentorise.eu</email>
-            <organization>Trento Rise</organization>
+            <organization>DISI, University of Trento</organization>
         </developer>
         
         <developer>
-            <id>a.zanella</id>
-            <name>Alberto Zanella</name>
-            <email>a.zanella@trentorise.eu</email>
-            <organization>Trento Rise</organization>
+            <id>i.tankoyeu</id>
+            <name>Ivan Tankoyeu</name>
+            <email>tankoyeu@disi.unitn.it</email>
+            <organization>DISI, University of Trento</organization>
         </developer>
     </developers>
 
