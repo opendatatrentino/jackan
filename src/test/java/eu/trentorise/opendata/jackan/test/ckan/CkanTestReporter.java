@@ -286,7 +286,7 @@ public class CkanTestReporter {
             html.html()
                     .head()
                     .title().content("Jackan Test Results")
-                    //.meta(name("description").add("content","Jackan test anal",false))
+                    //.meta(name("description").add("content","Jackan test analyzer",false))
                     //.macros().stylesheet("htdocs/style-01.css"))
                     //.render(JQueryLibrary.core("1.4.3"))
                     //.render(JQueryLibrary.ui("1.8.6"))
@@ -295,13 +295,12 @@ public class CkanTestReporter {
                     .write("." + ERROR_CLASS + " {color:red}")
                     .write("." + JACKAN_TABLE_CLASS + " { border-collapse:collapse; table-layout: fixed; width: 100%;  }")
                     .write("." + JACKAN_TABLE_CLASS + " td, th { border: 1px solid black; vertical-align: top; padding:10px; width:100px;}")
-                    .write("." + JACKAN_TABLE_CLASS + " th { position:absolute; left:0;  width:200px;}")
+                    .write("." + JACKAN_TABLE_CLASS + " th { position:absolute; left:0;  width:230px;}")
                     .write(".outer {position:relative}")
                     .write(".inner {\n"
                             + "  overflow-x:scroll;\n"
                             + "  overflow-y:visible;\n"
-                            + "  width:400px; \n"
-                            + "  margin-left:220px;\n"
+                            + "  margin-left:250px;\n"
                             + "}")
                     ._style()
                     ._head();
