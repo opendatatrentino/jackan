@@ -1,0 +1,21 @@
+<html><head><title>Jackan Test #520</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #520</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: eu.trentorise.opendata.jackan.JackanException: Jackan: Error while performing GET. Request url was: http://catalog.data.gov/api/3/action/license_list
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:193)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getLicenseList(CkanClient.java:427)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testLicenseList(CkanClientIT.java:183)
+	... 7 more
+Caused by: org.apache.http.client.HttpResponseException: Bad Request
+	at org.apache.http.client.fluent.ContentResponseHandler.handleResponse(ContentResponseHandler.java:47)
+	at org.apache.http.client.fluent.ContentResponseHandler.handleResponse(ContentResponseHandler.java:40)
+	at org.apache.http.client.fluent.Response.handleResponse(Response.java:85)
+	at org.apache.http.client.fluent.Response.returnContent(Response.java:92)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:179)
+	... 9 more
+</pre></body>

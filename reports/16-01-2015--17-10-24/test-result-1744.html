@@ -1,0 +1,31 @@
+<html><head><title>Jackan Test #1744</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #1744</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: eu.trentorise.opendata.jackan.JackanException: Jackan: Error while performing GET. Request url was: http://catalog.data.gov/api/3/action/package_list
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:193)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getDatasetList(CkanClient.java:406)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testSearchDatasetsByTags(CkanClientIT.java:301)
+	... 7 more
+Caused by: com.fasterxml.jackson.databind.JsonMappingException: Can not deserialize instance of java.util.ArrayList out of START_OBJECT token
+ at [Source: java.io.StringReader@55a7e5ae; line: 1, column: 4209] (through reference chain: eu.trentorise.opendata.jackan.ckan.DatasetListResponse[&amp;quot;result&amp;quot;])
+	at com.fasterxml.jackson.databind.JsonMappingException.from(JsonMappingException.java:148)
+	at com.fasterxml.jackson.databind.DeserializationContext.mappingException(DeserializationContext.java:749)
+	at com.fasterxml.jackson.databind.DeserializationContext.mappingException(DeserializationContext.java:745)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.handleNonArray(StringCollectionDeserializer.java:222)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.deserialize(StringCollectionDeserializer.java:164)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.deserialize(StringCollectionDeserializer.java:154)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.deserialize(StringCollectionDeserializer.java:19)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:538)
+	at com.fasterxml.jackson.databind.deser.impl.FieldProperty.deserializeAndSet(FieldProperty.java:106)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:238)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:118)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3051)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2146)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:181)
+	... 9 more
+</pre></body>

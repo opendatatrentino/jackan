@@ -1,0 +1,33 @@
+<html><head><title>Jackan Test #489</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #489</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/all-dc-schools/resource/4cc4dd8e-f3f0-4685-b55b-9b8a44db296c
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/hacked-by-slayershackteam/resource/d6cefb08-a759-4987-abd2-1be8b9bfbe13
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/hacked-by-slayershackteam/resource/e6306c73-dba9-4614-bf9e-87c081a579a3
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/fems-emergency-response-time-1-2012-5-2013/resource/b395bdf1-42ff-40e6-9a97-70c9c274891c
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/dc-real-property-assessment-data/resource/58dc1569-e7bc-4138-95fd-eb633b37f3b1
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/311-service-requests/resource/3a4225db-a25e-4145-b003-4e448e4735a8
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendatadc.org, ckanToken=null}
+  resource ckan url=http://opendatadc.org/311-service-requests/resource/b67b81af-dead-41ac-9860-3ef0dfb27761
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

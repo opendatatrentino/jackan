@@ -1,0 +1,27 @@
+<html><head><title>Jackan Test #449</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #449</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://datagm.org.uk, ckanToken=null}
+  resource ckan url=http://datagm.org.uk/trafford-supplier-spend-july-2011/resource/04f65be4-a2e4-4947-a66c-498160a3bbcb
+, FailedResource: 
+  client=CkanClient{catalogURL=http://datagm.org.uk, ckanToken=null}
+  resource ckan url=http://datagm.org.uk/metrolink-patronage-1993--2011/resource/f79064fd-5c29-4638-bfd7-c6a2f5f501b2
+, FailedResource: 
+  client=CkanClient{catalogURL=http://datagm.org.uk, ckanToken=null}
+  resource ckan url=http://datagm.org.uk/census-2001-residents-household-nssec-reference-person/resource/9d39e185-baf8-411a-8814-f826119af5ee
+, FailedResource: 
+  client=CkanClient{catalogURL=http://datagm.org.uk, ckanToken=null}
+  resource ckan url=http://datagm.org.uk/nhs-waiting-times-for-cancer-treatment-in-greater-manchester-october-december-2010/resource/cca64b51-e943-426e-ad22-dd8913187cfd
+, FailedResource: 
+  client=CkanClient{catalogURL=http://datagm.org.uk, ckanToken=null}
+  resource ckan url=http://datagm.org.uk/municipal-waste-for-each-greater-manchester-authority-2009-to-2010/resource/5059c25d-acc4-4eff-b606-365ae28391b2
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

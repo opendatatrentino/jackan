@@ -1,0 +1,36 @@
+<html><head><title>Jackan Test #927</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #927</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: eu.trentorise.opendata.jackan.JackanException: Jackan: Error while performing GET. Request url was: http://open.canada.ca/data/api/3/action/user_show?id=admin
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:193)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getUser(CkanClient.java:489)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testUser(CkanClientIT.java:226)
+	... 7 more
+Caused by: java.net.UnknownHostException: open.canada.ca
+	at java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method)
+	at java.net.InetAddress$1.lookupAllHostAddr(InetAddress.java:866)
+	at java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1258)
+	at java.net.InetAddress.getAllByName0(InetAddress.java:1211)
+	at java.net.InetAddress.getAllByName(InetAddress.java:1127)
+	at java.net.InetAddress.getAllByName(InetAddress.java:1063)
+	at org.apache.http.impl.conn.SystemDefaultDnsResolver.resolve(SystemDefaultDnsResolver.java:44)
+	at org.apache.http.impl.conn.HttpClientConnectionOperator.connect(HttpClientConnectionOperator.java:102)
+	at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:314)
+	at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:357)
+	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:218)
+	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:194)
+	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:85)
+	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:108)
+	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:186)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:106)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at org.apache.http.client.fluent.Request.execute(Request.java:143)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:179)
+	... 9 more
+</pre></body>

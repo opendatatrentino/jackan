@@ -1,0 +1,30 @@
+<html><head><title>Jackan Test #488</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #488</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.hu, ckanToken=null}
+  resource ckan url=http://opendata.hu/magyarorszag-kozigazgatasi-helynevkonyve-2013-januar-1/resource/ae052db5-8f22-4a43-86d6-bac4eab3efa5
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.hu, ckanToken=null}
+  resource ckan url=http://opendata.hu/magyarorszag-kozigazgatasi-helynevkonyve-2013-januar-1/resource/1b417387-92d4-4e0f-9c88-b1166916c8e2
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.hu, ckanToken=null}
+  resource ckan url=http://opendata.hu/nuts-regiok/resource/7d52b10a-8543-422a-846c-0522ba53cedb
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.hu, ckanToken=null}
+  resource ckan url=http://opendata.hu/tamop-felnottkepzesi-tamogatasok-2012-2013/resource/5ec1e36d-63e7-4e31-b4ce-8edc2cb3ee9f
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.hu, ckanToken=null}
+  resource ckan url=http://opendata.hu/hungarian-named-entity-corpora/resource/51805b66-8c91-46a9-b9bf-1f56c28f3b57
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.hu, ckanToken=null}
+  resource ckan url=http://opendata.hu/fgsz-gaz-nominalasok-es-gazaramok-hungarian-natural-gas-nominations-and-flows/resource/0c2dedb8-4f8c-487d-b8f7-798d388066a7
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

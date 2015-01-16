@@ -1,0 +1,25 @@
+<html><head><title>Jackan Test #949</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #949</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor131.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: eu.trentorise.opendata.jackan.JackanException: Jackan: Error while performing GET. Request url was: http://www.data.go.jp/data/api/3/action/user_show?id=admin
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:193)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getUser(CkanClient.java:489)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testUser(CkanClientIT.java:226)
+	... 6 more
+Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character (&amp;#39;&amp;lt;&amp;#39; (code 60)): expected a valid value (number, String, array, object, &amp;#39;true&amp;#39;, &amp;#39;false&amp;#39; or &amp;#39;null&amp;#39;)
+ at [Source: &amp;lt;!DOCTYPE html PUBLIC &amp;quot;-//W3C//DTD XHTML 1.0 Transitional//EN&amp;quot; &amp;quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&amp;quot;&amp;gt;&amp;lt;html xmlns=&amp;quot;http://www.w3.org/1999/xhtml&amp;quot; xml:lang=&amp;quot;ja&amp;quot; lang=&amp;quot;ja&amp;quot;&amp;gt;&amp;lt;head&amp;gt;&amp;lt;meta http-equiv=&amp;quot;content-type&amp;quot; content=&amp;quot;text/html; charset=UTF-8&amp;quot; /&amp;gt;&amp;lt;meta http-equiv=&amp;quot;Refresh&amp;quot; content=&amp;quot;3; url=http://www.data.go.jp/index.php?action=pages_view_main&amp;quot; /&amp;gt;&amp;lt;title&amp;gt;DATA GO JP&amp;lt;/title&amp;gt;&amp;lt;link class=&amp;quot;_common_css&amp;quot; rel=&amp;quot;stylesheet&amp;quot; type=&amp;quot;text/css&amp;quot; media=&amp;quot;all&amp;quot; href=&amp;quot;http://www.data.go.jp/index.php?action=common_download_css&amp;quot; /&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body class=&amp;quot;redirect_body&amp;quot;&amp;gt;&amp;lt;table class=&amp;quot;redirect_main&amp;quot; summary=&amp;quot;&amp;quot;&amp;gt;&amp;lt;tr&amp;gt;&amp;lt;td class=&amp;quot;valign-top&amp;quot;&amp;gt;&amp;lt;img src=&amp;quot;http://www.data.go.jp/images/common/redirect_arrorw.gif&amp;quot; title=&amp;quot;&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td class=&amp;quot;redirect_text&amp;quot;&amp;gt;?????????????????&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;amp;nbsp;&amp;lt;/td&amp;gt;&amp;lt;td class=&amp;quot;redirect_subtext&amp;quot;&amp;gt;?????????????????&amp;lt;a class=&amp;#39;redirect_subtext_link&amp;#39; href=&amp;#39;http://www.data.go.jp/index.php?action=pages_view_main&amp;#39;&amp;gt;???&amp;lt;/a&amp;gt;????????????&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&amp;lt;/table&amp;gt;&amp;lt;script class=&amp;quot;nc_script&amp;quot; type=&amp;quot;text/javascript&amp;quot;&amp;gt;setTimeout(function(){var location_str = &amp;#39;http://www.data.go.jp/index.php?action=pages_view_main&amp;#39;;location.href=location_str.replace(/&amp;amp;amp;/ig,&amp;quot;&amp;amp;&amp;quot;);},3*1000);&amp;lt;/script&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;; line: 1, column: 2]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1419)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:508)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:437)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1462)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:683)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3090)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3036)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2146)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:181)
+	... 8 more
+</pre></body>

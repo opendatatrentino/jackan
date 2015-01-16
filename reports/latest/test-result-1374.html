@@ -1,0 +1,21 @@
+<html><head><title>Jackan Test #1374</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #1374</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: eu.trentorise.opendata.jackan.JackanException: Jackan: Error while performing GET. Request url was: https://edx.netl.doe.gov/api/3/action/organization_show?id=2971e10d-0579-4500-9011-6bfdc296b7e4&amp;amp;include_datasets=false
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:193)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getOrganization(CkanClient.java:574)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testOrganization(CkanClientIT.java:264)
+	... 6 more
+Caused by: com.fasterxml.jackson.databind.JsonMappingException: No content to map due to end-of-input
+ at [Source: ; line: 1, column: 1]
+	at com.fasterxml.jackson.databind.JsonMappingException.from(JsonMappingException.java:148)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3095)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3036)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2146)
+	at eu.trentorise.opendata.jackan.ckan.CkanClient.getHttp(CkanClient.java:181)
+	... 8 more
+</pre></body>

@@ -1,0 +1,21 @@
+<html><head><title>Jackan Test #506</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #506</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://datahub.io, ckanToken=null}
+  resource ckan url=http://datahub.io/1033-prog/resource/9deee202-3cfd-4211-ae1d-e7d56308c76a
+, FailedResource: 
+  client=CkanClient{catalogURL=http://datahub.io, ckanToken=null}
+  resource ckan url=http://datahub.io/1033-prog/resource/43fd529d-b32b-47e9-b2bb-57a6062c87aa
+, FailedResource: 
+  client=CkanClient{catalogURL=http://datahub.io, ckanToken=null}
+  resource ckan url=http://datahub.io/1855spanishrailways/resource/0a06440b-5ddd-4861-9d78-691049ca4241
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

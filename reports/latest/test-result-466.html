@@ -1,0 +1,33 @@
+<html><head><title>Jackan Test #466</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #466</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/harris-county-emergency-districts/resource/47a60059-a944-4d74-a760-075d42f44388
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/airspace-noise-contours/resource/82c4b735-517a-459e-b165-452a594f7134
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/airport-boundaries-and-land-use-tiers/resource/152a1479-8a9c-4c37-841d-94a9dd42d710
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/superfund-sites/resource/32b050b1-ae79-43fe-8e20-82bb9a4dc451
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/superfund-sites/resource/43717bc8-87f8-46fe-8491-8f829d191ce3
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/superfund-sites/resource/1cf12705-b334-4e40-90a4-5bcfad4e1a56
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.codeforhouston.com, ckanToken=null}
+  resource ckan url=http://data.codeforhouston.com/school-districts/resource/d8a8832d-4dc3-41fe-a715-a6ec27ea2ab9
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

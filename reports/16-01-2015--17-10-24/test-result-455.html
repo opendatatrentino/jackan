@@ -1,0 +1,27 @@
+<html><head><title>Jackan Test #455</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #455</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://data.edostate.gov.ng, ckanToken=null}
+  resource ckan url=http://data.edostate.gov.ng/statement-of-consolidated-revenue-fund-for-the-accounting-half-year-ended-30th-june-2014/resource/b79bd9a7-60a4-4221-b014-1179a56321d1
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.edostate.gov.ng, ckanToken=null}
+  resource ckan url=http://data.edostate.gov.ng/bills-passed-by-the-house-of-assembly-in-2013/resource/fc62c760-dfaf-4967-84c9-dd1188ada5c5
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.edostate.gov.ng, ckanToken=null}
+  resource ckan url=http://data.edostate.gov.ng/road-contracts-list-and-status-as-at-january-2013/resource/22224328-733e-427a-aae3-5d088a833cc3
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.edostate.gov.ng, ckanToken=null}
+  resource ckan url=http://data.edostate.gov.ng/companies-in-which-edo-state-government-has-shares/resource/892a20d9-4ec2-46de-83fb-90a280ad816e
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.edostate.gov.ng, ckanToken=null}
+  resource ckan url=http://data.edostate.gov.ng/registered-organization-in-edo-state6/resource/d64d2c33-eafb-45fa-8185-86a16b2bf37a
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

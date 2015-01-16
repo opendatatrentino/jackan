@@ -1,0 +1,33 @@
+<html><head><title>Jackan Test #481</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #481</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/crime-code-listings/resource/cf3b1288-7868-4a9f-884d-57a9f2df353d
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/district-boundaries/resource/5e10f049-65d4-40cb-93e0-3cb597aeda70
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/district-boundaries/resource/e55c031a-4bac-47b1-b836-f82aa222f7c5
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/vehicle-registrations/resource/206d95eb-275b-490a-b8f6-20ade2deae66
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/state-contracts/resource/91a1e58b-193e-4c27-9a16-1d7338a3e393
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/trademarks/resource/db6bf56c-9c84-40b3-b804-91e49745877a
+, FailedResource: 
+  client=CkanClient{catalogURL=http://data.openva.com, ckanToken=null}
+  resource ckan url=http://data.openva.com/trademarks/resource/43917155-b58c-4bee-89e2-5b46b0a24009
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

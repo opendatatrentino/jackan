@@ -1,0 +1,27 @@
+<html><head><title>Jackan Test #486</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #486</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.awt.be, ckanToken=null}
+  resource ckan url=http://opendata.awt.be/codes-ins-communes/resource/95cfc93c-0591-4878-983f-619f33cd4587
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.awt.be, ckanToken=null}
+  resource ckan url=http://opendata.awt.be/bep-zae-entreprises/resource/c45b1d31-9b79-4600-a637-0d17b75b1eb1
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.awt.be, ckanToken=null}
+  resource ckan url=http://opendata.awt.be/hotels-a-namur/resource/4fc6ba78-ab48-40c2-babf-0f5e6598080f
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.awt.be, ckanToken=null}
+  resource ckan url=http://opendata.awt.be/demande-d-emploi-par-categorie-d-age/resource/e1d0d5a0-e69c-4d5e-be15-daadd6b884a0
+, FailedResource: 
+  client=CkanClient{catalogURL=http://opendata.awt.be, ckanToken=null}
+  resource ckan url=http://opendata.awt.be/positionnement-des-chantiers-accidents-et-autres-evenements-sur-les-routes-et-autoroutes/resource/dff1b891-1230-4bfb-9195-5be7f2fee67b
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

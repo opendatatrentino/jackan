@@ -1,0 +1,21 @@
+<html><head><title>Jackan Test #507</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #507</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://iatiregistry.org, ckanToken=null}
+  resource ckan url=http://iatiregistry.org/aai-998/resource/e2cf85c1-af29-4667-80e5-59fbbf529c13
+, FailedResource: 
+  client=CkanClient{catalogURL=http://iatiregistry.org, ckanToken=null}
+  resource ckan url=http://iatiregistry.org/aai-af/resource/c802c9fd-877c-452e-b893-595140a85dc6
+, FailedResource: 
+  client=CkanClient{catalogURL=http://iatiregistry.org, ckanToken=null}
+  resource ckan url=http://iatiregistry.org/aai-bd/resource/cb77c4cc-d0b3-4448-9de0-33669fa3a10f
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>

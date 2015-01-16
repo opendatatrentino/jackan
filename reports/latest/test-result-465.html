@@ -1,0 +1,24 @@
+<html><head><title>Jackan Test #465</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #465</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:204)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:255)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:109)
+Caused by: java.lang.RuntimeException: Couldn&amp;#39;t fetch these resources: 
+ [FailedResource: 
+  client=CkanClient{catalogURL=http://www.hri.fi, ckanToken=null}
+  resource ckan url=http://www.hri.fi/15-vuotta-t-ytt-nyt-v-est-koulutusasteen-ja-i-n-mukaan-31-12-1985-2007/resource/56a970c2-1dc6-4d2e-ae74-1afea88e0713
+, FailedResource: 
+  client=CkanClient{catalogURL=http://www.hri.fi, ckanToken=null}
+  resource ckan url=http://www.hri.fi/aikuissosiaality-vantaalla-sosiaality-2006-2011/resource/0dfc9ec6-96c2-4e95-90a7-204ceb7251b8
+, FailedResource: 
+  client=CkanClient{catalogURL=http://www.hri.fi, ckanToken=null}
+  resource ckan url=http://www.hri.fi/aikuissosiaality-vantaalla-talous-ja-velkaneuvonta-2006-2011/resource/7e3292f6-99b6-440a-95a5-033f004c429e
+, FailedResource: 
+  client=CkanClient{catalogURL=http://www.hri.fi, ckanToken=null}
+  resource ckan url=http://www.hri.fi/aikuissosiaality-vantaalla-toimeentulotuki-2006-2011/resource/97b2c678-6039-4df2-97b0-dcb863424951
+]
+	at eu.trentorise.opendata.jackan.test.ckan.CkanClientIT.testDatasetAndResource(CkanClientIT.java:175)
+	... 6 more
+</pre></body>
