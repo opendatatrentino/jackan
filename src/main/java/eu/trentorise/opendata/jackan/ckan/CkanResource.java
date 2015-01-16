@@ -18,21 +18,13 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import eu.trentorise.opendata.traceprov.Dict;
-import eu.trentorise.opendata.traceprov.TraceProvUtils;
-import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonEmpty;
-import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonNull;
-import static eu.trentorise.opendata.traceprov.TraceProvUtils.isNonEmpty;
-import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
+import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Class initializes almost nothing so to fully preserve all we get from ckan.

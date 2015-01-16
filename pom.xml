@@ -159,9 +159,51 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.3</version>                
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                </configuration>
+                                   
+            </plugin>      
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.5</version>        
+                <executions>
+                    <execution>                        
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>                    
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>                            
+                        </manifest>
+                        <manifestEntries>
+                            <git-sha>${buildNumber}</git-sha>
+                            <timestamp>${timestamp}</timestamp>
+                        </manifestEntries>
+                    </archive>                    
+                </configuration>        
             </plugin>
         </plugins>      
 
@@ -177,8 +219,20 @@
                         <arguments>${arguments} -Psonatype-oss-release</arguments>
                     </configuration>
                 </plugin>
+                
             </plugins>
+            
         </pluginManagement>      
+        
+        <resources>
+            <resource>
+                <directory>src/main/resources/</directory>
+                <includes>
+                    <include>META-INF/odt-commons-build.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>   
                   
     </build>
     
@@ -312,6 +366,7 @@
     <reporting>
         <plugins>
             
+            <!-- todo what's this for? -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
@@ -326,6 +381,7 @@
                     <configLocation>config/sun_checks.xml</configLocation>
                 </configuration>
             </plugin>
+            
         </plugins>
     </reporting>    
 </project>

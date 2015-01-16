@@ -21,11 +21,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
+import eu.trentorise.opendata.commons.BuildInfo;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.test.TestConfig;
-import eu.trentorise.opendata.traceprov.TraceProvUtils;
+import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+import eu.trentorise.opendata.commons.OdtUtils;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,19 +83,68 @@ public class CkanTestReporter {
     private static String ERROR_CLASS = "jackan-error";
     private static String JACKAN_TABLE_CLASS = "jackan-table";
 
-    public static Map<String, String> readCatalogsList(String catalogListFilepath) {
-        InputStream is = CkanTestReporter.class.getClassLoader().getResourceAsStream(catalogListFilepath);
+    
+  /**
+     * By default test/resources/ckan-instances.txt file is used.
+     */
+    public static void main(String[] args) {
 
-        if (is == null) {
-            throw new RuntimeException("Couldn't find file!");
+        JackanTestConfig.of().loadConfig();
+
+        String catFilename = null;
+
+        if (args.length == 2) {
+            catFilename = args[1];
+            logger.info("Using provided catalogs file " + catFilename + ".");
+        } else {
+            catFilename = "ckan-instances.txt";
+            logger.info("Using default catalogs file " + catFilename + ". If you wish to provide yours pass filename as first argument.");
         }
+
+        Map<String, String> catalogsNames = readCatalogsList(catFilename);
+        //ImmutableMap.of("http://dati.trentino.it", "dati.trentino.it", "http://dati.toscana.it", "dati.toscana.it");// "http://publicdata.eu/", "http://publicdata.eu/"
+
+        List<String> testNames = ALL_TEST_NAMES; //.subList(0, 2);
+
+        RunSuite testResults = runTests(catalogsNames, testNames);
+
+        String content = renderRunSuite(catalogsNames, testNames, testResults);
+
+        saveToDirectory(new File("reports/" + REPORT_PREFIX + "-" + new DateTime().toString("dd-MM-yyyy--HH-mm-ss")), content, testResults);
+
+        File latestDir = new File("reports/" + REPORT_PREFIX + "-latest");
+
+        FileUtils.deleteQuietly(latestDir);
+        saveToDirectory(latestDir, content, testResults);
+
+    }
+    
+    
+    /**
+     * @param catalogListFilepath absolute file path
+     */
+    public static Map<String, String> readCatalogsList(String catalogListFilepath) {
 
         // catalog url, name
         ImmutableMap.Builder<String, String> catalogsBuilder = ImmutableMap.builder();
 
-        String str;
+        InputStream is = null;
 
         try {
+            is = new FileInputStream(catalogListFilepath);
+        }
+        catch (FileNotFoundException fex) {
+
+            logger.info("Trying to take file " + catalogListFilepath + " from test resources");
+            is = CkanTestReporter.class.getClassLoader().getResourceAsStream(catalogListFilepath);
+            if (is == null) {
+                throw new RuntimeException("Couldn't find file " + catalogListFilepath);
+            }
+
+        }
+        try {
+            String str;
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
             boolean readingName = true;
@@ -102,7 +153,7 @@ public class CkanTestReporter {
                 if (readingName) {
                     name = str;
                 } else {
-                    catalogsBuilder.put(TraceProvUtils.removeTrailingSlash(str), name);
+                    catalogsBuilder.put(OdtUtils.removeTrailingSlash(str), name);
                 }
 
                 readingName = !readingName;
@@ -114,7 +165,9 @@ public class CkanTestReporter {
         }
         finally {
             try {
-                is.close();
+                if (is != null) {
+                    is.close();
+                }
             }
             catch (Throwable ignore) {
             }
@@ -140,32 +193,7 @@ public class CkanTestReporter {
     public static final String REPORT_PREFIX = "jackan-scan";
     public static final String TEST_RESULT_PREFIX = "test-result-";
 
-    /**
-     * By default test/resources/ckan-instances.txt file is used.
-     */
-    public static void main(String[] args) {
-
-        TestConfig.initLogger();
-        TestConfig.initProperties();
-
-        Map<String, String> catalogsNames = readCatalogsList("ckan-instances.txt");
-        // ImmutableMap.of("http://dati.trentino.it", "dati.trentino.it", "http://dati.toscana.it", "dati.toscana.it");
-
-        List<String> testNames = ALL_TEST_NAMES;//.subList(0, 2);
-
-        RunSuite testResults = runTests(catalogsNames, testNames);
-
-        String content = renderRunSuite(catalogsNames, testNames, testResults);
-
-        saveToDirectory(new File("reports/" + REPORT_PREFIX + "-" + new DateTime().toString("dd-MM-yyyy--HH-mm-ss")), content, testResults);
-
-        File latestDir = new File("reports/" + REPORT_PREFIX + "-latest");
-
-        FileUtils.deleteQuietly(latestDir);
-        saveToDirectory(latestDir, content, testResults);
-
-    }
-
+  
     private static TestResult runTest(int testId, CkanClient client, String catalogName, String testName) {
         Optional<Throwable> error;
         CkanClientIT ckanTests = new CkanClientIT();
@@ -243,11 +271,14 @@ public class CkanTestReporter {
      * Formats date time up to the second, in English format
      */
     private static String formatDateUpToSecond(DateTime date) {
-        return date.toString(DateTimeFormat.shortDateTime().withLocale(Locale.ENGLISH));
+        return date.toString(DateTimeFormat.mediumDateTime().withLocale(Locale.ENGLISH));
     }
 
     public static String renderRunSuite(Map<String, String> catalogs, List<String> testNames, RunSuite runSuite) {
         String outputFileContent;
+
+        BuildInfo buildInfo = JackanTestConfig.of().getBuildInfo();
+
         try {
 
             HtmlCanvas html = new HtmlCanvas();
@@ -277,9 +308,21 @@ public class CkanTestReporter {
 
             html.body()
                     .h1().a(href("https://github.com/opendatatrentino/jackan").target("_blank"))
-                    .write("Jackan Report - " + formatDateUpToDay(runSuite.getStartTime()))
+                    .write("Jackan")
                     ._a()
+                    .write(" Report - " + formatDateUpToDay(runSuite.getStartTime()))
                     ._h1()
+                    .b().write("Note: ")._b()
+                    .span().write("Some tests might fail due to missing items in the target catalog (i.e. catalog has no tags or no organizations)")._span().br()
+                    .br()
+                    .b().write("Jackan Version: ")._b()
+                    .span().write(buildInfo.getVersion() + " ")
+                    .a(href("https://github.com/opendatatrentino/jackan/commit/" + buildInfo.getGitSha())
+                            .target("_blank"))
+                    .write("Git commit")
+                    ._a()
+                    ._span()
+                    .br()
                     .b().write("Started: ")._b()
                     .span().write(formatDateUpToSecond(runSuite.getStartTime()))._span().br()
                     .b().write("Finished: ")._b()

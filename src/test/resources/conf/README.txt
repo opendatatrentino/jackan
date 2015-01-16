@@ -1,1 +1,0 @@
-Content of this folder is not versioned (except for this readme file), so here you can put copies of the configuration templates you can find in ../conf-template directory

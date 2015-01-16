@@ -16,7 +16,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.opendata.jackan.test.TestConfig;
+import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.io.*;
 import java.util.logging.Logger;
 import org.joda.time.DateTime;
@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * White box testing
+ * White box testing (uses same package as CkanClient)
  *
  * @author David Leoni, Ivan Tankoyeu
  */
@@ -42,7 +42,7 @@ public class CkanJacksonTest {
 
     @BeforeClass
     public static void setUpClass() {
-        TestConfig.initLogger();
+        JackanTestConfig.of().loadLogConfig();
     }
 
     @AfterClass

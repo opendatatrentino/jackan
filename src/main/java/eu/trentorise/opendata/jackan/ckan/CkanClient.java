@@ -31,9 +31,9 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.collect.ImmutableList;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
-import eu.trentorise.opendata.traceprov.TraceProvUtils;
-import static eu.trentorise.opendata.traceprov.TraceProvUtils.checkNonEmpty;
-import static eu.trentorise.opendata.traceprov.TraceProvUtils.removeTrailingSlash;
+import eu.trentorise.opendata.commons.OdtUtils;
+import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
+import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -285,7 +285,7 @@ public class CkanClient {
         checkNonEmpty(catalogUrl, "catalog url");
         checkNonEmpty(datasetIdentifier, "dataset identifier");
         checkNonEmpty(resourceId, "resource id");
-        return TraceProvUtils.removeTrailingSlash(catalogUrl)
+        return OdtUtils.removeTrailingSlash(catalogUrl)
                 + "/" + datasetIdentifier + "/resource/" + resourceId;
     }
 
@@ -306,7 +306,7 @@ public class CkanClient {
     public static String makeGroupURL(String catalogUrl, String groupId) {
         checkNonEmpty(catalogUrl, "catalog url");
         checkNonEmpty(groupId, "dataset identifier");
-        return TraceProvUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
+        return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
     }
 
     /**
