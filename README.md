@@ -10,10 +10,11 @@ Java client library for CKAN catalogs. Supports Ckan 2.2+
 **Documentation**: see [the wiki](https://github.com/opendatatrentino/Jackan/wiki)
 
 
-Features:
+**Features**:
   * ckan 2.2+ compliance
   * dependency handling with Maven
   * has a liberal Apache 2.0 license
+  * well documented
   * unit tested with proper integration tests
   * supports Java 6+
 

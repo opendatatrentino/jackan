@@ -9,8 +9,8 @@
 /reports
 
 
-/src/test/resources/META-INF/*
-!src/test/resources/META-INF/README.txt
+/conf/*
+!/conf/README.txt
 
 ##### INTELLIJ
 .idea/workspace.xml

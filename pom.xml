@@ -228,7 +228,7 @@
             <resource>
                 <directory>src/main/resources/</directory>
                 <includes>
-                    <include>META-INF/odt-commons-build.properties</include>
+                    <include>odt.commons.build.properties</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
