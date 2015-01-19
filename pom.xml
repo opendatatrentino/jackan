@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!--  
         /* 
@@ -23,7 +22,7 @@
 
     <groupId>eu.trentorise.opendata</groupId>
     <artifactId>jackan</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.1</version>
     <packaging>jar</packaging>
 
     <name>Jackan</name>
@@ -241,7 +240,7 @@
         <url>${scmUrl}</url>
         <connection>scm:git:${scmUrl}.git</connection>
         <developerConnection>scm:git:${scmUrl}.git</developerConnection>        
-        <tag>HEAD</tag>
+        <tag>jackan-0.3.1</tag>
     </scm>
 
     <description>Java client to access CKAN repositories. </description>
