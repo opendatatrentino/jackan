@@ -35,5 +35,6 @@ public class InitTest {
     public void testBuildInfo() {
         BuildInfo buildInfo = JackanTestConfig.of().getBuildInfo();
         assertTrue(buildInfo.getVersion().length() > 0);
+        assertTrue(buildInfo.getScmUrl().length() > 0);
     }
 }
