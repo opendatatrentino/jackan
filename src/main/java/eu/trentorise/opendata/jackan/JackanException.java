@@ -24,19 +24,19 @@ import eu.trentorise.opendata.jackan.ckan.CkanClient;
 public class JackanException extends RuntimeException {
 
     public JackanException(String msg) {
-        super("Jackan: " + msg);
+        super(msg);
     }
 
     public JackanException(String msg, Throwable ex) {
-        super("Jackan: " + msg, ex);
+        super(msg, ex);
     }
 
     public JackanException(String msg, CkanClient client) {
-        super("Jackan: " + msg + "\nClient parameters: " + client.toString());
+        super(msg + "\nClient parameters: " + client.toString());
     }
 
     public JackanException(String msg, CkanClient client, Throwable ex) {
-        super("Jackan: " + msg + "\nClient parameters: " + client.toString(), ex);
+        super(msg + "\nClient parameters: " + client.toString(), ex);
     }
 
 }

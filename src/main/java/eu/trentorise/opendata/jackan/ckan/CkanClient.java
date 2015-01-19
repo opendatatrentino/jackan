@@ -68,13 +68,14 @@ public class CkanClient {
      * Notice that even for the same api version (at least for versions <= 3)
      * different CKAN instances can behave quite differently (sic)
      */
-    public static ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
+    public static final ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
 
     private final String catalogURL;
+    
     @Nullable
     private final String ckanToken;
 
-    public static Logger logger = Logger.getLogger(CkanClient.class.getName());
+    private static final Logger logger = Logger.getLogger(CkanClient.class.getName());
 
     /**
      * @return a clone of the json object mapper used internally.
@@ -112,7 +113,7 @@ public class CkanClient {
                 {
                     addSerializer(DateTime.class, new StdSerializer<DateTime>(DateTime.class) {
                         @Override
-                        public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+                        public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
                             jgen.writeString(DateTimeFormat.forPattern(CKAN_DATE_PATTERN).print(value));
                         }
 
@@ -308,95 +309,7 @@ public class CkanClient {
         checkNonEmpty(groupId, "dataset identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
     }
-
-    /**
-     * Creates ckan resource on the server
-     *
-     * @param resource ckan resource object with the minimal set of parameters
-     * required. See
-     * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
-     * @return the newly created resource
-     * @throws JackanException
-     */
-    public synchronized CkanResource createResource(CkanResource resource) {
-
-        if (ckanToken == null) {
-            throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
-        }
-
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(resource);
-        }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
-        }
-        return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
-    }
-
-    /**
-     * Updates a resource on the ckan server
-     *
-     * @param resource ckan resource object
-     * @return the updated resource
-     * @throws JackanException
-     */
-    public synchronized CkanResource updateResource(CkanResource resource) {
-
-        throw new UnsupportedOperationException("todo 0.4 must implement parameters chck for this to work!");
-        /*
-         if (ckanToken == null) {
-         throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
-         }
-
-         ObjectMapper objectMapper = CkanClient.getObjectMapper();
-         String json = null;
-         try {
-         json = objectMapper.writeValueAsString(resource);
-         } catch (IOException e) {
-         throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
-         }
-
-         return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
-         */
-    }
-
-    /**
-     * Updates a dataset on the ckan server
-     *
-     * @param dataset ckan dataset object with theminimal set of parameters
-     * @return the updated dataset
-     * @throws JackanException
-     */
-    public synchronized CkanResource updateDataset(CkanDataset dataset) {
-        throw new UnsupportedOperationException("todo 0.4 must implement parameters chck for this to work!");
-    }
-
-    /**
-     * Creates CkanDataset on the server
-     *
-     * @param dataset data set with a given parameters
-     * @return the newly created dataset
-     * @throws JackanException
-     */
-    public synchronized CkanDataset createDataset(CkanDataset dataset) {
-
-        if (ckanToken == null) {
-            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
-        }
-
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(dataset);
-        }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", this, e);
-        }
-        DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
-        return datasetresponse.result;
-    }
+ 
 
     /**
      * @return list of strings like i.e. limestone-pavement-orders
@@ -450,8 +363,8 @@ public class CkanClient {
         try {
             String json = Request.Get(fullUrl).execute().returnContent()
                     .asString();
-            ApiVersionResponse dr = getObjectMapper().readValue(json, ApiVersionResponse.class);
-            return dr.version;
+            return getObjectMapper().readValue(json, ApiVersionResponse.class)
+                                    .version;            
         }
         catch (Exception ex) {
             throw new JackanException("Error while fetching api version!", this, ex);

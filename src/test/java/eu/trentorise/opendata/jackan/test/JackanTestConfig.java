@@ -19,8 +19,6 @@ import eu.trentorise.opendata.commons.OdtConfig;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class JackanTestConfig extends OdtConfig {
 
-    private static JackanTestConfig INSTANCE = new JackanTestConfig();
+    private static final JackanTestConfig INSTANCE = new JackanTestConfig();
 
     /**
      * Path to file containing jackan testing specific properties
