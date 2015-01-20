@@ -1,6 +1,11 @@
 Jackan
-====
+===
 
+<p align="center">
+<img alt="Jackan" src="https://github.com/opendatatrentino/jackan/wiki/img/jackan-logo-200px.png" width="200px">
+</p>
+
+<br/>
 Java client library for CKAN catalogs. Supports Ckan 2.2+ 
 
 **Project status**: released v0.3.1 on Maven Central. Supports reading and searching from CKAN.
