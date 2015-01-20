@@ -37,35 +37,35 @@ import java.util.logging.Logger;
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- *
+ * Performs integration tests. Many tests here are also used by
+ * {@link CkanTestReporter}
  *
  * @author David Leoni
  */
 @RunWith(JUnitParamsRunner.class)
-public class CkanClientIT {
+public class ReadCkanIT {
 
-    public static Logger logger = Logger.getLogger(CkanClientIT.class.getName());
+    public static Logger logger = Logger.getLogger(ReadCkanIT.class.getName());
 
     public static String DATI_TRENTINO = "http://dati.trentino.it";
     public static String DATI_TOSCANA = "http://dati.toscana.it";
     public static String DATI_MATERA = "http://dati.comune.matera.it";
     public static String DATA_GOV_UK = "http://data.gov.uk";
     public static String DATA_GOV_US = "http://catalog.data.gov";
-    
-    /** National Oceanic and Atmospheric Administration (United States) */
-    public static String NOAA_GOV_US = "https://data.noaa.gov";
 
+    /**
+     * National Oceanic and Atmospheric Administration (United States)
+     */
+    public static String NOAA_GOV_US = "https://data.noaa.gov";
 
     /**
      * Unfortunately this one uses old api version, we can't use it.
@@ -78,34 +78,26 @@ public class CkanClientIT {
 
     private Multimap<String, String> datasetList = LinkedListMultimap.create();
 
-    CkanClient client;
     private int TEST_ELEMENTS = 5;
 
+    /**
+     * All reading tests will be tried with all these catalogs.
+     */
     private Object[] clients() {
         return $(
                 $(new CkanClient(DATI_TRENTINO)),
                 $(new CkanClient(DATI_TOSCANA))
-                //$(new CkanClient(NOAA_GOV_US))                
-                /*,
-                $(new CkanClient(DATI_MATERA)),
-                $(new CkanClient(DATA_GOV_UK)),
-                $(new CkanClient(DATA_GOV_US)) */
+        //$(new CkanClient(NOAA_GOV_US))                
+        /*,
+         $(new CkanClient(DATI_MATERA)),
+         $(new CkanClient(DATA_GOV_UK)),
+         $(new CkanClient(DATA_GOV_US)) */
         );
     }
 
     @BeforeClass
-    public static void setUpClass() {        
+    public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
-    }
-
-    @Before
-    public void setUp() {
-        client = new CkanClient(DATI_TRENTINO);
-    }
-
-    @After
-    public void tearDown() {
-        client = null;
     }
 
     /**
@@ -297,35 +289,35 @@ public class CkanClientIT {
     @Test
     @Parameters(method = "clients")
     public void testSearchDatasetsByTags(CkanClient client) {
-        
+
         List<String> datasetNamesList = client.getDatasetList();
         assertTrue(datasetNamesList.size() > 0);
 
-        List<CkanTag> tagList = client.getTagList();        
+        List<CkanTag> tagList = client.getTagList();
         assertTrue(tagList.size() > 0);
-        
+
         String tagName = "";
-        for (String datasetName : datasetNamesList.subList(0, Math.min(datasetList.size(), TEST_ELEMENTS))){
+        for (String datasetName : datasetNamesList.subList(0, Math.min(datasetList.size(), TEST_ELEMENTS))) {
             CkanDataset dataset = client.getDataset(datasetName);
             List<CkanTag> tags = dataset.getTags();
-            if (tags.size() > 0 &&  tags.get(0).getName().length() > 0){
+            if (tags.size() > 0 && tags.get(0).getName().length() > 0) {
                 tagName = tags.get(0).getName();
-                SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tagName), 10, 0);    
-                if (r.getResults().isEmpty()){
+                SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tagName), 10, 0);
+                if (r.getResults().isEmpty()) {
                     Assert.fail("I should find dataset " + dataset.getUrl() + " when searching for tag " + tagName);
                 } else {
                     return;
-                }                
+                }
             }
-        }    
-        
-        for (CkanTag tag : tagList.subList(0, Math.min(tagList.size(), TEST_ELEMENTS))){
-            SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tag.getName()), 10, 0);    
-            if (r.getResults().size() > 0){
+        }
+
+        for (CkanTag tag : tagList.subList(0, Math.min(tagList.size(), TEST_ELEMENTS))) {
+            SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames(tag.getName()), 10, 0);
+            if (r.getResults().size() > 0) {
                 return;
             }
         }
-        
+
         Assert.fail("Couldn't find a dataset containing a tag so to be able to test search by tag.");
     }
 
@@ -344,19 +336,8 @@ public class CkanClientIT {
     }
 
     @Test
-    public void testFullSearch() {
-        SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter()
-                .byText("elenco dei prodotti trentini")
-                .byGroupNames("agricoltura")
-                .byOrganizationName("pat-s-sviluppo-rurale")
-                .byTagNames("prodotti tipici", "enogastronomia")
-                .byLicenseId("cc-zero"), 10, 0);
-        assertEquals("cc-zero", r.getResults().get(0).getLicenseId());
-        assertTrue("I should get at least one result", r.getResults().size() > 0);
-    }
-
-    @Test
-    public void testCkanError() {
+    @Parameters(method = "clients")
+    public void testCkanError(CkanClient client) {
         try {
             CkanDataset dataset = client.getDataset("666");
             fail();
@@ -367,5 +348,21 @@ public class CkanClientIT {
 
     }
 
+    @Test
+    public void testFullSearch() {
+        throw new RuntimeException("TODO make it work with generic catalog");
+        /* 
+         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter()
+         .byText("elenco dei prodotti trentini")
+         .byGroupNames("agricoltura")
+         .byOrganizationName("pat-s-sviluppo-rurale")
+         .byTagNames("prodotti tipici", "enogastronomia")
+         .byLicenseId("cc-zero"), 10, 0);
+         assertEquals("cc-zero", r.getResults().get(0).getLicenseId());
+         assertTrue("I should get at least one result", r.getResults().size() > 0);
+        
+         */
+    }
 
+   
 }

@@ -15,11 +15,8 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -28,6 +25,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableList;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
@@ -71,7 +69,7 @@ public class CkanClient {
     public static final ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
 
     private final String catalogURL;
-    
+
     @Nullable
     private final String ckanToken;
 
@@ -125,14 +123,14 @@ public class CkanClient {
     }
 
     /**
-     * @param url i.e. http://data.gov.uk
+     * @param url the catalog url i.e. http://data.gov.uk
      */
     public CkanClient(String url) {
         this(url, null);
     }
 
     /**
-     * @param URL i.e. http://data.gov.uk
+     * @param URL the catalog url i.e. http://data.gov.uk
      * @param token the private token string for ckan repository
      */
     public CkanClient(String URL, @Nullable String token) {
@@ -147,6 +145,34 @@ public class CkanClient {
     }
 
     /**
+     * Calculates a full url out of the provided params
+     *
+     * @param path something like /api/3/package_show
+     * @param params list of key, value parameters. They must be not be url
+     * encoded. i.e. "id","laghi-monitorati-trento"
+     * @return the full url to be called.
+     * @throws JackanException if there is any error building the url
+     */
+    private String calcFullUrl(String path, Object[] params) {
+        checkNotNull(path);
+
+        try {
+            StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
+            for (int i = 0; i < params.length; i += 2) {
+                sb.append(i == 0 ? "?" : "&")
+                        .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
+                        .append("=")
+                        .append(URLEncoder.encode(params[i + 1].toString(),
+                                        "UTF-8"));
+            }
+            return sb.toString();
+        }
+        catch (Exception ex) {
+            throw new JackanException("Error while building url to perform GET! \n path: " + path + " \n params: " + Arrays.toString(params), ex);
+        }
+    }
+
+    /**
      * Method for http GET
      *
      * @param <T>
@@ -158,23 +184,11 @@ public class CkanClient {
      */
     <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
             Object... params) {
-        String fullUrl;
+        checkNotNull(responseType);
+        checkNotNull(path);
 
-        try {
-            StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
-            for (int i = 0; i < params.length; i += 2) {
-                sb.append(i == 0 ? "?" : "&")
-                        .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
-                        .append("=")
-                        .append(URLEncoder.encode(params[i + 1].toString(),
-                                        "UTF-8"));
-            }
-            fullUrl = sb.toString();
-        }
-        catch (Exception ex) {
-            throw new JackanException("Error while building url to perform GET! \n Response class:" + responseType.getClass()
-                    + " \n path: " + path + " \n params: " + Arrays.toString(params), ex);
-        }
+        String fullUrl = calcFullUrl(path, params);
+
         try {
             logger.log(Level.FINE, "getting {0}", fullUrl);
             String json = Request.Get(fullUrl).execute().returnContent()
@@ -195,28 +209,34 @@ public class CkanClient {
         }
     }
 
-    <T extends CkanResponse> T postHttp(Class<T> responseType, String path, String input, ContentType contentType,
+    /**
+     *
+     * @param <T>
+     * @param responseType a descendant of CkanResponse
+     * @param path something like 1/api/3/action/package_create
+     * @param body the body of the POST
+     * @param the content type, i.e.
+     * @param params list of key, value parameters. They must be not be url
+     * encoded. i.e. "id","laghi-monitorati-trento"
+     * @throws JackanException on error
+     * @return
+     */
+    <T extends CkanResponse> T postHttp(Class<T> responseType, String path, String body, ContentType contentType,
             Object... params) {
+        checkNotNull(responseType);
+        checkNotNull(path);
+        checkNotNull(body);
+        checkNotNull(contentType);
+
+        String fullUrl = calcFullUrl(path, params);
+
         try {
 
-            StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
-            for (int i = 0; i < params.length; i += 2) {
-                sb.append(i == 0 ? "?" : "&")
-                        .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
-                        .append("=")
-                        .append(URLEncoder.encode(params[i + 1].toString(),
-                                        "UTF-8"));
-            }
-            String fullUrl = sb.toString();
-
-            logger.log(Level.FINE, "posting {0}", fullUrl);
-            Response response = Request.Post(fullUrl).bodyString(input, contentType).addHeader("Authorization", ckanToken).execute();
-//            HttpResponse entity =response.returnResponse();
-//            System.out.println(entity.toString());
+            logger.log(Level.FINE, "posting to url {0}", fullUrl);            
+            Response response = Request.Post(fullUrl).bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
 
             Content out = response.returnContent();
-            String json = out.asString();
-            logger.log(Level.FINE, "json {0}", json);
+            String json = out.asString();            
 
             T dr = getObjectMapper().readValue(json, responseType);
             if (!dr.success) {
@@ -230,7 +250,7 @@ public class CkanClient {
             return dr;
         }
         catch (Exception ex) {
-            throw new JackanException("Error while uploading the semantified dataset.", ex);
+            throw new JackanException("Error while performing a POST! Request url is:" + fullUrl, ex);
         }
 
     }
@@ -309,7 +329,6 @@ public class CkanClient {
         checkNonEmpty(groupId, "dataset identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
     }
- 
 
     /**
      * @return list of strings like i.e. limestone-pavement-orders
@@ -363,8 +382,7 @@ public class CkanClient {
         try {
             String json = Request.Get(fullUrl).execute().returnContent()
                     .asString();
-            return getObjectMapper().readValue(json, ApiVersionResponse.class)
-                                    .version;            
+            return getObjectMapper().readValue(json, ApiVersionResponse.class).version;
         }
         catch (Exception ex) {
             throw new JackanException("Error while fetching api version!", this, ex);
@@ -618,67 +636,162 @@ public class CkanClient {
         return dsr.result;
     }
 
-}
-
-class CkanError {
-
-    private String message;
     /**
-     * actually the original is __type
+     * Creates ckan resource on the server.
+     *
+     * @param resource ckan resource object with the minimal set of parameters
+     * required. See
+     * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
+     * @return the newly created resource
+     * @throws JackanException
      */
-    private String type;
+    public synchronized CkanResource createResource(CkanResourceMinimized resource) {
+        checkNotNull(resource);        
 
-    @Override
-    public String toString() {
-        return "Ckan error of type: " + getType() + "\t message:" + getMessage();
-    }
+        if (ckanToken == null) {
+            throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
+        }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * todo what are possible types?
-     */
-    @JsonProperty("__type")
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * todo what are possible types?
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * To overcome the __type problem. Tried many combinations but Jackson is
-     * not collaborating here, even if in Group.isOrganization case setting the
-     * JsonProperty("is_organization") did work.
-     */
-    static CkanError read(String json) {
+        ObjectMapper objMapper = CkanClient.getObjectMapper();
+        String json = null;
         try {
-            CkanError ce = new CkanError();
-            JsonNode jn = CkanClient.getObjectMapper().readTree(json);
-            ce.setMessage(jn.get("message").asText());
-            ce.setType(jn.get("__type").asText());
-            return ce;
+            json = objMapper.writeValueAsString(resource);
         }
-        catch (IOException ex) {
-            throw new JackanException("Couldn parse CkanError.", ex);
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanResource!", e);
         }
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
+    }
+
+    /**
+     * Creates ckan resource on the server.
+     *
+     * @param resource ckan resource object with the minimal set of parameters
+     * required. See
+     * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
+     * @return the newly created resource
+     * @throws JackanException
+     */
+    public synchronized CkanResource createResource(CkanResource resource) {
+        checkNotNull(resource);
+
+        logger.warning("TODO 0.4 CREATION OF FULL RESOURCE IS EXPERIMENTAL!");
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
+        }
+
+        ObjectMapper objMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objMapper.writeValueAsString(resource);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanResource!", e);
+        }
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
+    }
+
+    /**
+     * Updates a resource on the ckan server
+     *
+     * @param resource ckan resource object
+     * @return the updated resource
+     * @throws JackanException
+     */
+    public synchronized CkanResource updateResource(CkanResource resource) {
+        checkNotNull(resource);
+        logger.info("todo 0.4 implement parameters check !");
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+        }
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(resource);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+        }
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+
+    }
+
+    /**
+     * Updates a dataset on the ckan server
+     *
+     * @param dataset ckan dataset object with the minimal set of parameters
+     * required to perform an update. (see {@link eu.trentorise.opendata.jackan.ckan.CkanDataset#CkanDataset(java.lang.String, java.lang.String, java.util.List, java.lang.String, java.lang.String)
+     * }
+     *
+     * @return the updated dataset
+     * @throws JackanException
+     */
+    public synchronized CkanDataset updateDataset(CkanDataset dataset) {
+        checkNotNull(dataset);
+
+        throw new UnsupportedOperationException("todo 0.4 implement me!");
+    }
+
+    /**
+     * Creates CkanDataset on the server
+     *
+     * @param dataset data set with a given parameters
+     * @return the newly created dataset
+     * @throws JackanException
+     */
+    public synchronized CkanDataset createDataset(CkanDataset dataset) {
+
+        logger.warning("TODO 0.4 CREATION OF FULL DATASETS IS EXPERIMENTAL!");
+
+        checkNotNull(dataset);
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
+        }
+
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(dataset);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", this, e);
+        }
+        DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+        return datasetresponse.result;
+    }
+
+    /**
+     * Creates CkanDataset on the server
+     *
+     * @param dataset data set with a given parameters
+     * @return the newly created dataset
+     * @throws JackanException
+     */
+    public synchronized CkanDataset createDataset(CkanDatasetMinimized dataset) {
+
+        checkNotNull(dataset);
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
+        }
+
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(dataset);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", this, e);
+        }
+        DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+        return datasetresponse.result;
     }
 
 }
 
-/**
- * @author David Leoni
- */
 class CkanResponse {
 
     public String help;

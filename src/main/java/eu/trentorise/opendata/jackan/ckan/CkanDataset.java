@@ -105,20 +105,14 @@ public class CkanDataset {
      * columns and the trasformations done on the original dataset. This URL
      * will be also displayed as metadata in the catalog under dcat:landingPage
      * @param extras
-     * @param title
-     * @param licenseId
      */
-    public CkanDataset(String name, String url, List<CkanPair> extras, String title, String licenseId) {
+    public CkanDataset(String name, String url, List<CkanPair> extras) {
         this();
         checkNonEmpty(name, "ckan dataset name");
         checkNonNull(url, "ckan dataset url to description page");
         checkNonNull(extras, "ckan dataset extras");
-        checkNonEmpty(title, "ckan dataset title");
-        checkNonNull(licenseId, "ckan dataset license id");
         this.name = name;
         this.url = url;
-        this.title = title;
-        this.licenseId = licenseId;
         this.extras = extras;
     }
 

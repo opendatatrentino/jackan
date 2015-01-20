@@ -16,7 +16,6 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.google.common.base.Optional;
-import javax.annotation.Nullable;
 
 /**
  *

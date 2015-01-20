@@ -58,6 +58,9 @@ public class CkanTestReporter {
 
     private static final Logger logger = Logger.getLogger(CkanTestReporter.class.getName());
 
+    /**
+     * Tests names from {@link ReadCkanIT}
+     */
     public static final List<String> ALL_TEST_NAMES
             = ImmutableList.of("testApiVersionSupported",
                     "testDatasetList",
@@ -83,9 +86,9 @@ public class CkanTestReporter {
     private static String ERROR_CLASS = "jackan-error";
     private static String JACKAN_TABLE_CLASS = "jackan-table";
 
-    
-  /**
-     * By default test/resources/ckan-instances.txt file is used.
+    /**
+     * Takes as first argument the catalog list files to be used. If not
+     * provided, by default test/resources/ckan-instances.txt file is used.
      */
     public static void main(String[] args) {
 
@@ -95,16 +98,15 @@ public class CkanTestReporter {
 
         if (args.length == 2) {
             catFilename = args[1];
-            logger.info("Using provided catalogs file " + catFilename + ".");
+            logger.info("Using provided catalogs file " + catFilename);
         } else {
             catFilename = "ckan-instances.txt";
             logger.info("Using default catalogs file " + catFilename + ". If you wish to provide yours pass filename as first argument.");
         }
 
-        Map<String, String> catalogsNames = readCatalogsList(catFilename);
-        //ImmutableMap.of("http://dati.trentino.it", "dati.trentino.it", "http://dati.toscana.it", "dati.toscana.it");// "http://publicdata.eu/", "http://publicdata.eu/"
+        Map<String, String> catalogsNames = readCatalogsList(catFilename);        
 
-        List<String> testNames = ALL_TEST_NAMES; //.subList(0, 2);
+        List<String> testNames = ALL_TEST_NAMES;
 
         RunSuite testResults = runTests(catalogsNames, testNames);
 
@@ -118,8 +120,7 @@ public class CkanTestReporter {
         saveToDirectory(latestDir, content, testResults);
 
     }
-    
-    
+
     /**
      * @param catalogListFilepath absolute file path
      */
@@ -193,14 +194,13 @@ public class CkanTestReporter {
     public static final String REPORT_PREFIX = "jackan-scan";
     public static final String TEST_RESULT_PREFIX = "test-result-";
 
-  
     private static TestResult runTest(int testId, CkanClient client, String catalogName, String testName) {
         Optional<Throwable> error;
-        CkanClientIT ckanTests = new CkanClientIT();
+        ReadCkanIT ckanTests = new ReadCkanIT();
         try {
             java.lang.reflect.Method method;
 
-            method = CkanClientIT.class.getMethod(testName, CkanClient.class);
+            method = ReadCkanIT.class.getMethod(testName, CkanClient.class);
             method.invoke(ckanTests, client);
             error = Optional.absent();
         }
