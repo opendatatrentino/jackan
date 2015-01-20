@@ -18,7 +18,7 @@ Java client library for CKAN catalogs. Supports Ckan 2.2+
   * unit tested with proper integration tests
   * supports Java 6+
 
-Credits:
+**Credits**:
 
 * David Leoni - DISI, University of Trento - david.leoni@unitn.it
 * Ivan Tankoyeu - DISI, University of Trento - tankoyeu@disi.unitn.it
