@@ -2,7 +2,7 @@ Jackan
 ===
 
 <p align="center">
-<img alt="Jackan" src="https://github.com/opendatatrentino/jackan/wiki/img/jackan-logo-200px.png" width="200px">
+<img alt="Jackan" src="https://github.com/opendatatrentino/jackan/wiki/img/jackan-logo-200px.png" width="150px">
 </p>
 
 <br/>
