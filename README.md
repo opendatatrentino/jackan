@@ -3,11 +3,11 @@ Jackan
 
 Java client library for CKAN catalogs. Supports Ckan 2.2+ 
 
-**Project status**: developing [milestone 0.4](https://github.com/opendatatrentino/Jackan/issues?milestone=2&state=open)
+**Project status**: released v0.3.1 on Maven Central. Supports reading and searching from CKAN.
 
-**Roadmap**: see [project issues](https://github.com/opendatatrentino/Jackan/issues)
+**Roadmap**: we're developing [milestone 0.4](https://github.com/opendatatrentino/Jackan/issues?milestone=2&state=open) 
 
-**Documentation**: see [the wiki](https://github.com/opendatatrentino/Jackan/wiki)
+**Usage**: see [the wiki](https://github.com/opendatatrentino/Jackan/wiki)
 
 
 **Features**:
@@ -18,7 +18,7 @@ Java client library for CKAN catalogs. Supports Ckan 2.2+
   * unit tested with proper integration tests
   * supports Java 6+
 
-Credits:
+**Credits**:
 
 * David Leoni - DISI, University of Trento - david.leoni@unitn.it
 * Ivan Tankoyeu - DISI, University of Trento - tankoyeu@disi.unitn.it
