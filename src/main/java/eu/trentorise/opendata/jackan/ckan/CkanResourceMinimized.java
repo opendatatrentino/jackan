@@ -15,6 +15,8 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @deprecated use {@link eu.trentorise.opendata.jackan.ckan.CkanResource}
  * instead
@@ -36,7 +38,6 @@ public class CkanResourceMinimized {
         this.description = description;
         this.packageId = packageId;
         this.mimetype = mimetype;
-
     }
 
     public CkanResourceMinimized(String format, String name, String url, String description, String packageId, String mimetype, String resourceId) {

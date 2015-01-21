@@ -31,6 +31,7 @@ import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.commons.OdtUtils;
 import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
+import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 import java.io.*;
 import java.net.URLEncoder;
@@ -232,11 +233,11 @@ public class CkanClient {
 
         try {
 
-            logger.log(Level.FINE, "posting to url {0}", fullUrl);            
+            logger.log(Level.FINE, "posting to url {0}", fullUrl);
             Response response = Request.Post(fullUrl).bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
 
             Content out = response.returnContent();
-            String json = out.asString();            
+            String json = out.asString();
 
             T dr = getObjectMapper().readValue(json, responseType);
             if (!dr.success) {
@@ -646,8 +647,8 @@ public class CkanClient {
      * @throws JackanException
      */
     public synchronized CkanResource createResource(CkanResourceMinimized resource) {
-        checkNotNull(resource);        
-
+        checkResource(resource);
+        
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
@@ -672,8 +673,7 @@ public class CkanClient {
      * @return the newly created resource
      * @throws JackanException
      */
-    public synchronized CkanResource createResource(CkanResource resource) {
-        checkNotNull(resource);
+    public synchronized CkanResource createResource(CkanResource resource) {        
 
         logger.warning("TODO 0.4 CREATION OF FULL RESOURCE IS EXPERIMENTAL!");
 
@@ -692,24 +692,39 @@ public class CkanClient {
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
 
+    /**     
+     * Checks if the provided resource meets the requirements to
+     * be created to CKAN.
+     * @throws Throwable if requirements aren't met
+     */
+    private static void checkResource(CkanResourceMinimized resource) {
+        checkNotNull(resource);
+        checkNotNull(resource.getFormat(), "Ckan resource format must not be null!");
+        checkNotEmpty(resource.getName(), "Ckan resource name can't be empty!");
+        checkNotNull(resource.getDescription(), "Ckan resource description must not be null!");
+        // todo do we need to check mimetype?? checkNotNull(resource.getMimetype());
+        checkNotNull(resource.getPackageId(), "Ckan resource parent dataset must not be null!");
+        checkNotNull(resource.getUrl(), "Ckan resource url must not be null!");
+    }
+
     /**
-     * Updates a resource on the ckan server
+     * Updates a resource on the ckan server.
      *
      * @param resource ckan resource object
      * @return the updated resource
      * @throws JackanException
      */
-    public synchronized CkanResource updateResource(CkanResource resource) {
-        checkNotNull(resource);
-        logger.info("todo 0.4 implement parameters check !");
+    public synchronized CkanResource updateResource(CkanResourceMinimized resource) {
+        checkResource(resource);
+        checkNotEmpty(resource.getId(), "Invalid Ckan resource id!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+            throw new IllegalStateException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
         }
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        ObjectMapper objMapper = CkanClient.getObjectMapper();
         String json = null;
         try {
-            json = objectMapper.writeValueAsString(resource);
+            json = objMapper.writeValueAsString(resource);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);

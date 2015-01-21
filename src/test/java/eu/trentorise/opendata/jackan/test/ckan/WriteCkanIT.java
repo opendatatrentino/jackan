@@ -122,13 +122,13 @@ public class WriteCkanIT {
     @Test
     public void testCreateResource() throws URISyntaxException {
 
-        String uri = "http://github.com/opendatatrentino/jackan";
+        String url = "http://github.com/opendatatrentino/jackan";
 
         long datasetNumber = UUID.randomUUID().getMostSignificantBits();
         String datasetName = "test-dataset-jackan-" + datasetNumber;
 
         CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName,
-                uri,
+                url,
                 new ArrayList(),
                 "Test Jackan Dataset " + datasetNumber,
                 "cc-zero");
@@ -137,7 +137,7 @@ public class WriteCkanIT {
 
         CkanResource ckanResource = new CkanResource("JSONLD",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
-                uri,
+                url,
                 "Most interesting test resource in the universe",
                 retDataset.getId(),
                 null);
@@ -153,13 +153,13 @@ public class WriteCkanIT {
     @Test
     public void testCreateResourceMinimized() throws URISyntaxException {
 
-        String uri = "http://github.com/opendatatrentino/jackan";
+        String url = "http://github.com/opendatatrentino/jackan";
 
         long datasetNumber = UUID.randomUUID().getMostSignificantBits();
         String datasetName = "test-dataset-jackan-" + datasetNumber;
 
         CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName,
-                uri,
+                url,
                 new ArrayList(),
                 "Test Jackan Dataset " + datasetNumber,
                 "cc-zero");
@@ -168,7 +168,7 @@ public class WriteCkanIT {
 
         CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits() + datasetNumber,
-                uri,
+                url,
                 "Most interesting test resource in the universe",
                 retDataset.getId(),
                 null);
@@ -181,6 +181,37 @@ public class WriteCkanIT {
 
     }
 
+    
+    /**
+     * todo review this!!!
+     *
+     */
+    @Test
+    public void testUpdateResourceMinimized()  {
+long datasetNumber = UUID.randomUUID().getMostSignificantBits();
+        CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + datasetNumber,
+                "http://jackan-land-of-dreams.org",
+                new ArrayList());
+        
+        dataset.setTitle("Test Jackan Dataset " + datasetNumber);
+
+        dataset.setLicenseId("cc-zero");
+
+        CkanDataset createdDataset = client.createDataset(dataset);
+
+        CkanResource resource1 = new CkanResource("JSONLD",
+                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
+                "http://go-play-with-jackan.org/myfile_1.jsonld",
+                "First most interesting test resource in the universe",
+                dataset.getId(),
+                null);
+
+        CkanResource createdResource = client.createResource(resource1);
+        
+        //client.updateResource(null)
+        throw new RuntimeException("todo implement test update resource!");
+    }
+    
     /**
      * todo review this!!!
      *
