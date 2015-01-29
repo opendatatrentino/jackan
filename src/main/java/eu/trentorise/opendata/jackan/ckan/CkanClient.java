@@ -25,15 +25,20 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableList;
+
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.commons.OdtUtils;
 import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
+
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -41,7 +46,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.Nullable;
+
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
@@ -714,24 +721,50 @@ public class CkanClient {
      * @return the updated resource
      * @throws JackanException
      */
-    public synchronized CkanResource updateResource(CkanResourceMinimized resource) {
-        checkResource(resource);
-        checkNotEmpty(resource.getId(), "Invalid Ckan resource id!");
+    public synchronized  CkanResource updateResource(CkanResource resource, Boolean checkConsistency){
 
-        if (ckanToken == null) {
-            throw new IllegalStateException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
-        }
-        ObjectMapper objMapper = CkanClient.getObjectMapper();
-        String json = null;
-        try {
-            json = objMapper.writeValueAsString(resource);
-        }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
-        }
-        return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+		if (ckanToken == null){
+			throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+		}
+		//check consistance with original version of the to be updated resource 
+		if (checkConsistency){
+			CkanResource originalResource = getResource(resource.getId());
 
-    }
+			for (Field f : originalResource.getClass().getDeclaredFields()) {
+				f.setAccessible(true);
+				String fieldName;
+				try {
+					if ((f.get(originalResource) != null) && (f.get(resource)==null )&&(!f.getName().equals("created"))){
+						fieldName = f.getName();
+//						if(!fieldName.equals("created")){
+							f.set(resource, f.get(originalResource));
+							System.out.println("Not a null: "+fieldName+ " Value: ");
+//						//};
+//								System.out.println("Not a null: "+fieldName+ " Value: ");
+					}
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		//System.out.println("After consistance checking resource is consist of: "+resource.toString());
+
+		ObjectMapper objectMapper = CkanClient.getObjectMapper();
+		String json = null;
+		try {
+			json = objectMapper.writeValueAsString(resource);
+		} catch (IOException e) {
+			throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+		}
+
+		return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+
+	}
 
     /**
      * Updates a dataset on the ckan server
