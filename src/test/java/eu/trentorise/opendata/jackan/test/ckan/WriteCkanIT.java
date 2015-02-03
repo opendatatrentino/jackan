@@ -195,7 +195,7 @@ public class WriteCkanIT {
      * todo review this!!!
      *
      */
-   // @Test
+    @Test
     public void testUpdateResourceMinimized()  {
 long datasetNumber = UUID.randomUUID().getMostSignificantBits();
         CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + datasetNumber,
