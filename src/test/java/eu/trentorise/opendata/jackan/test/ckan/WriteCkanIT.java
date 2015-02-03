@@ -22,16 +22,21 @@ import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import eu.trentorise.opendata.jackan.ckan.CkanResourceMinimized;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import junitparams.JUnitParamsRunner;
+
 import org.junit.After;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,6 +51,8 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class WriteCkanIT {
 
+	public static final String TEST_RESOURCE_ID = "81f579fe-7f10-4fa2-94f2-0011898dc78c";
+	
     public static Logger logger = Logger.getLogger(WriteCkanIT.class.getName());
 
     CkanClient client;
@@ -188,7 +195,7 @@ public class WriteCkanIT {
      * todo review this!!!
      *
      */
-    @Test
+   // @Test
     public void testUpdateResourceMinimized()  {
 long datasetNumber = UUID.randomUUID().getMostSignificantBits();
         CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + datasetNumber,
@@ -261,4 +268,30 @@ long datasetNumber = UUID.randomUUID().getMostSignificantBits();
 
         throw new RuntimeException("todo write check updatedDataset is not corrupted");
     }
+    
+    @Test
+	public void testUpdateResource(){
+
+		URI uri = null;
+		try {
+			uri = new URI("http", "www.unitn.it", null, null);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "81f579fe-7f10-4fa2-94f2-0011898dc78c", null);
+		CkanResource fullCkanResource = ckanResource.toFullResource();
+		CkanResourceMinimized ckanResource2 = new CkanResourceMinimized("JSONLD", "my test resource", uri.toASCIIString(), "test res", "81f579fe-7f10-4fa2-94f2-0011898dc78c", null);
+		CkanResource fullCkanResource2 = ckanResource2.toFullResource();
+		fullCkanResource.setOwner("Tankoyeu");
+		ckanResource.setId(TEST_RESOURCE_ID);
+		assertEquals(fullCkanResource.getOwner(), "Tankoyeu");
+		
+		CkanResource cResource1 = client.updateResource(fullCkanResource, true);
+		assertEquals(cResource1.getOwner(), "Tankoyeu");
+		
+		CkanResource cResource2 = client.updateResource(fullCkanResource2, false);
+		assertEquals(cResource2.getOwner(), "None");
+		
+
+	}
 }

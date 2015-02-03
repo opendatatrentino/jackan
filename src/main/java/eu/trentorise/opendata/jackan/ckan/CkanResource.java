@@ -45,7 +45,7 @@ public class CkanResource {
      private String datasetName; // laghi-monitorati-trento
      private String datasetTitle; // Laghi monitorati Trento
      */
-    private DateTime cacheUrlUpdated;
+    private String cacheUrlUpdated;
 
     private DateTime created;
 
@@ -225,15 +225,15 @@ public class CkanResource {
      * DateTime in UTC timezone
      */
     @Nullable
-    public DateTime getCacheUrlUpdated() {
+    public String getCacheUrlUpdated() {
         return cacheUrlUpdated;
     }
 
     /**
      * internally date is stored with UTC timezone
      */
-    public void setCacheUrlUpdated(DateTime cacheUrlUpdated) {
-        this.cacheUrlUpdated = cacheUrlUpdated.toDateTime(DateTimeZone.UTC);
+    public void setCacheUrlUpdated(String cacheUrlUpdated) {
+        this.cacheUrlUpdated = cacheUrlUpdated;
     }
 
     /**

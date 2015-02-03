@@ -105,5 +105,15 @@ public class CkanResourceMinimized {
     public void setMimetype(String mimetype) {
         this.mimetype = mimetype;
     }
+	public CkanResource toFullResource() {
+		CkanResource cResource = new CkanResource();
+		cResource.setFormat( this.format);
+		cResource.setName(this.name);
+		cResource.setUrl(this.url);
+		cResource.setDescription(this.description);
+		cResource.setMimetype(this.mimetype);
+		cResource.setId(packageId);
+		return cResource;
+	}
 
 }
