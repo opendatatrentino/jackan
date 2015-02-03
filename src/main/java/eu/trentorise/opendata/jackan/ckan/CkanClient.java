@@ -220,7 +220,6 @@ public class CkanClient {
      * @param params list of key, value parameters. They must be not be url
      * encoded. i.e. "id","laghi-monitorati-trento"
      * @throws JackanException on error
-     * @return
      */
     <T extends CkanResponse> T postHttp(Class<T> responseType, String path, String body, ContentType contentType,
             Object... params) {
@@ -737,7 +736,7 @@ public class CkanClient {
      * Updates a dataset on the ckan server
      *
      * @param dataset ckan dataset object with the minimal set of parameters
-     * required to perform an update. (see {@link eu.trentorise.opendata.jackan.ckan.CkanDataset#CkanDataset(java.lang.String, java.lang.String, java.util.List, java.lang.String, java.lang.String)
+     * required to perform an update. (see {@link eu.trentorise.opendata.jackan.ckan.CkanDataset#CkanDataset(java.lang.String, java.lang.String, java.util.List) 
      * }
      *
      * @return the updated dataset

@@ -131,7 +131,7 @@ public class WriteCkanIT {
                 url,
                 new ArrayList(),
                 "Test Jackan Dataset " + datasetNumber,
-                "cc-zero");
+                "cc-zero"); 
 
         CkanDataset retDataset = client.createDataset(ckanDataset);
 
@@ -142,6 +142,8 @@ public class WriteCkanIT {
                 retDataset.getId(),
                 null);
 
+        // todo add more fields
+        
         CkanResource retCkanRes = client.createResource(ckanResource);
 
         assertNotNull(retCkanRes.getId());

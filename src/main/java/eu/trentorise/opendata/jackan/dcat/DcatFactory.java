@@ -74,7 +74,7 @@ public class DcatFactory {
         // dd.setContactPoint(null);        
 
         if (dataset.getNotes() != null) {
-            ddb.setDescription(Dict.of(locale, dataset.getNotes()));
+            ddb.withDescription(Dict.of(locale, dataset.getNotes()));
         }
 
         if (dataset.getResources() != null) {
@@ -84,11 +84,11 @@ public class DcatFactory {
         }
 
         if (dataset.getName() != null) {
-            ddb.setIdentifier(dataset.getName());
+            ddb.withIdentifier(dataset.getName());
         }
 
         if (dataset.getMetadataCreated() != null) {
-            ddb.setIssued(dataset.getMetadataCreated());
+            ddb.withIssued(dataset.getMetadataCreated());
         }
 
         if (dataset.getTags() != null) {
@@ -100,24 +100,24 @@ public class DcatFactory {
         }
 
         if (dataset.getUrl() != null) {
-            ddb.setLandingPage(dataset.getUrl());
+            ddb.withLandingPage(dataset.getUrl());
         }
 
         ddb.addLanguages(locale);
 
         if (dataset.getMetadataModified() != null) {
-            ddb.setModified(dataset.getMetadataModified());
+            ddb.withModified(dataset.getMetadataModified());
         }
 
         FoafAgent.Builder publisherBuilder = FoafAgent.builder();
         if (dataset.getMaintainer() != null) {
-            publisherBuilder.setName(Dict.of(locale, dataset.getMaintainer()));
+            publisherBuilder.withName(Dict.of(locale, dataset.getMaintainer()));
         }
         if (dataset.getMaintainerEmail() != null) {
-            publisherBuilder.setMbox(dataset.getMaintainerEmail());
+            publisherBuilder.withMbox(dataset.getMaintainerEmail());
         }
 
-        ddb.setPublisher(publisherBuilder.build());
+        ddb.withPublisher(publisherBuilder.build());
 
         String spatialValue = dataset.getExtrasAsHashMap().get("spatial");
 
@@ -126,7 +126,7 @@ public class DcatFactory {
         } else {
             // done according to Guida dati.gov.it 1.3: https://docs.google.com/document/d/1niBkBRJ-rxAKVJpttnDkf5xfqeMDtV_94ViGXMlBRQM/edit#
             LOG.fine("Found attribute 'spatial' in ckan dataset extras, copying value to dct:spatial");
-            ddb.setSpatial(spatialValue);
+            ddb.withSpatial(spatialValue);
         }
 
         //dd.setTemporal(catalogURL);
@@ -145,12 +145,12 @@ public class DcatFactory {
         }
 
         if (dataset.getTitle() != null) {
-            ddb.setTitle(Dict.of(locale, dataset.getTitle()));
+            ddb.withTitle(Dict.of(locale, dataset.getTitle()));
         }
 
         // let's set URI to ckan page
         if (dataset.getId() != null) {
-            ddb.setUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, dataset.getId()));
+            ddb.withUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, dataset.getId()));
         }
 
         return ddb.build();
@@ -191,16 +191,16 @@ public class DcatFactory {
         }
 
         if (accessURL.length() > 0) {
-            ddb.setAccessURL(accessURL);
+            ddb.withAccessURL(accessURL);
         }
 
         if (resource.getUrl() != null) {
-            ddb.setDownloadURL(resource.getUrl());
+            ddb.withDownloadURL(resource.getUrl());
         }
 
         try {
             if (resource.getSize() != null) {
-                ddb.setByteSize(Integer.parseInt(resource.getSize()));
+                ddb.withByteSize(Integer.parseInt(resource.getSize()));
             }
 
         }
@@ -209,32 +209,32 @@ public class DcatFactory {
         }
 
         if (resource.getPackageId() != null) {
-            ddb.setDatasetUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, datasetId));
+            ddb.withDatasetUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, datasetId));
         }
 
         if (resource.getDescription() != null) {
-            ddb.setDescription(Dict.of(locale, resource.getDescription()));
+            ddb.withDescription(Dict.of(locale, resource.getDescription()));
         }
 
         LOG.warning("TODO - SKIPPED 'DOWNLOAD URL' WHILE CONVERTING FROM CKAN TO DCAT");
         //dd.setDownloadURL(null);
 
         if (resource.getFormat() != null) {
-            ddb.setFormat(resource.getFormat());
+            ddb.withFormat(resource.getFormat());
         }
 
         DateTime lastMod = resource.getLastModified();
         if (lastMod != null) {
-            ddb.setIssued(lastMod);
+            ddb.withIssued(lastMod);
         }
         if (license != null) {
-            ddb.setLicense(license);
+            ddb.withLicense(license);
         }
         if (resource.getMimetype() != null) {
-            ddb.setMediaType(resource.getMimetype());
+            ddb.withMediaType(resource.getMimetype());
         }
         if (resource.getRevisionTimestamp() != null) {
-            ddb.setModified(CkanClient.parseRevisionTimestamp(resource.getRevisionTimestamp()));
+            ddb.withModified(CkanClient.parseRevisionTimestamp(resource.getRevisionTimestamp()));
         }
 
         LOG.warning("TODO - SKIPPED 'RIGHTS' WHILE CONVERTING FROM CKAN TO DCAT");
@@ -244,11 +244,11 @@ public class DcatFactory {
         // dd.setSpatial("");
 
         if (resource.getName() != null) {
-            ddb.setTitle(Dict.of(locale, resource.getName()));
+            ddb.withTitle(Dict.of(locale, resource.getName()));
         }
 
         if (accessURL.length() > 0) {
-            ddb.setUri(accessURL);
+            ddb.withUri(accessURL);
         }
 
         return ddb.build();
