@@ -29,6 +29,10 @@ public class SearchResults<T> {
     private int count;
     private List<T> results;
 
+    /**
+     * @param count The number of matches on the server, which may be greater
+     * than the search results.
+     */
     public SearchResults(List<T> results, int count) {
         this.count = count;
         this.results = results;
@@ -37,6 +41,10 @@ public class SearchResults<T> {
     private SearchResults() {
     }
 
+    /**
+     * Returns the number of matches on the server, which may be greater than
+     * the search results.
+     */
     public int getCount() {
         return count;
     }

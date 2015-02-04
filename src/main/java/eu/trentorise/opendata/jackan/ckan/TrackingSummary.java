@@ -16,7 +16,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 /**
- * Don't know what it is.
+ * Just don't know what it is.
  *
  * @author David Leoni
  */

@@ -106,14 +106,14 @@ public class JackanTestConfig extends OdtConfig {
             if (outputCkan == null) {
                 throw new IOException("Couldn't find property " + OUTPUT_CKAN_PROPERTY + " in configuration file " + TEST_PROPERTIES_PATH);
             } else {
-                logger.info("Will use " + outputCkan + " for CKAN write tests");
+                logger.log(Level.INFO, "Will use {0} for CKAN write tests", outputCkan);
             }
 
             outputCkanToken = properties.getProperty(OUTPUT_CKAN_TOKEN_PROPERTY);
             if (outputCkanToken == null) {
                 throw new IOException("COULDN'T FIND PROPERTY " + OUTPUT_CKAN_TOKEN_PROPERTY + " IN CONFIGURATION FILE " + TEST_PROPERTIES_PATH);
             } else {
-                logger.info("Will use token " + outputCkanToken + " for CKAN write tests");
+                logger.log(Level.INFO, "Will use token {0} for CKAN write tests", outputCkanToken);
             }
             initialized = true;
 

@@ -83,8 +83,8 @@ public class CkanTestReporter {
                     "testSearchDatasetsByLicenseIds"
             );
 
-    private static String ERROR_CLASS = "jackan-error";
-    private static String JACKAN_TABLE_CLASS = "jackan-table";
+    private static final String ERROR_CLASS = "jackan-error";
+    private static final String JACKAN_TABLE_CLASS = "jackan-table";
 
     /**
      * Takes as first argument the catalog list files to be used. If not
@@ -94,14 +94,14 @@ public class CkanTestReporter {
 
         JackanTestConfig.of().loadConfig();
 
-        String catFilename = null;
+        String catFilename;
 
         if (args.length == 2) {
             catFilename = args[1];
-            logger.info("Using provided catalogs file " + catFilename);
+            logger.log(Level.INFO, "Using provided catalogs file {0}", catFilename);
         } else {
             catFilename = "ckan-instances.txt";
-            logger.info("Using default catalogs file " + catFilename + ". If you wish to provide yours pass filename as first argument.");
+            logger.log(Level.INFO, "Using default catalogs file {0}. If you wish to provide yours pass filename as first argument.", catFilename);
         }
 
         Map<String, String> catalogsNames = readCatalogsList(catFilename);        
@@ -129,14 +129,14 @@ public class CkanTestReporter {
         // catalog url, name
         ImmutableMap.Builder<String, String> catalogsBuilder = ImmutableMap.builder();
 
-        InputStream is = null;
+        InputStream is;
 
         try {
             is = new FileInputStream(catalogListFilepath);
         }
         catch (FileNotFoundException fex) {
 
-            logger.info("Trying to take file " + catalogListFilepath + " from test resources");
+            logger.log(Level.INFO, "Trying to take file {0} from test resources", catalogListFilepath);
             is = CkanTestReporter.class.getClassLoader().getResourceAsStream(catalogListFilepath);
             if (is == null) {
                 throw new RuntimeException("Couldn't find file " + catalogListFilepath);
@@ -210,7 +210,7 @@ public class CkanTestReporter {
         return new TestResult(testId, testName, client.getCatalogURL(), catalogName, error);
     }
 
-    static class RunSuite {
+    public static class RunSuite {
 
         private DateTime startTime;
         private DateTime endTime;
@@ -447,7 +447,7 @@ public class CkanTestReporter {
                 outResult.close();
             }
 
-            logger.info("Report is now available at " + outputDirectory.getAbsolutePath() + File.separator + "index.html");
+            logger.log(Level.INFO, "Report is now available at {0}{1}index.html", new Object[]{outputDirectory.getAbsolutePath(), File.separator});
         }
         catch (FileNotFoundException ex) {
             logger.log(Level.SEVERE, null, ex);

@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class ReadCkanIT {
 
-    public static Logger logger = Logger.getLogger(ReadCkanIT.class.getName());
+    public static final Logger logger = Logger.getLogger(ReadCkanIT.class.getName());
 
     public static String DATI_TRENTINO = "http://dati.trentino.it";
     public static String DATI_TOSCANA = "http://dati.toscana.it";
@@ -296,7 +296,7 @@ public class ReadCkanIT {
         List<CkanTag> tagList = client.getTagList();
         assertTrue(tagList.size() > 0);
 
-        String tagName = "";
+        String tagName;
         for (String datasetName : datasetNamesList.subList(0, Math.min(datasetList.size(), TEST_ELEMENTS))) {
             CkanDataset dataset = client.getDataset(datasetName);
             List<CkanTag> tags = dataset.getTags();

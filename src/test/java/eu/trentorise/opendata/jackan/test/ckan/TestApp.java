@@ -15,12 +15,10 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.util.List;
 
 public class TestApp {

@@ -16,6 +16,8 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.io.*;
 import java.util.logging.Logger;
@@ -35,7 +37,7 @@ import org.junit.Test;
  */
 public class CkanJacksonTest {
 
-    public static Logger logger = Logger.getLogger(CkanJacksonTest.class.getName());
+    public static final Logger logger = Logger.getLogger(CkanJacksonTest.class.getName());
 
     public CkanJacksonTest() {
     }
@@ -167,9 +169,10 @@ public class CkanJacksonTest {
 
         public void setDt(DateTime dt) {
             this.dt = dt;
-        }
+        }                
 
     }
+    
 
     @Test
     public void testJoda_1() throws IOException {
@@ -187,6 +190,22 @@ public class CkanJacksonTest {
         //logger.debug("ja = " + ja.getDt().toString());
         //logger.debug("ja2 = " + ja2.getDt().toString());
         assertTrue(ja.getDt().equals(ja2.getDt()));
+    }
+
+    /**
+     * Sometimes dear ckan returns "None" instead of proper JSON null. This
+     * tests the "None" to null conversion for dates.
+     */
+    @Test
+    public void testJodaNone() throws IOException {
+        ObjectMapper om = CkanClient.getObjectMapperClone();
+                       
+        JodaA nullJa = om.readValue("{\"dt\":\"None\"}", JodaA.class);
+        assertNull(nullJa.getDt());
+
+        JodaA nonNullJa = om.readValue("{\"dt\":\"1970-01-01T00:00:00.123\"}", JodaA.class);                
+        assertNotNull(nonNullJa.getDt());
+        
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @deprecated use {@link eu.trentorise.opendata.jackan.ckan.CkanResource}

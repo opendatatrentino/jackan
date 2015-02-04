@@ -17,7 +17,7 @@ package eu.trentorise.opendata.jackan.ckan;
 
 /**
  * Class to explicitly model a Ckan group, which is <i> not </i> an
- * organization, although is has the same attributes.
+ * organization, although it has the same attributes.
  *
  * @see CkanGroupStructure
  * @author David Leoni

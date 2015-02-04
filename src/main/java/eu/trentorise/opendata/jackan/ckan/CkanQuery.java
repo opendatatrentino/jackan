@@ -113,6 +113,9 @@ public final class CkanQuery {
         return this;
     }
 
+    /**
+     * Factory method to start creating the query.
+     */
     public static CkanQuery filter() {
         return new CkanQuery();
     }

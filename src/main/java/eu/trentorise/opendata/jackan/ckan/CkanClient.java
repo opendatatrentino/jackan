@@ -55,6 +55,7 @@ import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 /**
@@ -65,7 +66,17 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class CkanClient {
 
+    /**
+     * CKAN uses UTC timezone, and doesn't append 'Z' to dates.
+     */
     public static final String CKAN_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    /**
+     * Sometimes we get back Python "None" as a string instead of proper JSON
+     * null
+     */
+    public static final String NONE = "None";
+
+    public static final DateTimeFormatter ckanDateFormatter = DateTimeFormat.forPattern(CKAN_DATE_PATTERN);
 
     @Nullable
     private static ObjectMapper objectMapper;
@@ -120,12 +131,15 @@ public class CkanClient {
                     addSerializer(DateTime.class, new StdSerializer<DateTime>(DateTime.class) {
                         @Override
                         public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-                            jgen.writeString(DateTimeFormat.forPattern(CKAN_DATE_PATTERN).print(value));
+                            jgen.writeString(ckanDateFormatter.print(value));
                         }
 
                     });
+
+                    addDeserializer(DateTime.class, CkanDateDeserializer.forType(DateTime.class));
                 }
             });
+
         }
         return objectMapper;
     }
@@ -138,7 +152,8 @@ public class CkanClient {
     }
 
     /**
-     * @param URL the catalog url i.e. http://data.gov.uk
+     * @param URL the catalog url i.e. http://data.gov.uk. Internally, it will
+     * be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
      */
     public CkanClient(String URL, @Nullable String token) {
@@ -262,10 +277,16 @@ public class CkanClient {
 
     }
 
+    /**
+     * Returns the catalog URL (normalized).
+     */
     public String getCatalogURL() {
         return catalogURL;
     }
 
+    /**
+     * Returns the private CKAN token.
+     */
     public String getCkanToken() {
         return ckanToken;
     }
@@ -654,7 +675,7 @@ public class CkanClient {
      */
     public synchronized CkanResource createResource(CkanResourceMinimized resource) {
         checkResource(resource);
-        
+
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
@@ -679,7 +700,7 @@ public class CkanClient {
      * @return the newly created resource
      * @throws JackanException
      */
-    public synchronized CkanResource createResource(CkanResource resource) {        
+    public synchronized CkanResource createResource(CkanResource resource) {
 
         logger.warning("TODO 0.4 CREATION OF FULL RESOURCE IS EXPERIMENTAL!");
 
@@ -698,9 +719,10 @@ public class CkanClient {
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
 
-    /**     
-     * Checks if the provided resource meets the requirements to
-     * be created to CKAN.
+    /**
+     * Checks if the provided resource meets the requirements to be created to
+     * CKAN.
+     *
      * @throws Throwable if requirements aren't met
      */
     private static void checkResource(CkanResourceMinimized resource) {
@@ -720,56 +742,59 @@ public class CkanClient {
      * @return the updated resource
      * @throws JackanException
      */
-    public synchronized  CkanResource updateResource(CkanResource resource, Boolean checkConsistency){
+    public synchronized CkanResource updateResource(CkanResource resource, Boolean checkConsistency) {
 
-		if (ckanToken == null){
-			throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
-		}
-		//check consistance with original version of the to be updated resource 
-		if (checkConsistency){
-			CkanResource originalResource = getResource(resource.getId());
+        if (ckanToken == null) {
+            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+        }
+        //check consistance with original version of the to be updated resource 
+        if (checkConsistency) {
+            CkanResource originalResource = getResource(resource.getId());
 
-			for (Field f : originalResource.getClass().getDeclaredFields()) {
-				f.setAccessible(true);
-				String fieldName;
-				try {
-					if ((f.get(originalResource) != null) && (f.get(resource)==null )&&(!f.getName().equals("created"))){
-						fieldName = f.getName();
+            for (Field f : originalResource.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                String fieldName;
+                try {
+                    if ((f.get(originalResource) != null) && (f.get(resource) == null) && (!f.getName().equals("created"))) {
+                        fieldName = f.getName();
 //						if(!fieldName.equals("created")){
-							f.set(resource, f.get(originalResource));
-							System.out.println("Not a null: "+fieldName+ " Value: ");
+                        f.set(resource, f.get(originalResource));
+                        System.out.println("Not a null: " + fieldName + " Value: ");
 //						//};
 //								System.out.println("Not a null: "+fieldName+ " Value: ");
-					}
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+                    }
+                }
+                catch (IllegalArgumentException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
-		}
-		//System.out.println("After consistance checking resource is consist of: "+resource.toString());
+        }
+        //System.out.println("After consistance checking resource is consist of: "+resource.toString());
 
-		ObjectMapper objectMapper = CkanClient.getObjectMapper();
-		String json = null;
-		try {
-			json = objectMapper.writeValueAsString(resource);
-		} catch (IOException e) {
-			throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
-		}
+        ObjectMapper objectMapper = CkanClient.getObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(resource);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+        }
 
-		return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
 
-	}
+    }
 
     /**
      * Updates a dataset on the ckan server
      *
      * @param dataset ckan dataset object with the minimal set of parameters
-     * required to perform an update. (see {@link eu.trentorise.opendata.jackan.ckan.CkanDataset#CkanDataset(java.lang.String, java.lang.String, java.util.List) 
+     * required to perform an update. (see {@link eu.trentorise.opendata.jackan.ckan.CkanDataset#CkanDataset(java.lang.String, java.lang.String, java.util.List)
      * }
      *
      * @return the updated dataset
