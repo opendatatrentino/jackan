@@ -7,6 +7,9 @@
 
 target/
 
+/reports
+/conf/*
+!/conf/README.txt
 
 /src/test/resources/conf/
 !/src/test/resources/conf/README.txt

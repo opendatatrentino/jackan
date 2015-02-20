@@ -2,24 +2,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!--  
-    /**
-    * *****************************************************************************
-    * Copyright 2013-2014 Trento Rise (www.trentorise.eu/)
-    *
-    * All rights reserved. This program and the accompanying materials are made
-    * available under the terms of the GNU Lesser General Public License (LGPL)
-    * version 2.1 which accompanies this distribution, and is available at
-    *
-    * http://www.gnu.org/licenses/lgpl-2.1.html
-    *
-    * This library is distributed in the hope that it will be useful, but WITHOUT
-    * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-    * details.
-    *
-    *******************************************************************************
-    */    
-    -->
+        /* 
+         * Copyright 2015 Trento Rise  (trentorise.eu) 
+         *
+         * Licensed under the Apache License, Version 2.0 (the "License");
+         * you may not use this file except in compliance with the License.
+         * You may obtain a copy of the License at
+         *
+         *      http://www.apache.org/licenses/LICENSE-2.0
+         *
+         * Unless required by applicable law or agreed to in writing, software
+         * distributed under the License is distributed on an "AS IS" BASIS,
+         * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+         * See the License for the specific language governing permissions and
+         * limitations under the License.
+         */  
+    --> 
     
     <modelVersion>4.0.0</modelVersion>
 
@@ -39,15 +37,17 @@
 
     <licenses>
         <license>
-            <name>GNU Lesser General Public License, Version 2.1</name>
-            <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
 
 
 
     <properties>
+        <scmUrl>https://github.com/opendatatrentino/jackan</scmUrl>      
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson2.version>2.4.2</jackson2.version> 
@@ -169,7 +169,7 @@
                     <configuration>
                         <mavenExecutorId>forked-path</mavenExecutorId>
                         <useReleaseProfile>false</useReleaseProfile>
-                        <arguments>${arguments} -Psonatype-oss-release</arguments>
+                        <arguments>${arguments} -Psonatype-oss-release -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true</arguments>          
                     </configuration>
                 </plugin>
             </plugins>
@@ -177,12 +177,19 @@
                   
     </build>
     
-    <scm>
-        <url>git@github.com:opendatatrentino/Jackan.git</url>
-        <connection>scm:git:git@github.com:opendatatrentino/Jackan.git</connection>
-        <developerConnection>scm:git:git@github.com:opendatatrentino/Jackan.git</developerConnection>
+     <scm>
+        <url>${scmUrl}</url>
+        <connection>scm:git:${scmUrl}.git</connection>
+        <developerConnection>scm:git:${scmUrl}.git</developerConnection>        
+        <tag>HEAD</tag>
     </scm>
-    <description>Java client to access CKAN repositories. LGPL licensed. </description>
+    
+    <issueManagement>
+        <system>Github</system>
+        <url>${scmUrl}/issues</url>
+    </issueManagement>     
+
+    <description>Java client to access CKAN repositories.</description>
 
     <developers>
         <developer>

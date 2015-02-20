@@ -13,14 +13,14 @@ Java client library for CKAN catalogs. Supports Ckan 2.2+
 Features:
   * ckan 2.2+ compliance
   * dependency handling with Maven
-  * has a liberal LGPL 2.1 license
+  * has a business friendly Apache 2.0 license
   * unit tested with proper integration tests
 
 
 Credits:
 
-* David Leoni - Trento Rise - david.leoni@trentorise.eu 
-* Alberto Zanella - Trento Rise - alberto.zanella@trentorise.eu
+* David Leoni - Trento Rise - david.leoni@unitn.it 
+
 
 We also wish to thank our very first beta tester Giulio Pilotto
 
