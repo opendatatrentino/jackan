@@ -97,6 +97,7 @@ public class CkanClientITCase {
     }
 
     @Test
+    @Ignore
     public void testDataset() {
 
         CkanDataset dataset = client.getDataset(LAGHI_MONITORATI_TRENTO_ID);
@@ -187,6 +188,7 @@ public class CkanClientITCase {
     }
 
     @Test
+    @Ignore
     public void testSearchDatasetsByTags() {
         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter().byTagNames("strati prioritari", "cisis"), 10, 0);
         assertTrue("I should get at least one result", r.getResults().size() > 0);
@@ -200,6 +202,7 @@ public class CkanClientITCase {
     }
 
     @Test
+    @Ignore    
     public void testFullSearch() {
         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter()
                 .byText("viabilità ferroviaria")
@@ -223,6 +226,7 @@ public class CkanClientITCase {
     }
 
     @Test
+    @Ignore
     public void testCreateDataSet() throws URISyntaxException {
 
         CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
@@ -249,6 +253,7 @@ public class CkanClientITCase {
     }
 
     @Test
+    @Ignore    
     public void testCreateResource() throws URISyntaxException {
 
         CkanClient cClient = new CkanClient(TestConfig.getOutputCkan(), TestConfig.getOutputCkanToken());
