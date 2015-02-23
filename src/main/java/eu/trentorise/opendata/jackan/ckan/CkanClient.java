@@ -55,6 +55,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import org.apache.http.HttpHost;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
@@ -100,6 +101,8 @@ public class CkanClient {
     private final String ckanToken;
 
     private static final Logger logger = Logger.getLogger(CkanClient.class.getName());
+
+    private HttpHost proxy = null;
 
     /**
      * @return a clone of the json object mapper used internally.
@@ -222,8 +225,11 @@ public class CkanClient {
 
         try {
             logger.log(Level.FINE, "getting {0}", fullUrl);
-            String json = Request.Get(fullUrl).execute().returnContent()
-                    .asString();
+            Request request = Request.Get(fullUrl);
+            if (proxy != null) {
+                request.viaProxy(proxy);
+            }
+            String json = request.execute().returnContent().asString();
             T dr = getObjectMapper().readValue(json, responseType);
             if (!dr.success) {
                 // monkey patching error type
@@ -263,7 +269,11 @@ public class CkanClient {
         try {
 
             logger.log(Level.FINE, "posting to url {0}", fullUrl);
-            Response response = Request.Post(fullUrl).bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
+            Request request = Request.Post(fullUrl);
+            if (proxy != null) {
+                request.viaProxy(proxy);
+            }
+            Response response = request.bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
 
             Content out = response.returnContent();
             String json = out.asString();
@@ -416,7 +426,11 @@ public class CkanClient {
         String fullUrl = catalogURL + "/api/" + number;
         logger.log(Level.FINE, "getting {0}", fullUrl);
         try {
-            String json = Request.Get(fullUrl).execute().returnContent()
+            Request request = Request.Get(fullUrl);
+            if (proxy != null) {
+                request.viaProxy(proxy);
+            }
+            String json = request.execute().returnContent()
                     .asString();
             return getObjectMapper().readValue(json, ApiVersionResponse.class).version;
         }
@@ -868,6 +882,10 @@ public class CkanClient {
         }
         DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
         return datasetresponse.result;
+    }
+
+    public void setProxy(HttpHost proxy) {
+        this.proxy = proxy;
     }
 
 }
