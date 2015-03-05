@@ -96,6 +96,7 @@ public class CkanClient {
 
     private static final Logger logger = Logger.getLogger(CkanClient.class.getName());
 
+    @Nullable
     private HttpHost proxy = null;
 
     /**
@@ -150,22 +151,39 @@ public class CkanClient {
     }
 
     /**
+     * Creates a Ckan client with null token and proxy
+     * 
      * @param url the catalog url i.e. http://data.gov.uk
      */
     public CkanClient(String url) {
-        this(url, null);
+        this(url, null, null);
     }
 
     /**
+     * Creates a Ckan client with null proxy.
+     * 
      * @param URL the catalog url i.e. http://data.gov.uk. Internally, it will
      * be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
      */
     public CkanClient(String URL, @Nullable String token) {
+        this(URL, token, null);
+    }
+    
+    /**
+     * Creates a Ckan client.
+     * 
+     * @param URL the catalog url i.e. http://data.gov.uk. Internally, it will
+     * be stored in a normalized format (to avoid i.e. trailing slashes).
+     * @param token the private token string for ckan repository
+     * @param proxy the proxy used to perform GET and POST calls
+     */
+    public CkanClient(String URL, @Nullable String token, @Nullable HttpHost proxy) {
         checkNonEmpty(URL, "ckan catalog url");
         this.catalogURL = removeTrailingSlash(URL);
         this.ckanToken = token;
-    }
+        this.proxy = proxy;
+    }    
 
     @Override
     public String toString() {
@@ -878,9 +896,15 @@ public class CkanClient {
         return datasetresponse.result;
     }
 
-    public void setProxy(HttpHost proxy) {
-        this.proxy = proxy;
+    /**
+     * Returns the proxy used by the client.     
+     */
+    @Nullable
+    public HttpHost getProxy() {
+        return proxy;
     }
+
+    
 
 }
 

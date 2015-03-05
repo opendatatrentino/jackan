@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.http.HttpHost;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -99,6 +100,12 @@ public class ReadCkanIT {
     public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
     }
+    
+    @Test
+    public void testProxy(){        
+        HttpHost proxy = new HttpHost("127.0.0.1", 8080, "http");
+        assertEquals(proxy, new CkanClient(DATI_TRENTINO,null, proxy).getProxy());
+    }    
 
     /**
      * todo we should do some ckan internal version detector (sic)
@@ -347,6 +354,7 @@ public class ReadCkanIT {
         }
 
     }
+    
 
     @Test
     public void testFullSearch() {
