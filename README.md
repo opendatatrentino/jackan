@@ -4,7 +4,7 @@ RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" targ
 </p>
 
 <p align="center">
-<img alt="Jackan" src="https://github.com/opendatatrentino/jackan/wiki/img/jackan-logo-200px.png" width="150px">
+<img alt="Jackan" src="docs/img/jackan-logo-200px.png" width="150px">
 </p>
 
 <br/>
