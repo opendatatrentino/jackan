@@ -3,6 +3,8 @@ WARNING: WORK IN PROGRESS - THIS IS ONLY A TEMPLATE FOR THE DOCUMENTATION. <br/>
 RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" target="_blank">PROJECT WEBSITE</a>
 </p>
 
+This release allows to write in CKAN and convert CKAN metadata into DCAT format.
+
 ### Maven
 
 Jackan is available on Maven Central. To use it, put this in the dependencies section of your _pom.xml_:
