@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jackan</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link id="jedoc-stylesheet" rel="stylesheet" type="text/css" href="../css/jedoc.css">
+        <link rel="stylesheet" type="text/css" href="website-template/css/jedoc.css"> 
+    </head>
+    <body>
+        <div id="jedoc-wrapper">
+            <div id="jedoc-header">
+
+                <div style="position:absolute;  min-height:100px; min-width:100%; ">
+                    <a id="jedoc-program-logo-link" href="../index.html">
+                        <img id="jedoc-program-logo" src="../img/jackan-logo-200px.png" alt="program logo">    
+                    </a>
+
+                    <a id="jedoc-repo-link" href="../index.html">Jackan</a>
+                    
+
+                    <a class="jedoc-image-link" href="http://dati.trentino.it/en/" target="_blank">
+                        <img style="float:right; padding:10px; width:80px" src="../img/odt-logo.png" alt="jedoc logo">                        
+                    </a>
+
+                    <div id="jedoc-nav-header">
+                        <a id="jedoc-home" href="../index.html">Home</a>                        
+                        <span id="jedoc-usage" style="margin-left:15px">Usage:                        
+                            
+                            
+                        <a class="jedoc-version-tab-header jedoc-tag-selected" href="../0.3/index.html">0.3</a></span>
+                        <span style="margin-left:35px">
+                            <a id="jedoc-project" href="https://github.com/opendatatrentino/jackan" target="_blank">Repo</a>
+                            <a id="jedoc-wiki" href="https://github.com/opendatatrentino/jackan/wiki" target="_blank">Wiki</a> 
+                        </span>
+                    </div>
+                </div>                
+
+            </div>
+
+            <div id="jedoc-sidebar">
+                <div id="jedoc-internal-sidebar"><div> <a href="#0-3-2-todo-in-progress">0.3.2 - todo in progress</a></div> 
+<div> <a href="#0-3-1-19-january-2015">0.3.1 - 19 January 2015</a></div> 
+<div> <a href="#0-2-0">0.2.0</a></div> 
+</div>
+
+            </div>
+
+            <div id="jedoc-content">
+                <div id="jedoc-internal-content"><h2><a href="#jackan-release-notes" name="jackan-release-notes">JACKAN RELEASE NOTES</a></h2><p>Project website: <a href="http://opendatatrentino.github.io/jackan">http://opendatatrentino.github.io/jackan</a></p><p><br></p><h3><a href="#0-3-2-todo-in-progress" name="0-3-2-todo-in-progress">0.3.2 - todo in progress</a></h3>
+<ul>
+  <li>adapted to jedoc docs structure</li>
+</ul><h3><a href="#0-3-1-19-january-2015" name="0-3-1-19-january-2015">0.3.1 - 19 January 2015</a></h3>
+<ul>
+  <li>implemented reading and searching from CKAN</li>
+</ul><h3><a href="#0-2-0" name="0-2-0">0.2.0</a></h3>
+<ul>
+  <li>deprecated version - it's a legacy release for projects depending on it</li>
+</ul></div>
+            </div>
+
+        </div>        
+        <script src="../js/jquery-1.11.2.min.js"></script>
+        
+         <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-1.11.2.min.js"></script>
+        <script>
+            // idotic CSS in style doesn't work, so use jquery instead: 
+            // also would like pre code but this will select code and won't work. There aren't selectors for parents
+
+            $("pre").css("max-width", "680px").css("overflow-x", "auto");
+        </script>
+    </body>
+</html>

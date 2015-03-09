@@ -1,0 +1,174 @@
+body {
+    margin:0; 
+    padding:0; 
+    background-color:#005576;
+    background-image: url("../img/background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;            
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: Arial, Georgia, Serif;
+}
+
+#jedoc-wrapper {
+    margin: 0 auto 0 auto;
+    width:851px;
+    min-height:100%;
+    height:auto;
+    background-color:transparent;
+}
+
+#jedoc-header {
+    position: fixed;
+    width: 851px; 
+    height: 100px;
+    background-color: #FFFCEF;
+    z-index: 100;
+    padding-bottom: 5px;
+}
+
+
+#jedoc-content {
+    position:absolute;
+    top:100px;
+    margin-left:151px;
+    overflow: auto;
+    width:700px;  /* 851px - 151px = 550px */
+    background-color:#FCFCFC;
+    min-height:100%;
+}
+
+#jedoc-internal-content{
+    padding: 10px;
+}
+
+#jedoc-sidebar {
+    position: fixed;
+    top:100px;
+    width: 151px;
+    height: 100%;
+    min-height:200px; /* just do simulate content */
+    z-index: 100;
+    background-color:#f5f2ec;
+    //opacity:0.9;
+}                     
+
+#jedoc-internal-sidebar{
+    padding: 10px;
+}
+
+#jedoc-internal-sidebar div {
+    margin-top: 10px;
+}            
+
+#jedoc-nav-header {
+    display: inline; 
+    position: absolute; 
+    bottom: 5px; 
+    margin-left:170px;
+    min-width:100%;
+}
+
+#jedoc-nav-header a {
+    text-decoration: none;
+    background-color:#fff;
+    border-color:lightgray;
+    // border-top-style: solid;
+    // border-left-style: solid;
+    // border-right-style: solid;
+    border-style: solid;
+    border-width: 1px;
+    //border-top-left-radius: 15px;
+    //border-top-right-radius: 15px;
+    border-radius: 5px;
+    margin:8px;
+    padding:5px;
+    display:inline;
+}
+
+#jedoc-nav-header a:hover{
+    background-color:#eee;
+    border-color:lightgray;
+    // border-top-style: solid;
+    // border-left-style: solid;
+    // border-right-style: solid;
+    border-style: solid;
+    border-width: 1px;
+    //border-top-left-radius: 15px;
+    //border-top-right-radius: 15px;
+    border-radius: 5px;
+    margin:8px;
+    padding:5px;
+    display:inline;
+}    
+
+#jedoc-repo-link {
+    position:absolute; 
+    margin-left:15px; 
+    top:15px; 
+    font-size:28px;
+    text-decoration: none;
+    color:black;
+}
+
+#jedoc-program-logo {
+    padding:10px; 
+    width:80px; 
+    height:80px                
+}
+
+.jedoc-image-link {
+
+}
+
+.jedoc-tag-selected {
+    background-color:#ffeec1 !important;
+}
+
+pre {                
+    padding: 6px;
+    background-color: #F7F9F2;
+    border-style: solid;
+    border-width: 1px;
+}
+
+a[href^="http"]:not(.jedoc-image-link):after {
+    content: " " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII=);
+}            
+
+
+
+// *****************      Fixes to markdown      *************************
+
+.jedoc-to-strip {
+    color:red;
+}
+
+
+a:link {           
+    text-decoration: none !important;
+}
+
+a:visited {
+    text-decoration: none !important;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+    color:#ba4f05
+}
+
+h1 > a,
+h2 > a,
+h3 > a,
+h4 > a,
+h5 > a,
+h6 > a {
+    text-decoration: none;
+    color: black;                
+}	
+

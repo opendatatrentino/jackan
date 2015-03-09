@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jackan</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link id="jedoc-stylesheet" rel="stylesheet" type="text/css" href="../css/jedoc.css">
+        <link rel="stylesheet" type="text/css" href="website-template/css/jedoc.css"> 
+    </head>
+    <body>
+        <div id="jedoc-wrapper">
+            <div id="jedoc-header">
+
+                <div style="position:absolute;  min-height:100px; min-width:100%; ">
+                    <a id="jedoc-program-logo-link" href="../index.html">
+                        <img id="jedoc-program-logo" src="../img/jackan-logo-200px.png" alt="program logo">    
+                    </a>
+
+                    <a id="jedoc-repo-link" href="../index.html">Jackan</a>
+                    
+
+                    <a class="jedoc-image-link" href="http://dati.trentino.it/en/" target="_blank">
+                        <img style="float:right; padding:10px; width:80px" src="../img/odt-logo.png" alt="jedoc logo">                        
+                    </a>
+
+                    <div id="jedoc-nav-header">
+                        <a id="jedoc-home" href="../index.html">Home</a>                        
+                        <span id="jedoc-usage" style="margin-left:15px">Usage:                        
+                            
+                            
+                        <a class="jedoc-version-tab-header jedoc-tag-selected" href="../0.3/index.html">0.3</a></span>
+                        <span style="margin-left:35px">
+                            <a id="jedoc-project" href="https://github.com/opendatatrentino/jackan" target="_blank">Repo</a>
+                            <a id="jedoc-wiki" href="https://github.com/opendatatrentino/jackan/wiki" target="_blank">Wiki</a> 
+                        </span>
+                    </div>
+                </div>                
+
+            </div>
+
+            <div id="jedoc-sidebar">
+                <div id="jedoc-internal-sidebar"><div> <a href="#maven">Maven</a></div> 
+<div> <a href="#usage-examples">Usage examples</a></div> 
+<div> <a href="#serialization">Serialization</a></div> 
+<div> <a href="#logging">Logging</a></div> 
+</div>
+
+            </div>
+
+            <div id="jedoc-content">
+                <div id="jedoc-internal-content"><p>This release allows reading metadata from CKAN and performing searches.</p><h3><a href="#maven" name="maven">Maven</a></h3><p>Jackan is available on Maven Central. To use it, put this in the dependencies section of your <em>pom.xml</em>:</p>
+<pre><code>    &lt;dependency&gt;
+        &lt;groupId&gt;eu.trentorise.opendata&lt;/groupId&gt;
+        &lt;artifactId&gt;jackan&lt;/artifactId&gt;
+        &lt;version&gt;0.3.1&lt;/version&gt;            
+    &lt;/dependency&gt;
+</code></pre><p>In case updates are available, version numbers follows <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.</p><h3><a href="#usage-examples" name="usage-examples">Usage examples</a></h3><h4><a href="#get-the-dataset-list-of-dati-trentino-it-" name="get-the-dataset-list-of-dati-trentino-it-">Get the dataset list of dati.trentino.it:</a></h4><p>Test code can be found in <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.3.1/src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp.java" target="_blank">TestApp.java</a></p>
+<pre><code><br>    import eu.trentorise.opendata.jackan.JackanException;
+    import eu.trentorise.opendata.jackan.ckan.CkanClient;
+
+    public class App {
+        public static void main( String[] args )
+        {        
+            CkanClient cc = new CkanClient("http://dati.trentino.it");        
+            System.out.println(cc.getDatasetList());               
+        }
+    }
+
+</code></pre><h4><a href="#get-list-of-first-10-datasets-of-dati-trentino-it-and-print-their-resources-" name="get-list-of-first-10-datasets-of-dati-trentino-it-and-print-their-resources-">Get list of first 10 datasets of dati.trentino.it and print their resources:</a></h4>
+<pre><code><br>    import eu.trentorise.opendata.jackan.ckan.CkanClient;
+    import eu.trentorise.opendata.jackan.ckan.CkanDataset;
+    import eu.trentorise.opendata.jackan.ckan.CkanResource;
+    import java.util.List;
+
+    public class App 
+    {
+        public static void main( String[] args )
+        {
+
+            CkanClient cc = new CkanClient("http://dati.trentino.it");
+
+            List&lt;String&gt; ds = cc.getDatasetList(10, 0);
+
+            for (String s : ds){
+                System.out.println();
+                System.out.println("DATASET: " + s);
+                CkanDataset d = cc.getDataset(s);            
+                System.out.println("  RESOURCES:");
+                for (CkanResource r : d.getResources()){                
+                    System.out.println("    " + r.getName());
+                    System.out.println("    FORMAT: " + r.getFormat());
+                    System.out.println("       URL: " + r.getUrl());
+                }
+            }
+        }
+    }
+
+</code></pre><p>Should give something like this:</p>
+<pre><code><br>    DATASET: abitazioni
+      RESOURCES:
+        abitazioni
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?idind=133&amp;info=d&amp;fmt=json
+        abitazioni
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113651/_lcmGkp.csv
+        numero-di-abitazioni
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?ntab=Sub_Numero_Abitazioni&amp;info=d&amp;fmt=json
+        numero-di-abitazioni
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113652/_yWBmJG.csv
+
+    DATASET: abitazioni-occupate
+      RESOURCES:
+        abitazioni-occupate
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?idind=134&amp;info=d&amp;fmt=json
+        abitazioni-occupate
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113653/_iaMMc2.csv
+        numero-di-abitazioni-occupate
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?ntab=Sub_Numero_Abitazioni_Occupate&amp;info=d&amp;fmt=json
+        numero-di-abitazioni-occupate
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113654/__lLACk.csv
+
+    ...
+
+</code></pre><h4><a href="#search-datasets-filtering-by-tags-and-groups-" name="search-datasets-filtering-by-tags-and-groups-">Search datasets filtering by tags and groups:</a></h4>
+<pre><code><br>    import eu.trentorise.opendata.jackan.ckan.CkanClient;
+    import eu.trentorise.opendata.jackan.ckan.CkanDataset;
+    import eu.trentorise.opendata.jackan.ckan.CkanQuery;
+
+    public class TestApp 
+    {
+
+        public static void main( String[] args )
+        {
+            CkanQuery query = CkanQuery.filter().byTagNames("settori economici", "agricoltura").byGroupNames("conoscenza");
+
+            List&lt;CkanDataset&gt; filteredDatasets = cc.searchDatasets(query, 10, 0).getResults();
+
+            for (CkanDataset d : filteredDatasets){
+                System.out.println();
+                System.out.println("DATASET: " + d.getName());           
+            } 
+        }
+    }
+</code></pre><p>Should give something like this:</p>
+<pre><code><br>    DATASET: produzione-di-mele
+
+    DATASET: produzione-di-uva-da-vino
+
+    DATASET: produzione-lorda-vendibile-frutticoltura
+
+    DATASET: produzione-lorda-vendibile-viticoltura
+
+    DATASET: produzione-lorda-vendibile-zootecnia
+
+    DATASET: produzione-lorda-vendibile-silvicoltura
+</code></pre><h3><a href="#serialization" name="serialization">Serialization</a></h3><p>For serialization Jackson library annotations are used. Notice that although field names of Java objects are camelcase (like <em>authorEmail</em>), serialized fields follows CKAN API stlye and use underscores (like author_email).</p><p>If you want to serialize to json a Java object <em>obj</em> fetched by Jackan, you can call </p>
+<pre><code>    String json = CkanClient.getObjectMapperClone().writeValueAsString(obj);
+</code></pre><h3><a href="#logging" name="logging">Logging</a></h3><p>Jackan uses native Java logging system (JUL). If you also use JUL in your application and want to see Jackan logs, you can take inspiration from <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.3.1/src/test/resources/odt.commons.logging.properties">jackan test logging properties</a>. If you have an application which uses SLF4J logging system, you can route logging with <a href="http://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j" target="_blank">JUL to SLF4J bridge</a>, just remember <a href="http://stackoverflow.com/questions/9117030/jul-to-slf4j-bridge" target="_blank"> to programmatically install it first. </a></p></div>
+            </div>
+
+        </div>        
+        <script src="../js/jquery-1.11.2.min.js"></script>
+        
+         <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-1.11.2.min.js"></script>
+        <script>
+            // idotic CSS in style doesn't work, so use jquery instead: 
+            // also would like pre code but this will select code and won't work. There aren't selectors for parents
+
+            $("pre").css("max-width", "680px").css("overflow-x", "auto");
+        </script>
+    </body>
+</html>
