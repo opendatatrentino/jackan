@@ -3,7 +3,7 @@ WARNING: THIS IS ONLY A TEMPLATE FOR THE DOCUMENTATION. <br/>
 RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" target="_blank">PROJECT WEBSITE</a>
 </p>
 
-<p align="center">
+<p class="jedoc-to-strip" align="center">
 <img alt="Jackan" src="docs/img/jackan-logo-200px.png" width="150px">
 </p>
 
