@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import eu.trentorise.opendata.commons.BuildInfo;
+import eu.trentorise.opendata.commons.OdtConfig;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import eu.trentorise.opendata.commons.OdtUtils;
@@ -277,7 +278,7 @@ public class CkanTestReporter {
     public static String renderRunSuite(Map<String, String> catalogs, List<String> testNames, RunSuite runSuite) {
         String outputFileContent;
 
-        BuildInfo buildInfo = JackanTestConfig.of().getBuildInfo();
+        BuildInfo buildInfo = OdtConfig.of(JackanTestConfig.class).getBuildInfo();
 
         try {
 

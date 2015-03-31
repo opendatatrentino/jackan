@@ -15,8 +15,8 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
@@ -56,11 +56,11 @@ public final class CkanDatasetMinimized {
      */
     public CkanDatasetMinimized(String name, String url, List<CkanPair> extras, String title, String licenseId) {
         this();
-        checkNonEmpty(name, "ckan dataset name");
-        checkNonNull(url, "ckan dataset url to description page");
-        checkNonNull(extras, "ckan dataset extras");
-        checkNonEmpty(title, "ckan dataset title");
-        checkNonNull(licenseId, "ckan dataset license id");
+        checkNotEmpty(name, "invalid ckan dataset name");
+        checkNotNull(url, "invalid ckan dataset url to description page");
+        checkNotNull(extras, "invalid ckan dataset extras");
+        checkNotEmpty(title, "invalid ckan dataset title");
+        checkNotNull(licenseId, "invalid ckan dataset license id");
         this.name = name;
         this.url = url;
         this.title = title;

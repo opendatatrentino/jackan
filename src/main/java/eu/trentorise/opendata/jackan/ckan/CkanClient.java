@@ -34,7 +34,6 @@ import com.google.common.collect.ImmutableList;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.commons.OdtUtils;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 
@@ -61,7 +60,14 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 /**
- * Class to access a ckan instance. Threadsafe.
+ * Client to access a ckan instance. Threadsafe.
+ *
+ * The client is a thin wrapper upon Ckan api, thus one method call should
+ * correspond to only one web api call. This means that sometimes to get a full
+ * object from Ckan, you will need to do a second call (for example, calling
+ * getDataset will also return its resources because Ckan sends them with the
+ * dataset, but to be sure to have all the fields of a resource you will need to
+ * call getResource).
  *
  * @author David Leoni, Ivan Tankoyeu
  *
@@ -130,7 +136,7 @@ public class CkanClient {
 
             // ...so taken solution from here: http://www.lorrin.org/blog/2013/06/28/custom-joda-time-dateformatter-in-jackson/
             objectMapper.registerModule(new JodaModule());
-            objectMapper.registerModule(new GuavaModule());            
+            objectMapper.registerModule(new GuavaModule());
 
             objectMapper.registerModule(new SimpleModule() {
                 {
@@ -152,7 +158,7 @@ public class CkanClient {
 
     /**
      * Creates a Ckan client with null token and proxy
-     * 
+     *
      * @param url the catalog url i.e. http://data.gov.uk
      */
     public CkanClient(String url) {
@@ -161,7 +167,7 @@ public class CkanClient {
 
     /**
      * Creates a Ckan client with null proxy.
-     * 
+     *
      * @param URL the catalog url i.e. http://data.gov.uk. Internally, it will
      * be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
@@ -169,21 +175,21 @@ public class CkanClient {
     public CkanClient(String URL, @Nullable String token) {
         this(URL, token, null);
     }
-    
+
     /**
      * Creates a Ckan client.
-     * 
+     *
      * @param URL the catalog url i.e. http://data.gov.uk. Internally, it will
      * be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
      * @param proxy the proxy used to perform GET and POST calls
      */
     public CkanClient(String URL, @Nullable String token, @Nullable HttpHost proxy) {
-        checkNonEmpty(URL, "ckan catalog url");
+        checkNotEmpty(URL, "invalid ckan catalog url");
         this.catalogURL = removeTrailingSlash(URL);
         this.ckanToken = token;
         this.proxy = proxy;
-    }    
+    }
 
     @Override
     public String toString() {
@@ -322,7 +328,7 @@ public class CkanClient {
     }
 
     public static DateTime parseRevisionTimestamp(String revisionTimestamp) {
-        checkNonEmpty(revisionTimestamp, "ckan revision timestamp");
+        checkNotEmpty(revisionTimestamp, "invalid ckan revision timestamp");
         return DateTime.parse(revisionTimestamp, ISODateTimeFormat.dateHourMinuteSecond());
     }
 
@@ -339,8 +345,8 @@ public class CkanClient {
      * @param catalogUrl i.e. http://dati.trentino.it
      */
     public static String makeDatasetURL(String catalogUrl, String datasetIdentifier) {
-        checkNonEmpty(catalogUrl, "catalog url");
-        checkNonEmpty(datasetIdentifier, "dataset Identifier");
+        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkNotEmpty(datasetIdentifier, "invalid dataset Identifier");
         return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdentifier;
     }
 
@@ -361,9 +367,9 @@ public class CkanClient {
      * resource name)
      */
     public static String makeResourceURL(String catalogUrl, String datasetIdentifier, String resourceId) {
-        checkNonEmpty(catalogUrl, "catalog url");
-        checkNonEmpty(datasetIdentifier, "dataset identifier");
-        checkNonEmpty(resourceId, "resource id");
+        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkNotEmpty(datasetIdentifier, "invalid dataset identifier");
+        checkNotEmpty(resourceId, "invalid resource id");
         return OdtUtils.removeTrailingSlash(catalogUrl)
                 + "/" + datasetIdentifier + "/resource/" + resourceId;
     }
@@ -383,8 +389,8 @@ public class CkanClient {
      * (preferred), or the group's alphanumerical id.
      */
     public static String makeGroupURL(String catalogUrl, String groupId) {
-        checkNonEmpty(catalogUrl, "catalog url");
-        checkNonEmpty(groupId, "dataset identifier");
+        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkNotEmpty(groupId, "invalid dataset identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
     }
 
@@ -897,14 +903,12 @@ public class CkanClient {
     }
 
     /**
-     * Returns the proxy used by the client.     
+     * Returns the proxy used by the client.
      */
     @Nullable
     public HttpHost getProxy() {
         return proxy;
     }
-
-    
 
 }
 

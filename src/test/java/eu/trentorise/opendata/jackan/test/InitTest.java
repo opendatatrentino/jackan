@@ -16,6 +16,7 @@
 package eu.trentorise.opendata.jackan.test;
 
 import eu.trentorise.opendata.commons.BuildInfo;
+import eu.trentorise.opendata.commons.OdtConfig;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,12 +29,12 @@ public class InitTest {
 
     @BeforeClass
     public static void setUpClass() {
-        JackanTestConfig.of().loadLogConfig();
+        OdtConfig.loadLogConfig(InitTest.class);
     }
 
     @Test
     public void testBuildInfo() {
-        BuildInfo buildInfo = JackanTestConfig.of().getBuildInfo();
+        BuildInfo buildInfo = OdtConfig.of(JackanTestConfig.class).getBuildInfo();
         assertTrue(buildInfo.getVersion().length() > 0);
         assertTrue(buildInfo.getScmUrl().length() > 0);
     }

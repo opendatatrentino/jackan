@@ -16,8 +16,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import eu.trentorise.opendata.commons.OdtConfig;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.io.*;
 import java.util.logging.Logger;
@@ -44,7 +43,7 @@ public class CkanJacksonTest {
 
     @BeforeClass
     public static void setUpClass() {
-        JackanTestConfig.of().loadLogConfig();
+        OdtConfig.loadLogConfig(CkanJacksonTest.class);
     }
 
     @AfterClass

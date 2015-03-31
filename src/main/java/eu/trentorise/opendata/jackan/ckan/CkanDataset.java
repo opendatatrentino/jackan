@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,9 +108,9 @@ public class CkanDataset {
      */
     public CkanDataset(String name, String url, List<CkanPair> extras) {
         this();
-        checkNonEmpty(name, "ckan dataset name");
-        checkNonNull(url, "ckan dataset url to description page");
-        checkNonNull(extras, "ckan dataset extras");
+        checkNotEmpty(name, "invalid ckan dataset name");
+        checkNotNull(url, "invalid ckan dataset url to description page");
+        checkNotNull(extras, "invalid ckan dataset extras");
         this.name = name;
         this.url = url;
         this.extras = extras;

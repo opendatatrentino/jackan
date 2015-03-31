@@ -18,7 +18,7 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonEmpty;
+import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,11 +157,11 @@ public class CkanResource {
             String packageId,
             String mimetype) {
         this();
-        checkNonEmpty(format, "ckan resource format");
-        checkNonEmpty(name, "ckan resource name");
-        checkNonEmpty(url, "ckan resource file url");
-        checkNonEmpty(description, "ckan resource description");
-        checkNonEmpty(packageId, "ckan dataset id (also called package id)");
+        checkNotEmpty(format, "invalid ckan resource format");
+        checkNotEmpty(name, "invalid ckan resource name");
+        checkNotEmpty(url, "invalid ckan resource file url");
+        checkNotEmpty(description, "invalid ckan resource description");
+        checkNotEmpty(packageId, "invalid ckan dataset id (also called package id)");
 
         this.format = format;
         this.name = name;

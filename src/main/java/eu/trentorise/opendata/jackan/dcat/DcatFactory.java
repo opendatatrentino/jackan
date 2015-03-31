@@ -23,9 +23,9 @@ import java.util.Locale;
 import java.util.logging.Level;
 import org.joda.time.DateTime;
 import com.google.common.annotations.Beta;
+import static com.google.common.base.Preconditions.checkNotNull;
 import eu.trentorise.opendata.commons.OdtUtils;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNonNull;
-import static eu.trentorise.opendata.commons.OdtUtils.isNonEmpty;
+import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import eu.trentorise.opendata.jackan.ckan.CkanTag;
@@ -56,8 +56,8 @@ public class DcatFactory {
     @Beta
     public static DcatDataset dataset(CkanDataset dataset, String catalogUrl, Locale locale) {
 
-        OdtUtils.checkNonEmpty(catalogUrl, "dcat dataset catalo URL");
-        OdtUtils.checkNonNull(locale, "dcat dataset locale");
+        OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalo URL");
+        checkNotNull(locale, "invalid dcat dataset locale");
 
         String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogUrl);
         String sanitizedId = dataset.getId() == null ? "" : dataset.getId();
@@ -173,10 +173,10 @@ public class DcatFactory {
     @Beta
     public static DcatDistribution distribution(CkanResource resource, String catalogURL, String datasetId, String license, Locale locale) {
         LOG.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
-        checkNonNull(resource, "ckan resource");
-        checkNonNull(catalogURL, "catalog URL");
-        checkNonNull(datasetId, "dataset id");
-        checkNonNull(license, "license");
+        checkNotNull(resource, "invalid ckan resource");
+        checkNotNull(catalogURL, "invalid catalog URL");
+        checkNotNull(datasetId, "invalid dataset id");
+        checkNotNull(license, "invalid license");
 
         String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogURL);
 
@@ -184,7 +184,7 @@ public class DcatFactory {
 
         String accessURL;
 
-        if (isNonEmpty(catalogURL) && isNonEmpty(datasetId) && isNonEmpty(resource.getId())) {
+        if (isNotEmpty(catalogURL) && isNotEmpty(datasetId) && isNotEmpty(resource.getId())) {
             accessURL = CkanClient.makeResourceURL(sanitizedCatalogUrl, datasetId, resource.getId());
         } else {
             accessURL = "";

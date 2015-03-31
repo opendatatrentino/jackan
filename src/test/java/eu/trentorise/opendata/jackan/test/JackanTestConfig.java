@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author David Leoni
  */
-public class JackanTestConfig extends OdtConfig {
+public class JackanTestConfig {
 
     private static final JackanTestConfig INSTANCE = new JackanTestConfig();
 
@@ -52,8 +52,10 @@ public class JackanTestConfig extends OdtConfig {
      */
     private String outputCkanToken;
 
-    private JackanTestConfig() {
-        super();
+    private OdtConfig odtConfig;
+    
+    private JackanTestConfig() { 
+        odtConfig = OdtConfig.of(JackanTestConfig.class);
     }
 
     /**
@@ -79,11 +81,11 @@ public class JackanTestConfig extends OdtConfig {
     }
 
     /**
-     * Loads logging config (see {@link #loadLogConfig()}) and 
+     * Loads logging config (see {@link OdtConfig#loadLogConfig()}) and 
      * configuration for writing tests at path {@link #TEST_PROPERTIES_PATH}
      */
     public void loadConfig() {
-        loadLogConfig();
+        OdtConfig.loadLogConfig(this.getClass());
 
         Logger logger = Logger.getLogger(JackanTestConfig.class.getName());
         //final InputStream inputStream = JackanTestConfig.class.getResourceAsStream("/" + TEST_PROPERTIES_PATH);                
