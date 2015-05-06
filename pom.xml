@@ -22,7 +22,7 @@
 
     <groupId>eu.trentorise.opendata</groupId>
     <artifactId>jackan</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Jackan</name>
@@ -240,7 +240,7 @@
         <url>${scmUrl}</url>
         <connection>scm:git:${scmUrl}.git</connection>
         <developerConnection>scm:git:${scmUrl}.git</developerConnection>        
-        <tag>jackan-0.3.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <description>Java client to access CKAN repositories. </description>
