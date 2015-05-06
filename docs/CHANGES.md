@@ -1,16 +1,16 @@
 
-JACKAN RELEASE NOTES
----------------------
+## JACKAN RELEASE NOTES
 
-Project website: http://opendatatrentino.github.io/jackan
 
-<br/>
+### 0.3.2
 
-### 0.3.2  -  todo in progress
+6 May 2015
 
-- adapted to jedoc docs structure
+- adapted to josman docs structure
 
-### 0.3.1  -  19 January 2015
+### 0.3.1  
+
+ 19 January 2015
 
 - implemented reading and searching from CKAN
 
