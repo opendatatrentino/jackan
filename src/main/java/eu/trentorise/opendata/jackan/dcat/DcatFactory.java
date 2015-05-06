@@ -137,7 +137,7 @@ public class DcatFactory {
 
             for (CkanGroup cg : dataset.getGroups()) {
                 if (cg != null && cg.getTitle() != null) {
-                    ddb.addCategories(SkosConcept.of(SkosConceptScheme.of(),
+                    ddb.addThemes(SkosConcept.of(SkosConceptScheme.of(),
                             Dict.of(locale, cg.getName()),
                             CkanClient.makeGroupURL(sanitizedCatalogUrl, cg.getId())));
                 }
