@@ -79,6 +79,10 @@
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
+                <configuration>
+                    <merge>true</merge>
+                </configuration>
+                
             </plugin>  
             
             <!-- **************   TEST PLUGINS    *****************  -->
