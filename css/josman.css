@@ -1,0 +1,236 @@
+body {
+    margin:0; 
+    padding:0; 
+    background-color:#6383BF;
+    background-image: url("../img/background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;            
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: Arial, Georgia, Serif;
+}
+
+#josman-wrapper {
+    margin: 0 auto 0 auto;
+    width:851px;
+    min-height:100%;
+    height:auto;
+    background-color:transparent;
+}
+
+#josman-header {
+    position: fixed;
+    width: 851px; 
+    height: 100px;
+    background-color: #FFFCEF;
+    z-index: 100;
+    padding-bottom: 5px;
+    background: linear-gradient(to bottom, #FFFFFF 0%, #F2FAFF 80%, #ACBFD6 180%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+
+#josman-content {
+    position:absolute;
+    top:100px;
+    margin-left:151px;
+    overflow: auto;
+    width:700px;  /* 851px - 151px = 550px */
+    background-color:#FCFCFC;
+    min-height:100%;
+}
+
+#josman-internal-content{
+    padding: 10px;
+}
+
+#josman-sidebar {
+    position: fixed;
+    top:100px;
+    width: 151px;
+    height: 100%;
+    min-height:200px; /* just do simulate content */
+    z-index: 100;
+    background-color:#f5f2ec;
+    background:  linear-gradient(to bottom, #E6F0F8 40%, rgba(255, 237, 123, 0.2) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    
+}                     
+
+.josman-sidebar-selected {
+    background: linear-gradient(to bottom, #F2F2EA 0%, #FBFAF7 100%, #ffffff 0%) repeat scroll 0 0 rgba(0, 0, 0, 0)
+}
+
+.josman-sidebar-block {
+    padding-top: 10px;    
+    padding-bottom: 10px;    
+    word-wrap: break-word;
+}
+.josman-sidebar-block ul {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.josman-sidebar-block li ul {
+    padding-left: 17px;
+}
+
+.josman-sidebar-page-title {    
+    margin-bottom:5px;
+     color: black !important;
+    font-weight: bold; 
+    padding-left: 7px;
+}
+
+.josman-sidebar-page-title a {    
+       color: black !important; // need to replicate from div otherwise doesn't work :-/'
+       
+}
+
+/* 2nd level */
+.tree > li > label {
+  padding:10px 0px;
+}
+
+/* 3rd level */
+.tree > li > ul > li > a {
+  font-size:10pt;
+  margin-left:0px;
+}
+
+.josman-sidebar-block div {
+    margin-top: 10px;
+}            
+
+.josman-sidebar-block hr {
+    margin-bottom:19px;
+}
+
+#josman-internal-sidebar{
+    
+}
+
+#josman-sidebar-managed-block {
+    margin-top:-28px;
+}
+
+#josman-nav-header {
+    display: inline; 
+    position: absolute; 
+    bottom: 5px; 
+    margin-left:170px;
+    min-width:100%;
+}
+
+#josman-nav-header a {
+    text-decoration: none;
+    background-color:#fff;
+    border-color:lightgray;
+    // border-top-style: solid;
+    // border-left-style: solid;
+    // border-right-style: solid;
+    border-style: solid;
+    border-width: 1px;
+    //border-top-left-radius: 15px;
+    //border-top-right-radius: 15px;
+    border-radius: 5px;
+    margin:8px;
+    padding:5px;
+    display:inline;
+}
+
+#josman-nav-header a:hover{
+    background-color:#eee;
+    border-color:lightgray;
+    // border-top-style: solid;
+    // border-left-style: solid;
+    // border-right-style: solid;
+    border-style: solid;
+    border-width: 1px;
+    //border-top-left-radius: 15px;
+    //border-top-right-radius: 15px;
+    border-radius: 5px;
+    margin:8px;
+    padding:5px;
+    display:inline;
+}    
+
+#josman-repo-link {
+    position:absolute; 
+    margin-left:15px; 
+    top:15px; 
+    font-size:28px;
+    text-decoration: none;
+    color:black;
+}
+
+#josman-program-logo {
+    padding:10px; 
+    width:80px; 
+    height:80px                
+}
+
+.josman-image-link {
+
+}
+
+.josman-tag-selected {
+    background-color:#ffeec1 !important;
+}
+
+pre {                
+    background-color: #F7F9F2;
+    padding: 6px;    
+    border-style: solid;
+    border-width: 1px;    
+    
+}
+
+code {
+    background-color: #F7F9F2;
+    font-size : 15px; 
+}
+ 
+
+.josman-external-link:after {
+    content: " " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII=);
+}            
+
+
+
+
+// *****************      Fixes to markdown      *************************
+
+.josman-to-strip {
+    color:red;
+}
+
+
+a:link {           
+    text-decoration: none !important;
+    color: #2a0fcd;
+}
+
+a:visited {
+    text-decoration: none !important;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+    color:#05334B
+}
+
+h1 > a,
+h2 > a,
+h3 > a,
+h4 > a,
+h5 > a,
+h6 > a {
+    text-decoration: none !important;
+    color: black !important;                
+}	
+
+
+

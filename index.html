@@ -4,47 +4,63 @@
         <title>Jackan</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link id="jedoc-stylesheet" rel="stylesheet" type="text/css" href="css/jedoc.css">
-        <link rel="stylesheet" type="text/css" href="website-template/css/jedoc.css"> 
+        <link id="josman-stylesheet" rel="stylesheet" type="text/css" href="css/josman.css">
+        <!-- <link id="bootstrap-stylesheet" rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link id="bootstrap-theme-stylesheet" rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+        -->
+        <link rel="stylesheet" type="text/css" href="website-template/css/josman.css"> 
+        <!--
+        <link  rel="stylesheet" type="text/css" href="website-template/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="website-template/css/bootstrap-theme.min.css">
+        -->
     </head>
     <body>
-        <div id="jedoc-wrapper">
-            <div id="jedoc-header">
+        <div id="josman-wrapper">
+            <div id="josman-header">
 
                 <div style="position:absolute;  min-height:100px; min-width:100%; ">
-                    <a id="jedoc-program-logo-link" href="index.html">
-                        <img id="jedoc-program-logo" src="img/jackan-logo-200px.png" alt="program logo">    
+                    <a id="josman-program-logo-link" href="index.html">
+                        <img id="josman-program-logo" src="img/jackan-logo-200px.png" alt="program logo">    
                     </a>
 
-                    <a id="jedoc-repo-link" href="index.html">Jackan</a>
-                    
+                    <a id="josman-repo-link" href="index.html">Jackan</a>
 
-                    <a class="jedoc-image-link" href="http://dati.trentino.it/en/" target="_blank">
-                        <img style="float:right; padding:10px; width:80px" src="img/odt-logo.png" alt="jedoc logo">                        
+
+                    <a href="http://dati.trentino.it/en/" target="_blank">
+                        <img style="float:right; padding:10px; width:80px" src="img/odt-logo.png" alt="organization logo">                        
                     </a>
 
-                    <div id="jedoc-nav-header">
-                        <a id="jedoc-home" href="index.html" class="jedoc-tag-selected">Home</a>                        
-                        <span id="jedoc-usage" style="margin-left:15px">Usage:                        
+                    <div id="josman-nav-header">
+                        <a id="josman-home" href="index.html" class="josman-tag-selected">Home</a>                        
+                        <span id="josman-usage" style="margin-left:15px">Usage:                        
                             
                             
-                        <a class="jedoc-version-tab-header " href="0.3/index.html">0.3</a></span>
+                        <a class="josman-version-tab-header " href="0.3/index.html">0.3</a><a class="josman-version-tab-header " href="0.2/index.html">0.2</a></span>
                         <span style="margin-left:35px">
-                            <a id="jedoc-project" href="https://github.com/opendatatrentino/jackan" target="_blank">Repo</a>
-                            <a id="jedoc-wiki" href="https://github.com/opendatatrentino/jackan/wiki" target="_blank">Wiki</a> 
+                            <a id="josman-project" class="josman-external-link" href="https://github.com/opendatatrentino/jackan" target="_blank">Repo</a>
+                            <a id="josman-wiki" class="josman-external-link" href="https://github.com/opendatatrentino/jackan/wiki" target="_blank">Wiki</a> 
                         </span>
                     </div>
                 </div>                
 
             </div>
 
-            <div id="jedoc-sidebar">
-                <div id="jedoc-internal-sidebar"></div>
+            <div id="josman-sidebar">
+                <div id="josman-internal-sidebar" class="josman-sidebar-block"></div>
+
+
+
+                <div id="josman-sidebar-managed-block" class="josman-sidebar-block" style="display:none;">
+
+                    <div id="josman-javadoc-link" class="josman-sidebar-page-title"><a class="josman-external-link" href="javadoc/index.html" target="_blank">Javadoc</a></div>
+                    <!-- <div><a href="CHANGES.html">Release notes</a></div> -->              
+                </div>
+
 
             </div>
 
-            <div id="jedoc-content">
-                <div id="jedoc-internal-content">
+            <div id="josman-content">
+                <div id="josman-internal-content">
 <h4><a href="#about" name="about">About</a></h4><p>Java client library for CKAN catalogs. Features:</p>
 <ul>
   <li>dependency handling with Maven</li>
@@ -53,7 +69,7 @@
   <li>unit tested with proper integration tests</li>
   <li>uses ckan api v3</li>
   <li>supports Java 6+</li>
-</ul><p>Usage: See <a href="0.3/index.html">docs</a></p><p>Roadmap: See <a href="https://github.com/opendatatrentino/jackan/milestones">project milestones</a></p><p>License: business-friendly <a href="LICENSE.txt">Apache License v2.0</a></p><p>Contributing: See <a href="https://github.com/opendatatrentino/jackan/wiki">the wiki</a></p><h4><a href="#compatibility" name="compatibility">Compatibility</a></h4><p><em>Latest integration report is <a href="http://opendatatrentino.github.io/jackan/reports/latest/" target="_blank">here</a></em></p><p>Jackan supports installations of CKAN ≥ 2.2a. Although officially the web api version used is always the <em>v3</em>, unfortunately CKAN instances behave quite differently from each other according to their software version. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, <a href="https://github.com/opendatatrentino/jackan/issues">let us know</a>, if the error occurs in several catalogs we might devote some time to fix it.</p><h4><a href="#projects-using-jackan" name="projects-using-jackan">Projects using Jackan</a></h4>
+</ul><p>Usage: See <a href="0.3/index.html">docs</a></p><p>Roadmap: See <a href="https://github.com/opendatatrentino/jackan/milestones">project milestones</a></p><p>License: business-friendly <a href="LICENSE.txt">Apache License v2.0</a></p><p>Contributing: See <a href="https://github.com/opendatatrentino/jackan/wiki">the wiki</a></p><h4><a href="#compatibility" name="compatibility">Compatibility</a></h4><p><em>Latest integration report is <a href="http://opendatatrentino.github.io/jackan/reports/latest/" target="_blank">here</a></em></p><p>Jackan supports installations of CKAN ? 2.2a. Although officially the web api version used is always the <em>v3</em>, unfortunately CKAN instances behave quite differently from each other according to their software version. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, <a href="https://github.com/opendatatrentino/jackan/issues">let us know</a>, if the error occurs in several catalogs we might devote some time to fix it.</p><h4><a href="#projects-using-jackan" name="projects-using-jackan">Projects using Jackan</a></h4>
 <ul>
   <li><a href="https://github.com/opendatatrentino/OpenDataRise">OpenDataRise</a>: power tool to cleanse and semantify open data, based on OpenRefine</li>
   <li><a href="https://github.com/opendatatrentino/open-memory">Open Memory</a>: Program to query datasets harvested from Ckan and stored into a Hadoop Distributed File System.</li>
@@ -67,14 +83,24 @@
 
         </div>        
         <script src="js/jquery-1.11.2.min.js"></script>
-        
-         <!-- quick and silly hack to get the file -->
+        <!-- <script src="js/bootstrap-3.3.4.min.js"></script> -->
+
+        <!-- quick and silly hack to get the file -->
         <script src="website-template/js/jquery-1.11.2.min.js"></script>
+        <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-3.3.4.min.js"></script>
         <script>
             // idotic CSS in style doesn't work, so use jquery instead: 
             // also would like pre code but this will select code and won't work. There aren't selectors for parents
 
             $("pre").css("max-width", "680px").css("overflow-x", "auto");
+
+            /* We don't support this yet...
+             $('.josman-tree-toggle').click(function () {
+             $(this).parent().children('ul.tree').toggle(200);
+             return false;
+             });
+             */
         </script>
     </body>
 </html>
