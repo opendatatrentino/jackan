@@ -1,23 +1,26 @@
-<p class="jedoc-to-strip">
+<p class="josman-to-strip">
 WARNING: WORK IN PROGRESS - THIS IS ONLY A TEMPLATE FOR THE DOCUMENTATION. <br/>
 RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" target="_blank">PROJECT WEBSITE</a>
 </p>
 
 This release allows reading metadata from CKAN and performing searches.
 
-### Maven
+### Getting started
 
-Jackan is available on Maven Central. To use it, put this in the dependencies section of your _pom.xml_:
+**With Maven**: If you use Maven as build system, put this in the `dependencies` section of your `pom.xml`:
 
 ```
     <dependency>
         <groupId>eu.trentorise.opendata</groupId>
         <artifactId>jackan</artifactId>
-        <version>#{version}</version>            
+        <version>#{version}</version>
     </dependency>
 ```
 
-In case updates are available, version numbers follows <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.
+**Without Maven**: you can download Jackan jar and its dependencies <a href="../releases/jackan-#{version}.zip" target="_blank"> from here</a>, then copy the jars to your project classpath.
+
+
+In case updates are available, version numbers follow <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.
 
 ### Usage examples
 

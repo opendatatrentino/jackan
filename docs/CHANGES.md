@@ -5,6 +5,8 @@
 
 20 June 2015
 
+- now creating release zip with jar and dependencies
+- added josman and github site plugins to pom
 - really pushed to sonatype...
 
 

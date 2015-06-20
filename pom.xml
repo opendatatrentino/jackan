@@ -87,8 +87,58 @@
                 </plugins>
             </build>
         </profile>
+        
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>                
+                        <executions>
+                            <execution>
+                                <id>copy-dependencies</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>                            
+                                    <overWriteIfNewer>true</overWriteIfNewer>
+                                    <excludeGroupIds>
+                                        junit,pl.pragmatists,org.hamcrest
+                                    </excludeGroupIds>
+                                </configuration>
+                            </execution>
+                        </executions>                
+                    </plugin>
+            
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <configuration>
+                            <descriptor>src/assembly/bin.xml</descriptor>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>create-archive</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>                 
+                </plugins>
+            </build>
+        </profile>
+                
     </profiles>
 
+    
+        
+        
 
     <build>
         <plugins>
@@ -205,6 +255,16 @@
                     </archive>                    
                 </configuration>        
             </plugin>
+            <plugin>
+                <groupId>eu.trentorise.opendata.josman</groupId>
+                <artifactId>josman-maven-plugin</artifactId>
+                <version>0.6.1</version>
+            
+                <configuration>
+                    <merge>true</merge>
+                </configuration>          
+            </plugin>              
+        
         </plugins>      
 
         <pluginManagement>
