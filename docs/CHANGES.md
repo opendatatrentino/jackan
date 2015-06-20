@@ -1,6 +1,12 @@
 
 ## JACKAN RELEASE NOTES
 
+### 0.3.3
+
+20 June 2015
+
+- really pushed to sonatype...
+
 
 ### 0.3.2
 
@@ -8,7 +14,7 @@
 
 - adapted to josman docs structure
 
-### 0.3.1  
+### 0.3.1
 
  19 January 2015
 
