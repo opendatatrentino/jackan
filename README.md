@@ -1,9 +1,9 @@
-<p class="jedoc-to-strip">
+<p class="josman-to-strip">
 WARNING: THIS IS ONLY A TEMPLATE FOR THE DOCUMENTATION. <br/>
 RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" target="_blank">PROJECT WEBSITE</a>
 </p>
 
-<p class="jedoc-to-strip" align="center">
+<p class="josman-to-strip" align="center">
 <img alt="Jackan" src="docs/img/jackan-logo-200px.png" width="150px">
 <br/>
 </p>
@@ -32,7 +32,7 @@ Contributing: See [the wiki](../../wiki)
 
 _Latest integration report is <a href="http://opendatatrentino.github.io/jackan/reports/latest/" target="_blank">here</a>_
 
-Jackan supports installations of CKAN ≥ 2.2a. Although officially the web api version used is always the _v3_, unfortunately CKAN instances behave quite differently from each other according to their software version. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, [let us know](https://github.com/opendatatrentino/jackan/issues), if the error occurs in several catalogs we might devote some time to fix it.
+Jackan supports installations of CKAN >= 2.2a. Although officially the web api version used is always the _v3_, unfortunately CKAN instances behave quite differently from each other according to their software version. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, [let us know](https://github.com/opendatatrentino/jackan/issues), if the error occurs in several catalogs we might devote some time to fix it.
 
 
 #### Projects using Jackan
@@ -44,8 +44,14 @@ Jackan supports installations of CKAN ≥ 2.2a. Although officially the web api 
 
 #### Credits
 
+Main devs:
+
 * David Leoni - DISI, University of Trento - david.leoni@unitn.it
 * Ivan Tankoyeu - DISI, University of Trento - tankoyeu@disi.unitn.it
+
+Contributors:
+
+* David Moravek http://davidmoravek.cz/
 
 We also wish to thank our very first beta tester Giulio Pilotto
 

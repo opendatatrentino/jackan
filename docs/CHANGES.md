@@ -9,7 +9,9 @@ Project website: http://opendatatrentino.github.io/jackan
 
 #### 0.4.x   todo in progress
 
-- Adapted to jedoc docs structure
+- Adapted to josman docs structure
+- now creating release zip with jar and dependencies
+
 
 #### 0.3.1  -  19 January 2015
 
