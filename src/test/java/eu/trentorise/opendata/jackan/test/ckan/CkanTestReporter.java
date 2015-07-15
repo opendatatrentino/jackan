@@ -34,17 +34,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import static org.rendersnake.HtmlAttributesFactory.class_;
 import static org.rendersnake.HtmlAttributesFactory.href;
 import static org.rendersnake.HtmlAttributesFactory.style;
@@ -113,7 +112,9 @@ public class CkanTestReporter {
 
         String content = renderRunSuite(catalogsNames, testNames, testResults);
 
-        saveToDirectory(new File("reports/" + REPORT_PREFIX + "-" + new DateTime().toString("dd-MM-yyyy--HH-mm-ss")), content, testResults);
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy--HH-mm-ss");
+        saveToDirectory(new File("reports/" + REPORT_PREFIX + "-" + formatter.format(new Date())), content, testResults);
 
         File latestDir = new File("reports/" + REPORT_PREFIX + "-latest");
 
@@ -213,21 +214,21 @@ public class CkanTestReporter {
 
     public static class RunSuite {
 
-        private DateTime startTime;
-        private DateTime endTime;
+        private Date startTime;
+        private Date endTime;
         private ImmutableList<TestResult> results;
 
-        public RunSuite(DateTime startTime, DateTime endTime, List<TestResult> results) {
+        public RunSuite(Date startTime, Date endTime, List<TestResult> results) {
             this.startTime = startTime;
             this.endTime = endTime;
             this.results = ImmutableList.copyOf(results);
         }
 
-        public DateTime getStartTime() {
+        public Date getStartTime() {
             return startTime;
         }
 
-        public DateTime getEndTime() {
+        public Date getEndTime() {
             return endTime;
         }
 
@@ -239,7 +240,7 @@ public class CkanTestReporter {
 
     public static RunSuite runTests(Map<String, String> catalogNames, List<String> testNames) {
 
-        DateTime startTime = new DateTime();
+        Date startTime = new Date();
 
         Map<String, CkanClient> clients = new HashMap();
 
@@ -258,21 +259,24 @@ public class CkanTestReporter {
             }
         }
 
-        return new RunSuite(startTime, new DateTime(), results.build());
+        return new RunSuite(startTime, new Date(), results.build());
     }
 
     /**
      * Formats date time up to the day, in English format
      */
-    private static String formatDateUpToDay(DateTime date) {
-        return date.toString(DateTimeFormat.mediumDate().withLocale(Locale.ENGLISH));
+    private static String formatDateUpToDay(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        
+        return formatter.format(date);
     }
 
     /**
      * Formats date time up to the second, in English format
      */
-    private static String formatDateUpToSecond(DateTime date) {
-        return date.toString(DateTimeFormat.mediumDateTime().withLocale(Locale.ENGLISH));
+    private static String formatDateUpToSecond(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");        
+        return formatter.format(date);        
     }
 
     public static String renderRunSuite(Map<String, String> catalogs, List<String> testNames, RunSuite runSuite) {

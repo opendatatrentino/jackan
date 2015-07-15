@@ -21,7 +21,6 @@ import eu.trentorise.opendata.commons.Dict;
 import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
 import java.util.Locale;
 import java.util.logging.Level;
-import org.joda.time.DateTime;
 import com.google.common.annotations.Beta;
 import static com.google.common.base.Preconditions.checkNotNull;
 import eu.trentorise.opendata.commons.OdtUtils;
@@ -33,6 +32,10 @@ import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
 import eu.trentorise.opendata.traceprov.dcat.FoafAgent;
 import eu.trentorise.opendata.traceprov.dcat.SkosConcept;
 import eu.trentorise.opendata.traceprov.dcat.SkosConceptScheme;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 /**
@@ -43,7 +46,17 @@ public class DcatFactory {
     
     private static final Logger LOG = Logger.getLogger(DcatFactory.class.getName());
         
-
+    /**
+     * Formats dates according to ISO 8601. Slow, but threadsafe.
+     * @return 
+     */
+    private static String formatDate(Date date){
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        df.setTimeZone(tz);
+        return df.format(date);
+        
+    }
     /**
      * Returns a DcatDataset out of a Ckan dataset.
      *
@@ -56,6 +69,7 @@ public class DcatFactory {
     @Beta
     public static DcatDataset dataset(CkanDataset dataset, String catalogUrl, Locale locale) {
 
+        
         OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalo URL");
         checkNotNull(locale, "invalid dcat dataset locale");
 
@@ -88,7 +102,7 @@ public class DcatFactory {
         }
 
         if (dataset.getMetadataCreated() != null) {
-            ddb.setIssued(dataset.getMetadataCreated());
+            ddb.setIssued(formatDate(dataset.getMetadataCreated()));
         }
 
         if (dataset.getTags() != null) {
@@ -106,7 +120,7 @@ public class DcatFactory {
         ddb.addLanguages(locale);
 
         if (dataset.getMetadataModified() != null) {
-            ddb.setModified(dataset.getMetadataModified());
+            ddb.setModified(formatDate(dataset.getMetadataModified()));
         }
 
         FoafAgent.Builder publisherBuilder = FoafAgent.builder();
@@ -223,9 +237,9 @@ public class DcatFactory {
             ddb.setFormat(resource.getFormat());
         }
 
-        DateTime lastMod = resource.getLastModified();
+        Date lastMod = resource.getLastModified();
         if (lastMod != null) {
-            ddb.setIssued(lastMod);
+            ddb.setIssued(formatDate(lastMod));
         }
         if (license != null) {
             ddb.setLicense(license);
@@ -234,7 +248,7 @@ public class DcatFactory {
             ddb.setMediaType(resource.getMimetype());
         }
         if (resource.getRevisionTimestamp() != null) {
-            ddb.setModified(CkanClient.parseRevisionTimestamp(resource.getRevisionTimestamp()));
+            ddb.setModified(resource.getRevisionTimestamp());
         }
 
         LOG.warning("TODO - SKIPPED 'RIGHTS' WHILE CONVERTING FROM CKAN TO DCAT");

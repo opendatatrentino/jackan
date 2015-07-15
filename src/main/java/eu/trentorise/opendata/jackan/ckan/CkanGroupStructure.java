@@ -16,9 +16,8 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Date;
 import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  * This abstract class models the same data structure that Ckan uses for both groups and
@@ -32,7 +31,7 @@ import org.joda.time.DateTimeZone;
 public abstract class CkanGroupStructure {
 
     private String approvalStatus;
-    private DateTime created;
+    private Date created;
     private String description;
     private String displayName;
     private List<CkanPair> extras;
@@ -79,15 +78,15 @@ public abstract class CkanGroupStructure {
         this.approvalStatus = approvalStatus;
     }
 
-    public DateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
     /**
-     * internally date is stored with UTC timezone
+     * Ckan always refers to UTC timezone
      */
-    public void setCreated(DateTime created) {
-        this.created = created.toDateTime(DateTimeZone.UTC);
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public String getDescription() {

@@ -21,12 +21,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  * Class initializes almost nothing so to fully preserve all we get from ckan.
@@ -49,8 +48,8 @@ public class CkanDataset {
     private String licenseUrl;
     private String maintainer;
     private String maintainerEmail;
-    private DateTime metadataCreated;
-    private DateTime metadataModified;
+    private Date metadataCreated;
+    private Date metadataModified;
     private String name;
     private String notes;
     private String notesRendered;
@@ -66,7 +65,7 @@ public class CkanDataset {
     private List<CkanResource> resources;
 
     private String revisionId;
-    private DateTime revisionTimestamp;
+    private Date revisionTimestamp;
     private String state;
     private List<CkanTag> tags;
     private String title;
@@ -256,31 +255,31 @@ public class CkanDataset {
     }
 
     /**
-     * Returns date in UTC timezone
+     * CKAN always refer to UTC timezone
      */
-    public DateTime getMetadataCreated() {
+    public Date getMetadataCreated() {
         return metadataCreated;
     }
 
     /**
-     * Internally date is stored with UTC timezone
+     * CKAN always refer to UTC timezone
      */
-    public void setMetadataCreated(DateTime metadataCreated) {
-        this.metadataCreated = metadataCreated.toDateTime(DateTimeZone.UTC);
+    public void setMetadataCreated(Date metadataCreated) {
+        this.metadataCreated = metadataCreated;
     }
 
     /**
-     * Returns date in UTC timezone
+     * CKAN always refers to UTC timezone
      */
-    public DateTime getMetadataModified() {
+    public Date getMetadataModified() {
         return metadataModified;
     }
 
     /**
-     * Internally date is stored with UTC timezone
+     * CKAN always refers to UTC timezone
      */
-    public void setMetadataModified(DateTime metadataModified) {
-        this.metadataModified = metadataModified.toDateTime(DateTimeZone.UTC);
+    public void setMetadataModified(Date metadataModified) {
+        this.metadataModified = metadataModified;
     }
 
     /**
@@ -369,18 +368,18 @@ public class CkanDataset {
      * Returns date in UTC timezone. Probably it is automatically calculated by
      * CKAN.
      */
-    public DateTime getRevisionTimestamp() {
+    public Date getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
     /**
-     * Internally date is stored with UTC timezone. Probably it is automatically
+     * CKAN always refer to UTC timezone. Probably it is automatically
      * calculated by CKAN.
      *
      * @param revisionTimestamp
      */
-    public void setRevisionTimestamp(DateTime revisionTimestamp) {
-        this.revisionTimestamp = revisionTimestamp.toDateTime(DateTimeZone.UTC);
+    public void setRevisionTimestamp(Date revisionTimestamp) {
+        this.revisionTimestamp = revisionTimestamp;
     }
 
     /**

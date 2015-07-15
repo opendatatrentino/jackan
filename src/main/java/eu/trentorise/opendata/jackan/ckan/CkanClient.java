@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -54,10 +53,6 @@ import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Client to access a ckan instance. Threadsafe.
@@ -83,8 +78,7 @@ public class CkanClient {
      * null
      */
     public static final String NONE = "None";
-
-    public static final DateTimeFormatter ckanDateFormatter = DateTimeFormat.forPattern(CKAN_DATE_PATTERN);
+    
 
     @Nullable
     private static ObjectMapper objectMapper;
@@ -133,24 +127,8 @@ public class CkanClient {
             // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQDateHandling
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"                            so we removed it here
             objectMapper.setDateFormat(new SimpleDateFormat(CKAN_DATE_PATTERN)); // but this only works for Java Dates...
-
-            // ...so taken solution from here: http://www.lorrin.org/blog/2013/06/28/custom-joda-time-dateformatter-in-jackson/
-            objectMapper.registerModule(new JodaModule());
+            
             objectMapper.registerModule(new GuavaModule());
-
-            objectMapper.registerModule(new SimpleModule() {
-                {
-                    addSerializer(DateTime.class, new StdSerializer<DateTime>(DateTime.class) {
-                        @Override
-                        public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-                            jgen.writeString(ckanDateFormatter.print(value));
-                        }
-
-                    });
-
-                    addDeserializer(DateTime.class, CkanDateDeserializer.forType(DateTime.class));
-                }
-            });
 
         }
         return objectMapper;
@@ -325,11 +303,6 @@ public class CkanClient {
      */
     public String getCkanToken() {
         return ckanToken;
-    }
-
-    public static DateTime parseRevisionTimestamp(String revisionTimestamp) {
-        checkNotEmpty(revisionTimestamp, "invalid ckan revision timestamp");
-        return DateTime.parse(revisionTimestamp, ISODateTimeFormat.dateHourMinuteSecond());
     }
 
     /**

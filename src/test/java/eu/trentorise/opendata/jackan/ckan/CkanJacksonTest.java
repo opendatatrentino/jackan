@@ -17,11 +17,8 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.OdtConfig;
-import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.io.*;
 import java.util.logging.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -158,53 +155,5 @@ public class CkanJacksonTest {
         assertEquals(1, cd.getOthers().get("z"));
     }
 
-    static public class JodaA {
-
-        private DateTime dt;
-
-        public DateTime getDt() {
-            return dt;
-        }
-
-        public void setDt(DateTime dt) {
-            this.dt = dt;
-        }                
-
-    }
-    
-
-    @Test
-    public void testJoda_1() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
-        JodaA ja = new JodaA();
-
-        ja.setDt(new DateTime(123, DateTimeZone.UTC));
-        String json = om.writeValueAsString(ja);
-        //logger.debug("json = " + json);
-        // todo Since we are using Joda jackson is not respecting the date format config without the 'Z' we set in the object mapper.        
-        // see https://github.com/opendatatrentino/Jackan/issues/1
-        assertEquals("1970-01-01T00:00:00.123", om.readTree(json).get("dt").asText());
-
-        JodaA ja2 = om.readValue(json, JodaA.class);
-        //logger.debug("ja = " + ja.getDt().toString());
-        //logger.debug("ja2 = " + ja2.getDt().toString());
-        assertTrue(ja.getDt().equals(ja2.getDt()));
-    }
-
-    /**
-     * Sometimes dear ckan returns "None" instead of proper JSON null. This
-     * tests the "None" to null conversion for dates.
-     */
-    @Test
-    public void testJodaNone() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
-                       
-        JodaA nullJa = om.readValue("{\"dt\":\"None\"}", JodaA.class);
-        assertNull(nullJa.getDt());
-
-        JodaA nonNullJa = om.readValue("{\"dt\":\"1970-01-01T00:00:00.123\"}", JodaA.class);                
-        assertNotNull(nonNullJa.getDt());
-        
-    }
 
 }

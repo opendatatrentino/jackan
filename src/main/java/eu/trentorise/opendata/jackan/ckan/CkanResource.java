@@ -19,12 +19,11 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  * Class initializes almost nothing so to fully preserve all we get from ckan.
@@ -45,9 +44,9 @@ public class CkanResource {
      private String datasetName; // laghi-monitorati-trento
      private String datasetTitle; // Laghi monitorati Trento
      */
-    private DateTime cacheUrlUpdated;
+    private Date cacheUrlUpdated;
 
-    private DateTime created;
+    private Date created;
 
     private String description;
 
@@ -60,7 +59,7 @@ public class CkanResource {
     private String id;
 
     @Nullable
-    private DateTime lastModified;
+    private Date lastModified;
 
     @Nullable
     private String mimetype;
@@ -97,7 +96,7 @@ public class CkanResource {
     private String urlType;
 
     @Nullable
-    private DateTime webstoreLastUpdated;
+    private Date webstoreLastUpdated;
 
     @Nullable
     private String webstoreUrl;
@@ -222,33 +221,33 @@ public class CkanResource {
     }
 
     /**
-     * DateTime in UTC timezone
+     * Ckan always refers to UTC timezone
      */
     @Nullable
-    public DateTime getCacheUrlUpdated() {
+    public Date getCacheUrlUpdated() {
         return cacheUrlUpdated;
     }
 
     /**
-     * internally date is stored with UTC timezone
+     * Ckan always refers to UTC timezone
      */
-    public void setCacheUrlUpdated(@Nullable DateTime cacheUrlUpdated) {
+    public void setCacheUrlUpdated(@Nullable Date cacheUrlUpdated) {
         this.cacheUrlUpdated = cacheUrlUpdated;
     }
 
     /**
-     * i.e. "2013-05-09T14:08:32.666477" . Returned result is always in UTC
-     * timezone.
+     * In JSON is something like this: i.e. "2013-05-09T14:08:32.666477" . Ckan
+     * always refers to UTC timezone
      */
-    public DateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
     /**
-     * internally date is stored with UTC timezone
+     * Ckan always refers to UTC timezone
      */
-    public void setCreated(DateTime created) {
-        this.created = created.toDateTime(DateTimeZone.UTC);
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public String getDescription() {
@@ -320,22 +319,18 @@ public class CkanResource {
     }
 
     /**
-     * Returned date is always in UTC format i.e. "2013-05-09T14:33:26.643040"
+     * Ckan always refers to UTC timezone
      */
     @Nullable
-    public DateTime getLastModified() {
+    public Date getLastModified() {
         return lastModified;
     }
 
     /**
-     * Internally date is stored with UTC timezone
+     * Ckan always refers to UTC timezone
      */
-    public void setLastModified(@Nullable DateTime lastModified) {
-        if (lastModified != null) {
-            this.lastModified = lastModified.toDateTime(DateTimeZone.UTC);
-        } else {
-            this.lastModified = null;
-        }
+    public void setLastModified(@Nullable Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     /**
@@ -547,22 +542,18 @@ public class CkanResource {
     }
 
     /**
-     * Should be a Date. It is always returned in UTC timezone
+     * Ckan always refers to UTC timezone
      */
     @Nullable
-    public DateTime getWebstoreLastUpdated() {
+    public Date getWebstoreLastUpdated() {
         return webstoreLastUpdated;
     }
 
     /**
-     * Internally the date is stored with UTC timezone
+     * Ckan always refers to UTC timezone
      */
-    public void setWebstoreLastUpdated(@Nullable DateTime webstoreLastUpdated) {
-        if (webstoreLastUpdated != null) {
-            this.webstoreLastUpdated = webstoreLastUpdated.toDateTime(DateTimeZone.UTC);
-        } else {
-            this.webstoreLastUpdated = null;
-        }
+    public void setWebstoreLastUpdated(@Nullable Date webstoreLastUpdated) {
+        this.webstoreLastUpdated = webstoreLastUpdated;
     }
 
     /**

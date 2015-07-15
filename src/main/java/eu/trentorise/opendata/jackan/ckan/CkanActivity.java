@@ -15,10 +15,9 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -31,9 +30,9 @@ public class CkanActivity {
      */
     private String id;
     /**
-     * i.e. "2013-03-08T09:31:20.833590"
+     * Ckan always refer to UTC timezone, in JSON looks like i.e. "2013-03-08T09:31:20.833590"
      */
-    private DateTime timestamp;
+    private Date timestamp;
     /**
      * i.e. "Impostazioni modificate."
      */
@@ -43,7 +42,7 @@ public class CkanActivity {
      */
     private String author;
     @Nullable
-    private DateTime approvedTimestamp;
+    private Date approvedTimestamp;
     private List<CkanDataset> packages;
     private List<String> groups;
     private CkanState state;
@@ -60,14 +59,14 @@ public class CkanActivity {
         this.id = id;
     }
 
-    public DateTime getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
     /**
      * internally date is stored with UTC timezone
      */
-    public void setTimestamp(DateTime timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -88,7 +87,7 @@ public class CkanActivity {
     }
 
     @Nullable
-    public DateTime getApprovedTimestamp() {
+    public Date getApprovedTimestamp() {
         return approvedTimestamp;
     }
 
@@ -97,12 +96,8 @@ public class CkanActivity {
      *
      * @param approvedTimestamp
      */
-    public void setApprovedTimestamp(@Nullable DateTime approvedTimestamp) {
-        if (approvedTimestamp != null) {
-            this.approvedTimestamp = approvedTimestamp.toDateTime(DateTimeZone.UTC);
-        } else {
-            this.approvedTimestamp = null;
-        }
+    public void setApprovedTimestamp(@Nullable Date approvedTimestamp) {        
+        this.approvedTimestamp = approvedTimestamp;        
     }
 
     public List<CkanDataset> getPackages() {
