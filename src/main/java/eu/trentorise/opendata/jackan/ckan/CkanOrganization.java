@@ -15,6 +15,8 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import java.util.List;
+
 /**
  * Class to explicitly model a Ckan organization, which is <i> not </i> a group,
  * although is has the same attributes.
@@ -24,8 +26,20 @@ package eu.trentorise.opendata.jackan.ckan;
  */
 public class CkanOrganization extends CkanGroupStructure {
 
+	private List<CkanDataset> packages;
+	
     public CkanOrganization() {
         super();
         setOrganization(true);
     }
+
+	public List<CkanDataset> getPackages() {
+		return packages;
+	}
+
+	public void setPackages(List<CkanDataset> packages) {
+		this.packages = packages;
+	}
+    
+    
 }
