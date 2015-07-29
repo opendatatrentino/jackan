@@ -18,6 +18,7 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.OdtConfig;
 import java.io.*;
+import java.util.Date;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -33,7 +34,7 @@ import org.junit.Test;
  */
 public class CkanJacksonTest {
 
-    public static final Logger logger = Logger.getLogger(CkanJacksonTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(CkanJacksonTest.class.getName());
 
     public CkanJacksonTest() {
     }
@@ -87,9 +88,6 @@ public class CkanJacksonTest {
         assertEquals(email, cd.getAuthorEmail());
     }
 
-    /**
-     * @throws IOException
-     */
     @Test
     public void testReadNullString() throws IOException {
         ObjectMapper om = CkanClient.getObjectMapperClone();
@@ -99,10 +97,8 @@ public class CkanJacksonTest {
         assertTrue(r.getSize() == null);
     }
 
-    /**
-     * @throws IOException
-     */
     @Test
+    @SuppressWarnings("null")
     public void testReadEmptyString() throws IOException {
         ObjectMapper om = CkanClient.getObjectMapperClone();
         String json = "{\"size\":\"\"}";
@@ -111,10 +107,62 @@ public class CkanJacksonTest {
         assertTrue(r.getSize().equals(""));
     }
 
+    static public class DateWrapper {
+
+        private Date date;
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+
+    }
+
+    @Test
+    public void testDateWithMillisecs() throws IOException {
+        ObjectMapper om = CkanClient.getObjectMapperClone();
+        
+
+        String json = "{\"date\":\"1970-01-01T00:00:00.000123\"}";        
+        LOG.fine(json);
+        DateWrapper dw = om.readValue(json, DateWrapper.class);
+        String newJson = om.writeValueAsString(dw);        
+        assertEquals("1970-01-01T00:00:00.000123", om.readTree(newJson).get("date").asText());
+
+        DateWrapper dw2 = om.readValue(json, DateWrapper.class);
+        
+    }
+    
+        @Test
+    public void testDateNoMillisecs() throws IOException {
+        ObjectMapper om = CkanClient.getObjectMapperClone();
+        String json = "{\"date\":\"2013-12-17T00:00:00\"}";                
+        DateWrapper dw = om.readValue(json, DateWrapper.class);        
+    }
+
+
+    /**
+     * Sometimes dear ckan returns "None" instead of proper JSON null. This
+     * tests the "None" to null conversion for dates.
+     */
+    @Test
+    public void testDateNone() throws IOException {
+        ObjectMapper om = CkanClient.getObjectMapperClone();
+
+        DateWrapper nullJa = om.readValue("{\"date\":\"None\"}", DateWrapper.class);
+        assertNull(nullJa.getDate());
+
+        DateWrapper nonNullWrapper = om.readValue("{\"date\":\"1970-01-01T00:00:00.123\"}", DateWrapper.class);
+        assertNotNull(nonNullWrapper.getDate());
+
+    }
+
+
     /**
      * Tests the ObjectMapper underscore conversion
-     *
-     * @throws IOException
      */
     @Test
     public void testDatasetWrite() throws IOException {
@@ -154,6 +202,5 @@ public class CkanJacksonTest {
         assertEquals("n", cd.getName());
         assertEquals(1, cd.getOthers().get("z"));
     }
-
 
 }

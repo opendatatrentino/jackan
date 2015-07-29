@@ -41,6 +41,7 @@ import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -53,16 +54,17 @@ import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.cookie.DateUtils;
 
 /**
  * Client to access a ckan instance. Threadsafe.
  *
  * The client is a thin wrapper upon Ckan api, thus one method call should
- * correspond to only one web api call. This means that sometimes to get a full
+ * correspond to only one web api call. This means sometimes to get a full
  * object from Ckan, you will need to do a second call (for example, calling
- * getDataset will also return its resources because Ckan sends them with the
+ * {@link #getDataset(java.lang.String)} will also return its resources because Ckan sends them with the
  * dataset, but to be sure to have all the fields of a resource you will need to
- * call getResource).
+ * call {@link #getResource(java.lang.String)).
  *
  * @author David Leoni, Ivan Tankoyeu
  *
@@ -72,7 +74,8 @@ public class CkanClient {
     /**
      * CKAN uses UTC timezone, and doesn't append 'Z' to dates.
      */
-    public static final String CKAN_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final String CKAN_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";            
+    
     /**
      * Sometimes we get back Python "None" as a string instead of proper JSON
      * null
@@ -111,6 +114,7 @@ public class CkanClient {
      * initialized at first call.
      */
     static ObjectMapper getObjectMapper() {
+        
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
             objectMapper
@@ -125,8 +129,24 @@ public class CkanClient {
                     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
             // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQDateHandling
-            // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"                            so we removed it here
-            objectMapper.setDateFormat(new SimpleDateFormat(CKAN_DATE_PATTERN)); // but this only works for Java Dates...
+            // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
+            // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
+            //objectMapper.setDateFormat(new SimpleDateFormat(CKAN_TIMESTAMP_PATTERN));
+            
+            objectMapper.registerModule(new SimpleModule() {
+                {           
+                    addSerializer(Date.class, new StdSerializer<Date>(Date.class) {
+                        @Override
+                        public void serialize(Date value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+                            jgen.writeString(DateUtils.formatDate(value, CKAN_TIMESTAMP_PATTERN));
+                        }
+
+                    });
+                    
+                    
+                    addDeserializer(Date.class, new CkanDateDeserializer());
+                }
+            });
             
             objectMapper.registerModule(new GuavaModule());
 
