@@ -235,6 +235,13 @@ public class ReadCkanIT {
 
     @Test
     @Parameters(method = "clients")
+    public void testGroupNames(CkanClient client) {
+        List<String> gl = client.getGroupNames();
+        assertTrue(gl.size() > 0);
+    }    
+    
+    @Test
+    @Parameters(method = "clients")
     public void testGroup(CkanClient client) {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
@@ -250,8 +257,15 @@ public class ReadCkanIT {
     public void testOrganizationList(CkanClient client) {
         List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
-
     }
+    
+    @Test
+    @Parameters(method = "clients")
+    public void testOrganizationNames(CkanClient client) {
+        List<String> gl = client.getOrganizationNames();
+        assertTrue(gl.size() > 0);
+    }
+    
 
     @Test
     @Parameters(method = "clients")

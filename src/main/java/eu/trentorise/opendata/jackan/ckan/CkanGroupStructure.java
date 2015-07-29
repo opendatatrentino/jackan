@@ -169,14 +169,14 @@ public abstract class CkanGroupStructure {
     }
 
     /**
-     * name in the url. i.e. management-of-territory
+     * Name in the url, lowercased and without spaces. i.e. management-of-territory
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name name in the url. i.e. management-of-territory
+     * @param name Name in the url, lowercased and without spaces. i.e. management-of-territory
      */
     public void setName(String name) {
         this.name = name;

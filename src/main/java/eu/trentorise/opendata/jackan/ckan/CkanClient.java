@@ -371,7 +371,7 @@ public class CkanClient {
     }
 
     /**
-     * @return list of strings like i.e. limestone-pavement-orders
+     * Returns list of dataset names like i.e. limestone-pavement-orders
      * @throws JackanException on error
      */
     public synchronized List<String> getDatasetList() {
@@ -489,15 +489,16 @@ public class CkanClient {
     }
 
     /**
+     * Return group names, like i.e. management-of-territory
      * @throws JackanException on error
      */
     public synchronized List<String> getGroupNames() {
-        return getHttp(GroupNamesResponse.class, "/api/3/action/group_List").result;
+        return getHttp(GroupNamesResponse.class, "/api/3/action/group_list").result;
     }
 
     /**
      * Returns a Ckan group. Do not pass an organization id, to get organization
-     * use {@link #getOrganization(java.lang.String) } instead.
+     * use {@link #getOrganization(java.lang.String) } instead. 
      *
      * @param idOrName either the group name (i.e. hospitals-in-trento-district)
      * or the group alphanumerical id
@@ -530,11 +531,10 @@ public class CkanClient {
     }
 
     /**
-     *
      * @throws JackanException on error
      */
     public synchronized List<String> getOrganizationNames() {
-        return getHttp(GroupNamesResponse.class, "/api/3/action/organization_List").result;
+        return getHttp(GroupNamesResponse.class, "/api/3/action/organization_list").result;
     }
 
     /**
@@ -629,7 +629,7 @@ public class CkanClient {
     }
 
     /**
-     * Search datasets containg param text in the metadata
+     * Search datasets according to the provided query.
      *
      * @param query The query object
      * @param limit maximum results to return

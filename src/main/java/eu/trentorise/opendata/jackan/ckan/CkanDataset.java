@@ -283,8 +283,8 @@ public class CkanDataset {
     }
 
     /**
-     * returns the dataset name (contains no spaces and has dashes as
-     * separators, i.e. "comune-di-trento-raccolta-differenziata-2013")
+     * Returns the dataset name (contains no spaces and has dashes as
+     * separators, i.e. "limestone-pavement-orders")
      */
     public String getName() {
         return name;
@@ -292,7 +292,7 @@ public class CkanDataset {
 
     /**
      * Sets the dataset name. Name must not contain spaces and have dashes as
-     * separators, i.e. "comune-di-trento-raccolta-differenziata-2013"
+     * separators, i.e. "limestone-pavement-orders"
      *
      * @param name
      */
