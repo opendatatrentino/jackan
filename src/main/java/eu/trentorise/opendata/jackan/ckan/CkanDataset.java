@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,18 +98,14 @@ public class CkanDataset {
      * Constructor with the minimal set of attributes required to successfully
      * create a dataset on the server.
      *
-     * @param name the dataset name with no spaces and dashes as separators,
-     * i.e. "comune-di-trento-raccolta-differenziata-2013"
-     * @param url A page URL containg a description of the semantified dataset
-     * columns and the trasformations done on the original dataset. This URL
-     * will be also displayed as metadata in the catalog under dcat:landingPage
+     * @param name the dataset name (contains no spaces and has dashes as
+     * separators, i.e. "limestone-pavement-orders")
+     * @param url the landing page on original data provider website describing
+     * the dataset.
      * @param extras
      */
     public CkanDataset(String name, String url, List<CkanPair> extras) {
-        this();
-        checkNotEmpty(name, "invalid ckan dataset name");
-        checkNotNull(url, "invalid ckan dataset url to description page");
-        checkNotNull(extras, "invalid ckan dataset extras");
+        this();        
         this.name = name;
         this.url = url;
         this.extras = extras;
@@ -206,11 +202,21 @@ public class CkanDataset {
         this.id = id;
     }
 
-    public boolean isIsOpen() {
+    /**    
+     * <a href="http://docs.ckan.org/en/latest/api/legacy-api.html?highlight=isopen" target="_blank">
+     * Legacy api 1/2 docs</a> says: boolean indication of whether dataset is
+     * open according to Open Knowledge Definition, based on other fields
+     */
+    @JsonProperty("isopen")
+    public boolean isOpen() {
         return isOpen;
     }
 
-    public void setIsOpen(boolean isOpen) {
+    /**
+     * @see #isOpen() 
+     */
+    @JsonProperty("isopen")
+    public void setOpen(boolean isOpen) {
         this.isOpen = isOpen;
     }
 

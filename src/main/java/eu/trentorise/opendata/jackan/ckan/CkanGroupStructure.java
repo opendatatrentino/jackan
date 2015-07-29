@@ -23,7 +23,7 @@ import java.util.List;
  * This abstract class models the same data structure that Ckan uses for both groups and
  * organizations. Since they are different things and work with different APIs
  * we made two different implementations. For groups use {@link CkanGroup} and
- * organizations use {@link CkanOrganization} (Ckan way to tell the difference
+ * for organizations use {@link CkanOrganization} (Ckan way to tell the difference
  * is the {@link #isOrganization() } field).
  *
  * @author David Leoni
@@ -155,7 +155,6 @@ public abstract class CkanGroupStructure {
      * A ckan group can also be an organization.
      */
     @JsonProperty("is_organization")
-
     public boolean isOrganization() {
         return organization;
     }

@@ -15,6 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -33,13 +34,12 @@ import com.google.common.collect.ImmutableList;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.commons.OdtUtils;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -62,9 +62,9 @@ import org.apache.http.impl.cookie.DateUtils;
  * The client is a thin wrapper upon Ckan api, thus one method call should
  * correspond to only one web api call. This means sometimes to get a full
  * object from Ckan, you will need to do a second call (for example, calling
- * {@link #getDataset(java.lang.String)} will also return its resources because Ckan sends them with the
- * dataset, but to be sure to have all the fields of a resource you will need to
- * call {@link #getResource(java.lang.String)).
+ * {@link #getDataset(java.lang.String)} will also return its resources because
+ * Ckan sends them with the dataset, but to be sure to have all the fields of a
+ * resource you will need to call {@link #getResource(java.lang.String)).
  *
  * @author David Leoni, Ivan Tankoyeu
  *
@@ -74,17 +74,19 @@ public class CkanClient {
     /**
      * CKAN uses UTC timezone, and doesn't append 'Z' to dates.
      */
-    public static final String CKAN_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";            
-    
+    public static final String CKAN_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";
+
     /**
      * Sometimes we get back Python "None" as a string instead of proper JSON
      * null
      */
     public static final String NONE = "None";
-    
 
     @Nullable
     private static ObjectMapper objectMapper;
+
+    @Nullable
+    private static ObjectMapper objectMapperForPosting;
 
     /**
      * Notice that even for the same api version (at least for versions <= 3)
@@ -97,16 +99,41 @@ public class CkanClient {
     @Nullable
     private final String ckanToken;
 
-    private static final Logger logger = Logger.getLogger(CkanClient.class.getName());
+    private static final Logger LOG = Logger.getLogger(CkanClient.class.getName());
 
     @Nullable
-    private HttpHost proxy = null;
+    private HttpHost proxy;
 
     /**
-     * @return a clone of the json object mapper used internally.
+     * Returns a clone of the json object mapper used internally for read
+     * operations
+     *
      */
     public static ObjectMapper getObjectMapperClone() {
         return getObjectMapper().copy();
+    }
+
+    /**
+     * Returns a clone of the json object mapper used internally for create
+     * operations.
+     *
+     */
+    public static ObjectMapper getObjectMapperForPostingClone() {
+        return getObjectMapperForPosting().copy();
+    }
+
+    /**
+     * Retrieves the Jackson object mapper. Internally, Object mapper is
+     * initialized at first call.
+     */
+    static ObjectMapper getObjectMapperForPosting() {
+        if (objectMapperForPosting == null) {
+            objectMapperForPosting = getObjectMapperClone();
+
+            // when posting for creating datasets sending too much null stuff seems to confuse Ckan.
+            objectMapperForPosting.setSerializationInclusion(Include.NON_NULL);
+        }
+        return objectMapperForPosting;
     }
 
     /**
@@ -114,7 +141,7 @@ public class CkanClient {
      * initialized at first call.
      */
     static ObjectMapper getObjectMapper() {
-        
+
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
             objectMapper
@@ -132,9 +159,8 @@ public class CkanClient {
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
             // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
             //objectMapper.setDateFormat(new SimpleDateFormat(CKAN_TIMESTAMP_PATTERN));
-            
             objectMapper.registerModule(new SimpleModule() {
-                {           
+                {
                     addSerializer(Date.class, new StdSerializer<Date>(Date.class) {
                         @Override
                         public void serialize(Date value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
@@ -142,12 +168,11 @@ public class CkanClient {
                         }
 
                     });
-                    
-                    
+
                     addDeserializer(Date.class, new CkanDateDeserializer());
                 }
             });
-            
+
             objectMapper.registerModule(new GuavaModule());
 
         }
@@ -240,10 +265,10 @@ public class CkanClient {
         String fullUrl = calcFullUrl(path, params);
 
         try {
-            logger.log(Level.FINE, "getting {0}", fullUrl);
+            LOG.log(Level.FINE, "getting {0}", fullUrl);
             Request request = Request.Get(fullUrl);
-            if(ckanToken != null){
-            	request.addHeader("Authorization", ckanToken);
+            if (ckanToken != null) {
+                request.addHeader("Authorization", ckanToken);
             }
             if (proxy != null) {
                 request.viaProxy(proxy);
@@ -286,8 +311,8 @@ public class CkanClient {
         String fullUrl = calcFullUrl(path, params);
 
         try {
-
-            logger.log(Level.FINE, "posting to url {0}", fullUrl);
+            LOG.log(Level.FINE, "Posting to url {0}", fullUrl);
+            LOG.log(Level.FINE, "Sending body:{0}", body);
             Request request = Request.Post(fullUrl);
             if (proxy != null) {
                 request.viaProxy(proxy);
@@ -392,6 +417,7 @@ public class CkanClient {
 
     /**
      * Returns list of dataset names like i.e. limestone-pavement-orders
+     *
      * @throws JackanException on error
      */
     public synchronized List<String> getDatasetList() {
@@ -438,7 +464,7 @@ public class CkanClient {
      */
     private synchronized int getApiVersion(int number) {
         String fullUrl = catalogURL + "/api/" + number;
-        logger.log(Level.FINE, "getting {0}", fullUrl);
+        LOG.log(Level.FINE, "getting {0}", fullUrl);
         try {
             Request request = Request.Get(fullUrl);
             if (proxy != null) {
@@ -510,6 +536,7 @@ public class CkanClient {
 
     /**
      * Return group names, like i.e. management-of-territory
+     *
      * @throws JackanException on error
      */
     public synchronized List<String> getGroupNames() {
@@ -518,7 +545,7 @@ public class CkanClient {
 
     /**
      * Returns a Ckan group. Do not pass an organization id, to get organization
-     * use {@link #getOrganization(java.lang.String) } instead. 
+     * use {@link #getOrganization(java.lang.String) } instead.
      *
      * @param idOrName either the group name (i.e. hospitals-in-trento-district)
      * or the group alphanumerical id
@@ -709,17 +736,18 @@ public class CkanClient {
      * @return the newly created resource
      * @throws JackanException
      */
-    public synchronized CkanResource createResource(CkanResourceMinimized resource) {
-        checkResource(resource);
+    public synchronized CkanResource createResource(CkanResource resource) {
 
+        checkResource(resource);
+        
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
 
-        ObjectMapper objMapper = CkanClient.getObjectMapper();
+        ObjectMapper om = CkanClient.getObjectMapperForPosting();
         String json = null;
         try {
-            json = objMapper.writeValueAsString(resource);
+            json = om.writeValueAsString(resource);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanResource!", e);
@@ -728,47 +756,29 @@ public class CkanClient {
     }
 
     /**
-     * Creates ckan resource on the server.
-     *
-     * @param resource ckan resource object with the minimal set of parameters
-     * required. See
-     * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
-     * @return the newly created resource
-     * @throws JackanException
+     * Checks dataset can actually be created
+     * @throws IllegalArgumentException if minimal requirements aren't met
      */
-    public synchronized CkanResource createResource(CkanResource resource) {
-
-        logger.warning("TODO 0.4 CREATION OF FULL RESOURCE IS EXPERIMENTAL!");
-
-        if (ckanToken == null) {
-            throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
-        }
-
-        ObjectMapper objMapper = CkanClient.getObjectMapper();
-        String json = null;
-        try {
-            json = objMapper.writeValueAsString(resource);
-        }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanResource!", e);
-        }
-        return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
+    static void checkDataset(CkanDataset dataset){
+        checkNotEmpty(dataset.getName(), "invalid ckan dataset name (must have no spaces and dashes as separators, i.e. \"limestone-pavement-orders");
+        checkNotEmpty(dataset.getUrl(), "invalid ckan dataset url to description page");
+        checkNotNull(dataset.getExtras(), "invalid ckan dataset extras");
     }
-
+    
     /**
      * Checks if the provided resource meets the requirements to be created to
      * CKAN.
      *
-     * @throws Throwable if requirements aren't met
+     * @throws IllegalArgumentException if minimal requirements aren't met
      */
-    private static void checkResource(CkanResourceMinimized resource) {
-        checkNotNull(resource);
-        checkNotNull(resource.getFormat(), "Ckan resource format must not be null!");
+    static void checkResource(CkanResource resource) {
+        checkNotNull(resource, "Can't create null resource!");
+        checkNotEmpty(resource.getFormat(), "Invalid Ckan resource format!");
         checkNotEmpty(resource.getName(), "Ckan resource name can't be empty!");
-        checkNotNull(resource.getDescription(), "Ckan resource description must not be null!");
+        checkNotEmpty(resource.getDescription(), "Ckan resource description must not be null!");
         // todo do we need to check mimetype?? checkNotNull(resource.getMimetype());
-        checkNotNull(resource.getPackageId(), "Ckan resource parent dataset must not be null!");
-        checkNotNull(resource.getUrl(), "Ckan resource url must not be null!");
+        checkNotEmpty(resource.getPackageId(), "Ckan resource parent dataset must not be empty!");
+        checkNotEmpty(resource.getUrl(), "Ckan resource url must be not empty!");
     }
 
     /**
@@ -851,51 +861,21 @@ public class CkanClient {
      */
     public synchronized CkanDataset createDataset(CkanDataset dataset) {
 
-        logger.warning("TODO 0.4 CREATION OF FULL DATASETS IS EXPERIMENTAL!");
-
-        checkNotNull(dataset);
+        checkDataset(dataset);
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
         }
 
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
         String json = null;
         try {
-            json = objectMapper.writeValueAsString(dataset);
+            json = getObjectMapperForPosting().writeValueAsString(dataset);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", this, e);
+            throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
         }
-        DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
-        return datasetresponse.result;
-    }
-
-    /**
-     * Creates CkanDataset on the server
-     *
-     * @param dataset data set with a given parameters
-     * @return the newly created dataset
-     * @throws JackanException
-     */
-    public synchronized CkanDataset createDataset(CkanDatasetMinimized dataset) {
-
-        checkNotNull(dataset);
-
-        if (ckanToken == null) {
-            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
-        }
-
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(dataset);
-        }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDatasetMinimized!", this, e);
-        }
-        DatasetResponse datasetresponse = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
-        return datasetresponse.result;
+        DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+        return response.result;
     }
 
     /**

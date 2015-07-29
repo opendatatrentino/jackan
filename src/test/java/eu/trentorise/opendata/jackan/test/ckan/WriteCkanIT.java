@@ -15,15 +15,13 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanDatasetMinimized;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import eu.trentorise.opendata.jackan.ckan.CkanResourceMinimized;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,7 @@ public class WriteCkanIT {
 
     public static final String TEST_RESOURCE_ID = "81f579fe-7f10-4fa2-94f2-0011898dc78c";
 
-    public static final Logger logger = Logger.getLogger(WriteCkanIT.class.getName());
+    private static final Logger LOG = Logger.getLogger(WriteCkanIT.class.getName());
 
     CkanClient client;
 
@@ -78,52 +76,28 @@ public class WriteCkanIT {
         CkanPair ckanPair = new CkanPair();
         ckanPair.setKey("test key");
         ckanPair.setValue("test value");
-        List<CkanPair> extras = new ArrayList<CkanPair>();
+        List<CkanPair> extras = new ArrayList();
         extras.add(ckanPair);
 
-        String uri = "http://github.com/opendatatrentino/Jackan";
+        String uri = "http://github.com/opendatatrentino/jackan";
 
         long datasetNumber = UUID.randomUUID().getMostSignificantBits();
 
         String datasetName = "test-dataset-jackan-" + datasetNumber;
 
-        CkanDataset ckanDataset = new CkanDataset(datasetName, uri, extras);
-        ckanDataset.setTitle("Test Jackan Dataset " + datasetNumber);
-        ckanDataset.setLicenseId("cc-zero");
+        CkanDataset dataset = new CkanDataset(datasetName, uri, extras);
+        dataset.setTitle("Test Jackan Dataset " + datasetNumber);
+        dataset.setLicenseId("cc-zero");
 
-        CkanDataset retDataset = client.createDataset(ckanDataset);
+        CkanDataset retDataset = client.createDataset(dataset);
 
-        assertNotNull(retDataset.getId());
-        assertTrue(retDataset.getId().length() > 0);
-        logger.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
-    }
-
-    @Test
-    public void testCreateDatasetMinimized() throws URISyntaxException {
-
-        CkanPair ckanPair = new CkanPair();
-        ckanPair.setKey("test key");
-        ckanPair.setValue("test value");
-        List<CkanPair> extras = new ArrayList<CkanPair>();
-        extras.add(ckanPair);
-
-        String uri = "http://github.com/opendatatrentino/Jackan";
-
-        long datasetNumber = UUID.randomUUID().getMostSignificantBits();
-
-        String datasetName = "test-dataset-jackan-" + datasetNumber;
-
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName,
-                uri,
-                extras,
-                "Test Jackan Dataset " + datasetNumber,
-                "cc-zero");
-
-        CkanDataset retDataset = client.createDataset(ckanDataset);
-
-        assertNotNull(retDataset.getId());
-        assertTrue(retDataset.getId().length() > 0);
-        logger.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
+        checkNotEmpty(retDataset.getId(), "Invalid dataset id!");
+        assertEquals(dataset.getName(), retDataset.getName());
+        assertEquals(dataset.getUrl(), retDataset.getUrl());
+        assertEquals(dataset.getExtras(), retDataset.getExtras());
+        assertEquals(dataset.getTitle(), retDataset.getTitle());
+        assertEquals(dataset.getLicenseId(), retDataset.getLicenseId());
+        LOG.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
     }
 
     @Test
@@ -134,60 +108,35 @@ public class WriteCkanIT {
         long datasetNumber = UUID.randomUUID().getMostSignificantBits();
         String datasetName = "test-dataset-jackan-" + datasetNumber;
 
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName,
+        CkanDataset ckanDataset = new CkanDataset(datasetName,
                 url,
-                new ArrayList(),
-                "Test Jackan Dataset " + datasetNumber,
-                "cc-zero");
+                new ArrayList());
+        ckanDataset.setTitle("Test Jackan Dataset " + datasetNumber);
+        ckanDataset.setLicenseId("cc-zero");
 
         CkanDataset retDataset = client.createDataset(ckanDataset);
 
-        CkanResource ckanResource = new CkanResource("JSONLD",
+        CkanResource res = new CkanResource("jsonld",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
                 url,
                 "Most interesting test resource in the universe",
-                retDataset.getId(),
-                null);
+                retDataset.getId());
 
         // todo add more fields
-        CkanResource retCkanRes = client.createResource(ckanResource);
+        CkanResource retRes = client.createResource(res);
 
-        assertNotNull(retCkanRes.getId());
-        assertTrue(retCkanRes.getId().length() > 0);
-        logger.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retCkanRes.getId(), JackanTestConfig.of().getOutputCkan()});
-
-    }
-
-    @Test
-    public void testCreateResourceMinimized() throws URISyntaxException {
-
-        String url = "http://github.com/opendatatrentino/jackan";
-
-        long datasetNumber = UUID.randomUUID().getMostSignificantBits();
-        String datasetName = "test-dataset-jackan-" + datasetNumber;
-
-        CkanDatasetMinimized ckanDataset = new CkanDatasetMinimized(datasetName,
-                url,
-                new ArrayList(),
-                "Test Jackan Dataset " + datasetNumber,
-                "cc-zero");
-
-        CkanDataset retDataset = client.createDataset(ckanDataset);
-
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD",
-                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits() + datasetNumber,
-                url,
-                "Most interesting test resource in the universe",
-                retDataset.getId(),
-                null);
-
-        CkanResource retCkanRes = client.createResource(ckanResource);
-
-        assertNotNull(retCkanRes.getId());
-        assertTrue(retCkanRes.getId().length() > 0);
-        logger.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retCkanRes.getId(), JackanTestConfig.of().getOutputCkan()});
+        checkNotEmpty(retRes.getId(), "Invalid created resource id!");
+        assertEquals(res.getFormat(), retRes.getFormat());
+        assertEquals(res.getName(), retRes.getName());
+        assertEquals(res.getUrl(), retRes.getUrl());
+        assertEquals(res.getDescription(), retRes.getDescription());
+        assertEquals(null, retRes.getPackageId()); // because this won't be present in the result
+        
+        LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
 
     }
+
+    
 
     /**
      * todo review this!!!
@@ -210,8 +159,7 @@ public class WriteCkanIT {
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
                 "http://go-play-with-jackan.org/myfile_1.jsonld",
                 "First most interesting test resource in the universe",
-                dataset.getId(),
-                null);
+                dataset.getId());
 
         CkanResource createdResource = client.createResource(resource1);
 
@@ -247,8 +195,7 @@ public class WriteCkanIT {
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
                 "http://go-play-with-jackan.org/myfile_1.jsonld",
                 "First most interesting test resource in the universe",
-                dataset.getId(),
-                null);
+                dataset.getId());
 
         CkanResource createdResource = client.createResource(resource1);
 
@@ -256,8 +203,7 @@ public class WriteCkanIT {
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
                 "http://go-play-with-jackan.org/myfile_2.jsonld",
                 "Second most interesting test resource in the universe",
-                dataset.getId(),
-                null);
+                dataset.getId());
 
         createdDataset.setAuthor("Jackan enthusiast");
         createdDataset.getResources().add(resource2);
@@ -270,25 +216,18 @@ public class WriteCkanIT {
     @Test
     public void testUpdateResource() {
 
-        URI uri = null;
-        try {
-            uri = new URI("http", "www.unitn.it", null, null);
-        }
-        catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        CkanResourceMinimized ckanResource = new CkanResourceMinimized("JSONLD", "ivanresource2", uri.toASCIIString(), "test resource", "81f579fe-7f10-4fa2-94f2-0011898dc78c", null);
-        CkanResource fullCkanResource = ckanResource.toFullResource();
-        CkanResourceMinimized ckanResource2 = new CkanResourceMinimized("JSONLD", "my test resource", uri.toASCIIString(), "test res", "81f579fe-7f10-4fa2-94f2-0011898dc78c", null);
-        CkanResource fullCkanResource2 = ckanResource2.toFullResource();
-        fullCkanResource.setOwner("Tankoyeu");
+        CkanResource ckanResource = new CkanResource("JSONLD", "ivanresource2", "http://mysite.org", "test resource", "81f579fe-7f10-4fa2-94f2-0011898dc78c");
+        
+        CkanResource ckanResource2 = new CkanResource("JSONLD", "my test resource", "http://mysite.org", "test res", "81f579fe-7f10-4fa2-94f2-0011898dc78c");
+     
+        ckanResource.setOwner("Tankoyeu");
         ckanResource.setId(TEST_RESOURCE_ID);
-        assertEquals(fullCkanResource.getOwner(), "Tankoyeu");
+        assertEquals(ckanResource.getOwner(), "Tankoyeu");
 
-        CkanResource cResource1 = client.updateResource(fullCkanResource, true);
+        CkanResource cResource1 = client.updateResource(ckanResource, true);
         assertEquals(cResource1.getOwner(), "Tankoyeu");
 
-        CkanResource cResource2 = client.updateResource(fullCkanResource2, false);
+        CkanResource cResource2 = client.updateResource(ckanResource2, false);
         assertEquals(cResource2.getOwner(), "None");
 
     }

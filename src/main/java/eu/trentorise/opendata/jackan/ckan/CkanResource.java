@@ -18,7 +18,7 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +26,11 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * Class initializes almost nothing so to fully preserve all we get from ckan.
+ * 
+ * A Resource describes with metadata a physical file. Resources are part of {@link CkanDataset}.
+ * Class initializes almost nothing to fully preserve all we get from ckan.
  *
+ * In DCAT terminology, a Ckan Resource is a DCAT Distribution.
  * @author David Leoni
  */
 public class CkanResource {
@@ -147,27 +150,18 @@ public class CkanResource {
      * http://dati.trentino.it/storage/f/2013-05-09T140831/TRENTO_Laghi_monitorati_UTM.csv
      * @param description
      * @param packageId id of the dataset that contains the resource
-     * @param mimetype
      */
     public CkanResource(String format,
             String name,
             String url,
             String description,
-            String packageId,
-            String mimetype) {
-        this();
-        checkNotEmpty(format, "invalid ckan resource format");
-        checkNotEmpty(name, "invalid ckan resource name");
-        checkNotEmpty(url, "invalid ckan resource file url");
-        checkNotEmpty(description, "invalid ckan resource description");
-        checkNotEmpty(packageId, "invalid ckan dataset id (also called package id)");
-
+            String packageId) {
+        this();        
         this.format = format;
         this.name = name;
         this.url = url;
         this.description = description;
         this.packageId = packageId;
-        this.mimetype = mimetype;
     }
 
     /**
@@ -369,10 +363,10 @@ public class CkanResource {
      *
      *
      * Notice we found name null in data.gov.uk datasets... i.e.
-     * http://data.gov.uk/api/3/action/resource_show?id=77d2dba8-d0d9-49ef-9fd2-37a4a8bc5a17
-     * taken from this dataset search:
-     * http://data.gov.uk/api/3/action/package_search?rows=20&start=0 They use
-     * description field instead
+     * <a href="http://data.gov.uk/api/3/action/resource_show?id=77d2dba8-d0d9-49ef-9fd2-37a4a8bc5a17" target="_blank">
+     * unclaimed-estates-list </a>, taken
+     * <a href="http://data.gov.uk/api/3/action/package_search?rows=20&start=0" target="_blank">from
+     * this dataset search</a> (They use description field instead)
      */
     @Nullable
     public String getName() {
@@ -380,9 +374,8 @@ public class CkanResource {
     }
 
     /**
-     * Human readable name, i.e. "Apple Production 2013 in CSV format" We found
-     * name null in data.gov.uk datasets... i.e.
-     * http://data.gov.uk/api/3/action/resource_show?id=77d2dba8-d0d9-49ef-9fd2-37a4a8bc5a17
+     * Human readable name, i.e. "Apple Production 2013 in CSV format". For
+     * Nullable explanation see {@link #getName()}
      */
     public void setName(@Nullable String name) {
         this.name = name;

@@ -15,6 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
 
 /**
@@ -25,6 +26,7 @@ import javax.annotation.Nullable;
 public class CkanPair {
 
     private String key;
+    
     @Nullable
     private String value;
 
@@ -44,7 +46,35 @@ public class CkanPair {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(@Nullable String value) {
         this.value = value;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.key);
+        hash = 97 * hash + Objects.hashCode(this.value);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CkanPair other = (CkanPair) obj;
+        if (!Objects.equals(this.key, other.key)) {
+            return false;
+        }
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }
