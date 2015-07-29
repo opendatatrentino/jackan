@@ -546,8 +546,21 @@ public class CkanClient {
      * @throws JackanException on error
      */
     public synchronized CkanOrganization getOrganization(String organizationIdOrName) {
+        return getOrganization(organizationIdOrName, false);
+    }
+    
+    /**
+     * Returns a Ckan organization with dataSets
+     *
+     * @param organizationIdOrName either the name of organization (i.e.
+     * culture-and-education) or the alphanumerical id (i.e.
+     * 232cad97-ecf2-447d-9656-63899023887f). Do not pass it a group id.
+     * @param includeDataset : if the dataSets are included or not
+     * @throws JackanException on error
+     */
+    public synchronized CkanOrganization getOrganization(String organizationIdOrName,boolean includeDataset) {
         return getHttp(OrganizationResponse.class, "/api/3/action/organization_show", "id",
-                organizationIdOrName, "include_datasets", "false").result;
+                organizationIdOrName, "include_datasets", String.valueOf(includeDataset)).result;
     }
 
     /**
