@@ -222,6 +222,9 @@ public class CkanClient {
         try {
             logger.log(Level.FINE, "getting {0}", fullUrl);
             Request request = Request.Get(fullUrl);
+            if(ckanToken != null){
+            	request.addHeader("Authorization", ckanToken);
+            }
             if (proxy != null) {
                 request.viaProxy(proxy);
             }
