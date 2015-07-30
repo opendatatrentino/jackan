@@ -264,6 +264,8 @@ public class CkanClient {
 
         String fullUrl = calcFullUrl(path, params);
 
+        T dr;
+
         try {
             LOG.log(Level.FINE, "getting {0}", fullUrl);
             Request request = Request.Get(fullUrl);
@@ -273,21 +275,23 @@ public class CkanClient {
             if (proxy != null) {
                 request.viaProxy(proxy);
             }
-            String json = request.execute().returnContent().asString();
-            T dr = getObjectMapper().readValue(json, responseType);
-            if (!dr.success) {
-                // monkey patching error type
-                throw new JackanException(
-                        "Reading from catalog " + catalogURL + " was not successful. Reason: "
-                        + CkanError.read(getObjectMapper()
-                                .readTree(json).get("error").asText())
-                );
-            }
-            return dr;
+            Response response = request.execute();
+
+            InputStream stream = response.returnResponse().getEntity().getContent();
+
+            dr = getObjectMapper().readValue(stream, responseType);
         }
         catch (Exception ex) {
             throw new JackanException("Error while performing GET. Request url was: " + fullUrl, ex);
         }
+        if (!dr.success) {
+            throw new JackanException(
+                    "Error while performing GET. Request url was: " + fullUrl,
+                    dr.error, this);
+
+        }
+        return dr;
+
     }
 
     /**
@@ -310,6 +314,8 @@ public class CkanClient {
 
         String fullUrl = calcFullUrl(path, params);
 
+        T dr;
+
         try {
             LOG.log(Level.FINE, "Posting to url {0}", fullUrl);
             LOG.log(Level.FINE, "Sending body:{0}", body);
@@ -319,23 +325,20 @@ public class CkanClient {
             }
             Response response = request.bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
 
-            Content out = response.returnContent();
-            String json = out.asString();
+            InputStream stream = response.returnResponse().getEntity().getContent();
 
-            T dr = getObjectMapper().readValue(json, responseType);
-            if (!dr.success) {
-                // monkey patching error type
-                throw new JackanException(
-                        "posting to catalog " + catalogURL + " was not successful. Reason: "
-                        + CkanError.read(getObjectMapper()
-                                .readTree(json).get("error").asText())
-                );
-            }
-            return dr;
-        }
-        catch (Exception ex) {
+            dr = getObjectMapper().readValue(stream, responseType);
+        } catch (Exception ex) {
             throw new JackanException("Error while performing a POST! Request url is:" + fullUrl, ex);
         }
+
+        if (!dr.success) {
+            throw new JackanException(
+                    "Error while performing a POST! Request url is:" + fullUrl,
+                    dr.error, this
+            );
+        }
+        return dr;
 
     }
 
@@ -472,7 +475,9 @@ public class CkanClient {
             }
             String json = request.execute().returnContent()
                     .asString();
-            return getObjectMapper().readValue(json, ApiVersionResponse.class).version;
+
+            return getObjectMapper().readValue(json, ApiVersionResponse.class
+            ).version;
         }
         catch (Exception ex) {
             throw new JackanException("Error while fetching api version!", this, ex);
@@ -486,10 +491,12 @@ public class CkanClient {
      *
      * @throws JackanException on error
      */
-    public synchronized CkanDataset getDataset(String idOrName) {
+    public synchronized CkanDataset
+            getDataset(String idOrName) {
         CkanDataset cd = getHttp(DatasetResponse.class, "/api/3/action/package_show",
                 "id", idOrName).result;
-        for (CkanResource cr : cd.getResources()) {
+        for (CkanResource cr
+                : cd.getResources()) {
             cr.setPackageId(cd.getId());
         }
         return cd;
@@ -506,7 +513,8 @@ public class CkanClient {
      * @param id i.e. 'admin'
      * @throws JackanException on error
      */
-    public synchronized CkanUser getUser(String id) {
+    public synchronized CkanUser
+            getUser(String id) {
         return getHttp(UserResponse.class, "/api/3/action/user_show", "id", id).result;
     }
 
@@ -516,7 +524,8 @@ public class CkanClient {
      *
      * @throws JackanException on error
      */
-    public synchronized CkanResource getResource(String id) {
+    public synchronized CkanResource
+            getResource(String id) {
         return getHttp(ResourceResponse.class, "/api/3/action/resource_show",
                 "id", id).result;
     }
@@ -551,7 +560,8 @@ public class CkanClient {
      * or the group alphanumerical id
      * @throws JackanException on error
      */
-    public synchronized CkanGroup getGroup(String idOrName) {
+    public synchronized CkanGroup
+            getGroup(String idOrName) {
         return getHttp(GroupResponse.class, "/api/3/action/group_show", "id",
                 idOrName, "include_datasets", "false").result;
     }
@@ -592,7 +602,8 @@ public class CkanClient {
      * 232cad97-ecf2-447d-9656-63899023887f). Do not pass it a group id.
      * @throws JackanException on error
      */
-    public synchronized CkanOrganization getOrganization(String organizationIdOrName) {
+    public synchronized CkanOrganization
+            getOrganization(String organizationIdOrName) {
         return getHttp(OrganizationResponse.class, "/api/3/action/organization_show", "id",
                 organizationIdOrName, "include_datasets", "false").result;
     }
@@ -713,8 +724,9 @@ public class CkanClient {
         }
 
         DatasetSearchResponse dsr;
-        dsr = getHttp(DatasetSearchResponse.class,
-                "/api/3/action/package_search?" + params.toString());
+        dsr
+                = getHttp(DatasetSearchResponse.class,
+                        "/api/3/action/package_search?" + params.toString());
 
         if (dsr.success) {
             for (CkanDataset ds : dsr.result.getResults()) {
@@ -739,7 +751,7 @@ public class CkanClient {
     public synchronized CkanResource createResource(CkanResource resource) {
 
         checkResource(resource);
-        
+
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
@@ -751,20 +763,22 @@ public class CkanClient {
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanResource!", e);
+
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
 
     /**
      * Checks dataset can actually be created
+     *
      * @throws IllegalArgumentException if minimal requirements aren't met
      */
-    static void checkDataset(CkanDataset dataset){
+    static void checkDataset(CkanDataset dataset) {
         checkNotEmpty(dataset.getName(), "invalid ckan dataset name (must have no spaces and dashes as separators, i.e. \"limestone-pavement-orders");
         checkNotEmpty(dataset.getUrl(), "invalid ckan dataset url to description page");
         checkNotNull(dataset.getExtras(), "invalid ckan dataset extras");
     }
-    
+
     /**
      * Checks if the provided resource meets the requirements to be created to
      * CKAN.
@@ -830,6 +844,7 @@ public class CkanClient {
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+
         }
 
         return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
@@ -873,6 +888,7 @@ public class CkanClient {
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
+
         }
         DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
         return response.result;
@@ -884,6 +900,7 @@ public class CkanClient {
     @Nullable
     public HttpHost getProxy() {
         return proxy;
+
     }
 
 }

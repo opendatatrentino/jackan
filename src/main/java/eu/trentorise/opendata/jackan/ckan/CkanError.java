@@ -15,26 +15,33 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import eu.trentorise.opendata.jackan.JackanException;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author David Leoni
  */
-class CkanError {
+public class CkanError {
 
     private String message;
     /**
      * actually the original is __type
      */
     private String type;
+    
+    /**
+     * Holds fields we can't foresee
+     */
+    private Map<String, Object> others = new HashMap();    
 
     @Override
     public String toString() {
-        return "Ckan error of type: " + getType() + "\t message:" + getMessage();
+        return "Ckan error of type: " + getType() + "  message:" + getMessage() + 
+                "  Other fields:" + others.toString();
     }
 
     public String getMessage() {
@@ -61,21 +68,19 @@ class CkanError {
     }
 
     /**
-     * To overcome the __type problem. Tried many combinations but Jackson is
-     * not collaborating here, even if in Group.isOrganization case setting the
-     * JsonProperty("is_organization") did work.
+     * Holds fields we can't foresee
      */
-    static CkanError read(String json) {
-        try {
-            CkanError ce = new CkanError();
-            JsonNode jn = CkanClient.getObjectMapper().readTree(json);
-            ce.setMessage(jn.get("message").asText());
-            ce.setType(jn.get("__type").asText());
-            return ce;
-        }
-        catch (IOException ex) {
-            throw new JackanException("Couldn parse CkanError.", ex);
-        }
+    @JsonAnyGetter
+    public Map<String, Object> getOthers() {
+        return others;
     }
-
+    
+    /**
+     * Holds fields we can't foresee
+     */
+    @JsonAnySetter
+    public void setOthers(String name, Object value) {
+        others.put(name, value);
+    }        
+        
 }

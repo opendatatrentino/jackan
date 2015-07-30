@@ -165,9 +165,11 @@ public class CkanResource {
     }
 
     /**
-     * Custom CKAN instances might sometimes gift us with properties that don't
-     * end up in extras as they should. In this case, they end up in 'others'
-     * field
+     * CKAN instances might have
+     * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
+     * custom data schemas</a> that force presence of custom properties among
+     * 'regular' ones given by {@link #getExtras()}. In this case, they go to 
+     * 'others' field.
      */
     @JsonAnyGetter
     public Map<String, Object> getOthers() {
@@ -175,9 +177,7 @@ public class CkanResource {
     }
 
     /**
-     * Custom CKAN instances might sometimes gift us with properties that don't
-     * end up in extras as they should. In this case, they end up in 'others'
-     * field
+     * See {@link #getOthers()}
      */
     @JsonAnySetter
     public void setOthers(String name, Object value) {
@@ -261,10 +261,17 @@ public class CkanResource {
         return hm;
     }
 
+    /**
+     * Regular place where to put custom metadata. See also
+     * {@link #getOthers()}.
+     */    
     public List<CkanPair> getExtras() {
         return extras;
     }
 
+    /**
+     * See {@link #getExtras()}
+     */    
     public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }

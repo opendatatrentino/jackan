@@ -76,7 +76,7 @@ public class CkanDataset {
 
     /**
      * Custom CKAN instances might sometimes gift us with properties that don't
-     * end up in extras as they should. They will end up here.
+     * end up in extras. They will end up here.
      */
     private Map<String, Object> others;
 
@@ -105,22 +105,27 @@ public class CkanDataset {
      * @param extras
      */
     public CkanDataset(String name, String url, List<CkanPair> extras) {
-        this();        
+        this();
         this.name = name;
         this.url = url;
         this.extras = extras;
     }
 
     /**
-     * Custom CKAN instances might sometimes gift us with properties that don't
-     * end up in extras as they should. In this case, they go to in 'others'
-     * field
+     * CKAN instances might have
+     * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
+     * custom data schemas</a> that force presence of custom properties among
+     * 'regular' ones given by {@link #getExtras()}. In this case, they go to 
+     * 'others' field.
      */
     @JsonAnyGetter
     public Map<String, Object> getOthers() {
         return others;
     }
 
+    /**
+     * See {@link #getOthers()}
+     */
     @JsonAnySetter
     public void setOthers(String name, Object value) {
         others.put(name, value);
@@ -202,7 +207,7 @@ public class CkanDataset {
         this.id = id;
     }
 
-    /**    
+    /**
      * <a href="http://docs.ckan.org/en/latest/api/legacy-api.html?highlight=isopen" target="_blank">
      * Legacy api 1/2 docs</a> says: boolean indication of whether dataset is
      * open according to Open Knowledge Definition, based on other fields
@@ -213,7 +218,7 @@ public class CkanDataset {
     }
 
     /**
-     * @see #isOpen() 
+     * @see #isOpen()
      */
     @JsonProperty("isopen")
     public void setOpen(boolean isOpen) {
@@ -457,10 +462,17 @@ public class CkanDataset {
         this.version = version;
     }
 
+    /**
+     * Regular place where to put custom metadata. See also
+     * {@link #getOthers()}.
+     */
     public List<CkanPair> getExtras() {
         return extras;
     }
 
+    /**
+     * See {@link #getExtras()}
+     */
     public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }

@@ -21,9 +21,11 @@ import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -37,6 +39,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,6 +57,8 @@ public class WriteCkanIT {
     private static final Logger LOG = Logger.getLogger(WriteCkanIT.class.getName());
 
     CkanClient client;
+    
+    CkanClient datiTrentinoClient;
 
     @BeforeClass
     public static void setUpClass() {
@@ -63,6 +68,7 @@ public class WriteCkanIT {
     @Before
     public void setUp() {
         client = new CkanClient(JackanTestConfig.of().getOutputCkan(), JackanTestConfig.of().getOutputCkanToken());
+        datiTrentinoClient = new CkanClient("http://dati.trentino.it");
     }
 
     @After
@@ -71,7 +77,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDataset() throws URISyntaxException {
+    public void testCreateSimpleDataset()  {
 
         CkanPair ckanPair = new CkanPair();
         ckanPair.setKey("test key");
@@ -100,6 +106,23 @@ public class WriteCkanIT {
         LOG.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
     }
 
+    
+    @Test
+    @Ignore
+    public void testCreateComplexDataset() {
+
+        CkanDataset dataset = datiTrentinoClient.getDataset(PRODOTTI_CERTIFICATI_DATASET_NAME);
+                
+        dataset.setExtras(new ArrayList()); // dati.trentino has custom schemas and merges metadata among regular fields
+        
+        CkanDataset retDataset = client.createDataset(dataset);
+
+        checkNotEmpty(retDataset.getId(), "Invalid dataset id!");
+        
+        LOG.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
+    }
+    
+    
     @Test
     public void testCreateResource() throws URISyntaxException {
 
@@ -178,7 +201,7 @@ public class WriteCkanIT {
         CkanPair ckanPair = new CkanPair();
         ckanPair.setKey("test key");
         ckanPair.setValue("test value");
-        List<CkanPair> datasetExtras = new ArrayList<CkanPair>();
+        List<CkanPair> datasetExtras = new ArrayList();
         datasetExtras.add(ckanPair);
 
         long datasetNumber = UUID.randomUUID().getMostSignificantBits();
@@ -191,7 +214,7 @@ public class WriteCkanIT {
 
         CkanDataset createdDataset = client.createDataset(dataset);
 
-        CkanResource resource1 = new CkanResource("JSONLD",
+        CkanResource resource1 = new CkanResource("jsonld",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
                 "http://go-play-with-jackan.org/myfile_1.jsonld",
                 "First most interesting test resource in the universe",
@@ -199,7 +222,7 @@ public class WriteCkanIT {
 
         CkanResource createdResource = client.createResource(resource1);
 
-        CkanResource resource2 = new CkanResource("JSONLD",
+        CkanResource resource2 = new CkanResource("jsonld",
                 "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
                 "http://go-play-with-jackan.org/myfile_2.jsonld",
                 "Second most interesting test resource in the universe",

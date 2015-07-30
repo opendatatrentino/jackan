@@ -16,6 +16,8 @@
 package eu.trentorise.opendata.jackan;
 
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
+import eu.trentorise.opendata.jackan.ckan.CkanError;
+import javax.annotation.Nullable;
 
 /**
  *
@@ -23,6 +25,17 @@ import eu.trentorise.opendata.jackan.ckan.CkanClient;
  */
 public class JackanException extends RuntimeException {
 
+    @Nullable
+    private CkanError ckanError = null;
+    @Nullable
+    private CkanClient ckanClient = null;
+    
+    private static String makeMessage(String msg, @Nullable CkanError error, @Nullable CkanClient client){
+        return msg + "  "  
+                + (client != null ? client + "  " : "")
+                + (error != null ? error  : "");
+    }
+    
     public JackanException(String msg) {
         super(msg);
     }
@@ -31,12 +44,37 @@ public class JackanException extends RuntimeException {
         super(msg, ex);
     }
 
-    public JackanException(String msg, CkanClient client) {
-        super(msg + "\nClient parameters: " + client.toString());
+   public JackanException(String msg, CkanClient client) {
+        super(makeMessage(msg, null, client));        
+        this.ckanClient = client;
+    }    
+    
+    public JackanException(String msg, CkanError error, CkanClient client) {
+        super(makeMessage(msg, error, client));
+        this.ckanError = error;
+        this.ckanClient = client;
     }
 
     public JackanException(String msg, CkanClient client, Throwable ex) {
-        super(msg + "\nClient parameters: " + client.toString(), ex);
+        this(msg, null, client, ex);
+    }
+    
+     public JackanException(String msg, CkanError error, CkanClient client, Throwable ex) {
+        super(makeMessage(msg, error, client), 
+                ex);
+        this.ckanError = error;
+        this.ckanClient = client;         
     }
 
+    @Nullable
+    public CkanError getCkanError() {
+        return ckanError;
+    }
+     
+    @Nullable
+    public CkanClient getCkanClient() {
+        return ckanClient;
+    }
+
+    
 }

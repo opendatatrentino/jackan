@@ -16,8 +16,10 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
@@ -76,6 +78,7 @@ public class ReadCkanIT {
     public static final String LAGHI_MONITORATI_TRENTO_NAME = "laghi-monitorati-trento-143675";
     public static final String LAGHI_MONITORATI_TRENTO_ID = "3745b44c-751f-40b3-8e97-ccd725bfbe8a";
     public static final String LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME = "Metadati in formato XML";
+    public static final String PRODOTTI_CERTIFICATI_DATASET_NAME = "prodotti-certificati";
 
     private Multimap<String, String> datasetList = LinkedListMultimap.create();
 
@@ -173,7 +176,6 @@ public class ReadCkanIT {
         if (!failedResources.isEmpty()) {
             throw new RuntimeException("Couldn't fetch these resources: \n " + failedResources.toString());
         }
-
     }
 
     @Test
@@ -364,7 +366,8 @@ public class ReadCkanIT {
             fail();
         }
         catch (JackanException ex) {
-
+            checkNotNull(ex.getCkanError());
+            checkNotEmpty(ex.getCkanError().getType(), "Ckan error type should not be empty!");
         }
 
     }

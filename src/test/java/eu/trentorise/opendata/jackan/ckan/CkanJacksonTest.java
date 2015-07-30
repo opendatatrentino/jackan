@@ -17,8 +17,10 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.OdtConfig;
+import eu.trentorise.opendata.jackan.JackanException;
 import java.io.*;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -67,12 +69,7 @@ public class CkanJacksonTest {
         assertEquals("b", dlr.result.get(1));
     }
 
-    @Test
-    public void testReadError() throws IOException {
-        String json = "{\"message\": \"a\",\"__type\":\"b\"}";
-        CkanError er = CkanError.read(json);
-        assertEquals("b", er.getType());
-    }
+
 
     /**
      * Tests the ObjectMapper underscore conversion
@@ -202,5 +199,5 @@ public class CkanJacksonTest {
         assertEquals("n", cd.getName());
         assertEquals(1, cd.getOthers().get("z"));
     }
-
+    
 }
