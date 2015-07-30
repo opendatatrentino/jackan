@@ -28,4 +28,12 @@ public class CkanOrganization extends CkanGroupStructure {
         super();
         setOrganization(true);
     }
+
+    /**
+     * Constructor for an organization with the minimal amount of parameters needed to be created on the server.
+     * @param name Name in the url, lowercased and without spaces. i.e. management-of-territory     
+     */
+    public CkanOrganization(String name) {
+        this.setName(name);
+    }
 }

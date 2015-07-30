@@ -15,7 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import javax.annotation.Nullable;
 
 /**
@@ -29,7 +29,7 @@ public class CkanTag {
     private String name;
 
     @Nullable
-    private Date revisionTimestamp;
+    private Timestamp revisionTimestamp;
     @Nullable
     private CkanState state;
     private String id;
@@ -78,11 +78,11 @@ public class CkanTag {
     }
 
     @Nullable
-    public Date getRevisionTimestamp() {
+    public Timestamp getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
-    public void setRevisionTimestamp(@Nullable Date revisionTimestamp) {
+    public void setRevisionTimestamp(@Nullable Timestamp revisionTimestamp) {
         this.revisionTimestamp = revisionTimestamp;
 
     }

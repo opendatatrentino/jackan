@@ -19,9 +19,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +46,8 @@ public class CkanDataset {
     private String licenseUrl;
     private String maintainer;
     private String maintainerEmail;
-    private Date metadataCreated;
-    private Date metadataModified;
+    private Timestamp metadataCreated;
+    private Timestamp metadataModified;
     private String name;
     private String notes;
     private String notesRendered;
@@ -62,10 +60,13 @@ public class CkanDataset {
     @Nullable
     private Boolean priv;
 
+    private List<CkanDatasetRelationShip> relationshipsAsObject;
+    private List<CkanDatasetRelationShip> relationshipsAsSubject;
+
     private List<CkanResource> resources;
 
     private String revisionId;
-    private Date revisionTimestamp;
+    private Timestamp revisionTimestamp;
     private String state;
     private List<CkanTag> tags;
     private String title;
@@ -84,38 +85,23 @@ public class CkanDataset {
         this.others = new HashMap();
     }
 
-    /**
-     * @param id The alphanumerical id of the dataaset,
-     * i.e."c4577b8f-5603-4098-917e-da03e8ddf461"
-     */
-    public CkanDataset(String id) {
-        this();
-        this.id = id;
-    }
-
-    /**
-     *
+    /**     
      * Constructor with the minimal set of attributes required to successfully
      * create a dataset on the server.
      *
      * @param name the dataset name (contains no spaces and has dashes as
      * separators, i.e. "limestone-pavement-orders")
-     * @param url the landing page on original data provider website describing
-     * the dataset.
-     * @param extras
      */
-    public CkanDataset(String name, String url, List<CkanPair> extras) {
+    public CkanDataset(String name) {
         this();
         this.name = name;
-        this.url = url;
-        this.extras = extras;
     }
-
+     
     /**
      * CKAN instances might have
      * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
      * custom data schemas</a> that force presence of custom properties among
-     * 'regular' ones given by {@link #getExtras()}. In this case, they go to 
+     * 'regular' ones given by {@link #getExtras()}. In this case, they go to
      * 'others' field.
      */
     @JsonAnyGetter
@@ -190,6 +176,21 @@ public class CkanDataset {
 
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
+    }
+
+    /**
+     * Regular place where to put custom metadata. See also
+     * {@link #getOthers()}.
+     */
+    public List<CkanPair> getExtras() {
+        return extras;
+    }
+
+    /**
+     * See {@link #getExtras()}
+     */
+    public void setExtras(List<CkanPair> extras) {
+        this.extras = extras;
     }
 
     /**
@@ -268,28 +269,28 @@ public class CkanDataset {
     /**
      * CKAN always refer to UTC timezone
      */
-    public Date getMetadataCreated() {
+    public Timestamp getMetadataCreated() {
         return metadataCreated;
     }
 
     /**
      * CKAN always refer to UTC timezone
      */
-    public void setMetadataCreated(Date metadataCreated) {
+    public void setMetadataCreated(Timestamp metadataCreated) {
         this.metadataCreated = metadataCreated;
     }
 
     /**
      * CKAN always refers to UTC timezone
      */
-    public Date getMetadataModified() {
+    public Timestamp getMetadataModified() {
         return metadataModified;
     }
 
     /**
      * CKAN always refers to UTC timezone
      */
-    public void setMetadataModified(Date metadataModified) {
+    public void setMetadataModified(Timestamp metadataModified) {
         this.metadataModified = metadataModified;
     }
 
@@ -336,6 +337,8 @@ public class CkanDataset {
     }
 
     /**
+     * The organization that owns the dataset.
+     *
      * Notice that if the dataset was obtained with a
      * {@link CkanClient#getDataset(java.lang.String)} call, the returned
      * organization won't have all the params you would get with a
@@ -346,10 +349,10 @@ public class CkanDataset {
     }
 
     /**
-     * Sets the organization the owns the dataset.
+     * Sets the organization that owns the dataset.
      */
-    public void setOrganization(CkanOrganization organziation) {
-        this.organization = organziation;
+    public void setOrganization(CkanOrganization organization) {
+        this.organization = organization;
     }
 
     /**
@@ -358,6 +361,48 @@ public class CkanDataset {
      */
     public void setOwnerOrg(String ownerOrg) {
         this.ownerOrg = ownerOrg;
+    }
+
+    /**
+     * Actually it is named "private" in the CKAN API. Appears in dataset
+     * searches.
+     */
+    @JsonProperty("private")
+    @Nullable
+    public Boolean isPriv() {
+        return priv;
+    }
+
+    /**
+     * Actually it is named "private" in the CKAN API. Appears in dataset
+     * searches.
+     */
+    public void setPriv(@Nullable Boolean priv) {
+        this.priv = priv;
+    }
+
+    public List<CkanDatasetRelationShip> getRelationshipsAsObject() {
+        return relationshipsAsObject;
+    }
+
+    public void setRelationshipsAsObject(List<CkanDatasetRelationShip> relationshipsAsObject) {
+        this.relationshipsAsObject = relationshipsAsObject;
+    }
+
+    public List<CkanDatasetRelationShip> getRelationshipsAsSubject() {
+        return relationshipsAsSubject;
+    }
+
+    public void setRelationshipsAsSubject(List<CkanDatasetRelationShip> relationshipsAsSubject) {
+        this.relationshipsAsSubject = relationshipsAsSubject;
+    }
+
+    public List<CkanResource> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<CkanResource> resources) {
+        this.resources = resources;
     }
 
     /**
@@ -379,7 +424,7 @@ public class CkanDataset {
      * Returns date in UTC timezone. Probably it is automatically calculated by
      * CKAN.
      */
-    public Date getRevisionTimestamp() {
+    public Timestamp getRevisionTimestamp() {
         return revisionTimestamp;
     }
 
@@ -389,7 +434,7 @@ public class CkanDataset {
      *
      * @param revisionTimestamp
      */
-    public void setRevisionTimestamp(Date revisionTimestamp) {
+    public void setRevisionTimestamp(Timestamp revisionTimestamp) {
         this.revisionTimestamp = revisionTimestamp;
     }
 
@@ -429,10 +474,20 @@ public class CkanDataset {
         this.title = title;
     }
 
+    /**
+     * The type of the dataset (optional), IDatasetForm plugins associate
+     * themselves with different dataset types and provide custom dataset
+     * handling behaviour for these types
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * The type of the dataset (optional), IDatasetForm plugins associate
+     * themselves with different dataset types and provide custom dataset
+     * handling behaviour for these types
+     */
     public void setType(String type) {
         this.type = type;
     }
@@ -462,44 +517,4 @@ public class CkanDataset {
         this.version = version;
     }
 
-    /**
-     * Regular place where to put custom metadata. See also
-     * {@link #getOthers()}.
-     */
-    public List<CkanPair> getExtras() {
-        return extras;
-    }
-
-    /**
-     * See {@link #getExtras()}
-     */
-    public void setExtras(List<CkanPair> extras) {
-        this.extras = extras;
-    }
-
-    /**
-     * Actually it is named "private" in the CKAN API. Appears in dataset
-     * searches.
-     */
-    @JsonProperty("private")
-    @Nullable
-    public Boolean isPriv() {
-        return priv;
-    }
-
-    /**
-     * Actually it is named "private" in the CKAN API. Appears in dataset
-     * searches.
-     */
-    public void setPriv(@Nullable Boolean priv) {
-        this.priv = priv;
-    }
-
-    public List<CkanResource> getResources() {
-        return resources;
-    }
-
-    public void setResources(List<CkanResource> resources) {
-        this.resources = resources;
-    }
 }

@@ -18,19 +18,20 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * 
- * A Resource describes with metadata a physical file. Resources are part of {@link CkanDataset}.
- * Class initializes almost nothing to fully preserve all we get from ckan.
+ *
+ * A Resource describes with metadata a physical file. Resources are part of
+ * {@link CkanDataset}. Class initializes almost nothing to fully preserve all
+ * we get from ckan.
  *
  * In DCAT terminology, a Ckan Resource is a DCAT Distribution.
+ *
  * @author David Leoni
  */
 public class CkanResource {
@@ -47,9 +48,9 @@ public class CkanResource {
      private String datasetName; // laghi-monitorati-trento
      private String datasetTitle; // Laghi monitorati Trento
      */
-    private Date cacheUrlUpdated;
+    private Timestamp cacheUrlUpdated;
 
-    private Date created;
+    private Timestamp created;
 
     private String description;
 
@@ -62,7 +63,7 @@ public class CkanResource {
     private String id;
 
     @Nullable
-    private Date lastModified;
+    private Timestamp lastModified;
 
     @Nullable
     private String mimetype;
@@ -99,7 +100,7 @@ public class CkanResource {
     private String urlType;
 
     @Nullable
-    private Date webstoreLastUpdated;
+    private Timestamp webstoreLastUpdated;
 
     @Nullable
     private String webstoreUrl;
@@ -144,23 +145,15 @@ public class CkanResource {
      * Constructor with the minimal list of required items to successfully
      * create a resource on the server.
      *
-     * @param format i.e. file format in capital letters, i.e. "CSV"
-     * @param name resource name, i.e. "My Cool resource"
-     * @param url the Url to the pyhsical file, i.e.
+     * @param url the Url to the pyhsical file i.e.
      * http://dati.trentino.it/storage/f/2013-05-09T140831/TRENTO_Laghi_monitorati_UTM.csv
-     * @param description
+     * (could also be a file outside ckan server)
      * @param packageId id of the dataset that contains the resource
      */
-    public CkanResource(String format,
-            String name,
-            String url,
-            String description,
+    public CkanResource(String url,
             String packageId) {
-        this();        
-        this.format = format;
-        this.name = name;
+        this();
         this.url = url;
-        this.description = description;
         this.packageId = packageId;
     }
 
@@ -168,7 +161,7 @@ public class CkanResource {
      * CKAN instances might have
      * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
      * custom data schemas</a> that force presence of custom properties among
-     * 'regular' ones given by {@link #getExtras()}. In this case, they go to 
+     * 'regular' ones given by {@link #getExtras()}. In this case, they go to
      * 'others' field.
      */
     @JsonAnyGetter
@@ -185,7 +178,7 @@ public class CkanResource {
     }
 
     /**
-     * Should be a Date
+     * Should be a Timestamp
      */
     @Nullable
     public String getCacheLastUpdated() {
@@ -193,7 +186,7 @@ public class CkanResource {
     }
 
     /**
-     * Should be a Date
+     * Should be a Timestamp
      */
     public void setCacheLastUpdated(@Nullable String cacheLastUpdated) {
         this.cacheLastUpdated = cacheLastUpdated;
@@ -218,14 +211,14 @@ public class CkanResource {
      * Ckan always refers to UTC timezone
      */
     @Nullable
-    public Date getCacheUrlUpdated() {
+    public Timestamp getCacheUrlUpdated() {
         return cacheUrlUpdated;
     }
 
     /**
      * Ckan always refers to UTC timezone
      */
-    public void setCacheUrlUpdated(@Nullable Date cacheUrlUpdated) {
+    public void setCacheUrlUpdated(@Nullable Timestamp cacheUrlUpdated) {
         this.cacheUrlUpdated = cacheUrlUpdated;
     }
 
@@ -233,14 +226,14 @@ public class CkanResource {
      * In JSON is something like this: i.e. "2013-05-09T14:08:32.666477" . Ckan
      * always refers to UTC timezone
      */
-    public Date getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
     /**
      * Ckan always refers to UTC timezone
      */
-    public void setCreated(Date created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 
@@ -264,14 +257,14 @@ public class CkanResource {
     /**
      * Regular place where to put custom metadata. See also
      * {@link #getOthers()}.
-     */    
+     */
     public List<CkanPair> getExtras() {
         return extras;
     }
 
     /**
      * See {@link #getExtras()}
-     */    
+     */
     public void setExtras(List<CkanPair> extras) {
         this.extras = extras;
     }
@@ -323,14 +316,14 @@ public class CkanResource {
      * Ckan always refers to UTC timezone
      */
     @Nullable
-    public Date getLastModified() {
+    public Timestamp getLastModified() {
         return lastModified;
     }
 
     /**
      * Ckan always refers to UTC timezone
      */
-    public void setLastModified(@Nullable Date lastModified) {
+    public void setLastModified(@Nullable Timestamp lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -366,7 +359,9 @@ public class CkanResource {
 
     /**
      *
-     * Human readable name, i.e. "Apple Production 2013 in CSV format"
+     * Human readable name, i.e. "Apple Production 2013 in CSV format". Not to
+     * be confused with {@link CkanDataset#name} which instead is lowercased and
+     * intended to be part of the url.
      *
      *
      * Notice we found name null in data.gov.uk datasets... i.e.
@@ -381,8 +376,10 @@ public class CkanResource {
     }
 
     /**
-     * Human readable name, i.e. "Apple Production 2013 in CSV format". For
-     * Nullable explanation see {@link #getName()}
+     * Human readable name, i.e. "Apple Production 2013 in CSV format". Not to
+     * be confused with {@link CkanDataset#name} which instead is lowercased and
+     * intended to be part of the url. For Nullable explanation see
+     * {@link #getName()}
      */
     public void setName(@Nullable String name) {
         this.name = name;
@@ -511,16 +508,18 @@ public class CkanResource {
     }
 
     /**
-     * Returns the Url to the pyhsical file, i.e.
+     * The Url to the pyhsical file i.e.
      * http://dati.trentino.it/storage/f/2013-05-09T140831/TRENTO_Laghi_monitorati_UTM.csv
+     * (could also be a file outside ckan server)
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     * Sets the Url to the pyhsical file, i.e.
+     * The Url to the pyhsical file i.e.
      * http://dati.trentino.it/storage/f/2013-05-09T140831/TRENTO_Laghi_monitorati_UTM.csv
+     * (could also be a file outside ckan server)
      */
     public void setUrl(String url) {
         this.url = url;
@@ -545,14 +544,14 @@ public class CkanResource {
      * Ckan always refers to UTC timezone
      */
     @Nullable
-    public Date getWebstoreLastUpdated() {
+    public Timestamp getWebstoreLastUpdated() {
         return webstoreLastUpdated;
     }
 
     /**
      * Ckan always refers to UTC timezone
      */
-    public void setWebstoreLastUpdated(@Nullable Date webstoreLastUpdated) {
+    public void setWebstoreLastUpdated(@Nullable Timestamp webstoreLastUpdated) {
         this.webstoreLastUpdated = webstoreLastUpdated;
     }
 

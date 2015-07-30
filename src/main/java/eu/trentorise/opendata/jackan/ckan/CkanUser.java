@@ -15,7 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -44,7 +44,7 @@ public class CkanUser {
     /**
      * internally date is stored with UTC timezone
      */
-    private Date created;
+    private Timestamp created;
 
     /**
      * i.e. David Leoni
@@ -104,11 +104,11 @@ public class CkanUser {
         this.activityStreamsEmailNotifications = activityStreamsEmailNotifications;
     }
 
-    public Date getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 

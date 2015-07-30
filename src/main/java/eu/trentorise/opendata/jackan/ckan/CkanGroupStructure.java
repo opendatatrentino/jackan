@@ -16,7 +16,7 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ import java.util.List;
 public abstract class CkanGroupStructure {
 
     private String approvalStatus;
-    private Date created;
+    private Timestamp created;
     private String description;
     private String displayName;
     private List<CkanPair> extras;
@@ -78,14 +78,14 @@ public abstract class CkanGroupStructure {
         this.approvalStatus = approvalStatus;
     }
 
-    public Date getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
     /**
      * Ckan always refers to UTC timezone
      */
-    public void setCreated(Date created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 

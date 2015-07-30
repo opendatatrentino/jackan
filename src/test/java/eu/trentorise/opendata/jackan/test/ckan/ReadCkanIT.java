@@ -79,6 +79,10 @@ public class ReadCkanIT {
     public static final String LAGHI_MONITORATI_TRENTO_ID = "3745b44c-751f-40b3-8e97-ccd725bfbe8a";
     public static final String LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME = "Metadati in formato XML";
     public static final String PRODOTTI_CERTIFICATI_DATASET_NAME = "prodotti-certificati";
+    public static final String PRODOTTI_CERTIFICATI_RESOURCE_ID = "fe507a10-4c49-4b18-8bf6-6705198cfd42";
+    public static final String POLITICHE_SVILUPPO_ORGANIZATION_NAME = "pat-s-sviluppo-rurale";
+    public static final String AGRICOLTURA_GROUP_NAME = "agricoltura";
+    
 
     private Multimap<String, String> datasetList = LinkedListMultimap.create();
 

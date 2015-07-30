@@ -40,8 +40,8 @@ import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -50,11 +50,9 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 import org.apache.http.HttpHost;
-import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.cookie.DateUtils;
 
 /**
  * Client to access a ckan instance. Threadsafe.
@@ -66,15 +64,27 @@ import org.apache.http.impl.cookie.DateUtils;
  * Ckan sends them with the dataset, but to be sure to have all the fields of a
  * resource you will need to call {@link #getResource(java.lang.String)).
  *
+ * For writing to Ckan you might want to use {@link CheckedCkanClient} which does additional checks to ensure written content is correct.
+ *
  * @author David Leoni, Ivan Tankoyeu
  *
  */
 public class CkanClient {
 
     /**
-     * CKAN uses UTC timezone, and doesn't append 'Z' to dates.
+     * CKAN uses UTC timezone, and doesn't append 'Z' to timestamps.
      */
     public static final String CKAN_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";
+
+    /**
+     * Found pattern "2013-12-17T00:00:00" in resource.date_modified in
+     * dati.toscana:
+     * http://dati.toscana.it/api/3/action/package_show?id=alluvioni_bacreg See
+     * also  <a href="https://github.com/ckan/ckan/issues/1874"> ckan issue 874
+     * </a> and
+     * <a href="https://github.com/ckan/ckan/pull/2519">ckan pull 2519</a>
+     */
+    public static final String CKAN_NO_MILLISECS_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
     /**
      * Sometimes we get back Python "None" as a string instead of proper JSON
@@ -155,21 +165,21 @@ public class CkanClient {
                             false) // not good for unmodifiable collections, if we will ever use any
                     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-            // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQDateHandling
+            // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQTimestampHandling
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
             // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
-            //objectMapper.setDateFormat(new SimpleDateFormat(CKAN_TIMESTAMP_PATTERN));
+            //objectMapper.setTimestampFormat(new SimpleTimestampFormat(CKAN_TIMESTAMP_PATTERN));
             objectMapper.registerModule(new SimpleModule() {
                 {
-                    addSerializer(Date.class, new StdSerializer<Date>(Date.class) {
+                    addSerializer(Timestamp.class, new StdSerializer<Timestamp>(Timestamp.class) {
                         @Override
-                        public void serialize(Date value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-                            jgen.writeString(DateUtils.formatDate(value, CKAN_TIMESTAMP_PATTERN));
+                        public void serialize(Timestamp value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+                            jgen.writeString(formatTimestamp(value));
                         }
 
                     });
 
-                    addDeserializer(Date.class, new CkanDateDeserializer());
+                    addDeserializer(Timestamp.class, new CkanTimestampDeserializer());
                 }
             });
 
@@ -328,7 +338,8 @@ public class CkanClient {
             InputStream stream = response.returnResponse().getEntity().getContent();
 
             dr = getObjectMapper().readValue(stream, responseType);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new JackanException("Error while performing a POST! Request url is:" + fullUrl, ex);
         }
 
@@ -675,6 +686,31 @@ public class CkanClient {
     }
 
     /**
+     * Parses a Ckan timestamp into a Java Timestamp.
+     * @throws IllegalArgumentException on parse error.
+     * @see #formatTimestamp(java.sql.Timestamp) 
+     */
+    @Nullable
+    public static Timestamp parseTimestamp(@Nullable String timestamp) {
+        if (timestamp == null 
+            || NONE.equals(timestamp)){
+            return null;
+        }
+        return Timestamp.valueOf(timestamp.replace("T", " "));        
+    }
+
+    /**
+     * Formats a timestamp according to {@link #CKAN_TIMESTAMP_PATTERN}, with precision up
+     * to microseconds.
+     * @see #parseTimestamp(java.lang.String) 
+     */
+    public static String formatTimestamp(Timestamp timestamp) {
+        Timestamp ret = Timestamp.valueOf(timestamp.toString());
+        ret.setNanos((timestamp.getNanos() / 1000) * 1000);
+        return ret.toString().replace(" ", "T");
+    }
+
+    /**
      * @params s a string to encode in a format suitable for URLs.
      */
     private static String urlEncode(String s) {
@@ -749,8 +785,6 @@ public class CkanClient {
      * @throws JackanException
      */
     public synchronized CkanResource createResource(CkanResource resource) {
-
-        checkResource(resource);
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
@@ -868,15 +902,14 @@ public class CkanClient {
     }
 
     /**
-     * Creates CkanDataset on the server
+     * Creates CkanDataset on the server. Will also create eventual resources
+     * present in the dataset.
      *
-     * @param dataset data set with a given parameters
+     * @param dataset Ckan dataset without id
      * @return the newly created dataset
      * @throws JackanException
      */
     public synchronized CkanDataset createDataset(CkanDataset dataset) {
-
-        checkDataset(dataset);
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
@@ -891,6 +924,31 @@ public class CkanClient {
 
         }
         DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+        return response.result;
+    }
+
+    /**
+     * Creates CkanOrganization on the server
+     *
+     * @param org organization to create
+     * @return the newly created organization
+     * @throws JackanException
+     */
+    public synchronized CkanOrganization createOrganization(CkanOrganization org) {
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to create dataset" + org.getName() + ", but ckan token was not set!");
+        }
+
+        String json = null;
+        try {
+            json = getObjectMapperForPosting().writeValueAsString(org);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
+
+        }
+        OrganizationResponse response = postHttp(OrganizationResponse.class, "/api/3/action/organization_create", json, ContentType.APPLICATION_JSON);
         return response.result;
     }
 

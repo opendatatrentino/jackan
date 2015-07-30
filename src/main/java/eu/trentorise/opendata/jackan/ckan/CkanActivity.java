@@ -15,7 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -32,7 +32,7 @@ public class CkanActivity {
     /**
      * Ckan always refer to UTC timezone, in JSON looks like i.e. "2013-03-08T09:31:20.833590"
      */
-    private Date timestamp;
+    private Timestamp timestamp;
     /**
      * i.e. "Impostazioni modificate."
      */
@@ -42,7 +42,7 @@ public class CkanActivity {
      */
     private String author;
     @Nullable
-    private Date approvedTimestamp;
+    private Timestamp approvedTimestamp;
     private List<CkanDataset> packages;
     private List<String> groups;
     private CkanState state;
@@ -59,14 +59,14 @@ public class CkanActivity {
         this.id = id;
     }
 
-    public Date getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 
     /**
      * internally date is stored with UTC timezone
      */
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -87,7 +87,7 @@ public class CkanActivity {
     }
 
     @Nullable
-    public Date getApprovedTimestamp() {
+    public Timestamp getApprovedTimestamp() {
         return approvedTimestamp;
     }
 
@@ -96,7 +96,7 @@ public class CkanActivity {
      *
      * @param approvedTimestamp
      */
-    public void setApprovedTimestamp(@Nullable Date approvedTimestamp) {        
+    public void setApprovedTimestamp(@Nullable Timestamp approvedTimestamp) {        
         this.approvedTimestamp = approvedTimestamp;        
     }
 

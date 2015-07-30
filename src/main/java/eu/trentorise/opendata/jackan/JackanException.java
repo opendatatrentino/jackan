@@ -31,9 +31,9 @@ public class JackanException extends RuntimeException {
     private CkanClient ckanClient = null;
     
     private static String makeMessage(String msg, @Nullable CkanError error, @Nullable CkanClient client){
-        return msg + "  "  
-                + (client != null ? client + "  " : "")
-                + (error != null ? error  : "");
+        return msg + "  "                
+                + (error != null ? error + "  "  : "")
+                + (client != null ? client : "");
     }
     
     public JackanException(String msg) {

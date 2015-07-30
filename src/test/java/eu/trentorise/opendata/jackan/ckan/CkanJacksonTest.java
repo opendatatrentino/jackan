@@ -17,10 +17,10 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.OdtConfig;
-import eu.trentorise.opendata.jackan.JackanException;
+
 import java.io.*;
-import java.util.Date;
-import java.util.logging.Level;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -58,6 +58,17 @@ public class CkanJacksonTest {
     public void tearDown() {
     }
 
+    
+    @Test
+    public void testTimestampParser(){
+        String sts = "1970-01-01T01:00:00.000001";
+        Timestamp ts = new Timestamp(0);
+        ts.setNanos(1000);
+        assertEquals(sts, CkanClient.formatTimestamp(ts));
+        assertEquals(ts, CkanClient.parseTimestamp(sts));        
+    }
+        
+    
     /**
      * Tests the CkanResponse wrapper
      */
@@ -104,40 +115,44 @@ public class CkanJacksonTest {
         assertTrue(r.getSize().equals(""));
     }
 
-    static public class DateWrapper {
+    static public class TimestampWrapper {
 
-        private Date date;
+        private Timestamp timestamp;
 
-        public Date getDate() {
-            return date;
+        public Timestamp getTimestamp() {
+            return timestamp;
         }
 
-        public void setDate(Date date) {
-            this.date = date;
+        public void setTimestamp(Timestamp timestamp) {
+            this.timestamp = timestamp;
         }
 
     }
 
+            
     @Test
-    public void testDateWithMillisecs() throws IOException {
+    public void testDateWithMillisecs() throws IOException, ParseException {
         ObjectMapper om = CkanClient.getObjectMapperClone();
         
-
-        String json = "{\"date\":\"1970-01-01T00:00:00.000123\"}";        
+        String timestamp = "2012-09-11T02:45:02.000123";  
+                        
+        String json = "{\"timestamp\":\""+timestamp+"\"}";        
         LOG.fine(json);
-        DateWrapper dw = om.readValue(json, DateWrapper.class);
+        TimestampWrapper dw = om.readValue(json, TimestampWrapper.class);
+           
         String newJson = om.writeValueAsString(dw);        
-        assertEquals("1970-01-01T00:00:00.000123", om.readTree(newJson).get("date").asText());
+        assertEquals(timestamp, om.readTree(newJson).get("timestamp").asText());
 
-        DateWrapper dw2 = om.readValue(json, DateWrapper.class);
+        TimestampWrapper dw2 = om.readValue(json, TimestampWrapper.class);
         
     }
-    
+            
+            
         @Test
     public void testDateNoMillisecs() throws IOException {
         ObjectMapper om = CkanClient.getObjectMapperClone();
-        String json = "{\"date\":\"2013-12-17T00:00:00\"}";                
-        DateWrapper dw = om.readValue(json, DateWrapper.class);        
+        String json = "{\"timestamp\":\"2013-12-17T00:00:00\"}";                
+        TimestampWrapper dw = om.readValue(json, TimestampWrapper.class);        
     }
 
 
@@ -149,11 +164,11 @@ public class CkanJacksonTest {
     public void testDateNone() throws IOException {
         ObjectMapper om = CkanClient.getObjectMapperClone();
 
-        DateWrapper nullJa = om.readValue("{\"date\":\"None\"}", DateWrapper.class);
-        assertNull(nullJa.getDate());
+        TimestampWrapper nullJa = om.readValue("{\"timestamp\":\"None\"}", TimestampWrapper.class);
+        assertNull(nullJa.getTimestamp());
 
-        DateWrapper nonNullWrapper = om.readValue("{\"date\":\"1970-01-01T00:00:00.123\"}", DateWrapper.class);
-        assertNotNull(nonNullWrapper.getDate());
+        TimestampWrapper nonNullWrapper = om.readValue("{\"timestamp\":\"1970-01-01T00:00:00.123\"}", TimestampWrapper.class);
+        assertNotNull(nonNullWrapper.getTimestamp());
 
     }
 
