@@ -161,8 +161,7 @@ public class CkanResource {
      * CKAN instances might have
      * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
      * custom data schemas</a> that force presence of custom properties among
-     * 'regular' ones given by {@link #getExtras()}. In this case, they go to
-     * 'others' field.
+     * 'regular' ones. In this case, they go to 'others' field.
      */
     @JsonAnyGetter
     public Map<String, Object> getOthers() {
@@ -243,30 +242,6 @@ public class CkanResource {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @JsonIgnore
-    public Map<String, String> getExtrasAsHashMap() {
-        HashMap<String, String> hm = new HashMap();
-        for (CkanPair cp : extras) {
-            hm.put(cp.getKey(), cp.getValue());
-        }
-        return hm;
-    }
-
-    /**
-     * Regular place where to put custom metadata. See also
-     * {@link #getOthers()}.
-     */
-    public List<CkanPair> getExtras() {
-        return extras;
-    }
-
-    /**
-     * See {@link #getExtras()}
-     */
-    public void setExtras(List<CkanPair> extras) {
-        this.extras = extras;
     }
 
     /**
