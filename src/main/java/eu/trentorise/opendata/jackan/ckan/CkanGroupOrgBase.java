@@ -16,55 +16,51 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * This abstract class models the same data structure that Ckan uses for both groups and
- * organizations. Since they are different things and work with different APIs
- * we made two different implementations. For groups use {@link CkanGroup} and
- * for organizations use {@link CkanOrganization} (Ckan way to tell the difference
- * is the {@link #isOrganization() } field).
+ * This abstract class models the same data structure that Ckan uses for both
+ * groups and organizations. Since they are different things and work with
+ * different APIs we made two different implementations. For creating/updating
+ * groups use {@link CkanGroupBase} and for reading them use {@link CkanGroup}.
+ * For creating/updating organizations use {@link CkanOrganizationBase} and for
+ * reading them use {@link CkanOrganization}. The Ckan way to tell the
+ * difference is the {@link #isOrganization() } field).
  *
  * @author David Leoni
  */
-public abstract class CkanGroupStructure {
+abstract class CkanGroupOrgBase {
 
     private String approvalStatus;
-    private Timestamp created;
     private String description;
-    private String displayName;
     private List<CkanPair> extras;
-
     private List<CkanGroup> groups;
-
     private String id;
 
-    private String imageDisplayUrl;
-
     private String imageUrl;
-
     private boolean organization;
-
     private String name;
-
-    private int numFollowers;
-
-    private int packageCount;
 
     // better to comment it as it can also be an int according to which web api is called
     // private List<CkanDataset> packages;
     private String revisionId;
-
     private CkanState state;
-
     private String title;
-
     private String type;
-
     private List<CkanUser> users;
 
-    public CkanGroupStructure() {
+    protected CkanGroupOrgBase() {
+    }
+
+    /**
+     * Constructor with minimal amount of parameters needed to successfully
+     * create an instance on the server.
+     *
+     * @param name  Name in the url, lowercased and without spaces. i.e.
+     * management-of-territory
+     */
+    protected CkanGroupOrgBase(String name) {        
+        this.name = name;
     }
 
     /**
@@ -78,34 +74,12 @@ public abstract class CkanGroupStructure {
         this.approvalStatus = approvalStatus;
     }
 
-    public Timestamp getCreated() {
-        return created;
-    }
-
-    /**
-     * Ckan always refers to UTC timezone
-     */
-    public void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * i.e. Gestione del Territorio
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public List<CkanPair> getExtras() {
@@ -135,14 +109,6 @@ public abstract class CkanGroupStructure {
         this.id = id;
     }
 
-    public String getImageDisplayUrl() {
-        return imageDisplayUrl;
-    }
-
-    public void setImageDisplayUrl(String imageDisplayUrl) {
-        this.imageDisplayUrl = imageDisplayUrl;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -168,33 +134,19 @@ public abstract class CkanGroupStructure {
     }
 
     /**
-     * Name in the url, lowercased and without spaces. i.e. management-of-territory
+     * Name in the url, lowercased and without spaces. i.e.
+     * management-of-territory
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name Name in the url, lowercased and without spaces. i.e. management-of-territory
+     * @param name Name in the url, lowercased and without spaces. i.e.
+     * management-of-territory
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getNumFollowers() {
-        return numFollowers;
-    }
-
-    public void setNumFollowers(int numFollowers) {
-        this.numFollowers = numFollowers;
-    }
-
-    public int getPackageCount() {
-        return packageCount;
-    }
-
-    public void setPackageCount(int packageCount) {
-        this.packageCount = packageCount;
     }
 
     public String getRevisionId() {
@@ -214,7 +166,7 @@ public abstract class CkanGroupStructure {
     }
 
     /**
-     * Human readable name, i.e. "Gestione del territorio"
+     * Human readable name, i.e. "Department of Justice"
      *
      * @see #getName()
      */
@@ -223,7 +175,7 @@ public abstract class CkanGroupStructure {
     }
 
     /**
-     * Human readable name, i.e. "Gestione del territorio"
+     * Human readable name, i.e. "Department of Justice"
      *
      * @see #setName(java.lang.String)
      */

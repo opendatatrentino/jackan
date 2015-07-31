@@ -33,6 +33,12 @@ public class CkanPair {
     public CkanPair() {
     }
 
+    public CkanPair(String key, @Nullable String value) {
+        this.key = key;
+        this.value = value;
+    }
+       
+
     public String getKey() {
         return key;
     }

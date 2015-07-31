@@ -17,19 +17,27 @@ package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.base.Charsets;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.CharStreams;
 
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
@@ -43,6 +51,7 @@ import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -132,9 +141,21 @@ public class CkanClient {
         return getObjectMapperForPosting().copy();
     }
 
+    @JsonSerialize(as = CkanResourceBase.class)
+    private static abstract class CkanResourceForPosting {
+    }
+
+    @JsonSerialize(as = CkanDatasetBase.class)
+    private static abstract class CkanDatasetForPosting {
+    }
+
+    /*
+     @JsonSerialize(as = CkanOrganizationBase.class)
+     private static abstract class CkanOrganizationForPosting {}
+     */
     /**
-     * Retrieves the Jackson object mapper. Internally, Object mapper is
-     * initialized at first call.
+     * Retrieves the Jackson object mapper configured for creation/update
+     * operations. Internally, Object mapper is initialized at first call.
      */
     static ObjectMapper getObjectMapperForPosting() {
         if (objectMapperForPosting == null) {
@@ -142,6 +163,9 @@ public class CkanClient {
 
             // when posting for creating datasets sending too much null stuff seems to confuse Ckan.
             objectMapperForPosting.setSerializationInclusion(Include.NON_NULL);
+            objectMapperForPosting.addMixInAnnotations(CkanResource.class, CkanResourceForPosting.class);
+            objectMapperForPosting.addMixInAnnotations(CkanDataset.class, CkanDatasetForPosting.class);
+            //objectMapperForPosting.addMixInAnnotations(CkanOrganization.class, CkanOrganizationForPosting.class);
         }
         return objectMapperForPosting;
     }
@@ -169,19 +193,7 @@ public class CkanClient {
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
             // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
             //objectMapper.setTimestampFormat(new SimpleTimestampFormat(CKAN_TIMESTAMP_PATTERN));
-            objectMapper.registerModule(new SimpleModule() {
-                {
-                    addSerializer(Timestamp.class, new StdSerializer<Timestamp>(Timestamp.class) {
-                        @Override
-                        public void serialize(Timestamp value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-                            jgen.writeString(formatTimestamp(value));
-                        }
-
-                    });
-
-                    addDeserializer(Timestamp.class, new CkanTimestampDeserializer());
-                }
-            });
+            objectMapper.registerModule(new CkanJacksonModule());
 
             objectMapper.registerModule(new GuavaModule());
 
@@ -275,6 +287,7 @@ public class CkanClient {
         String fullUrl = calcFullUrl(path, params);
 
         T dr;
+        String returnedText;
 
         try {
             LOG.log(Level.FINE, "getting {0}", fullUrl);
@@ -289,11 +302,20 @@ public class CkanClient {
 
             InputStream stream = response.returnResponse().getEntity().getContent();
 
-            dr = getObjectMapper().readValue(stream, responseType);
+            try (InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8)) {
+                returnedText = CharStreams.toString(reader);
+            }
         }
         catch (Exception ex) {
             throw new JackanException("Error while performing GET. Request url was: " + fullUrl, ex);
         }
+        try {
+            dr = getObjectMapper().readValue(returnedText, responseType);
+        }
+        catch (Exception ex) {
+            throw new JackanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, ex);
+        }
+
         if (!dr.success) {
             throw new JackanException(
                     "Error while performing GET. Request url was: " + fullUrl,
@@ -325,6 +347,7 @@ public class CkanClient {
         String fullUrl = calcFullUrl(path, params);
 
         T dr;
+        String returnedText;
 
         try {
             LOG.log(Level.FINE, "Posting to url {0}", fullUrl);
@@ -337,10 +360,19 @@ public class CkanClient {
 
             InputStream stream = response.returnResponse().getEntity().getContent();
 
-            dr = getObjectMapper().readValue(stream, responseType);
+            try (InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8)) {
+                returnedText = CharStreams.toString(reader);
+            }
         }
         catch (Exception ex) {
             throw new JackanException("Error while performing a POST! Request url is:" + fullUrl, ex);
+        }
+
+        try {
+            dr = getObjectMapper().readValue(returnedText, responseType);
+        }
+        catch (Exception ex) {
+            throw new JackanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, ex);
         }
 
         if (!dr.success) {
@@ -686,25 +718,37 @@ public class CkanClient {
     }
 
     /**
-     * Parses a Ckan timestamp into a Java Timestamp.
-     * @throws IllegalArgumentException on parse error.
-     * @see #formatTimestamp(java.sql.Timestamp) 
+     * Parses a Ckan timestamp into a Java Timestamp. If something goes wrong
+     * returns null.
+     *
+     * @see #formatTimestamp(java.sql.Timestamp) for the inverse process.
      */
     @Nullable
     public static Timestamp parseTimestamp(@Nullable String timestamp) {
-        if (timestamp == null 
-            || NONE.equals(timestamp)){
+        if (timestamp == null
+                || NONE.equals(timestamp)) {
             return null;
         }
-        return Timestamp.valueOf(timestamp.replace("T", " "));        
+        try {
+            return Timestamp.valueOf(timestamp.replace("T", " "));
+        }
+        catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Unrecognized timestamp " + timestamp + ", returning null", ex);
+            return null;
+        }
     }
 
     /**
-     * Formats a timestamp according to {@link #CKAN_TIMESTAMP_PATTERN}, with precision up
-     * to microseconds.
-     * @see #parseTimestamp(java.lang.String) 
+     * Formats a timestamp according to {@link #CKAN_TIMESTAMP_PATTERN}, with
+     * precision up to microseconds.
+     *
+     * @see #parseTimestamp(java.lang.String) for the inverse process.
      */
-    public static String formatTimestamp(Timestamp timestamp) {
+    @Nullable
+    public static String formatTimestamp(@Nullable Timestamp timestamp) {
+        if (timestamp == null) {
+            return null;
+        }
         Timestamp ret = Timestamp.valueOf(timestamp.toString());
         ret.setNanos((timestamp.getNanos() / 1000) * 1000);
         return ret.toString().replace(" ", "T");
@@ -784,7 +828,7 @@ public class CkanClient {
      * @return the newly created resource
      * @throws JackanException
      */
-    public synchronized CkanResource createResource(CkanResource resource) {
+    public synchronized CkanResource createResource(CkanResourceBase resource) {
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
@@ -832,52 +876,43 @@ public class CkanClient {
     /**
      * Updates a resource on the ckan server.
      *
-     * @param resource ckan resource object
+     * @param resource ckan resource object. Fields set to null won't be updated
+     * on the server. WARNING: if you didn't set any additional custom field
+     * with {@link CkanResource#putOthers(java.lang.String, java.lang.Object)},
+     * existing custom fields on the server WILL NOT be changed. This behaviour
+     * is different from CKAN inconsistent default one, which would always erase
+     * custom fields on the server. For this reason provided {@code resource}
+     * might be patched with latest metadata from the server.
      * @return the updated resource
      * @throws JackanException
      */
-    public synchronized CkanResource updateResource(CkanResource resource, Boolean checkConsistency) {
+    public synchronized CkanResource updateResource(CkanResourceBase resource) {
 
         if (ckanToken == null) {
             throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
         }
-        //check consistance with original version of the to be updated resource 
-        if (checkConsistency) {
-            CkanResource originalResource = getResource(resource.getId());
 
-            for (Field f : originalResource.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                String fieldName;
-                try {
-                    if ((f.get(originalResource) != null) && (f.get(resource) == null) && (!f.getName().equals("created"))) {
-                        fieldName = f.getName();
-//						if(!fieldName.equals("created")){
-                        f.set(resource, f.get(originalResource));
-                        System.out.println("Not a null: " + fieldName + " Value: ");
-//						//};
-//								System.out.println("Not a null: "+fieldName+ " Value: ");
-                    }
-                }
-                catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                catch (IllegalAccessException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+        if (resource.getOthers() == null) {
+            LOG.info("Found no custom metadata on the resource data to send for update, "
+                    + "merging custom metadata from the server into provided resource data "
+                    + "to prevent accidental erasures...");
+            CkanResource origRes = getResource(resource.getId());
+            if (origRes.getOthers() != null) {
+                for (Map.Entry<String, Object> entry : origRes.getOthers().entrySet()) {
+                    resource.putOthers(entry.getKey(), entry.getValue());
                 }
             }
-
+        } else {
+            LOG.info("Found custom metadata on the resource data to send for update, "
+                    + "going to completely replace custom resource metadata on the server.");
         }
-        //System.out.println("After consistance checking resource is consist of: "+resource.toString());
 
-        ObjectMapper objectMapper = CkanClient.getObjectMapper();
         String json = null;
         try {
-            json = objectMapper.writeValueAsString(resource);
+            json = getObjectMapperForPosting().writeValueAsString(resource);
         }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanResourceMinimized!", e);
+        catch (IOException ex) {
+            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
 
         }
 

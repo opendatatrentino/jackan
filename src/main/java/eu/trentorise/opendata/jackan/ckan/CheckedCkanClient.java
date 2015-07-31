@@ -51,7 +51,7 @@ public class CheckedCkanClient extends CkanClient {
     }
 
     @Override
-    public synchronized CkanResource createResource(CkanResource resource) {
+    public synchronized CkanResource createResource(CkanResourceBase resource) {
         return super.createResource(resource);
     }
 

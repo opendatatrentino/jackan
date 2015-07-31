@@ -15,25 +15,74 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-/**
- * Class to explicitly model a Ckan organization, which is <i> not </i> a group,
- * although is has the same attributes.
- *
- * @see CkanGroupStructure
- * @author David Leoni
- */
-public class CkanOrganization extends CkanGroupStructure {
+import java.sql.Timestamp;
+
+
+public class CkanOrganization extends CkanGroupBase implements CkanGroupOrg {
+
+    private Timestamp created;
+    private String displayName;
+    private String imageDisplayUrl;
+    private int numFollowers;
+    private int packageCount;
 
     public CkanOrganization() {
         super();
-        setOrganization(true);
     }
 
-    /**
-     * Constructor for an organization with the minimal amount of parameters needed to be created on the server.
-     * @param name Name in the url, lowercased and without spaces. i.e. management-of-territory     
-     */
     public CkanOrganization(String name) {
-        this.setName(name);
+        super(name);
     }
+            
+    @Override
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    @Override
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    @Override
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public String getImageDisplayUrl() {
+        return imageDisplayUrl;
+    }
+
+    @Override
+    public void setImageDisplayUrl(String imageDisplayUrl) {
+        this.imageDisplayUrl = imageDisplayUrl;
+    }
+
+    @Override
+    public int getNumFollowers() {
+        return numFollowers;
+    }
+
+    @Override
+    public void setNumFollowers(int numFollowers) {
+        this.numFollowers = numFollowers;
+    }
+
+    @Override
+    public int getPackageCount() {
+        return packageCount;
+    }
+
+    @Override
+    public void setPackageCount(int packageCount) {
+        this.packageCount = packageCount;
+    }
+
+
 }

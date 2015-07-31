@@ -24,6 +24,7 @@ import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.ckan.CkanResourceBase;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.POLITICHE_SVILUPPO_ORGANIZATION_NAME;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
@@ -32,7 +33,6 @@ import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIF
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,17 +61,34 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class WriteCkanIT {
 
+    public static final String JACKAN_URL = "http://opendatatrentino.github.io/jackan/";
+
     public static final String TEST_RESOURCE_ID = "81f579fe-7f10-4fa2-94f2-0011898dc78c";
 
     private static final Logger LOG = Logger.getLogger(WriteCkanIT.class.getName());
 
-    private Object[] wrongNames() {
+    private Object[] wrongDatasetNames() {
         return $(
                 $((String) null),
                 $(""),
                 $("   "),
                 $("$$$$$"),
                 $("ab") // need at least 3 chars
+        //$(new CkanClient(NOAA_GOV_US))                
+        /*,
+         $(new CkanClient(DATI_MATERA)),
+         $(new CkanClient(DATA_GOV_UK)),
+         $(new CkanClient(DATA_GOV_US)) */
+        );
+    }
+
+    private Object[] wrongOrgNames() {
+        return $(
+                $((String) null),
+                $(""),
+                $("   "),
+                $("$$$$$"),
+                $("a") // need at least 2 chars
         //$(new CkanClient(NOAA_GOV_US))                
         /*,
          $(new CkanClient(DATI_MATERA)),
@@ -96,9 +113,22 @@ public class WriteCkanIT {
         );
     }
 
+    private Object[] wrongIds() {
+        return $(
+                $(""),
+                $("   "),
+                $("123"));
+    }
+
     private CkanDataset makeRandomDataset() {
         CkanDataset ckanDataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         return client.createDataset(ckanDataset);
+    }
+
+    private CkanResource makeRandomResource() {
+        CkanDataset dataset = makeRandomDataset();
+        CkanResource resource = new CkanResource(JACKAN_URL, dataset.getId());
+        return client.createResource(resource);
     }
 
     CkanClient client;
@@ -122,13 +152,9 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDataset() {
+    public void testDatasetCreateMinimal() {
 
-        long datasetNumber = UUID.randomUUID().getMostSignificantBits();
-
-        String datasetName = "test-dataset-jackan-" + datasetNumber;
-
-        CkanDataset dataset = new CkanDataset(datasetName);
+        CkanDataset dataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
 
         CkanDataset retDataset = client.createDataset(dataset);
 
@@ -138,8 +164,25 @@ public class WriteCkanIT {
     }
 
     @Test
-    @Parameters(method = "wrongNames")
-    public void testCreateDatasetWrongName(String datasetName) {
+    public void testDatasetCreate() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
+        ArrayList<CkanPair> extras = Lists.newArrayList(new CkanPair("x", "y"));
+        dataset.setExtras(extras);
+        dataset.setLicenseTitle("abc");
+
+        CkanDataset retDataset = client.createDataset(dataset);
+
+        checkNotEmpty(retDataset.getId(), "Invalid dataset id!");
+        assertEquals(dataset.getName(), retDataset.getName());
+        assertEquals(null, retDataset.getLicenseTitle()); // should not have been sent, thus shouldn't return.
+        
+        LOG.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
+    }
+
+    @Test
+    @Parameters(method = "wrongDatasetNames")
+    public void testDatasetCreateWrongName(String datasetName) {
 
         try {
             CkanDataset dataset = new CkanDataset(datasetName);
@@ -152,7 +195,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDatasetDuplicateByName() {
+    public void testDatasetCreateDuplicateByName() {
 
         String datasetName = "test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits();
 
@@ -168,7 +211,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDatasetWithId() {
+    public void testDatasetCreateWithId() {
 
         CkanDataset dataset = new CkanDataset();
         dataset.setId(UUID.randomUUID().toString());
@@ -183,7 +226,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDatasetWrongOrg() {
+    public void testDatasetCreateWrongOrg() {
 
         CkanDataset dataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         dataset.setOwnerOrg(UUID.randomUUID().toString());
@@ -197,7 +240,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDatasetWrongGroup() {
+    public void testDatasetCreateWrongGroup() {
 
         CkanDataset dataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         CkanGroup group = new CkanGroup();
@@ -213,7 +256,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDatasetWrongLicenseId() {
+    public void testDatasetCreateWrongLicenseId() {
 
         CkanDataset dataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         dataset.setLicenseId("666");
@@ -227,7 +270,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateDatasetMirror() {
+    public void testDatasetCreateMirror() {
 
         CkanDataset dataset = datiTrentinoClient.getDataset(PRODOTTI_CERTIFICATI_DATASET_NAME);
 
@@ -246,12 +289,39 @@ public class WriteCkanIT {
         LOG.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
     }
 
+    
     @Test
-    public void testCreateResource() {
+    public void testDatasetUpdate() {
+        CkanDataset dataset = makeRandomDataset();
+        /*
+        dataset.setSize("123");
+        resource.setOwner("acme");
+        resource.putOthers("x", "y");
+
+        CkanResource retRes1 = client.createResource(resource);
+
+        retRes1.setDescription("abc");
+
+        retRes1.setSize(null); // so we won't send it in the post
+        retRes1.setOthers(null); // so we won't send it in the post and hopefully trigger client automerge feature
+
+        CkanResource retRes2 = client.updateResource(retRes1);
+
+        assertEquals(retRes1.getId(), retRes2.getId());
+        assertEquals(retRes1.getUrl(), retRes2.getUrl());
+        assertEquals("abc", retRes2.getDescription());
+        assertEquals("123", retRes2.getSize());
+        assertEquals(resource.getOthers(), retRes2.getOthers());
+        assertEquals(null, retRes2.getOwner());  // owner is not among api docs for creation, so hopefully was jsonignored when sending retRes1     
+    */ throw new UnsupportedOperationException("todo implement me");
+    }
+
+    @Test
+    public void testResourceCreateMinimal() {
 
         CkanDataset dataset = makeRandomDataset();
 
-        CkanResource resource = new CkanResource("http://x.y", dataset.getId());
+        CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
 
         CkanResource retRes = client.createResource(resource);
 
@@ -263,25 +333,61 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateResourceWithId() {
+    public void testResourceCreate() {
 
         CkanDataset dataset = makeRandomDataset();
-        CkanResource resource = new CkanResource("http://x.y", dataset.getId());
+
+        CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
+
+        resource.putOthers("x", "y");
+
+        CkanResource retRes = client.createResource(resource);
+
+        checkNotEmpty(retRes.getId(), "Invalid created resource id!");
+        assertEquals(resource.getUrl(), retRes.getUrl());
+        assertEquals(null, retRes.getPackageId()); // because this won't be present in the result
+        assertEquals(resource.getOthers(), retRes.getOthers());
+
+        LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
+    }
+
+    @Test
+    public void testResourceCreateWithId() {
+
+        CkanDataset dataset = makeRandomDataset();
+        CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
         resource.setId(UUID.randomUUID().toString());
-         
-        CkanResource retRes = client.createResource(resource);        
+
+        CkanResource retRes = client.createResource(resource);
         assertEquals(resource.getId(), retRes.getId());
-        
+
+    }
+
+    @Test
+    public void testResourceCreateWithWrongId() {
+
+        CkanDataset dataset = makeRandomDataset();
+        CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
+        resource.setId(Long.toString(UUID.randomUUID().getMostSignificantBits()));
+
+        try {
+            CkanResource retRes = client.createResource(resource);
+            Assert.fail("Shouldn't be able to create resource with ill formatted short UUID " + resource.getId());
+        }
+        catch (JackanException ex) {
+
+        }
+
     }
 
     @Test
     @Parameters(method = "wrongUrls")
-    public void testCreateResourceWrongUrl(String url) {
+    public void testResourceCreateWrongUrl(String url) {
 
         CkanDataset dataset = makeRandomDataset();
 
         try {
-            CkanResource resource = new CkanResource(url, dataset.getId());
+            CkanResourceBase resource = new CkanResourceBase(url, dataset.getId());
             client.createResource(resource);
             Assert.fail();
         }
@@ -291,11 +397,11 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateResourceDuplicateId() {
+    public void testResourceCreateDuplicateId() {
 
         CkanDataset dataset = makeRandomDataset();
 
-        CkanResource resource = new CkanResource("http://x.y", dataset.getId());
+        CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
         resource.setId(UUID.randomUUID().toString());
         CkanResource retRes1 = client.createResource(resource);
         try {
@@ -309,27 +415,82 @@ public class WriteCkanIT {
         }
     }
 
-
     @Test
-    public void testCreateResourceMirror() {
-               
+    public void testResourceCreateMirror() {
+
         CkanDataset dataset = makeRandomDataset();
-        
+
         CkanResource resource = datiTrentinoClient.getResource(PRODOTTI_CERTIFICATI_RESOURCE_ID);
-                        
+
         resource.setPackageId(dataset.getId());
-        
+
         CkanResource retResource = client.createResource(resource);
 
         checkNotEmpty(retResource.getId(), "Invalid resource id!");
 
         LOG.log(Level.INFO, "created resource with id {0} in catalog {1}", new Object[]{retResource.getId(), JackanTestConfig.of().getOutputCkan()});
-                
+
     }
-        
 
     @Test
-    public void testCreateOrganization() {
+    public void testResourceUpdate() {
+        CkanDataset dataset = makeRandomDataset();
+        CkanResource resource = new CkanResource(JACKAN_URL, dataset.getId());
+        resource.setSize("123");
+        resource.setOwner("acme");
+        resource.putOthers("x", "y");
+
+        CkanResource retRes1 = client.createResource(resource);
+
+        retRes1.setDescription("abc");
+
+        retRes1.setSize(null); // so we won't send it in the post
+        retRes1.setOthers(null); // so we won't send it in the post and hopefully trigger client automerge feature
+
+        CkanResource retRes2 = client.updateResource(retRes1);
+
+        assertEquals(retRes1.getId(), retRes2.getId());
+        assertEquals(retRes1.getUrl(), retRes2.getUrl());
+        assertEquals("abc", retRes2.getDescription());
+        assertEquals("123", retRes2.getSize());
+        assertEquals(resource.getOthers(), retRes2.getOthers());
+        assertEquals(null, retRes2.getOwner());  // owner is not among api docs for creation, so hopefully was jsonignored when sending retRes1            
+    }
+
+    @Test
+    public void testResourceUpdateWithExistingId() {
+        CkanResource res1 = makeRandomResource();
+        CkanDataset dataset = makeRandomDataset();
+        CkanResourceBase res2 = new CkanResourceBase(JACKAN_URL, dataset.getId());
+        res2.setId(res1.getId());
+        try {
+            client.createResource(res2);
+            Assert.fail("Shouldn't be able to create resource with existing id: " + res1.getId());
+        }
+        catch (JackanException ex) {
+
+        }
+    }
+
+    @Test
+    @Parameters(method = "wrongIds")
+    public void testResourceUpdateWrongId(String id) {
+
+        CkanDataset dataset = makeRandomDataset();
+
+        try {
+            CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
+            resource.setId(id);
+            client.updateResource(resource);
+            Assert.fail();
+        }
+        catch (JackanException ex) {
+
+        }
+    }
+
+    @Test
+    public void testOrganizationCreateMinimal() {
         CkanOrganization org = new CkanOrganization("ab-" + UUID.randomUUID().getMostSignificantBits());
 
         CkanOrganization retOrg = client.createOrganization(org);
@@ -344,7 +505,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateOrganizationMirror() {
+    public void testOrganizationCreateMirror() {
 
         CkanOrganization org = datiTrentinoClient.getOrganization(POLITICHE_SVILUPPO_ORGANIZATION_NAME);
 
@@ -359,8 +520,8 @@ public class WriteCkanIT {
     }
 
     @Test
-    @Parameters(method = "wrongNames")
-    public void testCreateOrganizationWrongName(String orgName) {
+    @Parameters(method = "wrongOrgNames")
+    public void testOrganizationCreateWrongName(String orgName) {
         String uri = "http://github.com/opendatatrentino/jackan";
 
         try {
@@ -374,7 +535,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateOrganizationById() {
+    public void testOrganizationCreateById() {
         CkanOrganization org = new CkanOrganization();
         org.setId(UUID.randomUUID().toString());
         org.setName(org.getId());
@@ -383,7 +544,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateOrganizationDuplicateByName() {
+    public void testOrganizationCreateDuplicateByName() {
 
         String orgName = "test-organization-jackan-" + UUID.randomUUID().getMostSignificantBits();
 
@@ -399,7 +560,7 @@ public class WriteCkanIT {
     }
 
     @Test
-    public void testCreateOrganizationDuplicateById() {
+    public void testOrganizationCreateDuplicateById() {
 
         CkanOrganization org = new CkanOrganization();
         org.setId(UUID.randomUUID().toString());
@@ -421,93 +582,28 @@ public class WriteCkanIT {
     @Test
     public void testUpdateResourceMinimized() {
         /*long datasetNumber = UUID.randomUUID().getMostSignificantBits();
-        CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + datasetNumber,
-                "http://jackan-land-of-dreams.org",
-                new ArrayList());
+         CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + datasetNumber,
+         "http://jackan-land-of-dreams.org",
+         new ArrayList());
 
-        dataset.setTitle("Test Jackan Dataset " + datasetNumber);
+         dataset.setTitle("Test Jackan Dataset " + datasetNumber);
 
-        dataset.setLicenseId("cc-zero");
+         dataset.setLicenseId("cc-zero");
 
-        CkanDataset createdDataset = client.createDataset(dataset);
+         CkanDataset createdDataset = client.createDataset(dataset);
 
-        CkanResource resource1 = new CkanResource("JSONLD",
-                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
-                "http://go-play-with-jackan.org/myfile_1.jsonld",
-                "First most interesting test resource in the universe",
-                dataset.getId());
+         CkanResource resource1 = new CkanResource("JSONLD",
+         "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
+         "http://go-play-with-jackan.org/myfile_1.jsonld",
+         "First most interesting test resource in the universe",
+         dataset.getId());
 
-        CkanResource createdResource = client.createResource(resource1);
+         CkanResource createdResource = client.createResource(resource1);
 
-        //client.updateResource(null)
+         //client.updateResource(null)
         
-        */
+         */
         throw new RuntimeException("todo implement test update resource!");
     }
 
-    /**
-     * todo review this!!!
-     *
-     * @throws URISyntaxException
-     */
-    @Test
-    public void testUpdateDataset() throws URISyntaxException {
-        /*
-        CkanPair ckanPair = new CkanPair();
-        ckanPair.setKey("test key");
-        ckanPair.setValue("test value");
-        List<CkanPair> datasetExtras = new ArrayList();
-        datasetExtras.add(ckanPair);
-
-        long datasetNumber = UUID.randomUUID().getMostSignificantBits();
-        CkanDataset dataset = new CkanDataset("Test-Jackan-Dataset " + datasetNumber,
-                "http://jackan-land-of-dreams.org",
-                datasetExtras);
-        dataset.setTitle("Test Jackan Dataset " + datasetNumber);
-
-        dataset.setLicenseId("cc-zero");
-
-        CkanDataset createdDataset = client.createDataset(dataset);
-
-        CkanResource resource1 = new CkanResource("jsonld",
-                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
-                "http://go-play-with-jackan.org/myfile_1.jsonld",
-                "First most interesting test resource in the universe",
-                dataset.getId());
-
-        CkanResource createdResource = client.createResource(resource1);
-
-        CkanResource resource2 = new CkanResource("jsonld",
-                "Jackan test resource " + UUID.randomUUID().getMostSignificantBits(),
-                "http://go-play-with-jackan.org/myfile_2.jsonld",
-                "Second most interesting test resource in the universe",
-                dataset.getId());
-
-        createdDataset.setAuthor("Jackan enthusiast");
-        createdDataset.getResources().add(resource2);
-
-        CkanDataset updatedDataset = client.updateDataset(createdDataset);
-        */
-        throw new RuntimeException("todo write check updatedDataset is not corrupted");
-    }
-
-    @Test
-    public void testUpdateResource() {
-        /*
-        CkanResource ckanResource = new CkanResource("JSONLD", "ivanresource2", "http://mysite.org", "test resource", "81f579fe-7f10-4fa2-94f2-0011898dc78c");
-
-        CkanResource ckanResource2 = new CkanResource("JSONLD", "my test resource", "http://mysite.org", "test res", "81f579fe-7f10-4fa2-94f2-0011898dc78c");
-
-        ckanResource.setOwner("Tankoyeu");
-        ckanResource.setId(TEST_RESOURCE_ID);
-        assertEquals(ckanResource.getOwner(), "Tankoyeu");
-
-        CkanResource cResource1 = client.updateResource(ckanResource, true);
-        assertEquals(cResource1.getOwner(), "Tankoyeu");
-
-        CkanResource cResource2 = client.updateResource(ckanResource2, false);
-        assertEquals(cResource2.getOwner(), "None");
-        */
-        throw new RuntimeException("todo write check updatedDataset is not corrupted");
-    }
 }
