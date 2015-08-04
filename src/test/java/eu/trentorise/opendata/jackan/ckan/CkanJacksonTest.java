@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -60,13 +61,40 @@ public class CkanJacksonTest {
 
     
     @Test
+    public void timestampParserExample(){
+        CkanClient.formatTimestamp(new Timestamp(123));
+        CkanClient.parseTimestamp("1970-01-01T01:00:00.000010");
+    }            
+    
+    @Test
     public void testTimestampParser(){
-        String sts = "1970-01-01T01:00:00.000001";
+        String sts = "1970-01-01T01:00:00.000010";
         Timestamp ts = new Timestamp(0);
-        ts.setNanos(1000);
+        ts.setNanos(10000);
         assertEquals(sts, CkanClient.formatTimestamp(ts));
         assertEquals(ts, CkanClient.parseTimestamp(sts));        
-    }
+        
+        try {
+            CkanClient.formatTimestamp(null);
+            Assert.fail();
+        } catch (IllegalArgumentException ex){
+            
+        }
+        
+        try {
+            CkanClient.parseTimestamp(null);
+            Assert.fail();
+        } catch (IllegalArgumentException ex){
+            
+        }                
+        
+        try {
+            CkanClient.parseTimestamp("bla");
+            Assert.fail();
+        } catch (IllegalArgumentException ex){
+            
+        }
+    }    
         
     
     /**

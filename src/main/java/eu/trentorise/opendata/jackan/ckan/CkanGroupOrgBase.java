@@ -19,13 +19,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
- * This abstract class models the same data structure that Ckan uses for both
- * groups and organizations. Since they are different things and work with
- * different APIs we made two different implementations. For creating/updating
- * groups use {@link CkanGroupBase} and for reading them use {@link CkanGroup}.
- * For creating/updating organizations use {@link CkanOrganizationBase} and for
- * reading them use {@link CkanOrganization}. The Ckan way to tell the
- * difference is the {@link #isOrganization() } field).
+ * Abstract class to model the same data structure that Ckan uses for creating
+ * both groups and organizations. Since they are different things and work with
+ * different APIs we made two different implementations, {@link CkanGroup} and
+ * {@link CkanOrganization}. The Ckan way to tell the difference is the {@link #isOrganization()
+ * } field).
  *
  * @author David Leoni
  */
@@ -56,10 +54,10 @@ abstract class CkanGroupOrgBase {
      * Constructor with minimal amount of parameters needed to successfully
      * create an instance on the server.
      *
-     * @param name  Name in the url, lowercased and without spaces. i.e.
+     * @param name Name in the url, lowercased and without spaces. i.e.
      * management-of-territory
      */
-    protected CkanGroupOrgBase(String name) {        
+    protected CkanGroupOrgBase(String name) {
         this.name = name;
     }
 
@@ -157,10 +155,23 @@ abstract class CkanGroupOrgBase {
         this.revisionId = revisionId;
     }
 
+    /**
+     * The current state of the group, e.g. 'active' or 'deleted', only active
+     * groups show up in search results and other lists of groups, this
+     * parameter will be ignored if you are not authorized to change the state
+     * of the group (optional, default: 'active')
+     */
     public CkanState getState() {
         return state;
     }
 
+    /**
+     * The current state of the group/organization, e.g. 'active' or 'deleted',
+     * only active groups/organizations show up in search results and other
+     * lists of groups/organizations, this parameter will be ignored if you are
+     * not authorized to change the state (optional, default:
+     * 'active')
+     */
     public void setState(CkanState state) {
         this.state = state;
     }

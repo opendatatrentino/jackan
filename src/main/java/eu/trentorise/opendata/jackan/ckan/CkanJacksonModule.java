@@ -31,7 +31,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * So we can serialize/deserialize to Timestamp. In case there are problems in parsing deserializes to null.
+ * So we can serialize/deserialize to Timestamp. In case there are problems in
+ * parsing deserializes to null.
+ *
  * @author David Leoni
  */
 public class CkanJacksonModule extends SimpleModule {
@@ -39,11 +41,17 @@ public class CkanJacksonModule extends SimpleModule {
     private static final Logger LOG = Logger.getLogger(CkanJacksonModule.class.getName());
 
     public CkanJacksonModule() {
-        
+
         addSerializer(Timestamp.class, new StdSerializer<Timestamp>(Timestamp.class) {
             @Override
             public void serialize(Timestamp value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-                jgen.writeString(formatTimestamp(value));
+                try {
+                    String str = formatTimestamp(value);
+                    jgen.writeString(str);
+                } catch (Exception ex){
+                    LOG.log(Level.SEVERE, "Couldn't format timestamp "+value+", writing 'null'", ex);
+                    jgen.writeNull();
+                }                
             }
 
         });
@@ -55,8 +63,14 @@ public class CkanJacksonModule extends SimpleModule {
                 JsonToken t = jp.getCurrentToken();
 
                 if (t == JsonToken.VALUE_STRING) {
-                    String str = jp.getText().trim();                    
-                    return CkanClient.parseTimestamp(str);                    
+                    String str = jp.getText().trim();
+                    try {
+                        return CkanClient.parseTimestamp(str);
+                    }
+                    catch (IllegalArgumentException ex) {
+                        LOG.log(Level.SEVERE, "Couldn't parse timestamp "+str+", returning null", ex);
+                        return null;
+                    }
                 }
 
                 if (t == JsonToken.VALUE_NULL) {

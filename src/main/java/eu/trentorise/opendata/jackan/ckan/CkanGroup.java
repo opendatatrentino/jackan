@@ -15,76 +15,38 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
-import java.sql.Timestamp;
-
 /**
- * {@inheritDoc} 
+ * Class to explicitly model a Ckan group, which is <i> not </i> an organization,
+ * although it has the same attributes.
+ *
+ * {@link CkanGroupOrgBase} holds fields that can be sent when
+ * <a href="http://docs.ckan.org/en/latest/api/index.html?#ckan.logic.action.create.group_create" target="_blank">creating
+ * a  group/organization</a>, while {@link CkanGroupOrg} holds more fields that can be
+ * returned with searches.
+ *
+ * This class initializes nothing to fully preserve all we get from ckan. In
+ * practice, all fields of retrieved resources can be null except maybe
+ * {@code name}.
+ *
+ * @author David Leoni
  */
-public class CkanGroup extends CkanGroupBase implements CkanGroupOrg {
-
-    private Timestamp created;
-    private String displayName;
-    private String imageDisplayUrl;
-    private int numFollowers;
-    private int packageCount;
+public class CkanGroup extends CkanGroupOrg {
 
     public CkanGroup() {
         super();
+        setOrganization(false);
     }
 
+    /**
+     * Constructor with minimal amount of parameters needed to successfully
+     * create an instance on the server.
+     *
+     * @param name Name in the url, lowercased and without spaces. i.e.
+     * management-of-territory
+     */
     public CkanGroup(String name) {
-        super(name);
-    }
-                 
-    @Override
-    public Timestamp getCreated() {
-        return created;
-    }
-
-    @Override
-    public void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    @Override
-    public String getImageDisplayUrl() {
-        return imageDisplayUrl;
-    }
-
-    @Override
-    public void setImageDisplayUrl(String imageDisplayUrl) {
-        this.imageDisplayUrl = imageDisplayUrl;
-    }
-
-    @Override
-    public int getNumFollowers() {
-        return numFollowers;
-    }
-
-    @Override
-    public void setNumFollowers(int numFollowers) {
-        this.numFollowers = numFollowers;
-    }
-
-    @Override
-    public int getPackageCount() {
-        return packageCount;
-    }
-
-    @Override
-    public void setPackageCount(int packageCount) {
-        this.packageCount = packageCount;
-    }
-
+        this();
+        this.setName(name);        
+    }     
 
 }

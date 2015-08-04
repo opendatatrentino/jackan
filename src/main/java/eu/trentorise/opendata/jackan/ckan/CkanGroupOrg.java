@@ -18,42 +18,60 @@ package eu.trentorise.opendata.jackan.ckan;
 import java.sql.Timestamp;
 
 /**
- * Interface with additional fields found during searches of groups and organizations.
+ * Abstract class with additional fields found during searches of groups and
+ * organizations.
  *
  * @author David Leoni
  */
-interface CkanGroupOrg {
+abstract class CkanGroupOrg extends CkanGroupOrgBase {
 
-    /**
-     * Ckan always refers to UTC timezone
-     */
-    public Timestamp getCreated();
+    private Timestamp created;
+    private String displayName;
+    private String imageDisplayUrl;
+    private int numFollowers;
+    private int packageCount;
+    
+    protected CkanGroupOrg(){
+        super();
+    }
+    
+    public Timestamp getCreated() {
+        return created;
+    }
 
-    /**
-     * Ckan always refers to UTC timezone
-     */
-    public void setCreated(Timestamp created);
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
 
-    /**
-     * i.e. Department of Justice
-     */
-    public String getDisplayName();
+    public String getDisplayName() {
+        return displayName;
+    }
 
-    /**
-     * i.e. Department of Justice
-     */
-    public void setDisplayName(String displayName);
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-    public String getImageDisplayUrl();
+    public String getImageDisplayUrl() {
+        return imageDisplayUrl;
+    }
 
-    public void setImageDisplayUrl(String imageDisplayUrl);
+    public void setImageDisplayUrl(String imageDisplayUrl) {
+        this.imageDisplayUrl = imageDisplayUrl;
+    }
 
-    public int getNumFollowers();
+    public int getNumFollowers() {
+        return numFollowers;
+    }
 
-    public void setNumFollowers(int numFollowers);
+    public void setNumFollowers(int numFollowers) {
+        this.numFollowers = numFollowers;
+    }
 
-    public int getPackageCount();
+    public int getPackageCount() {
+        return packageCount;
+    }
 
-    public void setPackageCount(int packageCount);
-
+    public void setPackageCount(int packageCount) {
+        this.packageCount = packageCount;
+    }
 }

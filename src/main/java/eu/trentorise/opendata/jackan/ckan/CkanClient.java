@@ -16,25 +16,17 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Charsets;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.base.Strings;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
@@ -46,7 +38,6 @@ import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEm
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -81,7 +72,15 @@ import org.apache.http.entity.ContentType;
 public class CkanClient {
 
     /**
-     * CKAN uses UTC timezone, and doesn't append 'Z' to timestamps.
+     * CKAN uses timestamps like '1970-01-01T01:00:00.000010' in UTC timezone,
+     * has precision up to microsecond and doesn't append 'Z' to timestamps. The
+     * format respects
+     * <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601
+     * standard</a>. In Jackan we store it as {@link java.sql.Timestamp} or
+     * {@code null} if parse is not successful.
+     *
+     * @see #parseTimestamp(java.lang.String)
+     * @see #formatTimestamp(java.sql.Timestamp)
      */
     public static final String CKAN_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";
 
@@ -149,10 +148,10 @@ public class CkanClient {
     private static abstract class CkanDatasetForPosting {
     }
 
-    /*
-     @JsonSerialize(as = CkanOrganizationBase.class)
-     private static abstract class CkanOrganizationForPosting {}
-     */
+    @JsonSerialize(as = CkanGroupOrgBase.class)
+    private static abstract class CkanGroupOrgForPosting {
+    }
+
     /**
      * Retrieves the Jackson object mapper configured for creation/update
      * operations. Internally, Object mapper is initialized at first call.
@@ -165,7 +164,7 @@ public class CkanClient {
             objectMapperForPosting.setSerializationInclusion(Include.NON_NULL);
             objectMapperForPosting.addMixInAnnotations(CkanResource.class, CkanResourceForPosting.class);
             objectMapperForPosting.addMixInAnnotations(CkanDataset.class, CkanDatasetForPosting.class);
-            //objectMapperForPosting.addMixInAnnotations(CkanOrganization.class, CkanOrganizationForPosting.class);
+            objectMapperForPosting.addMixInAnnotations(CkanOrganization.class, CkanGroupOrgForPosting.class);
         }
         return objectMapperForPosting;
     }
@@ -192,7 +191,6 @@ public class CkanClient {
             // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQTimestampHandling
             // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
             // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
-            //objectMapper.setTimestampFormat(new SimpleTimestampFormat(CKAN_TIMESTAMP_PATTERN));
             objectMapper.registerModule(new CkanJacksonModule());
 
             objectMapper.registerModule(new GuavaModule());
@@ -238,7 +236,8 @@ public class CkanClient {
 
     @Override
     public String toString() {
-        return "CkanClient{" + "catalogURL=" + catalogURL + ", ckanToken=" + ckanToken + '}';
+        String maskedToken = ckanToken == null ? null : "*****MASKED_TOKEN*******";
+        return "CkanClient{" + "catalogURL=" + catalogURL + ", ckanToken=" + maskedToken + '}';
     }
 
     /**
@@ -400,45 +399,43 @@ public class CkanClient {
     }
 
     /**
-     * Given some dataset parameters, reconstruct the URL of dataset page in the
-     * catalog website.
+     * Returns the URL of dataset page in the catalog website.
      *
      * Valid URLs have this format with the name:
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013
      *
-     * @param datasetIdentifier either of name the dataset (preferred) or the
+     * @param datasetIdOrName either of name the dataset (preferred) or the
      * alphanumerical id.
      *
      * @param catalogUrl i.e. http://dati.trentino.it
      */
-    public static String makeDatasetURL(String catalogUrl, String datasetIdentifier) {
+    public static String makeDatasetURL(String catalogUrl, String datasetIdOrName) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
-        checkNotEmpty(datasetIdentifier, "invalid dataset Identifier");
-        return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdentifier;
+        checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
+        return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdOrName;
     }
 
     /**
      *
-     * Given some resource parameters, reconstruct the URL of resource page in
-     * the catalog website.
+     * Returns the URL of resource page in the catalog website.
      *
      * Valid URLs have this format with the dataset name
      * 'impianti-di-risalita-vivifiemme-2013':
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
      *
      * @param catalogUrl i.e. http://dati.trentino.it
-     * @param datasetIdentifier the dataset name (preferred) or the
-     * alphanumerical id
+     * @param datasetIdOrName the dataset name (preferred) or the alphanumerical
+     * id
      *
      * @param resourceId the alphanumerical id of the resource (DON'T use
      * resource name)
      */
-    public static String makeResourceURL(String catalogUrl, String datasetIdentifier, String resourceId) {
+    public static String makeResourceURL(String catalogUrl, String datasetIdOrName, String resourceId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
-        checkNotEmpty(datasetIdentifier, "invalid dataset identifier");
+        checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         checkNotEmpty(resourceId, "invalid resource id");
         return OdtUtils.removeTrailingSlash(catalogUrl)
-                + "/" + datasetIdentifier + "/resource/" + resourceId;
+                + "/" + datasetIdOrName + "/resource/" + resourceId;
     }
 
     /**
@@ -452,13 +449,13 @@ public class CkanClient {
      * http://dati.trentino.it/group/gestione-del-territorio
      *
      * @param catalogUrl i.e. http://dati.trentino.it
-     * @param groupId the group name as in {@link CkanGroup#getName()}
+     * @param groupNameOrId the group name as in {@link CkanGroup#getName()}
      * (preferred), or the group's alphanumerical id.
      */
-    public static String makeGroupURL(String catalogUrl, String groupId) {
+    public static String makeGroupURL(String catalogUrl, String groupNameOrId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
-        checkNotEmpty(groupId, "invalid dataset identifier");
-        return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupId;
+        checkNotEmpty(groupNameOrId, "invalid dataset identifier");
+        return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
     }
 
     /**
@@ -718,24 +715,21 @@ public class CkanClient {
     }
 
     /**
-     * Parses a Ckan timestamp into a Java Timestamp. If something goes wrong
-     * returns null.
+     * Parses a Ckan timestamp into a Java Timestamp.
      *
+     * @throws IllegalArgumentException if timestamp can't be parsed.
      * @see #formatTimestamp(java.sql.Timestamp) for the inverse process.
      */
-    @Nullable
-    public static Timestamp parseTimestamp(@Nullable String timestamp) {
-        if (timestamp == null
-                || NONE.equals(timestamp)) {
-            return null;
+    public static Timestamp parseTimestamp(String timestamp) {
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Found null timestamp!");
         }
-        try {
-            return Timestamp.valueOf(timestamp.replace("T", " "));
+
+        if (NONE.equals(timestamp)) {
+            throw new IllegalArgumentException("Found timestamp with 'None' inside!");
         }
-        catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Unrecognized timestamp " + timestamp + ", returning null", ex);
-            return null;
-        }
+
+        return Timestamp.valueOf(timestamp.replace("T", " "));
     }
 
     /**
@@ -745,13 +739,13 @@ public class CkanClient {
      * @see #parseTimestamp(java.lang.String) for the inverse process.
      */
     @Nullable
-    public static String formatTimestamp(@Nullable Timestamp timestamp) {
+    public static String formatTimestamp(Timestamp timestamp) {
         if (timestamp == null) {
-            return null;
+            throw new IllegalArgumentException("Found null timestamp!");
         }
         Timestamp ret = Timestamp.valueOf(timestamp.toString());
         ret.setNanos((timestamp.getNanos() / 1000) * 1000);
-        return ret.toString().replace(" ", "T");
+        return Strings.padEnd(ret.toString().replace(" ", "T"), "1970-01-01T01:00:00.000001".length(), '0');
     }
 
     /**
@@ -882,7 +876,8 @@ public class CkanClient {
      * existing custom fields on the server WILL NOT be changed. This behaviour
      * is different from CKAN inconsistent default one, which would always erase
      * custom fields on the server. For this reason provided {@code resource}
-     * might be patched with latest metadata from the server.
+     * might be patched with latest metadata from the server prior sending it
+     * for update. TODO review new patch api in CKAN 2.3
      * @return the updated resource
      * @throws JackanException
      */
@@ -921,19 +916,81 @@ public class CkanClient {
     }
 
     /**
-     * Updates a dataset on the ckan server
+     * Updates a dataset on the ckan server.
      *
-     * @param dataset ckan dataset object with the minimal set of parameters
-     * required to perform an update. (see {@link eu.trentorise.opendata.jackan.ckan.CkanDataset#CkanDataset(java.lang.String, java.lang.String, java.util.List)
-     * }
-     *
-     * @return the updated dataset
+     * @param dataset ckan dataset object. Fields set to null won't be updated
+     * on the server. WARNING: if you didn't set any additional custom field
+     * with {@link CkanDataset#putOthers(java.lang.String, java.lang.Object)} or
+     * any {@code extras} with {@link CkanDataset#setExtras(java.util.List) },
+     * existing custom fields on the server WILL NOT be changed. This behaviour
+     * is different from CKAN inconsistent default one, which would always erase
+     * custom fields and {@code extras} on the server. For this reason provided
+     * {@code dataset} might be patched with latest metadata from the server
+     * prior sending it for update. TODO review new patch api in CKAN 2.3
+     * @return the updated resource
      * @throws JackanException
      */
-    public synchronized CkanDataset updateDataset(CkanDataset dataset) {
-        checkNotNull(dataset);
+    public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
 
-        throw new UnsupportedOperationException("todo 0.4 implement me!");
+        if (ckanToken == null) {
+            throw new JackanException("Tried to update dataset" + dataset.getName() + ", but ckan token was not set!");
+        }
+        @Nullable
+        CkanDataset origDataset = getDataset(dataset.getId());
+        if (dataset.getOthers() == null) {
+            LOG.info("Found no custom metadata (that is, anything other than the 'extras') on the dataset to send for update, "
+                    + "merging custom metadata from the server into provided dataset "
+                    + "to prevent accidental erasures...");
+            origDataset = getDataset(dataset.getId());
+            if (origDataset.getOthers() != null) {
+                dataset.setOthers(origDataset.getOthers());
+            }
+        } else {
+            LOG.info("Found custom metadata (that is, anything other than the 'extras') on the dataset to send for update, "
+                    + "going to completely replace custom dataset metadata on the server.");
+        }
+
+        if (dataset.getExtras() == null) {
+            LOG.info("Found no 'extras' field on the dataset to send for update, "
+                    + "merging 'extras' from the server into provided dataset "
+                    + "to prevent accidental erasures...");
+            if (origDataset == null) {
+                origDataset = getDataset(dataset.getId());
+            }
+            if (origDataset.getExtras() != null) {
+                dataset.setExtras(origDataset.getExtras());
+            }
+        } else {
+            LOG.info("Found 'extras' field on the dataset to send for update, "
+                    + "going to completely replace 'extras' on the server.");
+        }
+
+        if (dataset.getResources() == null) {
+            LOG.info("Found no 'resources' field on the dataset to send for update, "
+                    + "merging 'resources' from the server into provided dataset "
+                    + "to prevent accidental erasures...");
+            if (origDataset == null) {
+                origDataset = getDataset(dataset.getId());
+            }
+            if (origDataset.getResources() != null) {
+                dataset.setResources(origDataset.getResources());
+            }
+        } else {
+            LOG.info("Found 'resources' field on the dataset to send for update, "
+                    + "going to completely replace 'resources' on the server.");
+        }
+
+        String json = null;
+        try {
+            json = getObjectMapperForPosting().writeValueAsString(dataset);
+        }
+        catch (IOException ex) {
+            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
+
+        }
+
+        return postHttp(DatasetResponse.class, "/api/3/action/package_update", json, ContentType.APPLICATION_JSON).result;
+
     }
 
     /**
@@ -972,7 +1029,7 @@ public class CkanClient {
     public synchronized CkanOrganization createOrganization(CkanOrganization org) {
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create dataset" + org.getName() + ", but ckan token was not set!");
+            throw new JackanException("Tried to create organization" + org.getName() + ", but ckan token was not set!");
         }
 
         String json = null;
@@ -980,7 +1037,7 @@ public class CkanClient {
             json = getObjectMapperForPosting().writeValueAsString(org);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
+            throw new JackanException("Couldn't serialize the provided CkanOrganization!", this, e);
 
         }
         OrganizationResponse response = postHttp(OrganizationResponse.class, "/api/3/action/organization_create", json, ContentType.APPLICATION_JSON);

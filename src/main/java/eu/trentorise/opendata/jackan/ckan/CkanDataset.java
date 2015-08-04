@@ -29,6 +29,9 @@ public class CkanDataset extends CkanDatasetBase {
     private String licenseTitle;
     private Timestamp metadataCreated;
     private Timestamp metadataModified;
+    private int numResources;
+    private TrackingSummary trackingSummary;
+    private int numTags;
     private String notesRendered;
     private Boolean open;
 
@@ -134,6 +137,16 @@ public class CkanDataset extends CkanDatasetBase {
         this.notesRendered = notesRendered;
     }
 
+    public int getNumTags() {
+        return numTags;
+    }
+
+    public void setNumTags(int numTags) {
+        this.numTags = numTags;
+    }
+    
+    
+
     /**
      * The organization that owns the dataset.
      *
@@ -170,6 +183,17 @@ public class CkanDataset extends CkanDatasetBase {
         this.priv = priv;
     }
 
+    public int getNumResources() {
+        return numResources;
+    }
+
+    public void setNumResources(int numResources) {
+        this.numResources = numResources;
+    }
+
+    
+    
+    
     /**
      * Returns the alphanumerical id, like
      * "39d94b20-ea72-4c5e-bd8f-967a77e03946"
@@ -203,4 +227,14 @@ public class CkanDataset extends CkanDatasetBase {
         this.revisionTimestamp = revisionTimestamp;
     }
 
+    public TrackingSummary getTrackingSummary() {
+        return trackingSummary;
+    }
+
+    public void setTrackingSummary(TrackingSummary trackingSummary) {
+        this.trackingSummary = trackingSummary;
+    }
+
+    
+    
 }

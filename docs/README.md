@@ -164,6 +164,29 @@ If you want to serialize to json a Java object _obj_ fetched by Jackan, you can 
 ```
     String json = CkanClient.getObjectMapperClone().writeValueAsString(obj);
 ```
+todo write about posting clone
+
+### Timestamps
+
+CKAN uses timestamps in a format like `1970-01-01T01:00:00.000010`. In the client we store them as `java.sql.Timestamp` so to be able to preserve the microseconds. To parse/format Ckan timestamps, use 
+
+```
+    CkanClient.formatTimestamp(new Timestamp(123));
+    CkanClient.parseTimestamp("1970-01-01T01:00:00.000010");
+```
+
+### DCAT
+
+There has long been a plugin for ckan to serve metadata as rdf in <a href="http://www.w3.org/TR/vocab-dcat/" target="_blank">DCAT format</a>, but <a href="https://lists.okfn.org/pipermail/ckan-dev/2015-July/009164.html" target="_blank">according to maintainer (July 2015):</a>
+```
+Historically you have been able to access an RDF representation of a CKAN
+dataset metadata by navigating to /dataset/{id}.rdf or /dataset/{id}.n3.
+These were rendered using templates, and were outdated, incomplete and
+broken [1].
+```
+Situation on ckan side is getting much better with the new version of the plugin in progress, but we cannot expect all CKAN instances around the world to adopt it now. So currently we provide a class to convert from CKAN objects to their DCAT equivalent:
+
+todo write about DcatFactory
 
 ### Logging
 

@@ -18,6 +18,7 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
  * A Ckan Dataset, which in turn holds Ckan Resources.
  *
  * In Ckan terminology it is also known as 'package'.
- * 
+ *
  * {@link CkanDatasetBase} holds fields that can be sent when
  * <a href="http://docs.ckan.org/en/latest/api/index.html?#ckan.logic.action.create.package_create" target="_blank">creating
  * a dataset,</a>, while {@link CkanDataset} holds more fields that can be
@@ -55,7 +56,7 @@ public class CkanDatasetBase {
     private List<CkanDatasetRelationship> relationshipsAsObject;
     private List<CkanDatasetRelationship> relationshipsAsSubject;
     private List<CkanResource> resources;
-    private String state;
+    private CkanState state;
     private List<CkanTag> tags;
     private String title;
     private String type;
@@ -88,8 +89,9 @@ public class CkanDatasetBase {
      * CKAN instances might have
      * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
      * custom data schemas</a> that force presence of custom properties among
-     * 'regular' ones given by {@link #getExtras()}. In this case, they go to
-     * 'others' field.
+     * 'regular' ones. In this case, they go to 'others' field. Note that to
+     * further complicate things there is also an {@link #getExtras() extras}
+     * field.
      *
      * @see #putOthers(java.lang.String, java.lang.Object)
      */
@@ -100,7 +102,17 @@ public class CkanDatasetBase {
     }
 
     /**
+     * @see #getOthers()
+     * @see #putOthers(java.lang.String, java.lang.Object)
+     */
+    public void setOthers(@Nullable Map<String, Object> others) {
+        this.others = others;
+    }
+
+    /**
      * See {@link #getOthers()}
+     *
+     * @see #setOthers(java.util.Map)
      */
     @JsonAnySetter
     public void putOthers(String name, Object value) {
@@ -142,14 +154,15 @@ public class CkanDatasetBase {
 
     /**
      * Regular place where to put custom metadata. See also
-     * {@link #getOthers()}.
+     * {@link #getOthers()}. Note also extras can be in CkanDataset but not in
+     * CkanResource.
      */
     public List<CkanPair> getExtras() {
         return extras;
     }
 
     /**
-     * Always returns a map (which might be empty)
+     * Always returns a non-null map (which might be empty)
      */
     @JsonIgnore
     public Map<String, String> getExtrasAsHashMap() {
@@ -226,10 +239,20 @@ public class CkanDatasetBase {
         this.name = name;
     }
 
+    /**
+     * A description of the dataset. See also
+     * {@link CkanDataset#getNotesRendered()} Note CkanResource has instead a
+     * field called {@link CkanResourceBase#getDescription() description}.
+     */
     public String getNotes() {
         return notes;
     }
 
+    /**
+     * A description of the dataset. See also
+     * {@link CkanDataset#getNotesRendered()} Note CkanResource has instead a
+     * field called {@link CkanResourceBase#getDescription() description}.
+     */
     public void setNotes(String notes) {
         this.notes = notes;
     }
@@ -275,16 +298,22 @@ public class CkanDatasetBase {
     }
 
     /**
-     * todo don't know meaning, found "active" as one value
+     * The current state of the dataset, e.g. 'active' or 'deleted', only active
+     * datasets show up in search results and other lists of datasets, this
+     * parameter will be ignored if you are not authorized to change the state
+     * of the dataset (optional, default: 'active')
      */
-    public String getState() {
+    public CkanState getState() {
         return state;
     }
 
     /**
-     * todo don't know meaning, found "active" as one value
+     * The current state of the dataset, e.g. 'active' or 'deleted', only active
+     * datasets show up in search results and other lists of datasets, this
+     * parameter will be ignored if you are not authorized to change the state
+     * of the dataset (optional, default: 'active')
      */
-    public void setState(String state) {
+    public void setState(CkanState state) {
         this.state = state;
     }
 

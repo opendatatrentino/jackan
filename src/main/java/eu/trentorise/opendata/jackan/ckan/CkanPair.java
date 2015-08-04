@@ -19,14 +19,14 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 /**
- * for key/value pairs present in extras field
+ * for key/value pairs present in extras field. Implements equals and hashCode.
  *
  * @author David Leoni
  */
 public class CkanPair {
 
     private String key;
-    
+
     @Nullable
     private String value;
 
@@ -37,7 +37,6 @@ public class CkanPair {
         this.key = key;
         this.value = value;
     }
-       
 
     public String getKey() {
         return key;
@@ -81,6 +80,5 @@ public class CkanPair {
         }
         return true;
     }
-    
-    
+
 }

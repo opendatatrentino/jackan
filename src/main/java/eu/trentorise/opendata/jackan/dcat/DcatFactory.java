@@ -32,31 +32,29 @@ import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
 import eu.trentorise.opendata.traceprov.dcat.FoafAgent;
 import eu.trentorise.opendata.traceprov.dcat.SkosConcept;
 import eu.trentorise.opendata.traceprov.dcat.SkosConceptScheme;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import eu.trentorise.opendata.traceprov.dcat.VCard;
+import eu.trentorise.opendata.traceprov.geojson.Feature;
+import eu.trentorise.opendata.traceprov.geojson.GeoJson;
+import java.sql.Timestamp;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- *
+ * See RDF DCAT to CKAN dataset mapping
  * @author David Leoni
  */
 public class DcatFactory {
-    
+
     private static final Logger LOG = Logger.getLogger(DcatFactory.class.getName());
-        
+
     /**
-     * Formats dates according to ISO 8601. Slow, but threadsafe.
-     * @return 
+     * Formats timestamp according to ISO 8601. Differently from CKAN, it adds a
+     * 'Z' for clarity.
      */
-    private static String formatDate(Date date){
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        df.setTimeZone(tz);
-        return df.format(date);
-        
+    private static String formatTimestamp(Timestamp timestamp) {
+        return CkanClient.formatTimestamp(timestamp) + "Z";
     }
+
     /**
      * Returns a DcatDataset out of a Ckan dataset.
      *
@@ -70,9 +68,13 @@ public class DcatFactory {
     public static DcatDataset dataset(CkanDataset dataset, String catalogUrl, Locale locale) {
 
         
-        OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalo URL");
+        
+        OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalog URL");
         checkNotNull(locale, "invalid dcat dataset locale");
-
+        checkNotNull(dataset, "Invalid dataset!");
+        
+        Map<String, String> extras = dataset.getExtrasAsHashMap();
+        
         String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogUrl);
         String sanitizedId = dataset.getId() == null ? "" : dataset.getId();
 
@@ -81,11 +83,44 @@ public class DcatFactory {
         LOG.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
 
         DcatDataset.Builder ddb = DcatDataset.builder();
-
-        LOG.warning("TODO - SKIPPED ACCRUAL PERIODICITY WHILE CONVERTING FROM CKAN TO DCAT");
-        // dd.setAccrualPeriodicity(null);
-        LOG.warning("TODO - SKIPPED CONTACT POINT WHILE CONVERTING FROM CKAN TO DCAT");
-        // dd.setContactPoint(null);        
+    
+        String candidateAccrualPeriodicity = extras.get("frequency");
+        
+        if (candidateAccrualPeriodicity == null){
+            LOG.info("Couldn't find 'frequency' in dataset 'extras', skipping accrual periodicity.");
+        } else {
+            ddb.setAccrualPeriodicity(candidateAccrualPeriodicity);
+        }
+                         
+        String candidateContactUri = extras.get("contact_uri");
+        
+        VCard.Builder contactPointBuilder = VCard.builder();
+        
+        if (candidateContactUri == null){
+            LOG.fine("Couldn't find 'contact_uri' in dataset 'extras'.");
+        } else {
+            contactPointBuilder.setUri(candidateContactUri);
+        }
+        
+        String candidateContactName = extras.get("contact_name");
+        if (candidateContactName == null){
+            LOG.fine("Couldn't find 'contact_name' in dataset 'extras'.");
+        } else {
+            contactPointBuilder.setFn(candidateContactName);
+        }
+        String candidateContactEmail = extras.get("contact_email");
+        if (candidateContactName == null){
+            LOG.fine("Couldn't find 'contact_email' in dataset 'extras'.");
+        } else {
+            contactPointBuilder.setEmail(candidateContactEmail);
+        }
+        
+        VCard candidateContactPoint = contactPointBuilder.build();
+        if (candidateContactPoint.equals(VCard.of())){
+            LOG.info("Couldn't find any contact_* info in dataset 'extras', skipping dcat:contactPoint.");
+        } else {
+            ddb.setContactPoint(candidateContactPoint);
+        }
 
         if (dataset.getNotes() != null) {
             ddb.setDescription(Dict.of(locale, dataset.getNotes()));
@@ -102,7 +137,7 @@ public class DcatFactory {
         }
 
         if (dataset.getMetadataCreated() != null) {
-            ddb.setIssued(formatDate(dataset.getMetadataCreated()));
+            ddb.setIssued(CkanClient.formatTimestamp(dataset.getMetadataCreated()));
         }
 
         if (dataset.getTags() != null) {
@@ -120,7 +155,7 @@ public class DcatFactory {
         ddb.addLanguages(locale);
 
         if (dataset.getMetadataModified() != null) {
-            ddb.setModified(formatDate(dataset.getMetadataModified()));
+            ddb.setModified(formatTimestamp(dataset.getMetadataModified()));
         }
 
         FoafAgent.Builder publisherBuilder = FoafAgent.builder();
@@ -136,16 +171,31 @@ public class DcatFactory {
         String spatialValue = dataset.getExtrasAsHashMap().get("spatial");
 
         if (spatialValue == null) {
-            LOG.warning("TODO - SKIPPED 'SPATIAL' WHILE CONVERTING FROM CKAN TO DCAT");
+            LOG.info("Couldn't find 'spatial' while converting from ckan to dcat, skipping it");
         } else {
             // done according to Guida dati.gov.it 1.3: https://docs.google.com/document/d/1niBkBRJ-rxAKVJpttnDkf5xfqeMDtV_94ViGXMlBRQM/edit#
-            LOG.fine("Found attribute 'spatial' in ckan dataset extras, copying value to dct:spatial");
-            ddb.setSpatial(spatialValue);
+            LOG.fine("Found attribute 'spatial' in ckan dataset 'extras', copying value to dct:spatial");
+            GeoJson geoJson;
+            try {
+                geoJson = CkanClient.getObjectMapperClone().readValue(spatialValue, GeoJson.class);
+                ddb.setSpatial(geoJson);
+            }
+            catch (Exception ex) {
+                LOG.warning("Could not parse geojson, storing it as raw string in Feature.properties['name']");
+                ddb.setSpatial(Feature.ofName(spatialValue));
+            }
+
         }
 
-        //dd.setTemporal(catalogURL);
-        LOG.warning("TODO - SKIPPED 'TEMPORAL' WHILE CONVERTING FROM CKAN TO DCAT");
-
+        String candidateTemporal = extras.get("temporal");
+        if (candidateTemporal == null){
+            LOG.info("Couldn't find 'temporal' in dataset 'extras', skipping dcat:temporal");
+        } else {
+            ddb.setTemporal(candidateTemporal);
+        }
+                
+        //SkosConcept candidateTheme = SkosConcept.of();
+        
         if (dataset.getGroups() != null) {
             LOG.warning("TODO - USING EMPTY SkosConceptTheme.of() WHILE CONVERTING FROM CKAN TO DCAT DATASET");
 
@@ -185,7 +235,12 @@ public class DcatFactory {
      *
      */
     @Beta
-    public static DcatDistribution distribution(CkanResource resource, String catalogURL, String datasetId, String license, Locale locale) {
+    public static DcatDistribution distribution(
+            CkanResource resource, 
+            String catalogURL, 
+            String datasetId, 
+            String license, 
+            Locale locale) {
         LOG.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
         checkNotNull(resource, "invalid ckan resource");
         checkNotNull(catalogURL, "invalid catalog URL");
@@ -237,9 +292,9 @@ public class DcatFactory {
             ddb.setFormat(resource.getFormat());
         }
 
-        Date lastMod = resource.getLastModified();
+        Timestamp lastMod = resource.getLastModified();
         if (lastMod != null) {
-            ddb.setIssued(formatDate(lastMod));
+            ddb.setIssued(formatTimestamp(lastMod));
         }
         if (license != null) {
             ddb.setLicense(license);
