@@ -16,7 +16,40 @@
 package eu.trentorise.opendata.jackan.ckan;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+class GroupOrgPackagesDeserializer extends JsonDeserializer<List<CkanDataset>> {
+    private static final Logger LOG = Logger.getLogger(GroupOrgPackagesDeserializer.class.getName());
+
+    
+    @Override
+    public List<CkanDataset> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        
+        JsonToken t = jp.getCurrentToken();
+
+        if (t == JsonToken.VALUE_NUMBER_INT) {
+            return new ArrayList();
+        }
+
+        if (t == JsonToken.START_ARRAY) {
+            return jp.readValueAs(new TypeReference<List<CkanDataset>>(){});
+        }
+
+        LOG.log(Level.SEVERE, "Unrecognized token {0} for 'packages' field, returning an empty array.", t.asString());
+        return new ArrayList();
+    }
+}
 
 /**
  * Abstract class to model the same data structure that Ckan uses for creating
@@ -27,7 +60,7 @@ import java.util.List;
  *
  * @author David Leoni
  */
-abstract class CkanGroupOrgBase {
+public abstract class CkanGroupOrgBase {
 
     private String approvalStatus;
     private String description;
@@ -36,11 +69,11 @@ abstract class CkanGroupOrgBase {
     private String id;
 
     private String imageUrl;
-    private boolean organization;
     private String name;
+    private boolean organization;
+    @JsonDeserialize(using = GroupOrgPackagesDeserializer.class)
+    private List<CkanDataset> packages;
 
-    // better to comment it as it can also be an int according to which web api is called
-    // private List<CkanDataset> packages;
     private String revisionId;
     private CkanState state;
     private String title;
@@ -116,6 +149,23 @@ abstract class CkanGroupOrgBase {
     }
 
     /**
+     * Name in the url, lowercased and without spaces. i.e.
+     * management-of-territory
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name Name in the url, lowercased and without spaces. i.e.
+     * management-of-territory
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
+    /**
      * A ckan group can also be an organization.
      */
     @JsonProperty("is_organization")
@@ -132,20 +182,20 @@ abstract class CkanGroupOrgBase {
     }
 
     /**
-     * Name in the url, lowercased and without spaces. i.e.
-     * management-of-territory
+     * The datasets of the group. May be empty according to the api call.
      */
-    public String getName() {
-        return name;
+    public List<CkanDataset> getPackages() {
+        return packages;
     }
 
     /**
-     * @param name Name in the url, lowercased and without spaces. i.e.
-     * management-of-territory
-     */
-    public void setName(String name) {
-        this.name = name;
+     * The datasets of the group. May be empty according to the api call.
+     */    
+    public void setPackages(List<CkanDataset> packages) {
+        this.packages = packages;
     }
+
+    
 
     public String getRevisionId() {
         return revisionId;
@@ -169,8 +219,7 @@ abstract class CkanGroupOrgBase {
      * The current state of the group/organization, e.g. 'active' or 'deleted',
      * only active groups/organizations show up in search results and other
      * lists of groups/organizations, this parameter will be ignored if you are
-     * not authorized to change the state (optional, default:
-     * 'active')
+     * not authorized to change the state (optional, default: 'active')
      */
     public void setState(CkanState state) {
         this.state = state;

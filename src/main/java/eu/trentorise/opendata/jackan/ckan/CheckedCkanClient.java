@@ -41,12 +41,12 @@ public class CheckedCkanClient extends CkanClient {
     }
 
     @Override
-    public synchronized CkanOrganization createOrganization(CkanOrganization org) {
+    public synchronized CkanOrganization createOrganization(CkanGroupOrgBase org) {
         return super.createOrganization(org);
     }
 
     @Override
-    public synchronized CkanDataset createDataset(CkanDataset dataset) {
+    public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
         return super.createDataset(dataset);
     }
 

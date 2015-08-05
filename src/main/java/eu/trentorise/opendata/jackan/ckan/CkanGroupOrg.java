@@ -23,7 +23,7 @@ import java.sql.Timestamp;
  *
  * @author David Leoni
  */
-abstract class CkanGroupOrg extends CkanGroupOrgBase {
+public abstract class CkanGroupOrg extends CkanGroupOrgBase {
 
     private Timestamp created;
     private String displayName;

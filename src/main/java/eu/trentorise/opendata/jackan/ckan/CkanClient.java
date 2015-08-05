@@ -315,10 +315,10 @@ public class CkanClient {
             throw new JackanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, ex);
         }
 
-        if (!dr.success) {
+        if (!dr.isSuccess()) {
             throw new JackanException(
                     "Error while performing GET. Request url was: " + fullUrl,
-                    dr.error, this);
+                    dr, this);
 
         }
         return dr;
@@ -374,10 +374,10 @@ public class CkanClient {
             throw new JackanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, ex);
         }
 
-        if (!dr.success) {
+        if (!dr.isSuccess()) {
             throw new JackanException(
                     "Error while performing a POST! Request url is:" + fullUrl,
-                    dr.error, this
+                    dr, this
             );
         }
         return dr;
@@ -637,15 +637,14 @@ public class CkanClient {
     /**
      * Returns a Ckan organization.
      *
-     * @param organizationIdOrName either the name of organization (i.e.
+     * @param idOrName either the name of organization (i.e.
      * culture-and-education) or the alphanumerical id (i.e.
      * 232cad97-ecf2-447d-9656-63899023887f). Do not pass it a group id.
      * @throws JackanException on error
      */
-    public synchronized CkanOrganization
-            getOrganization(String organizationIdOrName) {
+    public synchronized CkanOrganization getOrganization(String idOrName) {
         return getHttp(OrganizationResponse.class, "/api/3/action/organization_show", "id",
-                organizationIdOrName, "include_datasets", "false").result;
+                idOrName, "include_datasets", "false").result;
     }
 
     /**
@@ -802,7 +801,7 @@ public class CkanClient {
                 = getHttp(DatasetSearchResponse.class,
                         "/api/3/action/package_search?" + params.toString());
 
-        if (dsr.success) {
+        if (dsr.isSuccess()) {
             for (CkanDataset ds : dsr.result.getResults()) {
                 for (CkanResource cr : ds.getResources()) {
                     cr.setPackageId(ds.getId());
@@ -840,35 +839,8 @@ public class CkanClient {
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
 
-    /**
-     * Checks dataset can actually be created
-     *
-     * @throws IllegalArgumentException if minimal requirements aren't met
-     */
-    static void checkDataset(CkanDataset dataset) {
-        checkNotEmpty(dataset.getName(), "invalid ckan dataset name (must have no spaces and dashes as separators, i.e. \"limestone-pavement-orders");
-        checkNotEmpty(dataset.getUrl(), "invalid ckan dataset url to description page");
-        checkNotNull(dataset.getExtras(), "invalid ckan dataset extras");
-    }
-
-    /**
-     * Checks if the provided resource meets the requirements to be created to
-     * CKAN.
-     *
-     * @throws IllegalArgumentException if minimal requirements aren't met
-     */
-    static void checkResource(CkanResource resource) {
-        checkNotNull(resource, "Can't create null resource!");
-        checkNotEmpty(resource.getFormat(), "Invalid Ckan resource format!");
-        checkNotEmpty(resource.getName(), "Ckan resource name can't be empty!");
-        checkNotEmpty(resource.getDescription(), "Ckan resource description must not be null!");
-        // todo do we need to check mimetype?? checkNotNull(resource.getMimetype());
-        checkNotEmpty(resource.getPackageId(), "Ckan resource parent dataset must not be empty!");
-        checkNotEmpty(resource.getUrl(), "Ckan resource url must be not empty!");
-    }
-
-    /**
-     * Updates a resource on the ckan server.
+  /**
+     * Updates a resource on the server.
      *
      * @param resource ckan resource object. Fields set to null won't be updated
      * on the server. WARNING: if you didn't set any additional custom field
@@ -913,9 +885,82 @@ public class CkanClient {
 
         return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
 
+    }    
+    
+    /**
+     * Marks a resource as 'deleted'.
+     *
+     * Note this will just set resource state to {@link CkanState#deleted} and
+     * make it inaccessible from the website, but you will still be able to get
+     * the resource with the web api.
+     *
+     * @param id The alphanumerical id of the resource, such as
+     * d0892ada-b8b9-43b6-81b9-47a86be126db.
+     *
+     * @throws JackanException on error
+     */
+    public synchronized void deleteResource(String id) {
+        String json = "{\"id\":\"" + id + "\"}";
+        postHttp(ResourceResponse.class, "/api/3/action/resource_delete", json, ContentType.APPLICATION_JSON);
     }
 
     /**
+     * Checks dataset can actually be created
+     *
+     * @throws IllegalArgumentException if minimal requirements aren't met
+     */
+    static void checkDataset(CkanDataset dataset) {
+        checkNotEmpty(dataset.getName(), "invalid ckan dataset name (must have no spaces and dashes as separators, i.e. \"limestone-pavement-orders");
+        checkNotEmpty(dataset.getUrl(), "invalid ckan dataset url to description page");
+        checkNotNull(dataset.getExtras(), "invalid ckan dataset extras");
+    }
+
+    /**
+     * Checks if the provided resource meets the requirements to be created to
+     * CKAN.
+     *
+     * @throws IllegalArgumentException if minimal requirements aren't met
+     */
+    static void checkResource(CkanResource resource) {
+        checkNotNull(resource, "Can't create null resource!");
+        checkNotEmpty(resource.getFormat(), "Invalid Ckan resource format!");
+        checkNotEmpty(resource.getName(), "Ckan resource name can't be empty!");
+        checkNotEmpty(resource.getDescription(), "Ckan resource description must not be null!");
+        // todo do we need to check mimetype?? checkNotNull(resource.getMimetype());
+        checkNotEmpty(resource.getPackageId(), "Ckan resource parent dataset must not be empty!");
+        checkNotEmpty(resource.getUrl(), "Ckan resource url must be not empty!");
+    }
+
+  
+
+   
+    /**
+     * Creates CkanDataset on the server. Will also create eventual resources
+     * present in the dataset.
+     *
+     * @param dataset Ckan dataset without id
+     * @return the newly created dataset
+     * @throws JackanException
+     */
+    public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
+        }
+
+        String json = null;
+        try {
+            json = getObjectMapperForPosting().writeValueAsString(dataset);
+        }
+        catch (IOException e) {
+            throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
+
+        }
+        DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+        return response.result;
+    }
+    
+ /**
      * Updates a dataset on the ckan server.
      *
      * @param dataset ckan dataset object. Fields set to null won't be updated
@@ -992,41 +1037,34 @@ public class CkanClient {
         return postHttp(DatasetResponse.class, "/api/3/action/package_update", json, ContentType.APPLICATION_JSON).result;
 
     }
+    
 
     /**
-     * Creates CkanDataset on the server. Will also create eventual resources
-     * present in the dataset.
+     * Marks a dataset as 'deleted'.
      *
-     * @param dataset Ckan dataset without id
-     * @return the newly created dataset
-     * @throws JackanException
+     * Note this will just set dataset state to {@link CkanState#deleted} and
+     * make it inaccessible from the website, but you will still be able to get
+     * the dataset with the web api. Resources contained within will still be
+     * 'active'.
+     *
+     * @param idOrName either the dataset name (i.e. laghi-monitorati-trento) or
+     * the the alphanumerical id (i.e. 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d)
+     *
+     * @throws JackanException on error
      */
-    public synchronized CkanDataset createDataset(CkanDataset dataset) {
-
-        if (ckanToken == null) {
-            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
-        }
-
-        String json = null;
-        try {
-            json = getObjectMapperForPosting().writeValueAsString(dataset);
-        }
-        catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
-
-        }
-        DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
-        return response.result;
+    public synchronized void deleteDataset(String nameOrId) {
+        String json = "{\"id\":\"" + nameOrId + "\"}";
+        postHttp(CkanResponse.class, "/api/3/action/package_delete", json, ContentType.APPLICATION_JSON);
     }
 
     /**
-     * Creates CkanOrganization on the server
+     * Creates CkanOrganization on the server. 
      *
      * @param org organization to create
      * @return the newly created organization
      * @throws JackanException
      */
-    public synchronized CkanOrganization createOrganization(CkanOrganization org) {
+    public synchronized CkanOrganization createOrganization(CkanGroupOrgBase org) {
 
         if (ckanToken == null) {
             throw new JackanException("Tried to create organization" + org.getName() + ", but ckan token was not set!");
@@ -1043,7 +1081,7 @@ public class CkanClient {
         OrganizationResponse response = postHttp(OrganizationResponse.class, "/api/3/action/organization_create", json, ContentType.APPLICATION_JSON);
         return response.result;
     }
-
+ 
     /**
      * Returns the proxy used by the client.
      */
@@ -1052,14 +1090,6 @@ public class CkanClient {
         return proxy;
 
     }
-
-}
-
-class CkanResponse {
-
-    public String help;
-    public boolean success;
-    public CkanError error;
 
 }
 

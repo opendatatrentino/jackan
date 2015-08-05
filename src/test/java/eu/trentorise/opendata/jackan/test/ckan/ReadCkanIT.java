@@ -82,7 +82,6 @@ public class ReadCkanIT {
     public static final String PRODOTTI_CERTIFICATI_RESOURCE_ID = "fe507a10-4c49-4b18-8bf6-6705198cfd42";
     public static final String POLITICHE_SVILUPPO_ORGANIZATION_NAME = "pat-s-sviluppo-rurale";
     public static final String AGRICOLTURA_GROUP_NAME = "agricoltura";
-    
 
     private Multimap<String, String> datasetList = LinkedListMultimap.create();
 
@@ -107,12 +106,12 @@ public class ReadCkanIT {
     public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
     }
-    
+
     @Test
-    public void testProxy(){        
+    public void testProxy() {
         HttpHost proxy = new HttpHost("127.0.0.1", 8080, "http");
-        assertEquals(proxy, new CkanClient(DATI_TRENTINO,null, proxy).getProxy());
-    }    
+        assertEquals(proxy, new CkanClient(DATI_TRENTINO, null, proxy).getProxy());
+    }
 
     /**
      * todo we should do some ckan internal version detector (sic)
@@ -237,6 +236,9 @@ public class ReadCkanIT {
     public void testGroupList(CkanClient client) {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
+        // api actually returns the number of datasets, so we check they are properly 'converted'.
+        assertEquals(new ArrayList(), gl.get(0).getPackages());
+
     }
 
     @Test
@@ -244,8 +246,8 @@ public class ReadCkanIT {
     public void testGroupNames(CkanClient client) {
         List<String> gl = client.getGroupNames();
         assertTrue(gl.size() > 0);
-    }    
-    
+    }
+
     @Test
     @Parameters(method = "clients")
     public void testGroup(CkanClient client) {
@@ -263,15 +265,16 @@ public class ReadCkanIT {
     public void testOrganizationList(CkanClient client) {
         List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
+        // api actually returns the number of datasets, so we check they are properly 'converted'.
+        assertEquals(new ArrayList(), gl.get(0).getPackages());
     }
-    
+
     @Test
     @Parameters(method = "clients")
     public void testOrganizationNames(CkanClient client) {
         List<String> gl = client.getOrganizationNames();
         assertTrue(gl.size() > 0);
     }
-    
 
     @Test
     @Parameters(method = "clients")
@@ -370,12 +373,11 @@ public class ReadCkanIT {
             fail();
         }
         catch (JackanException ex) {
-            checkNotNull(ex.getCkanError());
-            checkNotEmpty(ex.getCkanError().getType(), "Ckan error type should not be empty!");
+            checkNotNull(ex.getCkanResponse().getError());
+            checkNotEmpty(ex.getCkanResponse().getError().getType(), "Ckan error type should not be empty!");
         }
 
     }
-    
 
     @Test
     public void testFullSearch() {
@@ -393,5 +395,4 @@ public class ReadCkanIT {
          */
     }
 
-   
 }

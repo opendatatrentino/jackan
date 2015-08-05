@@ -16,7 +16,7 @@
 package eu.trentorise.opendata.jackan;
 
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanError;
+import eu.trentorise.opendata.jackan.ckan.CkanResponse;
 import javax.annotation.Nullable;
 
 /**
@@ -26,13 +26,13 @@ import javax.annotation.Nullable;
 public class JackanException extends RuntimeException {
 
     @Nullable
-    private CkanError ckanError = null;
+    private CkanResponse ckanResponse = null;
     @Nullable
     private CkanClient ckanClient = null;
     
-    private static String makeMessage(String msg, @Nullable CkanError error, @Nullable CkanClient client){
+    private static String makeMessage(String msg, @Nullable CkanResponse ckanResponse, @Nullable CkanClient client){
         return msg + "  "                
-                + (error != null ? error + "  "  : "")
+                + (ckanResponse != null ? ckanResponse + "  "  : "")
                 + (client != null ? client : "");
     }
     
@@ -49,9 +49,9 @@ public class JackanException extends RuntimeException {
         this.ckanClient = client;
     }    
     
-    public JackanException(String msg, CkanError error, CkanClient client) {
-        super(makeMessage(msg, error, client));
-        this.ckanError = error;
+    public JackanException(String msg, CkanResponse ckanResponse, CkanClient client) {
+        super(makeMessage(msg, ckanResponse, client));
+        this.ckanResponse = ckanResponse;
         this.ckanClient = client;
     }
 
@@ -59,16 +59,16 @@ public class JackanException extends RuntimeException {
         this(msg, null, client, ex);
     }
     
-     public JackanException(String msg, CkanError error, CkanClient client, Throwable ex) {
-        super(makeMessage(msg, error, client), 
+     public JackanException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
+        super(makeMessage(msg, ckanResponse, client), 
                 ex);
-        this.ckanError = error;
+        this.ckanResponse = ckanResponse;
         this.ckanClient = client;         
     }
 
     @Nullable
-    public CkanError getCkanError() {
-        return ckanError;
+    public CkanResponse getCkanResponse() {
+        return ckanResponse;
     }
      
     @Nullable

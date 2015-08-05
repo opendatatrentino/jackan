@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 
 /**
  * See RDF DCAT to CKAN dataset mapping
+ *
  * @author David Leoni
  */
 public class DcatFactory {
@@ -51,7 +52,7 @@ public class DcatFactory {
      * Formats timestamp according to ISO 8601. Differently from CKAN, it adds a
      * 'Z' for clarity.
      */
-    private static String formatTimestamp(Timestamp timestamp) {
+    public static String formatTimestamp(Timestamp timestamp) {
         return CkanClient.formatTimestamp(timestamp) + "Z";
     }
 
@@ -66,15 +67,15 @@ public class DcatFactory {
      */
     @Beta
     public static DcatDataset dataset(CkanDataset dataset, String catalogUrl, Locale locale) {
+       
+        LOG.warning("CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
 
-        
-        
         OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalog URL");
         checkNotNull(locale, "invalid dcat dataset locale");
         checkNotNull(dataset, "Invalid dataset!");
-        
+
         Map<String, String> extras = dataset.getExtrasAsHashMap();
-        
+
         String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogUrl);
         String sanitizedId = dataset.getId() == null ? "" : dataset.getId();
 
@@ -83,40 +84,40 @@ public class DcatFactory {
         LOG.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
 
         DcatDataset.Builder ddb = DcatDataset.builder();
-    
+
         String candidateAccrualPeriodicity = extras.get("frequency");
-        
-        if (candidateAccrualPeriodicity == null){
+
+        if (candidateAccrualPeriodicity == null) {
             LOG.info("Couldn't find 'frequency' in dataset 'extras', skipping accrual periodicity.");
         } else {
             ddb.setAccrualPeriodicity(candidateAccrualPeriodicity);
         }
-                         
+
         String candidateContactUri = extras.get("contact_uri");
-        
+
         VCard.Builder contactPointBuilder = VCard.builder();
-        
-        if (candidateContactUri == null){
+
+        if (candidateContactUri == null) {
             LOG.fine("Couldn't find 'contact_uri' in dataset 'extras'.");
         } else {
             contactPointBuilder.setUri(candidateContactUri);
         }
-        
+
         String candidateContactName = extras.get("contact_name");
-        if (candidateContactName == null){
+        if (candidateContactName == null) {
             LOG.fine("Couldn't find 'contact_name' in dataset 'extras'.");
         } else {
             contactPointBuilder.setFn(candidateContactName);
         }
         String candidateContactEmail = extras.get("contact_email");
-        if (candidateContactName == null){
+        if (candidateContactName == null) {
             LOG.fine("Couldn't find 'contact_email' in dataset 'extras'.");
         } else {
             contactPointBuilder.setEmail(candidateContactEmail);
         }
-        
+
         VCard candidateContactPoint = contactPointBuilder.build();
-        if (candidateContactPoint.equals(VCard.of())){
+        if (candidateContactPoint.equals(VCard.of())) {
             LOG.info("Couldn't find any contact_* info in dataset 'extras', skipping dcat:contactPoint.");
         } else {
             ddb.setContactPoint(candidateContactPoint);
@@ -188,14 +189,13 @@ public class DcatFactory {
         }
 
         String candidateTemporal = extras.get("temporal");
-        if (candidateTemporal == null){
+        if (candidateTemporal == null) {
             LOG.info("Couldn't find 'temporal' in dataset 'extras', skipping dcat:temporal");
         } else {
             ddb.setTemporal(candidateTemporal);
         }
-                
+
         //SkosConcept candidateTheme = SkosConcept.of();
-        
         if (dataset.getGroups() != null) {
             LOG.warning("TODO - USING EMPTY SkosConceptTheme.of() WHILE CONVERTING FROM CKAN TO DCAT DATASET");
 
@@ -236,10 +236,10 @@ public class DcatFactory {
      */
     @Beta
     public static DcatDistribution distribution(
-            CkanResource resource, 
-            String catalogURL, 
-            String datasetId, 
-            String license, 
+            CkanResource resource,
+            String catalogURL,
+            String datasetId,
+            String license,
             Locale locale) {
         LOG.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
         checkNotNull(resource, "invalid ckan resource");
