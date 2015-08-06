@@ -35,6 +35,7 @@ import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
@@ -369,7 +370,7 @@ public class ReadCkanIT {
     @Parameters(method = "clients")
     public void testCkanError(CkanClient client) {
         try {
-            CkanDataset dataset = client.getDataset("666");
+            CkanDataset dataset = client.getDataset(UUID.randomUUID().toString());
             fail();
         }
         catch (JackanException ex) {

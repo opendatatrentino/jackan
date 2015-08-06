@@ -380,5 +380,21 @@ public class CkanDatasetBase {
     public void setVersion(String version) {
         this.version = version;
     }
+    
+    /**
+     * Returns the id if not null, the name otherwise
+     */
+    @Nullable
+    public String idOrName() {
+        return getId() == null ? getName() : getId();
+    }
+    
+    /**
+     * Returns the name if not null, the id otherwise
+     */
+    @Nullable
+    public String nameOrId() {
+        return getName() == null ? getId() : getName();
+    }
 
 }

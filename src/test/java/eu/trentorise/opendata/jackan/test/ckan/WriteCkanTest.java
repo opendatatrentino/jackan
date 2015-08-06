@@ -69,7 +69,7 @@ public abstract class WriteCkanTest {
 
     private static final Logger LOG = Logger.getLogger(WriteCkanTest.class.getName());
 
-    private Object[] wrongDatasetNames() {
+    protected Object[] wrongDatasetNames() {
         return $(
                 $((String) null),
                 $(""),
@@ -84,7 +84,7 @@ public abstract class WriteCkanTest {
         );
     }
 
-    private Object[] wrongGroupOrgNames() {
+    protected Object[] wrongGroupOrgNames() {
         return $(
                 $((String) null),
                 $(""),
@@ -142,6 +142,11 @@ public abstract class WriteCkanTest {
         client = null;
     }
 
+    public WriteCkanTest() {
+    }
+
+      
+    
     protected CkanDataset createRandomDataset() {
         CkanDataset ckanDataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         return client.createDataset(ckanDataset);
@@ -164,5 +169,19 @@ public abstract class WriteCkanTest {
         CkanResource resource = new CkanResource(JACKAN_URL, dataset.getId());
         return client.createResource(resource);
     }
+    
+    protected CkanOrganization createRandomOrganization() {        
+        CkanOrganization organization = new CkanOrganization("test-org-" + randomUUID());
+        return client.createOrganization(organization);
+    }
+    
+        protected CkanGroup createRandomGroup() {        
+        CkanGroup group = new CkanGroup("test-org-" + randomUUID());
+        return client.createGroup(group);
+    }
 
+
+    protected String randomUUID(){
+        return UUID.randomUUID().toString();
+    }
 }

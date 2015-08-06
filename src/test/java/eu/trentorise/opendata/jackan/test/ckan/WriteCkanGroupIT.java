@@ -16,107 +16,98 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.POLITICHE_SVILUPPO_ORGANIZATION_NAME;
+import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import java.util.UUID;
 import junitparams.Parameters;
-import org.junit.Test;
 
-public class WriteCkanOrganizationIT extends WriteCkanGroupOrg<CkanOrganization> {
+public class WriteCkanGroupIT extends WriteCkanGroupOrg<CkanGroup> {
 
-    public WriteCkanOrganizationIT() {
+    public WriteCkanGroupIT() {
         super();
     }
 
     @Override
-    protected CkanOrganization newRandom() {
-        return new CkanOrganization("test-org-" + UUID.randomUUID().getMostSignificantBits());
+    protected CkanGroup newRandom() {
+        return new CkanGroup("test-org-" + UUID.randomUUID().getMostSignificantBits());
     }
 
     @Override
-    protected CkanOrganization createRandom() {
-        CkanOrganization org = newRandom();
-        return client.createOrganization(org);
+    protected CkanGroup createRandom() {
+        CkanGroup org = newRandom();
+        return client.createGroup(org);
     }
 
     @Override
-    protected CkanOrganization create(CkanOrganization groupOrg) {
-        return client.createOrganization(groupOrg);
+    protected CkanGroup create(CkanGroup groupOrg) {
+        return client.createGroup(groupOrg);
     }
 
     @Override
-    protected CkanOrganization newEmpty() {
-        return new CkanOrganization();
+    protected CkanGroup newEmpty() {
+        return new CkanGroup();
     }
 
     @Override
-    protected CkanOrganization newName(String name) {
-        return new CkanOrganization(name);
+    protected CkanGroup newName(String name) {
+        return new CkanGroup(name);
     }
 
     @Override
-    protected CkanOrganization getGroupOrg(CkanClient client, String nameOrId) {
-        return client.getOrganization(nameOrId);
+    protected CkanGroup getGroupOrg(CkanClient client, String nameOrId) {
+        return client.getGroup(nameOrId);
     }
 
     @Override
     protected String getExistingDatiTrentinoGroupOrgName() {
-        return POLITICHE_SVILUPPO_ORGANIZATION_NAME;
+        return ReadCkanIT.AGRICOLTURA_GROUP_NAME;
     }
 
     @Override
-    @Test
     public void testCreateWithDuplicateId() {
         super.testCreateWithDuplicateId(); 
     }
 
     @Override
-    @Test
     public void testCreateWithDuplicateName() {
         super.testCreateWithDuplicateName(); 
     }
 
     @Override
-    @Test
     @Parameters(method = "wrongGroupOrgNames")
     public void testCreateWithWrongName(String groupOrgName) {
         super.testCreateWithWrongName(groupOrgName); 
     }
 
     @Override
-    @Test
     public void testCreateMirror() {
         super.testCreateMirror(); 
     }
 
     @Override
-    @Test
     public void testCreateWithNonExistingPackages() {
         super.testCreateWithNonExistingPackages(); 
     }
 
     @Override
-    @Test
     public void testCreateWithDatasetsWithoutId() {
         super.testCreateWithDatasetsWithoutId(); 
     }
 
     @Override
-    @Test
     public void testCreateWithPackages() {
         super.testCreateWithPackages(); 
     }
 
     @Override
-    @Test
     public void testCreateById() {
         super.testCreateById(); 
     }
 
     @Override
-    @Test
     public void testCreateMinimal() {
         super.testCreateMinimal(); 
     }
-
+    
+    
+    
 }

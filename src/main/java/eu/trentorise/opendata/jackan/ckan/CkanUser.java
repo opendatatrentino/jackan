@@ -21,79 +21,37 @@ import javax.annotation.Nullable;
 
 /**
  *
+ *
  * @author David Leoni
  */
-public class CkanUser {
+public class CkanUser extends CkanUserBase {
 
-    @Nullable
-    private String about;
-    /**
-     * You can obtain it with getUser(id)
-     */
-    @Nullable
     private List<CkanActivity> activity;
     private boolean activityStreamsEmailNotifications;
-
-    /**
-     *
-     * i.e. "admin"
-     */
-    @Nullable
-    private String capacity;
-
-    /**
-     * internally date is stored with UTC timezone
-     */
     private Timestamp created;
-
-    /**
-     * i.e. David Leoni
-     */
+    private String capacity;
     private String displayName;
     private String emailHash;
-    /**
-     * seems quite useless something like i.e. Mr David Leoni the Third ?
-     */
-
-    @Nullable
-    private String fullname;
-    /**
-     * alphanumerical id. i.e. "01ab5c4e-6d6b-46bc-8cn7-e37drs9aeb00"
-     */
-    private String id;
-    /**
-     * account username. i.e. david_leoni
-     */
-    private String name;
-
-    /**
-     * Actually I don't know the format
-     */
-    @Nullable
-    private String openid;
-
     private int numberAdministeredPackages;
-    private int numberOfEdits;
-
-    @Nullable
     private int numFollowers;
-
-    /**
-     * Should be a CkanState
-     */
+    private int numberOfEdits;
     private CkanState state;
     private boolean sysadmin;
 
     public CkanUser() {
+        super();
     }
 
-    @Nullable
-    public String getAbout() {
-        return about;
-    }
-
-    public void setAbout(@Nullable String about) {
-        this.about = about;
+    /**
+     * Constructor with the minimal amount of fields required for a successful
+     * creation.
+     *
+     * @param name the name of the new user, a string between 2 and 100
+     * characters in length, containing only lowercase alphanumeric characters,
+     * - and _
+     */
+    public CkanUser(String name, String email, String password) {
+        super(name, email, password);
     }
 
     public boolean isActivityStreamsEmailNotifications() {
@@ -104,18 +62,30 @@ public class CkanUser {
         this.activityStreamsEmailNotifications = activityStreamsEmailNotifications;
     }
 
+    /**
+     * Ckan uses UTC timezone
+     */
     public Timestamp getCreated() {
         return created;
     }
 
+    /**
+     * Ckan uses UTC timezone
+     */
     public void setCreated(Timestamp created) {
         this.created = created;
     }
 
+    /**
+     * i.e. David Leoni
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * i.e. David Leoni
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -126,40 +96,6 @@ public class CkanUser {
 
     public void setEmailHash(String emailHash) {
         this.emailHash = emailHash;
-    }
-
-    @Nullable
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(@Nullable String fullname) {
-        this.fullname = fullname;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Nullable
-    public String getOpenid() {
-        return openid;
-    }
-
-    public void setOpenid(@Nullable String openid) {
-        this.openid = openid;
     }
 
     public int getNumberAdministeredPackages() {
@@ -194,25 +130,34 @@ public class CkanUser {
         this.sysadmin = sysadmin;
     }
 
-    @Nullable
+    /**
+     * You can obtain it with getUser(id)
+     */
     public List<CkanActivity> getActivity() {
         return activity;
     }
 
+    /**
+     * You can obtain it with getUser(id)
+     */
     public void setActivity(List<CkanActivity> activity) {
         this.activity = activity;
     }
 
-    @Nullable
+    /**
+     * i.e. "admin"
+     */
     public String getCapacity() {
         return capacity;
     }
 
+    /**
+     * i.e. "admin"
+     */
     public void setCapacity(@Nullable String capacity) {
         this.capacity = capacity;
     }
 
-    @Nullable
     public Integer getNumFollowers() {
         return numFollowers;
     }

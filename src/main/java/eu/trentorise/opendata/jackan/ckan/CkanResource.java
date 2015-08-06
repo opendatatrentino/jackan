@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
  */
 public class CkanResource extends CkanResourceBase {
 
+    private String resourceGroupId;
     private String owner;
     private int position;
     private String revisionTimestamp;
@@ -40,6 +41,22 @@ public class CkanResource extends CkanResourceBase {
     }
     
 
+/**
+     * todo - What the hell is this? alphanumerical id, i.e.
+     * "fd6375cd-1d6a-41e8-8e10-460a11e2308e"
+     */
+    public String getResourceGroupId() {
+        return resourceGroupId;
+    }
+
+    /**
+     * todo - What the hell is this? alphanumerical id, i.e.
+     * "fd6375cd-1d6a-41e8-8e10-460a11e2308e"
+     */
+    public void setResourceGroupId(String resourceGroupId) {
+        this.resourceGroupId = resourceGroupId;
+    }    
+    
     /**
      * Username of the owner
      */

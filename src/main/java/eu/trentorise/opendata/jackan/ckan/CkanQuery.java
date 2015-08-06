@@ -15,12 +15,15 @@
  */
 package eu.trentorise.opendata.jackan.ckan;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Usage example: new CkanQuery().filterByCategoryNames()
+ * Usage example:  {@code
+ *      CkanQuery.filter().byText("litigations").byGroupNames("justice")
+ * }
  *
  * @author David Leoni
  */
@@ -34,18 +37,18 @@ public final class CkanQuery {
 
     private CkanQuery() {
         this.text = "";
-        this.groupNames = new ArrayList<String>();
-        this.organizationNames = new ArrayList<String>();
-        this.tagNames = new ArrayList<String>();
-        this.licenseIds = new ArrayList<String>();
+        this.groupNames = new ArrayList();
+        this.organizationNames = new ArrayList();
+        this.tagNames = new ArrayList();
+        this.licenseIds = new ArrayList();
     }
 
     /**
      * Each filtered dataset must belong to all the given groups i.e.
      * "british-academy", "home-office", "newcastle-city-council"
      */
-    public CkanQuery byGroupNames(List<String> groupNames) {
-        this.groupNames = groupNames;
+    public CkanQuery byGroupNames(Iterable<String> groupNames) {
+        this.groupNames = Lists.newArrayList(groupNames);
         return this;
     }
 
@@ -73,9 +76,7 @@ public final class CkanQuery {
      * "remploy-limited","royal-society"
      */
     public CkanQuery byOrganizationName(String organizationName) {
-        ArrayList<String> orgn = new ArrayList<String>();
-        orgn.add(organizationName);
-        this.organizationNames = orgn;
+        this.organizationNames = Lists.newArrayList(organizationName);
         return this;
     }
 
@@ -85,8 +86,8 @@ public final class CkanQuery {
      * @param tagNames i.e. "Community health partnership", "youth-justice",
      * "trade-policy",
      */
-    public CkanQuery byTagNames(List<String> tagNames) {
-        this.tagNames = tagNames;
+    public CkanQuery byTagNames(Iterable<String> tagNames) {
+        this.tagNames = Lists.newArrayList(tagNames);
         return this;
     }
 
@@ -107,9 +108,7 @@ public final class CkanQuery {
      * @param licenseId i.e. "cc-by", "odc-by"
      */
     public CkanQuery byLicenseId(String licenseId) {
-        ArrayList<String> licn = new ArrayList<String>();
-        licn.add(licenseId);
-        this.licenseIds = licn;
+        this.licenseIds = Lists.newArrayList(licenseId);
         return this;
     }
 

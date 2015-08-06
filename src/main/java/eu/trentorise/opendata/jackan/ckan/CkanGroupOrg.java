@@ -30,6 +30,7 @@ public abstract class CkanGroupOrg extends CkanGroupOrgBase {
     private String imageDisplayUrl;
     private int numFollowers;
     private int packageCount;
+    private String revisionId;
     
     protected CkanGroupOrg(){
         super();
@@ -73,5 +74,13 @@ public abstract class CkanGroupOrg extends CkanGroupOrgBase {
 
     public void setPackageCount(int packageCount) {
         this.packageCount = packageCount;
+    }
+    
+    public String getRevisionId() {
+        return revisionId;
+    }
+
+    public void setRevisionId(String revisionId) {
+        this.revisionId = revisionId;
     }
 }

@@ -52,7 +52,6 @@ public class CkanResourceBase {
     private String mimetype;
     private String mimetypeInner;
     private String name;
-    private String resourceGroupId;
     private String resourceType;
     private String revisionId;
     private String size;
@@ -313,21 +312,7 @@ public class CkanResourceBase {
         this.name = name;
     }
 
-    /**
-     * todo - What the hell is this? alphanumerical id, i.e.
-     * "fd6375cd-1d6a-41e8-8e10-460a11e2308e"
-     */
-    public String getResourceGroupId() {
-        return resourceGroupId;
-    }
-
-    /**
-     * todo - What the hell is this? alphanumerical id, i.e.
-     * "fd6375cd-1d6a-41e8-8e10-460a11e2308e"
-     */
-    public void setResourceGroupId(String resourceGroupId) {
-        this.resourceGroupId = resourceGroupId;
-    }
+    
 
     /**
      * So far, found: "api", "file", "file.upload"

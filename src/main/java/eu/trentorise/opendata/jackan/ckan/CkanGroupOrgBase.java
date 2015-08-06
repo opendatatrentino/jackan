@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
 
 class GroupOrgPackagesDeserializer extends JsonDeserializer<List<CkanDataset>> {
     private static final Logger LOG = Logger.getLogger(GroupOrgPackagesDeserializer.class.getName());
@@ -74,7 +75,6 @@ public abstract class CkanGroupOrgBase {
     @JsonDeserialize(using = GroupOrgPackagesDeserializer.class)
     private List<CkanDataset> packages;
 
-    private String revisionId;
     private CkanState state;
     private String title;
     private String type;
@@ -140,10 +140,16 @@ public abstract class CkanGroupOrgBase {
         this.id = id;
     }
 
+    /**
+     * The URL to an image to be displayed on the group/org’s page (optional)
+     */
     public String getImageUrl() {
         return imageUrl;
     }
 
+    /**
+     * The URL to an image to be displayed on the group/org’s page (optional) 
+     */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
@@ -197,13 +203,7 @@ public abstract class CkanGroupOrgBase {
 
     
 
-    public String getRevisionId() {
-        return revisionId;
-    }
-
-    public void setRevisionId(String revisionId) {
-        this.revisionId = revisionId;
-    }
+   
 
     /**
      * The current state of the group, e.g. 'active' or 'deleted', only active
@@ -260,6 +260,22 @@ public abstract class CkanGroupOrgBase {
 
     public void setUsers(List<CkanUser> users) {
         this.users = users;
+    }
+
+     /**
+     * Returns the id if not null, the name otherwise
+     */
+    @Nullable
+    public String idOrName() {
+        return getId() == null ? getName() : getId();
+    }
+    
+    /**
+     * Returns the name if not null, the id otherwise
+     */
+    @Nullable
+    public String nameOrId() {
+        return getName() == null ? getId() : getName();
     }
 
 }

@@ -48,10 +48,11 @@ public class CkanJacksonModule extends SimpleModule {
                 try {
                     String str = formatTimestamp(value);
                     jgen.writeString(str);
-                } catch (Exception ex){
-                    LOG.log(Level.SEVERE, "Couldn't format timestamp "+value+", writing 'null'", ex);
+                }
+                catch (Exception ex) {
+                    LOG.log(Level.SEVERE, "Couldn't format timestamp " + value + ", writing 'null'", ex);
                     jgen.writeNull();
-                }                
+                }
             }
 
         });
@@ -68,7 +69,7 @@ public class CkanJacksonModule extends SimpleModule {
                         return CkanClient.parseTimestamp(str);
                     }
                     catch (IllegalArgumentException ex) {
-                        LOG.log(Level.SEVERE, "Couldn't parse timestamp "+str+", returning null", ex);
+                        LOG.log(Level.SEVERE, "Couldn't parse timestamp " + str + ", returning null", ex);
                         return null;
                     }
                 }
@@ -82,6 +83,6 @@ public class CkanJacksonModule extends SimpleModule {
 
             }
 
-        });
+        });       
     }
 }
