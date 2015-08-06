@@ -31,12 +31,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * So we can serialize/deserialize to Timestamp. In case there are problems in
+ * Custom module to serialize/deserialize to Timestamp. In case there are problems in
  * parsing deserializes to null.
  *
  * @author David Leoni
  */
-public class CkanJacksonModule extends SimpleModule {
+class CkanJacksonModule extends SimpleModule {
 
     private static final Logger LOG = Logger.getLogger(CkanJacksonModule.class.getName());
 

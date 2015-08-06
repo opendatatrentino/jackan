@@ -17,7 +17,6 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.JackanException;
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import eu.trentorise.opendata.jackan.ckan.CkanResourceBase;
@@ -29,11 +28,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junitparams.Parameters;
-import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -177,7 +173,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void testPatchUpdate() {
         CkanDataset dataset = createRandomDataset();
         CkanResource resource = new CkanResource(JACKAN_URL, dataset.getId());
         resource.setSize("123");
@@ -191,7 +187,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         retRes1.setSize(null); // so we won't send it in the post
         retRes1.setOthers(null); // so we won't send it in the post and hopefully trigger client automerge feature
 
-        CkanResource retRes2 = client.updateResource(retRes1);
+        CkanResource retRes2 = client.patchUpdateResource(retRes1);
 
         assertEquals(retRes1.getId(), retRes2.getId());
         assertEquals(retRes1.getUrl(), retRes2.getUrl());
@@ -202,7 +198,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdateWithExistingId() {
+    public void testPatchUpdateWithExistingId() {
         CkanResource res1 = createRandomResource();
         CkanDataset dataset = createRandomDataset();
         CkanResourceBase res2 = new CkanResourceBase(JACKAN_URL, dataset.getId());
@@ -218,14 +214,14 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
     @Test
     @Parameters(method = "wrongIds")
-    public void testUpdateWrongId(String id) {
+    public void testPatchUpdateWrongId(String id) {
 
         CkanDataset dataset = createRandomDataset();
 
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
         resource.setId(id);
         try {
-            client.updateResource(resource);
+            client.patchUpdateResource(resource);
             Assert.fail("Shouldn't be able to update resource with wrong id " + id);
         }
         catch (JackanException ex) {
@@ -238,14 +234,14 @@ public class WriteCkanResourceIT extends WriteCkanTest {
      * another by updating the resource packageId.
      */
     @Test
-    public void testUpdateDataset() {
+    public void testPatchUpdateDataset() {
 
         CkanDataset dataset1 = createRandomDataset();
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset1.getId());
         CkanResource retResource1 = client.createResource(resource);
         CkanDataset dataset2 = createRandomDataset();
         resource.setPackageId(dataset2.getId());
-        CkanResource retResource2 = client.updateResource(retResource1);
+        CkanResource retResource2 = client.patchUpdateResource(retResource1);
         assertEquals(null, retResource2.getPackageId());
 
         boolean found = false;
@@ -263,14 +259,14 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
     /**
      * Shows it is not possible to mark as deleted a resource by update. For
-     * dataset it is different, see {@link WriteCkanDatasetIT#testUpdateAsDeleted()
+     * dataset it is different, see {@link WriteCkanDatasetIT#testPatchUpdateAsDeleted()
      * }
      */
     @Test
-    public void testUpdateAsDeleted() {
+    public void testPatchUpdateAsDeleted() {
         CkanResource resource = createRandomResource();
         resource.setState(CkanState.deleted);
-        CkanResource retResource1 = client.updateResource(resource);
+        CkanResource retResource1 = client.patchUpdateResource(resource);
         assertEquals(CkanState.active, retResource1.getState());      
 
     }

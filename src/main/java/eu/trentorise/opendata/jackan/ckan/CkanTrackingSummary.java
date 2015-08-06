@@ -20,12 +20,12 @@ package eu.trentorise.opendata.jackan.ckan;
  *
  * @author David Leoni
  */
-public class TrackingSummary {
+public class CkanTrackingSummary {
 
     private int recent;
     private int total;
 
-    public TrackingSummary() {
+    public CkanTrackingSummary() {
     }
 
     public int getRecent() {

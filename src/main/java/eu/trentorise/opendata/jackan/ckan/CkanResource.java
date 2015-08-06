@@ -26,7 +26,7 @@ public class CkanResource extends CkanResourceBase {
     private String owner;
     private int position;
     private String revisionTimestamp;
-    private TrackingSummary trackingSummary;
+    private CkanTrackingSummary trackingSummary;
     private CkanState state;
     private String urlType;
 
@@ -108,11 +108,11 @@ public class CkanResource extends CkanResourceBase {
         this.state = state;
     }
 
-    public TrackingSummary getTrackingSummary() {
+    public CkanTrackingSummary getTrackingSummary() {
         return trackingSummary;
     }
 
-    public void setTrackingSummary(TrackingSummary trackingSummary) {
+    public void setTrackingSummary(CkanTrackingSummary trackingSummary) {
         this.trackingSummary = trackingSummary;
     }
 

@@ -30,7 +30,7 @@ public class CkanDataset extends CkanDatasetBase {
     private Timestamp metadataCreated;
     private Timestamp metadataModified;
     private int numResources;
-    private TrackingSummary trackingSummary;
+    private CkanTrackingSummary trackingSummary;
     private int numTags;
     private String notesRendered;
     private Boolean open;
@@ -227,11 +227,11 @@ public class CkanDataset extends CkanDatasetBase {
         this.revisionTimestamp = revisionTimestamp;
     }
 
-    public TrackingSummary getTrackingSummary() {
+    public CkanTrackingSummary getTrackingSummary() {
         return trackingSummary;
     }
 
-    public void setTrackingSummary(TrackingSummary trackingSummary) {
+    public void setTrackingSummary(CkanTrackingSummary trackingSummary) {
         this.trackingSummary = trackingSummary;
     }
 

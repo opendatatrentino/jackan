@@ -26,7 +26,6 @@ import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
 import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import eu.trentorise.opendata.jackan.ckan.CkanResourceBase;
 import eu.trentorise.opendata.jackan.ckan.CkanState;
 import eu.trentorise.opendata.jackan.ckan.CkanTag;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
@@ -39,6 +38,7 @@ import java.util.logging.Logger;
 import junitparams.Parameters;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -156,7 +156,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         assertEquals(1, sr.getCount());
         assertEquals(1, sr.getResults().size());
         assertEquals(retDataset.getId(), sr.getResults().get(0).getId());
-    }        
+    }
 
     @Test
     @Parameters(method = "wrongDatasetNames")
@@ -306,7 +306,6 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         dataset.setLicenseTitle("bla"); // not in CkanResourceBase, shouldn't be sent in create post
         dataset.putOthers("x", "y");
         dataset.setExtras(Lists.newArrayList(new CkanPair("v", "w")));
-        //dataset.setTags(Lists.newArrayList(new CkanTag("v", "w")));
 
         CkanDataset retDataset1 = client.createDataset(dataset);
 
@@ -315,10 +314,6 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         // so we test if lists are still preserved in our update
         retDataset1.setExtras(null);
         retDataset1.setOthers(null);
-        retDataset1.setRelationshipsAsObject(null);
-        retDataset1.setRelationshipsAsSubject(null);
-        retDataset1.setGroups(null);
-        retDataset1.setTags(null);
 
         CkanDataset retDataset2 = client.patchUpdateDataset(retDataset1);
 
@@ -424,6 +419,116 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         catch (JackanException ex) {
 
         }
+    }
+
+    @Test
+    public void testPatchUpdateDatasetWithResource() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-" + randomUUID());
+        CkanResource resource1 = new CkanResource(JACKAN_URL, null);
+        dataset.setResources(Lists.newArrayList(resource1));
+        client.createDataset(dataset);
+
+        CkanResource resource2 = new CkanResource(JACKAN_URL, null);
+        dataset.setResources(Lists.newArrayList(resource2));
+        CkanDataset retDataset1 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset1.getResources().size());
+
+        dataset.setResources(Lists.newArrayList(retDataset1.getResources().get(0)));
+        CkanDataset retDataset2 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset2.getResources().size());
+
+    }
+
+    @Test
+    public void testPatchUpdateDatasetWithOrganization() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-" + randomUUID());
+        CkanOrganization org1 = createRandomOrganization();
+        dataset.setOwnerOrg(org1.getId());
+        client.createDataset(dataset);
+
+        CkanOrganization org2 = createRandomOrganization();
+        dataset.setOwnerOrg(org2.getId());
+        CkanDataset retDataset = client.patchUpdateDataset(dataset);
+        assertEquals(org2.getId(), retDataset.getOwnerOrg());
+    }
+
+    @Test
+    public void testPatchUpdateDatasetWithGroup() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-" + randomUUID());
+        CkanGroup group1 = createRandomGroup();
+        dataset.setGroups(Lists.newArrayList(group1));
+        client.createDataset(dataset);
+
+        CkanGroup group2 = createRandomGroup();
+        dataset.setGroups(Lists.newArrayList(group2));
+        CkanDataset retDataset1 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset1.getGroups().size());
+
+        CkanDataset retDataset2 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset2.getGroups().size());
+    }
+
+    @Test
+    public void testPatchUpdateDatasetWithTag() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-" + randomUUID());
+        CkanTag tag1 = createRandomTag();
+        dataset.setTags(Lists.newArrayList(tag1));
+        client.createDataset(dataset);
+
+        CkanTag tag2 = createRandomTag();
+        dataset.setTags(Lists.newArrayList(tag2));
+        CkanDataset retDataset1 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset1.getTags().size());
+
+        CkanDataset retDataset2 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset2.getTags().size());
+    }
+
+    @Test
+    public void testPatchUpdateDatasetWithExtra() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-" + randomUUID());
+        CkanPair extra1 = new CkanPair("x", "y");
+        dataset.setExtras(Lists.newArrayList(extra1));
+        client.createDataset(dataset);
+
+        CkanPair extra2 = new CkanPair("v", "w");
+        dataset.setExtras(Lists.newArrayList(extra2));
+        CkanDataset retDataset1 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset1.getExtras().size());
+
+        CkanDataset retDataset2 = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset2.getExtras().size());
+    }
+
+    @Test
+    @Ignore
+    public void testPatchUpdateDatasetWithRelationshipAsObject() {
+        throw new UnsupportedOperationException("todo implement me");
+    }
+
+    @Test
+    @Ignore
+    public void testPatchUpdateDatasetWithRelationshipAsSubject() {
+        throw new UnsupportedOperationException("todo implement me");
+    }
+
+    @Test
+    public void testPatchUpdateDatasetWithNonExistentTag() {
+
+        CkanDataset dataset = new CkanDataset("test-dataset-" + randomUUID());
+        CkanTag tag1 = createRandomTag();
+        dataset.setTags(Lists.newArrayList(tag1));
+        client.createDataset(dataset);
+
+        dataset.setTags(Lists.newArrayList(new CkanTag("test-tag-" + randomUUID())));
+
+        CkanDataset retDataset = client.patchUpdateDataset(dataset);
+        assertEquals(2, retDataset.getTags().size());
     }
 
     @Test

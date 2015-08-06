@@ -23,16 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Charsets;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Strings;
-import com.google.common.collect.ClassToInstanceMap;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.common.io.CharStreams;
 
 import eu.trentorise.opendata.jackan.JackanException;
@@ -141,14 +138,13 @@ public class CkanClient {
     @JsonSerialize(as = CkanGroupOrgBase.class)
     private static abstract class CkanGroupOrgForPosting {
     }
-    
 
     @JsonSerialize(as = GroupForDatasetPosting.class)
     private static abstract class GroupForDatasetPosting extends CkanGroupOrgBase {
 
         @JsonIgnore
         @Override
-        public List<CkanUser> getUsers(){
+        public List<CkanUser> getUsers() {
             return super.getUsers();
         }
     }
@@ -205,6 +201,7 @@ public class CkanClient {
         om.addMixInAnnotations(CkanDataset.class, CkanDatasetForPosting.class);
         om.addMixInAnnotations(CkanOrganization.class, CkanGroupOrgForPosting.class);
         if (CkanDatasetBase.class.isAssignableFrom(clazz)) {
+            // little fix for https://github.com/opendatatrentino/jackan/issues/19
             om.addMixInAnnotations(CkanGroup.class, GroupForDatasetPosting.class);
         } else {
             om.addMixInAnnotations(CkanGroup.class, CkanGroupOrgForPosting.class);
@@ -212,11 +209,6 @@ public class CkanClient {
 
         om.addMixInAnnotations(CkanUser.class, CkanUserForPosting.class);
         om.addMixInAnnotations(CkanTag.class, CkanTagForPosting.class);
-    }
-
-    static ObjectMapper getObjectMapperForPosting() {
-        return getObjectMapperForPosting(Object.class);
-
     }
 
     private static final Map<String, ObjectMapper> objectMappersForPosting = new HashMap();
@@ -229,6 +221,7 @@ public class CkanClient {
      * Object.class
      */
     static ObjectMapper getObjectMapperForPosting(Class clazz) {
+        checkNotNull(clazz, "Invalid class! If you don't know the class just use Object.class");
 
         if (objectMappersForPosting.get(clazz.getName()) == null) {
             LOG.log(Level.FINE, "Generating ObjectMapper for posting class {0}", clazz);
@@ -634,7 +627,7 @@ public class CkanClient {
             throw new JackanException("Tried to create user" + user.getName() + ", but ckan token was not set!");
         }
 
-        ObjectMapper om = CkanClient.getObjectMapperForPosting();
+        ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanUserBase.class);
         String json = null;
         try {
             json = om.writeValueAsString(user);
@@ -677,7 +670,7 @@ public class CkanClient {
             throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
         }
 
-        ObjectMapper om = CkanClient.getObjectMapperForPosting();
+        ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanResourceBase.class);
         String json = null;
         try {
             json = om.writeValueAsString(resource);
@@ -690,16 +683,13 @@ public class CkanClient {
     }
 
     /**
-     * Jackan specific: updates a resource on the server, . TODO review new
-     * patch api in CKAN 2.3
+     * Updates a resource on the server using a straight {@code resource_update}
+     * call. Null fields will not be sent and thus won't get updated, but be
+     * careful about custom fields of {@link CkanResourceBase#getOthers()}, if
+     * not sent they will be erased on the server! To prevent this behaviour,
+     * see
+     * {@link #patchUpdateResource(eu.trentorise.opendata.jackan.ckan.CkanResourceBase) }
      *
-     * @param resource ckan resource object. Fields set to null won't be updated
-     * on the server. WARNING: if you didn't set any additional custom field
-     * with {@link CkanResource#putOthers(java.lang.String, java.lang.Object)},
-     * existing custom fields on the server WILL NOT be changed. To enable this
-     * behaviour the provided {@code resource} might be patched with latest
-     * metadata from the server prior sending it for update.
-     * @return the updated resource
      * @throws JackanException
      */
     public synchronized CkanResource updateResource(CkanResourceBase resource) {
@@ -709,24 +699,57 @@ public class CkanClient {
             throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
         }
 
-        if (resource.getOthers() == null) {
-            LOG.info("Found no custom metadata on the resource data to send for update, "
-                    + "merging custom metadata from the server into provided resource data "
-                    + "to prevent accidental erasures...");
-            CkanResource origRes = getResource(resource.getId());
-            if (origRes.getOthers() != null) {
-                for (Map.Entry<String, Object> entry : origRes.getOthers().entrySet()) {
-                    resource.putOthers(entry.getKey(), entry.getValue());
-                }
-            }
-        } else {
-            LOG.info("Found custom metadata on the resource data to send for update, "
-                    + "going to completely replace custom resource metadata on the server.");
+        String json = null;
+        try {
+            json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
         }
+        catch (IOException ex) {
+            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
+
+        }
+
+        return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json, ContentType.APPLICATION_JSON).result;
+
+    }
+
+    /**
+     * Jackan specific. Patches a resource on the ckan server using a
+     * {@code resource_update} call. Todo: this is a temporary solution until we
+     * implement new {@code patch} api of CKAN 2.3
+     *
+     * @param resource ckan resource object. Fields set to {@code null} won't be
+     * updated on the server. Items present in lists such as
+     * {@link CkanResourceBase#getOthers() others} will be added to existing
+     * ones on the server. To support this behaviour provided {@code resource}
+     * might be patched with latest metadata from the server prior sending it
+     * for update.
+     *
+     * @see #updateResource(eu.trentorise.opendata.jackan.ckan.CkanResourceBase)
+     * @throws JackanException
+     *
+     */
+    public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
+        checkNotNull(resource, "Need a valid resource!");
+
+        if (ckanToken == null) {
+            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+        }
+
+        CkanResource origResource = getResource(resource.getId());
+        // others 
+        Map<String, Object> newOthers = new HashMap();
+
+        if (origResource.getOthers() != null) {
+            newOthers.putAll(origResource.getOthers());
+        }
+        if (resource.getOthers() != null) {
+            newOthers.putAll(resource.getOthers());
+        }
+        resource.setOthers(newOthers);
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(resource);
+            json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
         }
         catch (IOException ex) {
             throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
@@ -851,7 +874,7 @@ public class CkanClient {
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(tag);
+            json = getObjectMapperForPosting(CkanTagBase.class).writeValueAsString(tag);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanTag!", this, e);
@@ -908,7 +931,7 @@ public class CkanClient {
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(vocabulary);
+            json = getObjectMapperForPosting(CkanVocabularyBase.class).writeValueAsString(vocabulary);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanVocabulary!", this, e);
@@ -1103,7 +1126,7 @@ public class CkanClient {
         String json = null;
         try {
 
-            json = getObjectMapperForPosting(CkanDataset.class).writeValueAsString(dataset);
+            json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
@@ -1131,7 +1154,7 @@ public class CkanClient {
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(dataset);
+            json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException ex) {
             throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
@@ -1233,9 +1256,9 @@ public class CkanClient {
      * {@code package_update} call. Todo: this is a temporary solution until we
      * implement new {@code patch} api of CKAN 2.3
      *
-     * @param dataset ckan dataset object. Fields set to null won't be updated
-     * on the server. In particular, if you didn't set lists such as
-     * {@code extras}, {@code extras} on the server WILL NOT be changed. To
+     * @param dataset ckan dataset object. Fields set to {@code null} won't be
+     * updated on the server. Items present in lists such as {@code resources}
+     * or {@code extras} will be added to existing ones on the server. To
      * support this behaviour provided {@code dataset} might be patched with
      * latest metadata from the server prior sending it for update.
      *
@@ -1308,7 +1331,7 @@ public class CkanClient {
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(dataset);
+            json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException ex) {
             throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
@@ -1328,7 +1351,7 @@ public class CkanClient {
      * 'active'.
      *
      * @param idOrName either the dataset name (i.e. apple-production) or the
-     * the alphanumerical id (i.e. 96b8aae4e211f3e5a70cdbcbb722264256ae2e7d)
+     * the alphanumerical id (i.e. fe507a10-4c49-4b18-8bf6-6705198cfd42)
      *
      * @throws JackanException on error
      */
@@ -1354,7 +1377,7 @@ public class CkanClient {
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(organization);
+            json = getObjectMapperForPosting(CkanOrganization.class).writeValueAsString(organization);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanOrganization!", this, e);
@@ -1378,7 +1401,7 @@ public class CkanClient {
 
         String json = null;
         try {
-            json = getObjectMapperForPosting().writeValueAsString(group);
+            json = getObjectMapperForPosting(CkanGroup.class).writeValueAsString(group);
         }
         catch (IOException e) {
             throw new JackanException("Couldn't serialize the provided CkanGroup!", this, e);
