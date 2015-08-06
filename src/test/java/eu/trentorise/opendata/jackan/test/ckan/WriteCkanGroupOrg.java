@@ -21,6 +21,7 @@ import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanGroupOrg;
+import eu.trentorise.opendata.jackan.ckan.CkanUser;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -94,6 +95,7 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
         T retGroupOrg = create(groupOrg);
         CkanDataset retDataset = client.getDataset(dataset.getId());        
     }    
+    
     @Test
     public void testCreateWithDatasetsWithoutId(){
         T org = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
@@ -105,7 +107,31 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
         } catch (JackanException ex){
             
         }        
+    }  
+    
+@Test
+    public void testCreateWithUser(){
+        T groupOrg = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
+        
+        CkanUser user = createRandomUser();
+        
+        groupOrg.setUsers(Lists.newArrayList(user));
+        
+        T retGroupOrg = create(groupOrg);
+        
+        assertEquals(2, retGroupOrg.getUsers().size());
+        boolean found = false;
+        for (CkanUser u : retGroupOrg.getUsers()){
+            if (user.getId().equals(u.getId())){
+                found = true;
+            }
+        }
+        if (!found){
+            Assert.fail();
+        }
+        
     }      
+    
     
     @Test
     public void testCreateWithNonExistingPackages(){

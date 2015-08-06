@@ -19,30 +19,39 @@ import java.sql.Timestamp;
 import javax.annotation.Nullable;
 
 /**
- *
- * @author David Leoni
+ * {@inheritDoc}
  */
-public class CkanTag {
+public class CkanTag extends CkanTagBase {
 
-    private String vocabularyId;
     private String displayName;
-    private String name;
-
-    @Nullable
     private Timestamp revisionTimestamp;
-    @Nullable
     private CkanState state;
-    private String id;
 
     public CkanTag() {
+        super();
     }
 
-    public String getVocabularyId() {
-        return vocabularyId;
+    /**
+     * You can use this constructor when adding a free tag to a dataset.
+     *
+     * @param name the name for the new tag, a string between 2 and 100
+     * characters long containing only alphanumeric characters and -, _ and .,
+     * e.g. 'Jazz'
+     */
+    public CkanTag(String name) {
+        super(name);
     }
 
-    public void setVocabularyId(String vocabularyId) {
-        this.vocabularyId = vocabularyId;
+    /**
+     * You can use this constructor when creating a tag associated to a
+     * controlled vocabulary
+     *
+     * @param name the name for the new tag, a string between 2 and 100
+     * characters long containing only alphanumeric characters and -, _ and .,
+     * e.g. 'Jazz'
+     */
+    public CkanTag(String name, String vocabularyId) {
+        super(name, vocabularyId);
     }
 
     /**
@@ -61,22 +70,6 @@ public class CkanTag {
         this.displayName = displayName;
     }
 
-    /**
-     *
-     * @return a human readable name, i.e. "Habitat Quality"
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     *
-     * @param name a human readable name, i.e. "Habitat Quality"
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Nullable
     public Timestamp getRevisionTimestamp() {
         return revisionTimestamp;
@@ -87,28 +80,12 @@ public class CkanTag {
 
     }
 
-    @Nullable
     public CkanState getState() {
         return state;
     }
 
-    public void setState(@Nullable CkanState state) {
+    public void setState(CkanState state) {
         this.state = state;
     }
 
-    /**
-     *
-     * @return alphanumerical id, i.e. "7f0aa2fe-9733-4ce2-a351-d10278ba44ac"
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id alphanumerical id, i.e. "7f0aa2fe-9733-4ce2-a351-d10278ba44ac"
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
 }

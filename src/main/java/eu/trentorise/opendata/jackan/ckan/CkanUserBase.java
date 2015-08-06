@@ -50,7 +50,7 @@ public class CkanUserBase {
      * characters in length, containing only lowercase alphanumeric characters,
      * - and _
      */
-    public CkanUserBase(String email, String name, String password) {
+    public CkanUserBase(String name, String email, String password) {
         this();
         this.email = email;
         this.name = name;

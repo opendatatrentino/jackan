@@ -15,43 +15,24 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import com.google.common.collect.Lists;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
-import eu.trentorise.opendata.jackan.ckan.CkanPair;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import eu.trentorise.opendata.jackan.ckan.CkanResourceBase;
-import eu.trentorise.opendata.jackan.ckan.CkanState;
+import eu.trentorise.opendata.jackan.ckan.CkanTag;
+import eu.trentorise.opendata.jackan.ckan.CkanUser;
+import eu.trentorise.opendata.jackan.ckan.CkanVocabulary;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.POLITICHE_SVILUPPO_ORGANIZATION_NAME;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
-
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import junitparams.JUnitParamsRunner;
 import static junitparams.JUnitParamsRunner.$;
-import junitparams.Parameters;
-
 import org.junit.After;
-import org.junit.Assert;
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
-
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -134,7 +115,7 @@ public abstract class WriteCkanTest {
     @Before
     public void setUp() {
         client = new CkanClient(JackanTestConfig.of().getOutputCkan(), JackanTestConfig.of().getOutputCkanToken());
-        datiTrentinoClient = new CkanClient("http://dati.trentino.it");
+        datiTrentinoClient = new CkanClient(ReadCkanIT.DATI_TRENTINO);
     }
 
     @After
@@ -145,8 +126,6 @@ public abstract class WriteCkanTest {
     public WriteCkanTest() {
     }
 
-      
-    
     protected CkanDataset createRandomDataset() {
         CkanDataset ckanDataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         return client.createDataset(ckanDataset);
@@ -157,7 +136,7 @@ public abstract class WriteCkanTest {
         List<CkanResource> resources = new ArrayList();
         for (int i = 0; i < numResources; i++) {
             resources.add(new CkanResource(JACKAN_URL + "test-resources/#" + UUID.randomUUID().toString(), null));
-            
+
         }
         ckanDataset.setResources(resources);
 
@@ -169,19 +148,35 @@ public abstract class WriteCkanTest {
         CkanResource resource = new CkanResource(JACKAN_URL, dataset.getId());
         return client.createResource(resource);
     }
-    
-    protected CkanOrganization createRandomOrganization() {        
+
+    protected CkanOrganization createRandomOrganization() {
         CkanOrganization organization = new CkanOrganization("test-org-" + randomUUID());
         return client.createOrganization(organization);
     }
-    
-        protected CkanGroup createRandomGroup() {        
-        CkanGroup group = new CkanGroup("test-org-" + randomUUID());
+
+    protected CkanGroup createRandomGroup() {
+        CkanGroup group = new CkanGroup("test-group-" + randomUUID());
         return client.createGroup(group);
     }
 
+    protected CkanVocabulary createRandomVocabulary() {
+        CkanVocabulary voc = new CkanVocabulary("test-vocabulary-" + randomUUID(), new ArrayList());
+        return client.createVocabulary(voc);
+    }
+    
+    protected CkanUser createRandomUser() {
+        CkanUser voc = new CkanUser("test-user-" + randomUUID(), "enthusiast@jackan.org", "abracadabra");
+        return client.createUser(voc);
+    }
+    
 
-    protected String randomUUID(){
+    protected CkanTag createRandomTag() {
+        CkanVocabulary voc = createRandomVocabulary();
+        CkanTag tag = new CkanTag("test-tag-" + randomUUID(), voc.getId());
+        return client.createTag(tag);
+    }
+
+    protected String randomUUID() {
         return UUID.randomUUID().toString();
     }
 }

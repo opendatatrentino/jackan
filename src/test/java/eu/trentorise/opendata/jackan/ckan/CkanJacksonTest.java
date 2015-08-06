@@ -39,6 +39,11 @@ public class CkanJacksonTest {
 
     private static final Logger LOG = Logger.getLogger(CkanJacksonTest.class.getName());
 
+    /**
+     * Object mapper for reading
+     */
+    private ObjectMapper objectMapper;
+
     public CkanJacksonTest() {
     }
 
@@ -53,62 +58,64 @@ public class CkanJacksonTest {
 
     @Before
     public void setUp() {
+        objectMapper = new ObjectMapper();
+        CkanClient.configureObjectMapper(objectMapper);
     }
 
     @After
     public void tearDown() {
+        objectMapper = null;
     }
 
-    
     @Test
-    public void timestampParserExample(){
+    public void timestampParserExample() {
         CkanClient.formatTimestamp(new Timestamp(123));
         CkanClient.parseTimestamp("1970-01-01T01:00:00.000010");
-    }            
-    
+    }
+
     @Test
-    public void testTimestampParser(){
+    public void testTimestampParser() {
         String sts = "1970-01-01T01:00:00.000010";
         Timestamp ts = new Timestamp(0);
         ts.setNanos(10000);
         assertEquals(sts, CkanClient.formatTimestamp(ts));
-        assertEquals(ts, CkanClient.parseTimestamp(sts));        
-        
+        assertEquals(ts, CkanClient.parseTimestamp(sts));
+
         try {
             CkanClient.formatTimestamp(null);
             Assert.fail();
-        } catch (IllegalArgumentException ex){
-            
         }
-        
+        catch (IllegalArgumentException ex) {
+
+        }
+
         try {
             CkanClient.parseTimestamp(null);
             Assert.fail();
-        } catch (IllegalArgumentException ex){
-            
-        }                
-        
+        }
+        catch (IllegalArgumentException ex) {
+
+        }
+
         try {
             CkanClient.parseTimestamp("bla");
             Assert.fail();
-        } catch (IllegalArgumentException ex){
-            
         }
-    }    
-        
-    
+        catch (IllegalArgumentException ex) {
+
+        }
+    }
+
     /**
      * Tests the CkanResponse wrapper
      */
     @Test
     public void testGetDatasetList() throws IOException {
-        DatasetListResponse dlr = CkanClient.getObjectMapperClone().readValue("{\"help\":\"bla bla\", \"success\":true, \"result\":[\"a\",\"b\"]}", DatasetListResponse.class);
+        DatasetListResponse dlr = objectMapper.readValue("{\"help\":\"bla bla\", \"success\":true, \"result\":[\"a\",\"b\"]}", DatasetListResponse.class);
         assertTrue(dlr.result.size() == 2);
         assertEquals("a", dlr.result.get(0));
         assertEquals("b", dlr.result.get(1));
     }
-
-
 
     /**
      * Tests the ObjectMapper underscore conversion
@@ -117,7 +124,7 @@ public class CkanJacksonTest {
      */
     @Test
     public void testRead() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
+        ObjectMapper om = objectMapper;
         String email = "a@b.org";
         String json = "{\"author_email\":\"" + email + "\"}";
         CkanDataset cd = om.readValue(json, CkanDataset.class);
@@ -126,7 +133,7 @@ public class CkanJacksonTest {
 
     @Test
     public void testReadNullString() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
+        ObjectMapper om = objectMapper;
         String json = "{\"size\":null}";
         CkanResource r = om.readValue(json, CkanResource.class);
 
@@ -136,7 +143,7 @@ public class CkanJacksonTest {
     @Test
     @SuppressWarnings("null")
     public void testReadEmptyString() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
+        ObjectMapper om = objectMapper;
         String json = "{\"size\":\"\"}";
         CkanResource r = om.readValue(json, CkanResource.class);
 
@@ -157,32 +164,29 @@ public class CkanJacksonTest {
 
     }
 
-            
     @Test
     public void testDateWithMillisecs() throws IOException, ParseException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
-        
-        String timestamp = "2012-09-11T02:45:02.000123";  
-                        
-        String json = "{\"timestamp\":\""+timestamp+"\"}";        
+        ObjectMapper om = objectMapper;
+
+        String timestamp = "2012-09-11T02:45:02.000123";
+
+        String json = "{\"timestamp\":\"" + timestamp + "\"}";
         LOG.fine(json);
         TimestampWrapper dw = om.readValue(json, TimestampWrapper.class);
-           
-        String newJson = om.writeValueAsString(dw);        
+
+        String newJson = om.writeValueAsString(dw);
         assertEquals(timestamp, om.readTree(newJson).get("timestamp").asText());
 
         TimestampWrapper dw2 = om.readValue(json, TimestampWrapper.class);
-        
-    }
-            
-            
-        @Test
-    public void testDateNoMillisecs() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
-        String json = "{\"timestamp\":\"2013-12-17T00:00:00\"}";                
-        TimestampWrapper dw = om.readValue(json, TimestampWrapper.class);        
+
     }
 
+    @Test
+    public void testDateNoMillisecs() throws IOException {
+        ObjectMapper om = objectMapper;
+        String json = "{\"timestamp\":\"2013-12-17T00:00:00\"}";
+        TimestampWrapper dw = om.readValue(json, TimestampWrapper.class);
+    }
 
     /**
      * Sometimes dear ckan returns "None" instead of proper JSON null. This
@@ -190,7 +194,7 @@ public class CkanJacksonTest {
      */
     @Test
     public void testDateNone() throws IOException {
-        ObjectMapper om = CkanClient.getObjectMapperClone();
+        ObjectMapper om = objectMapper;
 
         TimestampWrapper nullJa = om.readValue("{\"timestamp\":\"None\"}", TimestampWrapper.class);
         assertNull(nullJa.getTimestamp());
@@ -200,7 +204,6 @@ public class CkanJacksonTest {
 
     }
 
-
     /**
      * Tests the ObjectMapper underscore conversion
      */
@@ -209,14 +212,14 @@ public class CkanJacksonTest {
         String email = "a@b.org";
         CkanDataset cd = new CkanDataset();
         cd.setAuthorEmail(email);
-        String json = CkanClient.getObjectMapperClone().writeValueAsString(cd);
+        String json = objectMapper.writeValueAsString(cd);
         assertEquals(email, new ObjectMapper().readTree(json).get("author_email").asText());
     }
 
     @Test
     public void testReadGroup() throws IOException {
         String json = "{\"is_organization\":true}";
-        CkanGroup g = CkanClient.getObjectMapperClone().readValue(json, CkanGroup.class);
+        CkanGroup g = objectMapper.readValue(json, CkanGroup.class);
         assertTrue(g.isOrganization());
     }
 
@@ -225,7 +228,7 @@ public class CkanJacksonTest {
 
         CkanGroup cg = new CkanGroup();
         cg.setOrganization(true);
-        String json = CkanClient.getObjectMapperClone().writeValueAsString(cg);
+        String json = objectMapper.writeValueAsString(cg);
         assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());
     }
 
@@ -238,9 +241,9 @@ public class CkanJacksonTest {
     @Test
     public void testOthers() throws IOException {
         String json = "{\"name\":\"n\",\"z\":1}";
-        CkanDataset cd = CkanClient.getObjectMapperClone().readValue(json, CkanDataset.class);
+        CkanDataset cd = objectMapper.readValue(json, CkanDataset.class);
         assertEquals("n", cd.getName());
         assertEquals(1, cd.getOthers().get("z"));
     }
-    
+
 }

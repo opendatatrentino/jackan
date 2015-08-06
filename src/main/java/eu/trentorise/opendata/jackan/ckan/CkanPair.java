@@ -19,7 +19,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 /**
- * for key/value pairs present in extras field. Implements equals and hashCode.
+ * For key/value pairs present in extras field. Implements equals and hashCode.
  *
  * @author David Leoni
  */

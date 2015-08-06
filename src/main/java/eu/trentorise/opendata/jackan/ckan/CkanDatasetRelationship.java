@@ -21,29 +21,42 @@ package eu.trentorise.opendata.jackan.ckan;
  */
 public class CkanDatasetRelationship {
 
-    private String subject;
-
-    private String object;
-
-    private String type;
-
     private String comment;
+    private String id;
+    private String object;
+    private String subject;
+    private String type;
 
     public CkanDatasetRelationship() {
     }
 
     /**
-     * The id or name of the dataset that is the subject of the relationship
+     * Constructor with the minal amount of fields required for creation
      */
-    public String getSubject() {
-        return subject;
+    public CkanDatasetRelationship(String subject, String object, String type) {
+        this.object = object;
+        this.subject = subject;
+        this.type = type;
     }
+    
 
     /**
-     * The id or name of the dataset that is the subject of the relationship
+     * A comment about the relationship
      */
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
@@ -60,6 +73,20 @@ public class CkanDatasetRelationship {
      */
     public void setObject(String object) {
         this.object = object;
+    }
+
+    /**
+     * The id or name of the dataset that is the subject of the relationship
+     */
+    public String getSubject() {
+        return subject;
+    }
+
+    /**
+     * The id or name of the dataset that is the subject of the relationship
+     */
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     /**
@@ -81,16 +108,4 @@ public class CkanDatasetRelationship {
     public void setType(String type) {
         this.type = type;
     }
-
-    /**
-     * A comment about the relationship
-     */
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
 }

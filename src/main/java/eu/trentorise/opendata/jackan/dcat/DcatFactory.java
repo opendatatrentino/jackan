@@ -15,6 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.dcat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import eu.trentorise.opendata.commons.Dict;
@@ -178,7 +179,7 @@ public class DcatFactory {
             LOG.fine("Found attribute 'spatial' in ckan dataset 'extras', copying value to dct:spatial");
             GeoJson geoJson;
             try {
-                geoJson = CkanClient.getObjectMapperClone().readValue(spatialValue, GeoJson.class);
+                geoJson = new ObjectMapper().readValue(spatialValue, GeoJson.class);
                 ddb.setSpatial(geoJson);
             }
             catch (Exception ex) {

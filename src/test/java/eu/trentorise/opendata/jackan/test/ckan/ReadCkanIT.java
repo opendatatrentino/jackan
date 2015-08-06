@@ -16,6 +16,7 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -41,10 +42,12 @@ import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.http.HttpHost;
+import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,6 +92,11 @@ public class ReadCkanIT {
     private int TEST_ELEMENTS = 5;
 
     /**
+     * Object mapper for reading
+     */
+    private ObjectMapper objectMapper;
+
+    /**
      * All reading tests will be tried with all these catalogs.
      */
     private Object[] clients() {
@@ -106,6 +114,17 @@ public class ReadCkanIT {
     @BeforeClass
     public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
+    }
+
+    @Before
+    public void setUp() {
+        objectMapper = new ObjectMapper();
+        CkanClient.configureObjectMapper(objectMapper);
+    }
+
+    @After
+    public void tearDown() {
+        objectMapper = null;
     }
 
     @Test
@@ -363,7 +382,7 @@ public class ReadCkanIT {
                 return;
             }
         }
-        Assert.fail("I should get at least one dataset matching some license! Tried licenses were: " + CkanClient.getObjectMapperClone().writeValueAsString(licenses));
+        Assert.fail("I should get at least one dataset matching some license! Tried licenses were: " + objectMapper.writeValueAsString(licenses));
     }
 
     @Test

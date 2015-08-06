@@ -28,6 +28,7 @@ import eu.trentorise.opendata.jackan.ckan.CkanQuery;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import eu.trentorise.opendata.jackan.ckan.CkanResourceBase;
 import eu.trentorise.opendata.jackan.ckan.CkanState;
+import eu.trentorise.opendata.jackan.ckan.CkanTag;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
@@ -96,12 +97,12 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         dataset.setState(CkanState.deleted);
         CkanDataset retDataset = client.createDataset(dataset);
         assertEquals(CkanState.deleted, retDataset.getState());
-    }    
-    
+    }
+
     @Test
-    public void testCreateWithOrganization(){
+    public void testCreateWithOrganization() {
         CkanOrganization org = createRandomOrganization();
-        CkanDatasetBase dataset = new CkanDatasetBase("test-dataset-" + randomUUID());       
+        CkanDatasetBase dataset = new CkanDatasetBase("test-dataset-" + randomUUID());
         dataset.setOwnerOrg(org.getId());
         CkanDataset retDataset = client.createDataset(dataset);
         assertEquals(org.getId(), retDataset.getOwnerOrg());
@@ -110,11 +111,44 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         assertEquals(1, sr.getResults().size());
         assertEquals(retDataset.getId(), sr.getResults().get(0).getId());
     }
-    
+
+    /**
+     * Shows it is not necessary t have an existing tag to create the dataset,
+     * which MAY make sense.
+     */
     @Test
-    public void testCreateWithGroup(){
+    public void testCreateWithNonExistingTag() {
+        CkanDatasetBase dataset = new CkanDatasetBase("test-dataset-" + randomUUID());
+        CkanTag tag = new CkanTag();
+        tag.setName("test-tag-" + randomUUID());
+        dataset.setTags(Lists.newArrayList(tag));
+        CkanDataset retDataset = client.createDataset(dataset);
+        assertEquals(tag.getName(), retDataset.getTags().get(0).getName());
+        SearchResults<CkanDataset> sr = client.searchDatasets(CkanQuery.filter().byTagNames(tag.getName()), 100, 0);
+        assertEquals(1, sr.getCount());
+        assertEquals(1, sr.getResults().size());
+        assertEquals(retDataset.getId(), sr.getResults().get(0).getId());
+    }
+
+    @Test
+    public void testCreateWithExistingTag() {
+        CkanDatasetBase dataset = new CkanDatasetBase("test-dataset-" + randomUUID());
+        CkanTag tag = createRandomTag();
+        dataset.setTags(Lists.newArrayList(tag));
+        CkanDataset retDataset = client.createDataset(dataset);
+        assertEquals(tag.getName(), retDataset.getTags().get(0).getName());
+        SearchResults<CkanDataset> sr = client.searchDatasets(CkanQuery.filter().byTagNames(tag.getName()), 100, 0);
+        /* todo don't know why but it finds nothing...
+         assertEquals(1, sr.getCount());
+         assertEquals(1, sr.getResults().size());
+         assertEquals(retDataset.getId(), sr.getResults().get(0).getId());
+         */
+    }
+
+    @Test
+    public void testCreateWithGroup() {
         CkanGroup group = createRandomGroup();
-        CkanDatasetBase dataset = new CkanDatasetBase("test-dataset-" + randomUUID());       
+        CkanDatasetBase dataset = new CkanDatasetBase("test-dataset-" + randomUUID());
         dataset.setGroups(Lists.newArrayList(group));
         CkanDataset retDataset = client.createDataset(dataset);
         assertEquals(group.getId(), retDataset.getGroups().get(0).getId());
@@ -122,8 +156,8 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         assertEquals(1, sr.getCount());
         assertEquals(1, sr.getResults().size());
         assertEquals(retDataset.getId(), sr.getResults().get(0).getId());
-    }    
-    
+    }        
+
     @Test
     @Parameters(method = "wrongDatasetNames")
     public void testCreateWrongName(String datasetName) {
@@ -265,22 +299,28 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void testPatchUpdateDataset() {
         CkanDataset dataset = new CkanDataset(randomUUID());
 
         dataset.setAuthor("ugo");
         dataset.setLicenseTitle("bla"); // not in CkanResourceBase, shouldn't be sent in create post
         dataset.putOthers("x", "y");
         dataset.setExtras(Lists.newArrayList(new CkanPair("v", "w")));
+        //dataset.setTags(Lists.newArrayList(new CkanTag("v", "w")));
 
         CkanDataset retDataset1 = client.createDataset(dataset);
 
         retDataset1.setNotes("abc");
         retDataset1.setAuthor(null); // so we won't send it in the post
-        retDataset1.setExtras(null); // so we test if extras are still preserved in our update
-        retDataset1.setOthers(null); // so we test if others are still preserved in our update. 
+        // so we test if lists are still preserved in our update
+        retDataset1.setExtras(null);
+        retDataset1.setOthers(null);
+        retDataset1.setRelationshipsAsObject(null);
+        retDataset1.setRelationshipsAsSubject(null);
+        retDataset1.setGroups(null);
+        retDataset1.setTags(null);
 
-        CkanDataset retDataset2 = client.updateDataset(retDataset1);
+        CkanDataset retDataset2 = client.patchUpdateDataset(retDataset1);
 
         assertEquals(retDataset1.getId(), retDataset2.getId());
         assertEquals(retDataset1.getName(), retDataset2.getName());
@@ -293,21 +333,21 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
 
     }
 
- @Test
-    public void testUpdateWithName() {                
+    @Test
+    public void testPatchUpdateDatasetWithName() {
         CkanDataset dataset1 = createRandomDataset();
         CkanDataset dataset2 = new CkanDataset(dataset1.getName());
         dataset2.setNotes("abc");
-        CkanDataset retDataset = client.updateDataset(dataset2);
-        assertEquals("abc",retDataset.getNotes());
-    }    
-    
+        CkanDataset retDataset = client.patchUpdateDataset(dataset2);
+        assertEquals("abc", retDataset.getNotes());
+    }
+
     /**
      * Shows that if we set resources to null on update they don't get destroyed
      * on the server.
      */
     @Test
-    public void testUpdateResources() {
+    public void testPatchUpdateDatasetResources() {
         CkanDataset dataset = new CkanDataset(randomUUID());
 
         dataset.setNotes("abc");
@@ -320,33 +360,34 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         retDataset1.setNotes("cba");
         retDataset1.setResources(null); // so we won't send resources
 
-        CkanDataset retDataset2 = client.updateDataset(retDataset1);
+        CkanDataset retDataset2 = client.patchUpdateDataset(retDataset1);
         assertEquals(1, retDataset2.getResources().size());
         assertEquals(resource.getId(), retDataset2.getResources().get(0).getId());
     }
 
     @Test
-     public void testUpdateWithWrongId() {
-         
-         CkanDataset dataset = new CkanDataset();
-         dataset.setId("test-dataset-" + randomUUID());
-         
-         try {
-             client.updateDataset(dataset);
-             Assert.fail("Shouldn't be able to update non-existing dataset!");
-         } catch (JackanException ex){
-             
-         }
-     }
-    
+    public void testPatchUpdateDatasetWithWrongId() {
+
+        CkanDataset dataset = new CkanDataset();
+        dataset.setId("test-dataset-" + randomUUID());
+
+        try {
+            client.patchUpdateDataset(dataset);
+            Assert.fail("Shouldn't be able to update non-existing dataset!");
+        }
+        catch (JackanException ex) {
+
+        }
+    }
+
     @Test
     @Parameters(method = "wrongDatasetNames")
-    public void testUpdateWithWrongName(String datasetName) {
-        
+    public void testPatchUpdateDatasetWithWrongName(String datasetName) {
+
         CkanDataset dataset = createRandomDataset();
         dataset.setName(datasetName);
-        try {            
-            client.updateDataset(dataset);
+        try {
+            client.patchUpdateDataset(dataset);
             Assert.fail("Shouldn't be possible to update dataset with wrong name: " + datasetName);
         }
         catch (JackanException ex) {
@@ -355,14 +396,14 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdateWithDuplicateName() {
+    public void testPatchUpdateDatasetWithDuplicateName() {
 
         CkanDataset dataset1 = createRandomDataset();
         CkanDataset dataset2 = createRandomDataset();
-        
+
         dataset2.setName(dataset1.getName());
         try {
-            client.updateDataset(dataset2);
+            client.patchUpdateDataset(dataset2);
             Assert.fail("Shouldn't be able to update dataset with same name " + dataset1.getName() + " of dataset with id " + dataset1.getId());
         }
         catch (JackanException ex) {
@@ -370,16 +411,14 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         }
     }
 
-   
-
     @Test
-    public void testUpdateWithNonExistentOrganization() {
+    public void testPatchUpdateDatasetWithNonExistentOrganization() {
 
         CkanDataset dataset = createRandomDataset();
-        
+
         dataset.setOwnerOrg(randomUUID());
         try {
-            client.updateDataset(dataset);
+            client.patchUpdateDataset(dataset);
             Assert.fail("Shouldn't be able to update dataset with non existent owner org!");
         }
         catch (JackanException ex) {
@@ -388,14 +427,14 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdateWithNonExistentGroup() {
+    public void testPatchUpdateDatasetWithNonExistentGroup() {
 
         CkanDataset dataset = createRandomDataset();
         CkanGroup group = new CkanGroup();
         group.setId(randomUUID());
         dataset.setGroups(Lists.newArrayList(group));
         try {
-            client.updateDataset(dataset);
+            client.patchUpdateDataset(dataset);
             Assert.fail("Shouldn't be able to update dataset with non-existent group ");
         }
         catch (JackanException ex) {
@@ -404,15 +443,15 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdateWithWrongResourceWithoutUrl() {
+    public void testPatchUpdateDatasetWithWrongResourceWithoutUrl() {
 
         CkanDataset dataset = createRandomDataset();
-        
+
         CkanResource resource = new CkanResource(); // missing url 
         resource.setId(randomUUID());
         dataset.setResources(Lists.newArrayList(resource));
         try {
-            client.updateDataset(dataset);
+            client.patchUpdateDataset(dataset);
             Assert.fail("Shouldn't be able to update dataset with resource without url");
         }
         catch (JackanException ex) {
@@ -421,13 +460,13 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdateWithResourceWithoutId() {
+    public void testPatchUpdateDatasetWithResourceWithoutId() {
 
         CkanDataset dataset = createRandomDataset();
         CkanResource resource = new CkanResource(JACKAN_URL, null);
         dataset.setResources(Lists.newArrayList(resource));
         try {
-            client.updateDataset(dataset);
+            client.patchUpdateDataset(dataset);
             Assert.fail("Shouldn't be able to update dataset with resource without id!");
         }
         catch (JackanException ex) {
@@ -436,27 +475,27 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     @Test
-    public void testUpdateWithNonExistentLicenseId() {
+    public void testPatchUpdateDatasetWithNonExistentLicenseId() {
 
         CkanDataset dataset = createRandomDataset();
         dataset.setLicenseId(randomUUID());
         try {
-            client.updateDataset(dataset);
+            client.patchUpdateDataset(dataset);
             Assert.fail("Shouldn't be able to update dataset with non existent license id! ");
         }
         catch (JackanException ex) {
 
         }
-    }    
-    
+    }
+
     /**
      * Shows it is possible to mark a dataset as deleted by update
      */
     @Test
-    public void testUpdateAsDeleted() {
+    public void testPatchUpdateDatasetAsDeleted() {
         CkanDataset dataset = createRandomDataset();
         dataset.setState(CkanState.deleted);
-        CkanDataset retDataset = client.updateDataset(dataset);
+        CkanDataset retDataset = client.patchUpdateDataset(dataset);
         assertEquals(CkanState.deleted, retDataset.getState());
 
         client.getDataset(dataset.getId());

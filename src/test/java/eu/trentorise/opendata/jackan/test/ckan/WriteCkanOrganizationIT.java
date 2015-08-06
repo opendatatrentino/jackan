@@ -119,4 +119,13 @@ public class WriteCkanOrganizationIT extends WriteCkanGroupOrg<CkanOrganization>
         super.testCreateMinimal(); 
     }
 
+    @Override
+    @Test
+    public void testCreateWithUser() {
+        super.testCreateWithUser();
+    }
+
+    
+    
+    
 }
