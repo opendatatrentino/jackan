@@ -48,7 +48,7 @@ public class CkanResourceBase {
     private String format;
     private String hash;
     private String id;
-    private Timestamp lastModified;
+    private String lastModified;
     private String mimetype;
     private String mimetypeInner;
     private String name;
@@ -74,7 +74,7 @@ public class CkanResourceBase {
 
     /**
      * The dataset this resource belongs to. Not present when getting resources
-     * but needed when uploading them.
+     * but needed when creating them.
      */
     @Nullable
     public String getPackageId() {
@@ -83,7 +83,7 @@ public class CkanResourceBase {
 
     /**
      * The dataset id the resource belongs to. Not present when getting
-     * resources but needed when uploading them.
+     * resources but needed when creating them.
      *
      * @param packageId the dataset this resource belongs to.
      */
@@ -114,7 +114,8 @@ public class CkanResourceBase {
      * CKAN instances might have
      * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
      * custom data schemas</a> that force presence of custom properties among
-     * 'regular' ones. In this case, they go to 'others' field.
+     * 'regular' ones. In this case, they go to 'others' field. Notice that
+     * differently from dataset a resource down't have 'extras' field.
      *
      * @see #putOthers(java.lang.String, java.lang.Object)
      */
@@ -171,7 +172,7 @@ public class CkanResourceBase {
     /**
      * God only knows what this is
      */
-    public void setCacheUrl(@Nullable String cacheUrl) {
+    public void setCacheUrl(String cacheUrl) {
         this.cacheUrl = cacheUrl;
     }
 
@@ -242,17 +243,24 @@ public class CkanResourceBase {
     }
 
     /**
-     * Ckan always refers to UTC timezone
+     * Jackan note: this field should represent the timestamp of the last update
+     * of the resource *data*, not metadata. I think it's set by extensions and
+     * harvesters. Notice Ckan always refers to UTC timezone in
+     * {@link CkanClient#CKAN_TIMESTAMP_PATTERN} format, so this field probably
+     * should follow the same format.
      */
-    @Nullable
-    public Timestamp getLastModified() {
+    public String getLastModified() {
         return lastModified;
     }
 
     /**
-     * Ckan always refers to UTC timezone
+     * Jackan note: this field should represent the timestamp of the last update
+     * of the resource *data*, not metadata. I think it's set by extensions and
+     * harvesters. Notice Ckan always refers to UTC timezone in
+     * {@link CkanClient#CKAN_TIMESTAMP_PATTERN} format, so this field probably
+     * should follow the same format.
      */
-    public void setLastModified(@Nullable Timestamp lastModified) {
+    public void setLastModified(String lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -264,16 +272,15 @@ public class CkanResourceBase {
     }
 
     /**
-     * @param mimetype i.e. text/csv
+     * i.e. text/csv
      */
-    public void setMimetype(@Nullable String mimetype) {
+    public void setMimetype(String mimetype) {
         this.mimetype = mimetype;
     }
 
     /**
      * Unknown meaning, as usual. Can be the empty string or null
      */
-    @Nullable
     public String getMimetypeInner() {
         return mimetypeInner;
     }
@@ -298,6 +305,7 @@ public class CkanResourceBase {
      * <a href="http://data.gov.uk/api/3/action/package_search?rows=20&start=0" target="_blank">from
      * this dataset search</a> (They use description field instead)
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -311,8 +319,6 @@ public class CkanResourceBase {
     public void setName(@Nullable String name) {
         this.name = name;
     }
-
-    
 
     /**
      * So far, found: "api", "file", "file.upload"
@@ -343,17 +349,16 @@ public class CkanResourceBase {
     }
 
     /**
-     * @return File size in bytes, if calculated by ckan for files in storage,
-     * like i.e. "242344". Otherwise it can be anything a human can insert.
+     * File size in bytes, if calculated by ckan for files in storage, like i.e.
+     * "242344". Otherwise it can be anything a human can insert.
      */
     public String getSize() {
         return size;
     }
 
     /**
-     * @param size File size in bytes, if calculated by ckan for files in
-     * storage, like i.e. "242344". Otherwise it can be anything a human can
-     * insert.
+     * File size in bytes, if calculated by ckan for files in storage, like i.e.
+     * "242344". Otherwise it can be anything a human can insert.
      */
     public void setSize(@Nullable String size) {
         this.size = size;
@@ -387,7 +392,7 @@ public class CkanResourceBase {
     /**
      * Ckan always refers to UTC timezone
      */
-    public void setWebstoreLastUpdated(@Nullable Timestamp webstoreLastUpdated) {
+    public void setWebstoreLastUpdated(Timestamp webstoreLastUpdated) {
         this.webstoreLastUpdated = webstoreLastUpdated;
     }
 

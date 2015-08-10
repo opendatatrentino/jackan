@@ -18,7 +18,6 @@ package eu.trentorise.opendata.jackan.ckan;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,10 +196,16 @@ public class CkanDatasetBase {
         this.id = id;
     }
 
+    /**
+     * The license id (i.e. 'cc-zero')
+     */
     public String getLicenseId() {
         return licenseId;
     }
 
+    /**
+     * The license id (i.e. 'cc-zero')
+     */
     public void setLicenseId(String licenseId) {
         this.licenseId = licenseId;
     }
@@ -222,18 +227,17 @@ public class CkanDatasetBase {
     }
 
     /**
-     * Returns the dataset name (contains no spaces and has dashes as
-     * separators, i.e. "limestone-pavement-orders")
+     * The dataset name (contains no spaces and has dashes as separators, i.e.
+     * "limestone-pavement-orders")
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the dataset name. Name must not contain spaces and have dashes as
+     * The dataset name. Name must not contain spaces and have dashes as
      * separators, i.e. "limestone-pavement-orders"
      *
-     * @param name
      */
     public void setName(String name) {
         this.name = name;
@@ -258,7 +262,7 @@ public class CkanDatasetBase {
     }
 
     /**
-     * Returns the owner organization alphanunmerical id, like
+     * The owner organization alphanunmerical id, like
      * "b112ed55-01b7-4ca4-8385-f66d6168efcc".
      */
     public String getOwnerOrg() {
@@ -266,8 +270,8 @@ public class CkanDatasetBase {
     }
 
     /**
-     * Sets the owner organization alphanunmerical id, like
-     * "b112ed55-01b7-4ca4-8385-f66d6168efcc",
+     * The owner organization alphanunmerical id, like
+     * "b112ed55-01b7-4ca4-8385-f66d6168efcc".
      */
     public void setOwnerOrg(String ownerOrg) {
         this.ownerOrg = ownerOrg;
@@ -326,14 +330,14 @@ public class CkanDatasetBase {
     }
 
     /**
-     * Returns the title, like "Hospitals of Trento"
+     * The title, like "Hospitals of Trento"
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * Sets the title, like "Hospitals of Trento"
+     * The title, like "Hospitals of Trento"
      */
     public void setTitle(String title) {
         this.title = title;
@@ -380,7 +384,7 @@ public class CkanDatasetBase {
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
     /**
      * Returns the id if not null, the name otherwise
      */
@@ -388,7 +392,7 @@ public class CkanDatasetBase {
     public String idOrName() {
         return getId() == null ? getName() : getId();
     }
-    
+
     /**
      * Returns the name if not null, the id otherwise
      */

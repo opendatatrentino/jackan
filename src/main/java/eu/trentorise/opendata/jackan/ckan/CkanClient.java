@@ -315,17 +315,19 @@ public class CkanClient {
     }
 
     /**
-     * Method for http GET
+     * Performs HTTP GET on server. If {@link CkanResponse#isSuccess()} is false
+     * throws {@link CkanException}.
      *
      * @param <T>
      * @param responseType a descendant of CkanResponse
      * @param path something like /api/3/package_show
      * @param params list of key, value parameters. They must be not be url
      * encoded. i.e. "id","laghi-monitorati-trento"
-     * @throws JackanException on error
+     * @throws CkanException on error
      */
     private <T extends CkanResponse> T getHttp(Class<T> responseType, String path,
             Object... params) {
+
         checkNotNull(responseType);
         checkNotNull(path);
 
@@ -352,17 +354,17 @@ public class CkanClient {
             }
         }
         catch (Exception ex) {
-            throw new JackanException("Error while performing GET. Request url was: " + fullUrl, ex);
+            throw new CkanException("Error while performing GET. Request url was: " + fullUrl, this, ex);
         }
         try {
             dr = getObjectMapper().readValue(returnedText, responseType);
         }
         catch (Exception ex) {
-            throw new JackanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, ex);
+            throw new CkanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
         }
 
         if (!dr.isSuccess()) {
-            throw new JackanException(
+            throw new CkanException(
                     "Error while performing GET. Request url was: " + fullUrl,
                     dr, this);
 
@@ -373,14 +375,17 @@ public class CkanClient {
 
     /**
      *
+     * POSTs a body via HTTP. If {@link CkanResponse#isSuccess()} is false
+     * throws {@link CkanException}.
+     *
      * @param <T>
      * @param responseType a descendant of CkanResponse
      * @param path something like 1/api/3/action/package_create
      * @param body the body of the POST
-     * @param the content type, i.e.
+     * @param contentType
      * @param params list of key, value parameters. They must be not be url
      * encoded. i.e. "id","laghi-monitorati-trento"
-     * @throws JackanException on error
+     * @throws CkanException on error
      */
     private <T extends CkanResponse> T postHttp(Class<T> responseType, String path, String body, ContentType contentType,
             Object... params) {
@@ -410,18 +415,18 @@ public class CkanClient {
             }
         }
         catch (Exception ex) {
-            throw new JackanException("Error while performing a POST! Request url is:" + fullUrl, ex);
+            throw new CkanException("Error while performing a POST! Request url is:" + fullUrl, this, ex);
         }
 
         try {
             dr = getObjectMapper().readValue(returnedText, responseType);
         }
         catch (Exception ex) {
-            throw new JackanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, ex);
+            throw new CkanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
         }
 
         if (!dr.isSuccess()) {
-            throw new JackanException(
+            throw new CkanException(
                     "Error while performing a POST! Request url is:" + fullUrl,
                     dr, this
             );
@@ -500,8 +505,28 @@ public class CkanClient {
      */
     public static String makeGroupURL(String catalogUrl, String groupNameOrId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
-        checkNotEmpty(groupNameOrId, "invalid dataset identifier");
+        checkNotEmpty(groupNameOrId, "invalid group identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
+    }
+
+    /**
+     *
+     * Given some organization parameters, reconstruct the URL of organization
+     * page in the catalog website.
+     *
+     * Valid URLs have this format with the organization name
+     * 'comune-di-trento':
+     *
+     * http://dati.trentino.it/organization/comune-di-trento
+     *
+     * @param catalogUrl i.e. http://dati.trentino.it
+     * @param orgNameOrId the group name as in {@link CkanOrganization#getName()}
+     * (preferred), or the group's alphanumerical id.
+     */
+    public static String makeOrganizationURL(String catalogUrl, String orgNameOrId) {
+        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkNotEmpty(orgNameOrId, "invalid organization identifier");
+        return OdtUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgNameOrId;
     }
 
     /**
@@ -548,7 +573,7 @@ public class CkanClient {
 
             }
         }
-        throw new JackanException("Error while getting api version!", this);
+        throw new CkanException("Error while getting api version!", this);
     }
 
     /**
@@ -570,7 +595,7 @@ public class CkanClient {
             ).version;
         }
         catch (Exception ex) {
-            throw new JackanException("Error while fetching api version!", this, ex);
+            throw new CkanException("Error while fetching api version!", this, ex);
         }
 
     }
@@ -624,7 +649,7 @@ public class CkanClient {
         checkNotNull(user, "Need a valid user!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create user" + user.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create user" + user.getName() + ", but ckan token was not set!", this);
         }
 
         ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanUserBase.class);
@@ -633,7 +658,7 @@ public class CkanClient {
             json = om.writeValueAsString(user);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanUser!", e);
+            throw new CkanException("Couldn't serialize the provided CkanUser!", this, e);
 
         }
         return postHttp(UserResponse.class, "/api/3/action/user_create", json, ContentType.APPLICATION_JSON).result;
@@ -667,7 +692,7 @@ public class CkanClient {
         checkNotNull(resource, "Need a valid resource!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!", this);
         }
 
         ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanResourceBase.class);
@@ -676,7 +701,7 @@ public class CkanClient {
             json = om.writeValueAsString(resource);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanResource!", e);
+            throw new CkanException("Couldn't serialize the provided CkanResource!", this, e);
 
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
@@ -696,7 +721,7 @@ public class CkanClient {
         checkNotNull(resource, "Need a valid resource!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!", this);
         }
 
         String json = null;
@@ -704,7 +729,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
         }
         catch (IOException ex) {
-            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
+            throw new CkanException("Couldn't jsonize the provided CkanResource!", this, ex);
 
         }
 
@@ -732,7 +757,7 @@ public class CkanClient {
         checkNotNull(resource, "Need a valid resource!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!", this);
         }
 
         CkanResource origResource = getResource(resource.getId());
@@ -752,7 +777,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
         }
         catch (IOException ex) {
-            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
+            throw new CkanException("Couldn't jsonize the provided CkanResource!", this, ex);
 
         }
 
@@ -774,6 +799,10 @@ public class CkanClient {
      */
     public synchronized void deleteResource(String id) {
         checkNotNull(id, "Need a valid id!");
+
+        if (ckanToken == null) {
+            throw new CkanException("Tried to delete resource with id " + id + ", but ckan token was not set!", this);
+        }
 
         String json = "{\"id\":\"" + id + "\"}";
         postHttp(ResourceResponse.class, "/api/3/action/resource_delete", json, ContentType.APPLICATION_JSON);
@@ -869,7 +898,7 @@ public class CkanClient {
         checkNotNull(tag, "Need a valid tag!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create tag" + tag.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create tag" + tag.getName() + ", but ckan token was not set!", this);
         }
 
         String json = null;
@@ -877,7 +906,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanTagBase.class).writeValueAsString(tag);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanTag!", this, e);
+            throw new CkanException("Couldn't serialize the provided CkanTag!", this, e);
 
         }
         TagResponse response = postHttp(TagResponse.class, "/api/3/action/tag_create", json, ContentType.APPLICATION_JSON);
@@ -926,7 +955,7 @@ public class CkanClient {
         checkNotNull(vocabulary, "Need a valid vocabulary!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create vocabulary" + vocabulary.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create vocabulary" + vocabulary.getName() + ", but ckan token was not set!", this);
         }
 
         String json = null;
@@ -934,7 +963,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanVocabularyBase.class).writeValueAsString(vocabulary);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanVocabulary!", this, e);
+            throw new CkanException("Couldn't serialize the provided CkanVocabulary!", this, e);
 
         }
         VocabularyResponse response = postHttp(VocabularyResponse.class, "/api/3/action/vocabulary_create", json, ContentType.APPLICATION_JSON);
@@ -1034,7 +1063,7 @@ public class CkanClient {
      * @param query The query object
      * @param limit maximum results to return
      * @param offset search begins from offset
-     * @throws JackanException on error
+     * @throws CkanException on error
      */
     public synchronized SearchResults<CkanDataset> searchDatasets(
             CkanQuery query,
@@ -1071,11 +1100,9 @@ public class CkanClient {
                 = getHttp(DatasetSearchResponse.class,
                         "/api/3/action/package_search?" + params.toString());
 
-        if (dsr.isSuccess()) {
-            for (CkanDataset ds : dsr.result.getResults()) {
-                for (CkanResource cr : ds.getResources()) {
-                    cr.setPackageId(ds.getId());
-                }
+        for (CkanDataset ds : dsr.result.getResults()) {
+            for (CkanResource cr : ds.getResources()) {
+                cr.setPackageId(ds.getId());
             }
         }
 
@@ -1115,13 +1142,13 @@ public class CkanClient {
      *
      * @param dataset Ckan dataset without id
      * @return the newly created dataset
-     * @throws JackanException
+     * @throws CkanException
      */
     public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!", this);
         }
         String json = null;
         try {
@@ -1129,10 +1156,11 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanDataset!", this, e);
+            throw new CkanException("Couldn't serialize the provided CkanDataset!", this, e);
         }
 
         DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
+
         return response.result;
     }
 
@@ -1143,13 +1171,13 @@ public class CkanClient {
      * erased on the server! To prevent this behaviour, see
      * {@link #patchUpdateDataset(eu.trentorise.opendata.jackan.ckan.CkanDatasetBase)}
      *
-     * @throws JackanException
+     * @throws CkanException
      */
     public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to update dataset" + dataset.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to update dataset" + dataset.getName() + ", but ckan token was not set!", this);
         }
 
         String json = null;
@@ -1262,14 +1290,14 @@ public class CkanClient {
      * support this behaviour provided {@code dataset} might be patched with
      * latest metadata from the server prior sending it for update.
      *
-     * @throws JackanException
+     * @throws CkanException
      *
      */
     public synchronized CkanDataset patchUpdateDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to patch update dataset" + dataset.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to patch update dataset" + dataset.getName() + ", but ckan token was not set!", this);
         }
         CkanDataset origDataset = getDataset(dataset.idOrName());
 
@@ -1353,10 +1381,14 @@ public class CkanClient {
      * @param idOrName either the dataset name (i.e. apple-production) or the
      * the alphanumerical id (i.e. fe507a10-4c49-4b18-8bf6-6705198cfd42)
      *
-     * @throws JackanException on error
+     * @throws CkanException on error
      */
     public synchronized void deleteDataset(String nameOrId) {
         checkNotNull(nameOrId, "Need a valid name or id!");
+
+        if (ckanToken == null) {
+            throw new CkanException("Tried to delete dataset" + nameOrId + ", but ckan token was not set!", this);
+        }
 
         String json = "{\"id\":\"" + nameOrId + "\"}";
         postHttp(CkanResponse.class, "/api/3/action/package_delete", json, ContentType.APPLICATION_JSON);
@@ -1365,14 +1397,16 @@ public class CkanClient {
     /**
      * Creates CkanOrganization on the server.
      *
-     * @param organization requires at least the name or id
+     * @param organization requires at least the name or id. Only non-null
+     * fields of {@link CkanGroupOrgBase} will be sent to server.
      * @return a new object with the created organization.
+     * @throws CkanException on error.
      */
-    public synchronized CkanOrganization createOrganization(CkanGroupOrgBase organization) {
+    public synchronized CkanOrganization createOrganization(CkanOrganization organization) {
         checkNotNull(organization, "Need a valid " + organization + "!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create organization " + organization.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create organization " + organization.getName() + ", but ckan token was not set!", this);
         }
 
         String json = null;
@@ -1380,7 +1414,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanOrganization.class).writeValueAsString(organization);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanOrganization!", this, e);
+            throw new CkanException("Couldn't serialize the provided CkanOrganization!", this, e);
 
         }
         return postHttp(OrganizationResponse.class, "/api/3/action/organization_create", json, ContentType.APPLICATION_JSON).result;
@@ -1389,14 +1423,16 @@ public class CkanClient {
     /**
      * Creates CkanGroup on the server.
      *
-     * @param group requires at least the name or id
+     * @param group requires at least the name or id. Only non-null fields of
+     * {@link CkanGroupOrgBase} will be sent to server.
      * @return a new object with the created group.
+     * @throws CkanException on error.
      */
-    public synchronized CkanGroup createGroup(CkanGroupOrgBase group) {
+    public synchronized CkanGroup createGroup(CkanGroup group) {
         checkNotNull(group, "Need a valid " + group + "!");
 
         if (ckanToken == null) {
-            throw new JackanException("Tried to create group " + group.getName() + ", but ckan token was not set!");
+            throw new CkanException("Tried to create group " + group.getName() + ", but ckan token was not set!", this);
         }
 
         String json = null;
@@ -1404,7 +1440,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanGroup.class).writeValueAsString(group);
         }
         catch (IOException e) {
-            throw new JackanException("Couldn't serialize the provided CkanGroup!", this, e);
+            throw new CkanException("Couldn't serialize the provided CkanGroup!", this, e);
 
         }
         return postHttp(GroupResponse.class, "/api/3/action/group_create", json, ContentType.APPLICATION_JSON).result;

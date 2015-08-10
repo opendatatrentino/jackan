@@ -40,8 +40,9 @@ public class CheckedCkanClient extends CkanClient {
         super(URL, token, proxy);
     }
 
+    
     @Override
-    public synchronized CkanOrganization createOrganization(CkanGroupOrgBase org) {
+    public synchronized CkanOrganization createOrganization(CkanOrganization org) {
         return super.createOrganization(org);
     }
 

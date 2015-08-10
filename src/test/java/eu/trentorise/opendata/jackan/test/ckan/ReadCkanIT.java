@@ -21,10 +21,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
+import eu.trentorise.opendata.jackan.ckan.CkanException;
 import eu.trentorise.opendata.jackan.ckan.CkanGroup;
 import eu.trentorise.opendata.jackan.ckan.CkanLicense;
 import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
@@ -89,7 +89,7 @@ public class ReadCkanIT {
 
     private Multimap<String, String> datasetList = LinkedListMultimap.create();
 
-    private int TEST_ELEMENTS = 5;
+    public static int TEST_ELEMENTS = 5;
 
     /**
      * Object mapper for reading
@@ -99,7 +99,7 @@ public class ReadCkanIT {
     /**
      * All reading tests will be tried with all these catalogs.
      */
-    private Object[] clients() {
+    public Object[] clients() {
         return $(
                 $(new CkanClient(DATI_TRENTINO)),
                 $(new CkanClient(DATI_TOSCANA))
@@ -392,7 +392,7 @@ public class ReadCkanIT {
             CkanDataset dataset = client.getDataset(UUID.randomUUID().toString());
             fail();
         }
-        catch (JackanException ex) {
+        catch (CkanException ex) {
             checkNotNull(ex.getCkanResponse().getError());
             checkNotEmpty(ex.getCkanResponse().getError().getType(), "Ckan error type should not be empty!");
         }

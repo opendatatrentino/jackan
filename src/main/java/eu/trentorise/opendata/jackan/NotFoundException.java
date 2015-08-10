@@ -1,5 +1,5 @@
-/* 
- * Copyright 2015 Trento Rise  (trentorise.eu) 
+/*
+ * Copyright 2015 Trento Rise.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,26 @@
  */
 package eu.trentorise.opendata.jackan;
 
-
 /**
- * Generic Jackan Runtime Exception.
- * @author David Leoni
+ * A runtime exception to raise when something is not found.
+ *
+ * @author David Leoni <david.leoni@unitn.it>
  */
-public class JackanException extends RuntimeException {
-    
-    public JackanException(String msg) {
+public class NotFoundException extends JackanException {
+
+    /**
+     * Creates the NotFoundException using the provided message
+     */
+    public NotFoundException(String msg) {
         super(msg);
     }
-
-    public JackanException(String msg, Throwable ex) {
-        super(msg, ex);
-    }
- 
+   
     
+    /**
+     * Creates the NotFoundException using the provided message and throwable
+     */
+    public NotFoundException(String msg, Throwable tr) {
+        super(msg, tr);
+    }
+
 }
