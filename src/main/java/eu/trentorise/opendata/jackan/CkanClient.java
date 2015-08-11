@@ -18,12 +18,8 @@ package eu.trentorise.opendata.jackan;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Charsets;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,8 +28,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 
-import eu.trentorise.opendata.jackan.JackanException;
-import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.commons.OdtUtils;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
@@ -121,12 +115,6 @@ public class CkanClient {
     @Nullable
     private static ObjectMapper objectMapper;
 
-    @Nullable
-    private static ObjectMapper objectMapperForPosting;
-
-    @Nullable
-    private static ObjectMapper objectMapperForDatasetPosting;
-
     /**
      * Notice that even for the same api version (at least for versions up to 3
      * included) different CKAN instances can behave quite differently, either
@@ -175,29 +163,17 @@ public class CkanClient {
     }
 
     /**
-     * Configures the provided Jackson ObjectMapper for generic
-     * serialization/deserializtion of Ckan objects. If you want to perform
+     * Configures the provided Jackson ObjectMapper exactly as the internal
+     * Jackan mapper used for reading operations. If you want to perform
      * create/update/delete operations, use {@link  #configureObjectMapperForPosting(com.fasterxml.jackson.databind.ObjectMapper, java.lang.Class)
      * } instead.
      *
      * @param om a Jackson object mapper
      */
     public static void configureObjectMapper(ObjectMapper om) {
-        om.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
-                .configure(
-                        DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                        false) // let's be tolerant
-                .configure(
-                        MapperFeature.USE_GETTERS_AS_SETTERS,
-                        false) // not good for unmodifiable collections, if we will ever use any
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQTimestampHandling
-        // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
-        // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
-        om.registerModule(new CkanModule());
-
-        om.registerModule(new GuavaModule());
+        om.registerModule(new JackanModule());
     }
 
     /**
@@ -205,7 +181,7 @@ public class CkanClient {
      * operations of Ckan objects. For reading and generic
      * serialization/deserialization of Ckan objects, use {@link  #configureObjectMapper(com.fasterxml.jackson.databind.ObjectMapper)
      * } instead. For future compatibility you will need a different object
-     * mapper for each class you want to post to ckan. DO NOT call {@link #configureObjectMapper(com.fasterxml.jackson.databind.ObjectMapper)
+     * mapper for each class you want to post to ckan. <b> DO NOT </b> call {@link #configureObjectMapper(com.fasterxml.jackson.databind.ObjectMapper)
      * } on the mapper prior to this call.
      *
      * @param om a Jackson object mapper
@@ -537,8 +513,9 @@ public class CkanClient {
      * http://dati.trentino.it/organization/comune-di-trento
      *
      * @param catalogUrl i.e. http://dati.trentino.it
-     * @param orgNameOrId the group name as in {@link CkanOrganization#getName()}
-     * (preferred), or the group's alphanumerical id.
+     * @param orgNameOrId the group name as in
+     * {@link CkanOrganization#getName()} (preferred), or the group's
+     * alphanumerical id.
      */
     public static String makeOrganizationURL(String catalogUrl, String orgNameOrId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");

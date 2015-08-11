@@ -155,16 +155,56 @@ Should give something like this:
     DATASET: produzione-lorda-vendibile-silvicoltura
 ```
 
-### Serialization
+### JSON Serialization
 
-For serialization Jackson library annotations are used. Notice that although field names of Java objects are camelcase (like _authorEmail_), serialized fields follows CKAN API stlye and use underscores (like author_email).
 
-If you want to serialize to json a Java object _obj_ fetched by Jackan, you can call 
+
+For serialization Jackson library annotations are used. Notice that although field names of Java objects are camelcase (like `authorEmail`), serialized fields follows CKAN API stlye and use underscores (like `author_email`). There are two kinds of configurations used, a default one for reading from ckan and one for writing (that is, POSTing). Most probably you are interested in the default one.
+
+#### Default Json Ser/deserialization
+
+Here is an example of serialization/deserialization:
 
 ```
-    String json = CkanClient.getObjectMapperClone().writeValueAsString(obj);
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        CkanClient.configureObjectMapper(objectMapper);
+        
+        CkanDataset dataset = new CkanDataset();
+        dataset.setName("hello");
+        
+        String json = objectMapper.writeValueAsString(dataset);
+
+        System.out.println("json = " +  json);
+
+        CkanDataset reconstructed = objectMapper.readValue(json, CkanDataset.class);
+        
+        assert "hello".equals(reconstructed.getName());
 ```
-todo write about posting clone
+
+For more fine-grained control you can just register jackson `JackanModule` into your object mapper:
+
+```
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JackanModule());
+```
+
+#### Json configuration for posting
+
+This more advanced usage is for the case you want to do your own POST operations to ckan (or maybe extend Jackan :-) ...
+
+Notice for this you might need a different object mapper for each class you intend to post, so to be able to configure each mapper in a fine-grained way. You can find an example  for datasets in method `CkanClient.configureObjectMapperForPosting`:
+
+```
+        ObjectMapper mapperForDatasetPosting = new ObjectMapper();
+        CkanClient.configureObjectMapperForPosting(mapperForDatasetPosting, CkanDatasetBase.class);
+                
+        CkanDataset dataset = new CkanDataset("random-name-" + Math.random());
+        
+        // this would be the POST body. 
+        String json = mapperForDatasetPosting.writeValueAsString(dataset);
+```
+
 
 ### Timestamps
 

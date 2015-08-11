@@ -19,6 +19,7 @@ import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanGroup;
 import java.util.UUID;
 import junitparams.Parameters;
+import org.junit.Test;
 
 public class WriteCkanGroupIT extends WriteCkanGroupOrg<CkanGroup> {
 
@@ -63,51 +64,58 @@ public class WriteCkanGroupIT extends WriteCkanGroupOrg<CkanGroup> {
     }
 
     @Override
+    @Test
     public void testCreateWithDuplicateId() {
-        super.testCreateWithDuplicateId(); 
+        super.testCreateWithDuplicateId();
     }
 
     @Override
+    @Test
     public void testCreateWithDuplicateName() {
-        super.testCreateWithDuplicateName(); 
+        super.testCreateWithDuplicateName();
     }
 
     @Override
+    @Test
     @Parameters(method = "wrongGroupOrgNames")
     public void testCreateWithWrongName(String groupOrgName) {
-        super.testCreateWithWrongName(groupOrgName); 
+        super.testCreateWithWrongName(groupOrgName);
     }
 
     @Override
+    @Test
     public void testCreateMirror() {
-        super.testCreateMirror(); 
+        super.testCreateMirror();
     }
 
     @Override
+    @Test
     public void testCreateWithNonExistingPackages() {
-        super.testCreateWithNonExistingPackages(); 
+        super.testCreateWithNonExistingPackages();
     }
 
     @Override
+    @Test
     public void testCreateWithDatasetsWithoutId() {
-        super.testCreateWithDatasetsWithoutId(); 
+        super.testCreateWithDatasetsWithoutId();
     }
 
     @Override
+    @Test
     public void testCreateWithPackages() {
-        super.testCreateWithPackages(); 
+        super.testCreateWithPackages();
     }
 
     @Override
+    @Test
     public void testCreateById() {
-        super.testCreateById(); 
+        super.testCreateById();
     }
 
     @Override
+    @Test
     public void testCreateMinimal() {
-        super.testCreateMinimal(); 
+        super.testCreateMinimal();
     }
-    
-    
-    
+
 }

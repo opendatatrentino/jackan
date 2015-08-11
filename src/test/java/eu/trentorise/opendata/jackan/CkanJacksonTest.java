@@ -15,16 +15,20 @@
  */
 package eu.trentorise.opendata.jackan;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.OdtConfig;
+import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 
 import java.io.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -76,7 +80,41 @@ public class CkanJacksonTest {
         CkanClient.formatTimestamp(new Timestamp(123));
         CkanClient.parseTimestamp("1970-01-01T01:00:00.000010");
     }
+    
+    @Test
+    public void jacksonExample() throws JsonProcessingException, IOException {
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        CkanClient.configureObjectMapper(objectMapper);
+        
+        CkanDataset dataset = new CkanDataset();
+        dataset.setName("hello");
+        
+        String json = objectMapper.writeValueAsString(dataset);
+        System.out.println("json = " +  json);
+        CkanDataset reconstructed = objectMapper.readValue(json, CkanDataset.class);
+        
+        assert "hello".equals(reconstructed.getName());
+    }
 
+    @Test
+    public void jacksonModuleExample() throws JsonProcessingException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JackanModule());
+    }
+    
+    @Test
+    public void jacksonPostingExample() throws JsonProcessingException{
+        ObjectMapper mapperForDatasetPosting = new ObjectMapper();
+        CkanClient.configureObjectMapperForPosting(mapperForDatasetPosting, CkanDatasetBase.class);
+                
+        CkanDataset dataset = new CkanDataset("random-name-" + Math.random());
+        
+        // this would be the POST body. 
+        String json = mapperForDatasetPosting.writeValueAsString(dataset);
+    }
+    
     @Test
     public void testTimestampParser() {
         String sts = "1970-01-01T01:00:00.000010";

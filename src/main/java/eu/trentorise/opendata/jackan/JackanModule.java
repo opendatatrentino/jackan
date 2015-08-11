@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -31,16 +32,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Custom module to serialize/deserialize to Timestamp. In case there are problems in
- * parsing deserializes to null.
+ * Custom module to serialize/deserialize Ckan objects with fields lower cased
+ * (i.e. 'author_email') and also Timestamp, which in Ckan has format like
+ * "2013-11-11T04:12:11.110868", see {@link CkanClient#CKAN_TIMESTAMP_PATTERN}.
+ * In case there are problems in parsing deserializes them to null.
+ *
+ * NOTE: We made a custom module because when reading dates, Jackson defaults to
+ * using GMT for all processing unless specifically told otherwise, see
+ * < href="http://wiki.fasterxml.com/JacksonFAQTimestampHandling" target="_blank">Jackson
+ * FAQ</a>. When writing dates, Jackson would also add a Z for timezone and add
+ * +1 for GMT, which we don't want.
  *
  * @author David Leoni
  */
-class CkanModule extends SimpleModule {
+public class JackanModule extends SimpleModule {
 
-    private static final Logger LOG = Logger.getLogger(CkanModule.class.getName());
+    private static final Logger LOG = Logger.getLogger(JackanModule.class.getName());
 
-    public CkanModule() {
+    public JackanModule() {
+
+        setNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
         addSerializer(Timestamp.class, new StdSerializer<Timestamp>(Timestamp.class) {
             @Override
@@ -83,6 +94,7 @@ class CkanModule extends SimpleModule {
 
             }
 
-        });       
+        });
     }
+
 }
