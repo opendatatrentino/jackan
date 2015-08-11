@@ -16,12 +16,17 @@
 package eu.trentorise.opendata.jackan.test;
 
 import eu.trentorise.opendata.commons.OdtConfig;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
+import eu.trentorise.opendata.jackan.CheckedCkanClient;
+import eu.trentorise.opendata.jackan.CkanClient;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.http.HttpHost;
 
 /**
  *
@@ -38,6 +43,7 @@ public class JackanTestConfig {
 
     private static final String OUTPUT_CKAN_PROPERTY = "jackan.test.ckan.output";
     private static final String OUTPUT_CKAN_TOKEN_PROPERTY = "jackan.test.ckan.output-token";
+    private static final String CLIENT_CLASS_PROPERTY = "jackan.test.ckan.client-class";
 
     private Properties properties;
     private boolean initialized = false;
@@ -52,9 +58,14 @@ public class JackanTestConfig {
      */
     private String outputCkanToken;
 
+    /**
+     * By default tests will use {@link CheckedCkanClient}
+     */
+    private String clientClass;
+
     private OdtConfig odtConfig;
-    
-    private JackanTestConfig() { 
+
+    private JackanTestConfig() {
         odtConfig = OdtConfig.of(JackanTestConfig.class);
     }
 
@@ -80,8 +91,19 @@ public class JackanTestConfig {
         }
     }
 
+    public String getClientClass() {
+        if (initialized) {
+            return clientClass;
+        } else {
+            throw new IllegalStateException("Jackan testing system was not properly initialized!");
+        }
+        
+    }
+    
+    
+
     /**
-     * Loads logging config (see {@link OdtConfig#loadLogConfig()}) and 
+     * Loads logging config (see {@link OdtConfig#loadLogConfig()}) and
      * configuration for writing tests at path {@link #TEST_PROPERTIES_PATH}
      */
     public void loadConfig() {
@@ -94,7 +116,7 @@ public class JackanTestConfig {
 
         try {
 
-            try {                
+            try {
                 inputStream = new FileInputStream(TEST_PROPERTIES_PATH);
                 logger.log(Level.INFO, "Loaded test configuration file {0}", TEST_PROPERTIES_PATH);
             }
@@ -117,6 +139,26 @@ public class JackanTestConfig {
             } else {
                 logger.log(Level.INFO, "Will use token {0} for CKAN write tests", outputCkanToken);
             }
+
+            clientClass = properties.getProperty(CLIENT_CLASS_PROPERTY);
+            if (clientClass == null || clientClass.trim().isEmpty()) {
+                clientClass = CheckedCkanClient.class.getName();
+                logger.log(Level.INFO, "Will use default client class {0} for writing", clientClass);
+            } else {
+                clientClass = clientClass.trim();
+                logger.log(Level.INFO, "Will use client class {0} for writing", clientClass);
+            }
+            
+            
+            // let's see if it doesn't explode..
+            try {
+                makeClientInstanceForWriting(clientClass);
+            } catch (Exception ex){
+                throw new Exception("Could not make test instance for client class " + clientClass, ex);
+            }            
+
+            
+            
             initialized = true;
 
         }
@@ -126,7 +168,46 @@ public class JackanTestConfig {
 
     }
 
-    /** Returns the singleton */
+    /**
+     * Returns a default client instance for writing.     
+     */
+    public CkanClient makeClientInstanceForWriting() {
+        return makeClientInstanceForWriting(clientClass);
+    }
+    
+    public CkanClient makeClientInstanceForWriting(String clientClass) {
+        checkNotEmpty(clientClass, "Invalid class string!");
+        
+        Class forName;
+        try {
+            forName = Class.forName(clientClass);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException("Couldn't find client class " + clientClass + "!", ex);        
+        }
+        Constructor ctr;
+        try {
+            ctr = forName.getDeclaredConstructor(String.class, String.class, HttpHost.class);
+        }
+        catch (NoSuchMethodException | SecurityException ex) {
+            throw new RuntimeException("Could not find constructor (String URL, @Nullable String token, @Nullable HttpHost proxy) in client class " + clientClass, ex);
+        }
+        Object[] args = new Object[3];
+        args[0] = outputCkan;
+        args[1] = outputCkanToken;
+        args[2] = null;
+        
+        try {
+            return (CkanClient) ctr.newInstance(args);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException("Couldn't instantiate the client of class " + clientClass + "!");
+        }                        
+    }
+
+    /**
+     * Returns the singleton
+     */
     public static JackanTestConfig of() {
         return INSTANCE;
     }

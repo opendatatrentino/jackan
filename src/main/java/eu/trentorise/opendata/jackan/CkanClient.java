@@ -48,6 +48,7 @@ import eu.trentorise.opendata.jackan.model.CkanVocabulary;
 import eu.trentorise.opendata.jackan.model.CkanVocabularyBase;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
+import eu.trentorise.opendata.jackan.model.CkanError;
 
 import java.io.*;
 import java.net.URLEncoder;
@@ -326,7 +327,7 @@ public class CkanClient {
 
         String fullUrl = calcFullUrl(path, params);
 
-        T dr;
+        T ckanResponse;
         String returnedText;
 
         try {
@@ -350,20 +351,32 @@ public class CkanClient {
             throw new CkanException("Error while performing GET. Request url was: " + fullUrl, this, ex);
         }
         try {
-            dr = getObjectMapper().readValue(returnedText, responseType);
+            ckanResponse = getObjectMapper().readValue(returnedText, responseType);
         }
         catch (Exception ex) {
             throw new CkanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
         }
 
-        if (!dr.isSuccess()) {
-            throw new CkanException(
-                    "Error while performing GET. Request url was: " + fullUrl,
-                    dr, this);
-
+        if (!ckanResponse.isSuccess()) {
+            throwCkanException("Error while performing GET. Request url was: " + fullUrl, ckanResponse);
         }
-        return dr;
+        return ckanResponse;
+    }
 
+    /**
+     * Throws CkanException or a subclass of it according to CkanError#getType()
+     * 
+     * @throws CkanException
+     */
+    protected <T extends CkanResponse> void throwCkanException(String msg, T ckanResponse) {
+        if (ckanResponse.getError() != null && CkanError.NOT_FOUND_ERROR.equals(ckanResponse.getError().getType())) {
+            throw new CkanNotFoundException(
+                    msg,
+                    ckanResponse, this);
+        }
+        throw new CkanException(
+                msg,
+                ckanResponse, this);
     }
 
     /**
@@ -389,7 +402,7 @@ public class CkanClient {
 
         String fullUrl = calcFullUrl(path, params);
 
-        T dr;
+        T ckanResponse;
         String returnedText;
 
         try {
@@ -412,19 +425,16 @@ public class CkanClient {
         }
 
         try {
-            dr = getObjectMapper().readValue(returnedText, responseType);
+            ckanResponse = getObjectMapper().readValue(returnedText, responseType);
         }
         catch (Exception ex) {
             throw new CkanException("Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
         }
 
-        if (!dr.isSuccess()) {
-            throw new CkanException(
-                    "Error while performing a POST! Request url is:" + fullUrl,
-                    dr, this
-            );
+        if (!ckanResponse.isSuccess()) {
+            throwCkanException("Error while performing a POST! Request url is:" + fullUrl, ckanResponse);
         }
-        return dr;
+        return ckanResponse;
 
     }
 

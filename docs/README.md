@@ -189,7 +189,7 @@ For more fine-grained control you can just register jackson `JackanModule` into 
         objectMapper.registerModule(new JackanModule());
 ```
 
-#### Json configuration for posting
+#### Json config for posting
 
 This more advanced usage is for the case you want to do your own POST operations to ckan (or maybe extend Jackan :-) ...
 

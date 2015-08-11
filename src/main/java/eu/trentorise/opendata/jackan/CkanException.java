@@ -37,15 +37,7 @@ public class CkanException extends JackanException {
                 + (ckanResponse != null ? ckanResponse + "  " : "")
                 + (client != null ? client : "");
     }
-    
-    
-    public CkanException(String msg) {
-        super(msg);
-    }
-
-    public CkanException(String msg, Throwable ex) {
-        super(msg, ex);
-    }
+            
 
    public CkanException(String msg, CkanClient client) {
         super(makeMessage(msg, null, client));        

@@ -204,8 +204,8 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanResourceBase res2 = new CkanResourceBase(JACKAN_URL, dataset.getId());
         res2.setId(res1.getId());
         try {
-            client.createResource(res2);
-            Assert.fail("Shouldn't be able to create resource with existing id: " + res1.getId());
+            client.patchUpdateResource(res2);
+            Assert.fail("Shouldn't be able to patch update resource with existing id: " + res1.getId());
         }
         catch (JackanException ex) {
 
@@ -222,7 +222,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         resource.setId(id);
         try {
             client.patchUpdateResource(resource);
-            Assert.fail("Shouldn't be able to update resource with wrong id " + id);
+            Assert.fail("Shouldn't be able to patch update resource with wrong id " + id);
         }
         catch (JackanException ex) {
 

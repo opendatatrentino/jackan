@@ -22,11 +22,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * For list of errors see <a href="https://github.com/ckan/ckan/blob/master/ckan/controllers/api.py">api.py</a>
  * @author David Leoni
  */
 public class CkanError {
 
+    
+    public static String AUTHORIZATION_ERROR = "Authorization Error";
+    public static String INTEGRITY_ERROR = "Integrity Error";
+    public static String NOT_FOUND_ERROR = "Not Found Error";
+    public static String SEARCH_QUERY_ERROR = "Search Query Error";
+    public static String SEARCH_ERROR = "Search Error";
+    public static String SEARCH_INDEX_ERROR = "Search Index Error";
+    
+    
     private String message;
     /**
      * actually the original is __type

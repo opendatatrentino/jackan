@@ -15,26 +15,22 @@
  */
 package eu.trentorise.opendata.jackan;
 
-/**
- * A runtime exception to raise when something is not found. Note this is not
- * related to ckan specific {@link CkanNotFoundException}
- *
- * @author David Leoni <david.leoni@unitn.it>
- */
-public class NotFoundException extends JackanException {
+import eu.trentorise.opendata.jackan.model.CkanResponse;
 
-    /**
-     * Creates the NotFoundException using the provided message
-     */
-    public NotFoundException(String msg) {
-        super(msg);
+/**
+ * Thrown when Ckan tells us something was not found. Notice this is not related
+ * to more generic {@link NotFoundException}
+ *
+ * @author David Leoni
+ */
+public class CkanNotFoundException extends CkanException {
+
+    public CkanNotFoundException(String msg, CkanResponse ckanResponse, CkanClient client) {
+        super(msg, ckanResponse, client);
     }
 
-    /**
-     * Creates the NotFoundException using the provided message and throwable
-     */
-    public NotFoundException(String msg, Throwable tr) {
-        super(msg, tr);
+    public CkanNotFoundException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
+        super(msg, ckanResponse, client, ex);
     }
 
 }

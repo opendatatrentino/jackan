@@ -25,10 +25,12 @@ import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.CkanException;
+import eu.trentorise.opendata.jackan.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanGroup;
 import eu.trentorise.opendata.jackan.model.CkanLicense;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import eu.trentorise.opendata.jackan.CkanQuery;
+import eu.trentorise.opendata.jackan.model.CkanError;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.model.CkanTag;
 import eu.trentorise.opendata.jackan.model.CkanUser;
@@ -392,9 +394,9 @@ public class ReadCkanIT {
             CkanDataset dataset = client.getDataset(UUID.randomUUID().toString());
             fail();
         }
-        catch (CkanException ex) {
+        catch (CkanNotFoundException ex) {
             checkNotNull(ex.getCkanResponse().getError());
-            checkNotEmpty(ex.getCkanResponse().getError().getType(), "Ckan error type should not be empty!");
+            assertEquals(CkanError.NOT_FOUND_ERROR, ex.getCkanResponse().getError().getType());
         }
 
     }

@@ -24,12 +24,14 @@ import eu.trentorise.opendata.jackan.model.CkanTag;
 import eu.trentorise.opendata.jackan.model.CkanUser;
 import eu.trentorise.opendata.jackan.model.CkanVocabulary;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 import junitparams.JUnitParamsRunner;
 import static junitparams.JUnitParamsRunner.$;
+import org.apache.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -113,8 +115,8 @@ public abstract class WriteCkanTest {
     }
 
     @Before
-    public void setUp() {
-        client = new CkanClient(JackanTestConfig.of().getOutputCkan(), JackanTestConfig.of().getOutputCkanToken());
+    public void setUp() {                        
+        client = JackanTestConfig.of().makeClientInstanceForWriting();
         datiTrentinoClient = new CkanClient(ReadCkanIT.DATI_TRENTINO);
     }
 
