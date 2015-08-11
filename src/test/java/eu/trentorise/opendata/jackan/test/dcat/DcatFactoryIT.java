@@ -16,9 +16,9 @@
 package eu.trentorise.opendata.jackan.test.dcat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.dcat.DcatFactory;
 import eu.trentorise.opendata.jackan.dcat.GreedyDcatFactory;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;

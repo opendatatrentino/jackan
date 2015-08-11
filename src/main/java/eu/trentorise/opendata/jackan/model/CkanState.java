@@ -13,34 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan.model;
 
 /**
- * Just don't know what it is.
+ * Possible states of a Dataset or Resource - only active datasets show up in
+ * search results and other lists of datasets
  *
  * @author David Leoni
  */
-public class CkanTrackingSummary {
+public enum CkanState {
 
-    private int recent;
-    private int total;
-
-    public CkanTrackingSummary() {
-    }
-
-    public int getRecent() {
-        return recent;
-    }
-
-    public void setRecent(int recent) {
-        this.recent = recent;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
+    /**
+     * Means element shows up in search results
+     */
+    active,
+    deleted
 }

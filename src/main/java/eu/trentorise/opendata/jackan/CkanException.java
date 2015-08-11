@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan;
 
 import eu.trentorise.opendata.jackan.JackanException;
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanResponse;
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.model.CkanResponse;
+import eu.trentorise.opendata.jackan.model.CkanResponse;
 import javax.annotation.Nullable;
 
 /**

@@ -1,5 +1,5 @@
-/* 
- * Copyright 2015 Trento Rise  (trentorise.eu) 
+/*
+ * Copyright 2015 Trento Rise.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan.model;
+
+import java.util.List;
 
 /**
- * Actually they are lower case in ckan, but 'public' and 'private' clash with
- * Java keywords
  *
  * @author David Leoni
  */
-public enum CkanCapacity {
+public class CkanVocabulary extends CkanVocabularyBase {
 
-    MEMBER, EDITOR, ADMIN, PUBLIC, PRIVATE;
+    
+    public CkanVocabulary() {
+        super();
+    }   
+    
+    /**
+     * Constructor with required fields for vocabulary creation.
+     * @param name the name of the new vocabulary, e.g. 'Genre'
+     * @param tags 
+     */
+    public CkanVocabulary(String name, List<CkanTag> tags) {
+        super(name, tags);
+    }
+    
 }

@@ -15,7 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
+import eu.trentorise.opendata.jackan.CkanClient;
 
 /**
  *

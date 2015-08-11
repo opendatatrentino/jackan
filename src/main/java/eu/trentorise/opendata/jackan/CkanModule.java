@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import static eu.trentorise.opendata.jackan.ckan.CkanClient.formatTimestamp;
+import static eu.trentorise.opendata.jackan.CkanClient.formatTimestamp;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
@@ -36,11 +36,11 @@ import java.util.logging.Logger;
  *
  * @author David Leoni
  */
-class CkanJacksonModule extends SimpleModule {
+class CkanModule extends SimpleModule {
 
-    private static final Logger LOG = Logger.getLogger(CkanJacksonModule.class.getName());
+    private static final Logger LOG = Logger.getLogger(CkanModule.class.getName());
 
-    public CkanJacksonModule() {
+    public CkanModule() {
 
         addSerializer(Timestamp.class, new StdSerializer<Timestamp>(Timestamp.class) {
             @Override

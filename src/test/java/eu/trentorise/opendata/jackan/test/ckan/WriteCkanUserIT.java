@@ -17,11 +17,11 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.JackanException;
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanUser;
-import eu.trentorise.opendata.jackan.ckan.CkanUser;
-import eu.trentorise.opendata.jackan.ckan.CkanUserBase;
-import eu.trentorise.opendata.jackan.ckan.CkanState;
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.model.CkanUser;
+import eu.trentorise.opendata.jackan.model.CkanUser;
+import eu.trentorise.opendata.jackan.model.CkanUserBase;
+import eu.trentorise.opendata.jackan.model.CkanState;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;

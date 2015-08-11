@@ -15,8 +15,8 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanGroup;
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.model.CkanGroup;
 import java.util.UUID;
 import junitparams.Parameters;
 

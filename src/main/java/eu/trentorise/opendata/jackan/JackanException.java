@@ -18,6 +18,7 @@ package eu.trentorise.opendata.jackan;
 
 /**
  * Generic Jackan Runtime Exception.
+ * 
  * @author David Leoni
  */
 public class JackanException extends RuntimeException {

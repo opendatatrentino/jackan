@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan;
 
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanOrganization;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.OdtConfig;
+import eu.trentorise.opendata.jackan.model.CkanOrganization;
 
 import java.io.*;
 import java.sql.Timestamp;
@@ -217,17 +221,16 @@ public class CkanJacksonTest {
     }
 
     @Test
-    public void testReadGroup() throws IOException {
+    public void testReadOrganization() throws IOException {
         String json = "{\"is_organization\":true}";
-        CkanGroup g = objectMapper.readValue(json, CkanGroup.class);
+        CkanOrganization g = objectMapper.readValue(json, CkanOrganization.class);
         assertTrue(g.isOrganization());
     }
 
     @Test
-    public void testWriteGroup() throws IOException {
+    public void testWriteOrganization() throws IOException {
 
-        CkanGroup cg = new CkanGroup();
-        cg.setOrganization(true);
+        CkanOrganization cg = new CkanOrganization();        
         String json = objectMapper.writeValueAsString(cg);
         assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());
     }

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan.model;
+
 
 /**
- * Class to explicitly model a Ckan group, which is <i> not </i> an organization,
+ * Class to explicitly model a Ckan organization, which is <i> not </i> a group,
  * although it has the same attributes.
  *
  * {@link CkanGroupOrgBase} holds fields that can be sent when
- * <a href="http://docs.ckan.org/en/latest/api/index.html?#ckan.logic.action.create.group_create" target="_blank">creating
+ * <a href="http://docs.ckan.org/en/latest/api/index.html?#ckan.logic.action.create.organization_create" target="_blank">creating
  * a  group/organization</a>, while {@link CkanGroupOrg} holds more fields that can be
  * returned with searches.
  *
@@ -30,11 +31,11 @@ package eu.trentorise.opendata.jackan.ckan;
  *
  * @author David Leoni
  */
-public class CkanGroup extends CkanGroupOrg {
+public class CkanOrganization extends CkanGroupOrg {
 
-    public CkanGroup() {
+    public CkanOrganization() {
         super();
-        setOrganization(false);
+        setOrganization(true);
     }
 
     /**
@@ -44,9 +45,9 @@ public class CkanGroup extends CkanGroupOrg {
      * @param name Name in the url, lowercased and without spaces. i.e.
      * management-of-territory
      */
-    public CkanGroup(String name) {
+    public CkanOrganization(String name) {
         this();
-        this.setName(name);        
+        this.setName(name);
     }     
 
 }

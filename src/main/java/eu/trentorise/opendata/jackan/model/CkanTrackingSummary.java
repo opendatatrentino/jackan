@@ -1,5 +1,5 @@
-/*
- * Copyright 2015 Trento Rise.
+/* 
+ * Copyright 2015 Trento Rise  (trentorise.eu) 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
-
-import java.util.List;
+package eu.trentorise.opendata.jackan.model;
 
 /**
+ * Just don't know what it is.
  *
  * @author David Leoni
  */
-public class CkanVocabulary extends CkanVocabularyBase {
+public class CkanTrackingSummary {
 
-    
-    public CkanVocabulary() {
-        super();
-    }   
-    
-    /**
-     * Constructor with required fields for vocabulary creation.
-     * @param name the name of the new vocabulary, e.g. 'Genre'
-     * @param tags 
-     */
-    public CkanVocabulary(String name, List<CkanTag> tags) {
-        super(name, tags);
+    private int recent;
+    private int total;
+
+    public CkanTrackingSummary() {
     }
-    
+
+    public int getRecent() {
+        return recent;
+    }
+
+    public void setRecent(int recent) {
+        this.recent = recent;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
 }

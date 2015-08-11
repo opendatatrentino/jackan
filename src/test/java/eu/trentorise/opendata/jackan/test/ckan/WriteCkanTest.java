@@ -15,14 +15,14 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanGroup;
-import eu.trentorise.opendata.jackan.ckan.CkanOrganization;
-import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import eu.trentorise.opendata.jackan.ckan.CkanTag;
-import eu.trentorise.opendata.jackan.ckan.CkanUser;
-import eu.trentorise.opendata.jackan.ckan.CkanVocabulary;
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanGroup;
+import eu.trentorise.opendata.jackan.model.CkanOrganization;
+import eu.trentorise.opendata.jackan.model.CkanResource;
+import eu.trentorise.opendata.jackan.model.CkanTag;
+import eu.trentorise.opendata.jackan.model.CkanUser;
+import eu.trentorise.opendata.jackan.model.CkanVocabulary;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import java.util.ArrayList;
 import java.util.List;

@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan.model;
 
 /**
- * Possible states of a Dataset or Resource - only active datasets show up in
- * search results and other lists of datasets
+ * Actually they are lower case in ckan, but 'public' and 'private' clash with
+ * Java keywords
  *
  * @author David Leoni
  */
-public enum CkanState {
+public enum CkanCapacity {
 
-    /**
-     * Means element shows up in search results
-     */
-    active,
-    deleted
+    MEMBER, EDITOR, ADMIN, PUBLIC, PRIVATE;
 }

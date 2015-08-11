@@ -17,10 +17,10 @@ package eu.trentorise.opendata.jackan.test.dcat;
 
 import com.google.common.collect.Lists;
 import eu.trentorise.opendata.commons.Dict;
-import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanGroup;
-import eu.trentorise.opendata.jackan.ckan.CkanPair;
-import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanGroup;
+import eu.trentorise.opendata.jackan.model.CkanPair;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.dcat.GreedyDcatFactory;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import eu.trentorise.opendata.traceprov.dcat.DcatDataset;

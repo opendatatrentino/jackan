@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan.ckan;
+package eu.trentorise.opendata.jackan;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -35,6 +35,23 @@ import com.google.common.io.CharStreams;
 import eu.trentorise.opendata.jackan.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.commons.OdtUtils;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
+import eu.trentorise.opendata.jackan.model.CkanDatasetRelationship;
+import eu.trentorise.opendata.jackan.model.CkanGroup;
+import eu.trentorise.opendata.jackan.model.CkanGroupOrgBase;
+import eu.trentorise.opendata.jackan.model.CkanLicense;
+import eu.trentorise.opendata.jackan.model.CkanOrganization;
+import eu.trentorise.opendata.jackan.model.CkanPair;
+import eu.trentorise.opendata.jackan.model.CkanResource;
+import eu.trentorise.opendata.jackan.model.CkanResourceBase;
+import eu.trentorise.opendata.jackan.model.CkanResponse;
+import eu.trentorise.opendata.jackan.model.CkanTag;
+import eu.trentorise.opendata.jackan.model.CkanTagBase;
+import eu.trentorise.opendata.jackan.model.CkanUser;
+import eu.trentorise.opendata.jackan.model.CkanUserBase;
+import eu.trentorise.opendata.jackan.model.CkanVocabulary;
+import eu.trentorise.opendata.jackan.model.CkanVocabularyBase;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
 
@@ -178,7 +195,7 @@ public class CkanClient {
         // When reading dates, Jackson defaults to using GMT for all processing unless specifically told otherwise, see http://wiki.fasterxml.com/JacksonFAQTimestampHandling
         // When writing dates, Jackson would add a Z for timezone by CKAN doesn't use it, i.e.  "2013-11-11T04:12:11.110868"  so we removed it here
         // Jackan will also add +1 for GMT... sic, better to use a custom module, see the following. 
-        om.registerModule(new CkanJacksonModule());
+        om.registerModule(new CkanModule());
 
         om.registerModule(new GuavaModule());
     }
