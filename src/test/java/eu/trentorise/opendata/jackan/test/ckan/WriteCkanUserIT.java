@@ -16,24 +16,12 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import eu.trentorise.opendata.jackan.JackanException;
-import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanUser;
 import eu.trentorise.opendata.jackan.model.CkanUser;
 import eu.trentorise.opendata.jackan.model.CkanUserBase;
-import eu.trentorise.opendata.jackan.model.CkanState;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
-import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import junitparams.Parameters;
-import org.junit.After;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**

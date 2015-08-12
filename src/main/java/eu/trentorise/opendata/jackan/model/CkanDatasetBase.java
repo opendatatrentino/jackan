@@ -18,6 +18,8 @@ package eu.trentorise.opendata.jackan.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Strings;
+import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -385,20 +387,21 @@ public class CkanDatasetBase {
         this.version = version;
     }
 
-    /**
-     * Returns the id if not null, the name otherwise
+     /**
+     * Returns the id if non-empty, the name otherwise
      */
     @Nullable
-    public String idOrName() {
-        return getId() == null ? getName() : getId();
+    public String idOrName() {        
+        return isNotEmpty(getId()) ? getId() : getName();
     }
-
+    
     /**
-     * Returns the name if not null, the id otherwise
+     * Returns the name if non-empty, the id otherwise
      */
     @Nullable
-    public String nameOrId() {
-        return getName() == null ? getId() : getName();
+    public String nameOrId() {       
+                
+        return isNotEmpty(getName()) ? getName() : getId();
     }
 
 }

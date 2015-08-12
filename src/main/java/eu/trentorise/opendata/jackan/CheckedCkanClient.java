@@ -16,17 +16,22 @@
 package eu.trentorise.opendata.jackan;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import com.google.common.base.Strings;
+import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
+import eu.trentorise.opendata.jackan.model.CkanGroup;
+import eu.trentorise.opendata.jackan.model.CkanLicense;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.model.CkanResourceBase;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
 import org.apache.http.HttpHost;
 
 /**
@@ -40,6 +45,8 @@ import org.apache.http.HttpHost;
  */
 public class CheckedCkanClient extends CkanClient {
 
+    private static final Logger LOG = Logger.getLogger(CheckedCkanClient.class.getName());
+
     public CheckedCkanClient(String url) {
         super(url);
     }
@@ -52,48 +59,159 @@ public class CheckedCkanClient extends CkanClient {
         super(URL, token, proxy);
     }
 
+    private void checkUrl(String url, String prependedErrorMessage) {
+        try {
+            new URL(url).toURI();
+        }
+        catch (MalformedURLException | URISyntaxException ex) {
+            throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed url:" + url, this);
+        }
+    }
     
+    private void checkUuid(String uuid, String prependedErrorMessage){
+        try {
+            UUID.fromString(uuid);
+        } catch (Exception ex){
+            throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed uuid:" + uuid, this, ex);
+        } 
+           
+    }
+
     @Override
     public synchronized CkanOrganization createOrganization(CkanOrganization org) {
+        if (org.getId() != null) {
+            
+            checkUuid(org.getId(), "Jackan validation failed! Tried to create organization with invalid id:" + org.getId() );
+            
+            try {
+                getOrganization(org.getId());
+                throw new CkanValidationException("Jackan validation failed! Tried to create organization with existing id! " + org.getId(), this);
+            }
+            catch (CkanNotFoundException ex) {
+
+            }
+        }
+        
         return super.createOrganization(org);
     }
 
     @Override
+    public synchronized CkanResource createResource(CkanResourceBase resource) {
+
+        if (resource.getId() != null) {
+            checkUuid(resource.getId(), "Jackan validation failed! Tried to create resource with invalid id:" + resource.getId() );
+            
+            try {
+                CkanResource dupRes = getResource(resource.getId());
+                throw new CkanValidationException("Jackan validation failed! Tried to create resource with existing id! " + resource.getId(), this);
+            }
+            catch (CkanNotFoundException ex) {
+
+            }
+        }
+
+        checkUrl(resource.getUrl(), "Jackan validation error! Tried to create resource " + resource.getId() + " with wrong url!");
+
+        return super.createResource(resource);
+    }
+
+    @Override
+    public synchronized CkanResource updateResource(CkanResourceBase resource) {
+
+        checkUrl(resource.getUrl(), "Jackan validation error! Tried to update resource " + resource.getId() + " with wrong url!");
+
+        return super.updateResource(resource);
+    }
+
+    @Override
+    public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
+
+        checkUrl(resource.getUrl(), "Jackan validation error! Tried to patch update resource " + resource.getId() + " with wrong url!");
+
+        return super.patchUpdateResource(resource);
+    }
+
+    @Override
+    public synchronized CkanGroup createGroup(CkanGroup group) {
+        
+        if (group.getId() != null) {
+            
+            checkUuid(group.getId(), "Jackan validation failed! Tried to create group with invalid id:" + group.getId() );
+            
+            try {
+                getGroup(group.getId());
+                throw new CkanValidationException("Jackan validation failed! Tried to create group with existing id! " + group.getId(), this);
+            }
+            catch (CkanNotFoundException ex) {
+
+            }
+        }
+
+        return super.createGroup(group);
+    }
+
+    private void checkGroupsExist(Iterable<CkanGroup> groups, String prependedErrorMessage) {
+        if (groups != null) {
+            for (CkanGroup group : groups) {
+                checkNotNull(group, String.valueOf(prependedErrorMessage) + " -- Found null group! ");
+                checkNotEmpty(group.idOrName(), String.valueOf(prependedErrorMessage) + " -- Found group with both id and name invalid!");
+
+                try {
+                    getGroup(group.idOrName());
+                }
+                catch (CkanNotFoundException ex) {
+                    throw new CkanException(prependedErrorMessage + " -- Tried to refer to non existing group " + group.idOrName(), this);
+                }
+            }
+        }
+
+    }
+
+    private void checkLicenseExist(@Nullable String licenseId, String prependedErrorMessage) {
+        if (isNotEmpty(licenseId)) {
+            List<CkanLicense> licenseList = getLicenseList();
+            boolean found = false;
+            for (CkanLicense lic : licenseList) {
+                if (licenseId.equals(lic.getId())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new CkanValidationException("Jackan validation error! Tried to create dataset with licenseId '"
+                        + licenseId + "', which doesn't belong to allowed licenses: " + licenseList.toString(), this);
+            }
+        }
+    }
+
+    @Override
     public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
+
+        checkGroupsExist(dataset.getGroups(), "Jackan validation error when creating dataset " + dataset.getName());
+
+        checkLicenseExist(dataset.getLicenseId(), "Jackan validation error when creating dataset " + dataset.getName());
+
         return super.createDataset(dataset);
     }
 
     @Override
-    public synchronized CkanResource createResource(CkanResourceBase resource) {
-        checkNotNull(resource, "Need a valid resource!");
+    public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
 
-        if (getCkanToken() == null) {
-            throw new CkanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!", this);
-        }
-        
-        if (!Strings.isNullOrEmpty(resource.getId())){
-            try {
-                UUID.fromString(resource.getId());
-            } catch (IllegalArgumentException ex){
-                throw new CkanException("Jackson validation failed! Tried to create resource with invalid UUID: '" + resource.getId() + "'", this, ex);
-            }            
-            try {
-                CkanResource dupRes = getResource(resource.getId());
-                throw new CkanException("Jackan validation failed! Tried to create resource with existing id! " + resource.getId(), this);
-            } catch (CkanNotFoundException ex){
-                
-            }
-        }
-        
-        try {
-            new URL(resource.getUrl());
-        }
-        catch (MalformedURLException ex) {
-            throw new CkanException("Jackan validation failed! Tried to create resource with ill-formed url:" + resource.getUrl(), this);
-        }
-        
-        
-        return super.createResource(resource);
+        checkGroupsExist(dataset.getGroups(), "Jackan validation error when updating dataset " + dataset.getName());
+
+        checkLicenseExist(dataset.getLicenseId(), "Jackan validation error updating dataset " + dataset.getName());
+
+        return super.updateDataset(dataset);
+    }
+
+    @Override
+    public synchronized CkanDataset patchUpdateDataset(CkanDatasetBase dataset) {
+
+        checkGroupsExist(dataset.getGroups(), "Jackan validation error when patch updating dataset " + dataset.getName());
+
+        checkLicenseExist(dataset.getLicenseId(), "Jackan validation error when patch updating dataset " + dataset.getName());
+
+        return super.patchUpdateDataset(dataset);
     }
 
 }

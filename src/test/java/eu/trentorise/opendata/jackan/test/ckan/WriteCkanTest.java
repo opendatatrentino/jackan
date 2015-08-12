@@ -31,7 +31,6 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import junitparams.JUnitParamsRunner;
 import static junitparams.JUnitParamsRunner.$;
-import org.apache.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,12 +57,7 @@ public abstract class WriteCkanTest {
                 $(""),
                 $("   "),
                 $("$$$$$"),
-                $("ab") // need at least 3 chars
-        //$(new CkanClient(NOAA_GOV_US))                
-        /*,
-         $(new CkanClient(DATI_MATERA)),
-         $(new CkanClient(DATA_GOV_UK)),
-         $(new CkanClient(DATA_GOV_US)) */
+                $("a") // need at least 2 chars
         );
     }
 
@@ -74,11 +68,6 @@ public abstract class WriteCkanTest {
                 $("   "),
                 $("$$$$$"),
                 $("a") // need at least 2 chars
-        //$(new CkanClient(NOAA_GOV_US))                
-        /*,
-         $(new CkanClient(DATI_MATERA)),
-         $(new CkanClient(DATA_GOV_UK)),
-         $(new CkanClient(DATA_GOV_US)) */
         );
     }
 
@@ -88,13 +77,7 @@ public abstract class WriteCkanTest {
                 $(""),
                 $("   "),
                 $("http:"),
-                $("http://"),
-                $("http://a")
-        //$(new CkanClient(NOAA_GOV_US))                
-        /*,
-         $(new CkanClient(DATI_MATERA)),
-         $(new CkanClient(DATA_GOV_UK)),
-         $(new CkanClient(DATA_GOV_US)) */
+                $("http://")
         );
     }
 

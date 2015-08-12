@@ -23,6 +23,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.base.Strings;
+import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -263,19 +265,20 @@ public abstract class CkanGroupOrgBase {
     }
 
      /**
-     * Returns the id if not null, the name otherwise
+     * Returns the id if non-empty, the name otherwise
      */
     @Nullable
-    public String idOrName() {
-        return getId() == null ? getName() : getId();
+    public String idOrName() {        
+        return isNotEmpty(getId()) ? getId() : getName();
     }
     
     /**
-     * Returns the name if not null, the id otherwise
+     * Returns the name if non-empty, the id otherwise
      */
     @Nullable
-    public String nameOrId() {
-        return getName() == null ? getId() : getName();
+    public String nameOrId() {       
+                
+        return isNotEmpty(getName()) ? getName() : getId();
     }
 
 }

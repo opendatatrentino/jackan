@@ -160,7 +160,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
 
     @Test
     @Parameters(method = "wrongDatasetNames")
-    public void testCreateWrongName(String datasetName) {
+    public void testCreateWithWrongName(String datasetName) {
 
         try {
             CkanDataset dataset = new CkanDataset(datasetName);
@@ -249,19 +249,19 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         }
     }
 
+    /**
+     * Missing id should be automatically assigned.
+     */
     @Test
     public void testCreateWithResourceWithoutId() {
 
         CkanDataset dataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         CkanResource resource = new CkanResource(JACKAN_URL, null);
         dataset.setResources(Lists.newArrayList(resource));
-        try {
-            client.createDataset(dataset);
-            Assert.fail("Shouldn't be able to create dataset with resource without id!");
-        }
-        catch (JackanException ex) {
 
-        }
+        CkanDataset retDataset = client.createDataset(dataset);
+        String id = retDataset.getResources().get(0).getId();
+        UUID.fromString(id);
     }
 
     @Test
@@ -378,16 +378,19 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     @Test
     @Parameters(method = "wrongDatasetNames")
     public void testPatchUpdateDatasetWithWrongName(String datasetName) {
+        if (datasetName != null) {
+            CkanDataset dataset = createRandomDataset();
+            dataset.setName(datasetName);
+            try {
+                client.patchUpdateDataset(dataset);
+                Assert.fail("Shouldn't be possible to patch update dataset with wrong name: " + datasetName);
 
-        CkanDataset dataset = createRandomDataset();
-        dataset.setName(datasetName);
-        try {
-            client.patchUpdateDataset(dataset);
-            Assert.fail("Shouldn't be possible to update dataset with wrong name: " + datasetName);
-        }
-        catch (JackanException ex) {
+            }
+            catch (JackanException ex) {
 
+            }
         }
+
     }
 
     @Test
@@ -561,21 +564,6 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         }
         catch (JackanException ex) {
             ex.getMessage();
-        }
-    }
-
-    @Test
-    public void testPatchUpdateDatasetWithResourceWithoutId() {
-
-        CkanDataset dataset = createRandomDataset();
-        CkanResource resource = new CkanResource(JACKAN_URL, null);
-        dataset.setResources(Lists.newArrayList(resource));
-        try {
-            client.patchUpdateDataset(dataset);
-            Assert.fail("Shouldn't be able to update dataset with resource without id!");
-        }
-        catch (JackanException ex) {
-
         }
     }
 

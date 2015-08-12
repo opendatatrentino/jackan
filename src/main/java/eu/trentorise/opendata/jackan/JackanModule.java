@@ -32,10 +32,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Custom module to serialize/deserialize Ckan objects with fields lower cased
- * (i.e. 'author_email') and also Timestamp, which in Ckan has format like
- * "2013-11-11T04:12:11.110868", see {@link CkanClient#CKAN_TIMESTAMP_PATTERN}.
- * In case there are problems in parsing deserializes them to null.
+ * Custom Jackson module to serialize/deserialize as JSON Ckan objects with
+ * fields lower cased (i.e. 'author_email') and also Timestamp, which in Ckan
+ * has format like "2013-11-11T04:12:11.110868", see
+ * {@link CkanClient#CKAN_TIMESTAMP_PATTERN}. In case there are problems in
+ * parsing deserializes them to null.
  *
  * NOTE: We made a custom module because when reading dates, Jackson defaults to
  * using GMT for all processing unless specifically told otherwise, see

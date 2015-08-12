@@ -84,6 +84,15 @@ public class WriteCkanGroupIT extends WriteCkanGroupOrg<CkanGroup> {
 
     @Override
     @Test
+    @Parameters(method = "wrongIds")
+    public void testCreateWithWrongId(String id) {
+        super.testCreateWithWrongId(id); 
+    }
+    
+    
+
+    @Override
+    @Test
     public void testCreateMirror() {
         super.testCreateMirror();
     }
@@ -117,5 +126,13 @@ public class WriteCkanGroupIT extends WriteCkanGroupOrg<CkanGroup> {
     public void testCreateMinimal() {
         super.testCreateMinimal();
     }
+
+    @Test
+    @Override
+    public void testCreateWithUser() {
+        super.testCreateWithUser(); 
+    }
+    
+    
 
 }

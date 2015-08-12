@@ -365,18 +365,23 @@ public class CkanClient {
 
     /**
      * Throws CkanException or a subclass of it according to CkanError#getType()
-     * 
+     *
      * @throws CkanException
      */
     protected <T extends CkanResponse> void throwCkanException(String msg, T ckanResponse) {
-        if (ckanResponse.getError() != null && CkanError.NOT_FOUND_ERROR.equals(ckanResponse.getError().getType())) {
-            throw new CkanNotFoundException(
-                    msg,
-                    ckanResponse, this);
+        if (ckanResponse.getError() != null && ckanResponse.getError().getType() != null) {
+            switch (ckanResponse.getError().getType()) {
+                case CkanError.NOT_FOUND_ERROR:
+                    throw new CkanNotFoundException(msg, ckanResponse, this);
+                case CkanError.VALIDATION_ERROR:
+                    throw new CkanValidationException(msg, ckanResponse, this);
+            }
         }
+
         throw new CkanException(
                 msg,
-                ckanResponse, this);
+                ckanResponse,
+                this);
     }
 
     /**
@@ -618,7 +623,8 @@ public class CkanClient {
 
         CkanDataset cd = getHttp(DatasetResponse.class, "/api/3/action/package_show",
                 "id", idOrName).result;
-        for (CkanResource cr : cd.getResources()) {
+        for (CkanResource cr
+                : cd.getResources()) {
             cr.setPackageId(cd.getId());
         }
         return cd;
@@ -637,6 +643,7 @@ public class CkanClient {
      */
     public synchronized CkanUser getUser(String id) {
         checkNotNull(id, "Need a valid id!");
+
         return getHttp(UserResponse.class, "/api/3/action/user_show", "id", id).result;
     }
 
@@ -654,10 +661,13 @@ public class CkanClient {
 
         if (ckanToken == null) {
             throw new CkanException("Tried to create user" + user.getName() + ", but ckan token was not set!", this);
+
         }
 
-        ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanUserBase.class);
+        ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanUserBase.class
+        );
         String json = null;
+
         try {
             json = om.writeValueAsString(user);
         }
@@ -665,6 +675,7 @@ public class CkanClient {
             throw new CkanException("Couldn't serialize the provided CkanUser!", this, e);
 
         }
+
         return postHttp(UserResponse.class, "/api/3/action/user_create", json, ContentType.APPLICATION_JSON).result;
     }
 
@@ -1111,33 +1122,6 @@ public class CkanClient {
         }
 
         return dsr.result;
-    }
-
-    /**
-     * Checks dataset can actually be created
-     *
-     * @throws IllegalArgumentException if minimal requirements aren't met
-     */
-    static void checkDataset(CkanDataset dataset) {
-        checkNotEmpty(dataset.getName(), "invalid ckan dataset name (must have no spaces and dashes as separators, i.e. \"limestone-pavement-orders");
-        checkNotEmpty(dataset.getUrl(), "invalid ckan dataset url to description page");
-        checkNotNull(dataset.getExtras(), "invalid ckan dataset extras");
-    }
-
-    /**
-     * Checks if the provided resource meets the requirements to be created to
-     * CKAN.
-     *
-     * @throws IllegalArgumentException if minimal requirements aren't met
-     */
-    static void checkResource(CkanResource resource) {
-        checkNotNull(resource, "Can't create null resource!");
-        checkNotEmpty(resource.getFormat(), "Invalid Ckan resource format!");
-        checkNotEmpty(resource.getName(), "Ckan resource name can't be empty!");
-        checkNotEmpty(resource.getDescription(), "Ckan resource description must not be null!");
-        // todo do we need to check mimetype?? checkNotNull(resource.getMimetype());
-        checkNotEmpty(resource.getPackageId(), "Ckan resource parent dataset must not be empty!");
-        checkNotEmpty(resource.getUrl(), "Ckan resource url must be not empty!");
     }
 
     /**

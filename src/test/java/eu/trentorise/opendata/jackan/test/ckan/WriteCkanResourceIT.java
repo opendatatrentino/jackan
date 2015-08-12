@@ -89,17 +89,20 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertEquals(resource.getId(), retRes.getId());
 
     }
+    
+       
+    
 
     @Test
-    public void testCreateWithWrongId() {
+    @Parameters(method = "wrongIds")
+    public void testCreateWithWrongId(String wrongId) {
 
         CkanDataset dataset = createRandomDataset();
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
-        resource.setId(Long.toString(UUID.randomUUID().getMostSignificantBits()));
-
+        resource.setId(wrongId);
         try {
             CkanResource retRes = client.createResource(resource);
-            Assert.fail("Shouldn't be able to create resource with ill formatted UUID " + resource.getId());
+            Assert.fail("Shouldn't be able to create resource with ill formatted UUID '" + resource.getId() + "'");
         }
         catch (JackanException ex) {
 
@@ -128,7 +131,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
     @Test
     @Parameters(method = "wrongUrls")
-    public void testCreateWrongUrl(String url) {
+    public void testCreateWithWrongUrl(String url) {
 
         CkanDataset dataset = createRandomDataset();
 
@@ -143,7 +146,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
     }
 
     @Test
-    public void testCreateWrongDatasetId() {
+    public void testCreateWithWrongDatasetId() {
 
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, UUID.randomUUID().toString());
         try {
@@ -164,6 +167,8 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
         resource.setPackageId(dataset.getId());
 
+        resource.setId(randomUUID());
+        
         CkanResource retResource = client.createResource(resource);
 
         checkNotEmpty(retResource.getId(), "Invalid resource id!");
@@ -197,44 +202,46 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertEquals(null, retRes2.getOwner());  // owner is not among api docs for creation, so hopefully was jsonignored when sending retRes1            
     }
 
-    @Test
-    public void testPatchUpdateWithExistingId() {
-        CkanResource res1 = createRandomResource();
-        CkanDataset dataset = createRandomDataset();
-        CkanResourceBase res2 = new CkanResourceBase(JACKAN_URL, dataset.getId());
-        res2.setId(res1.getId());
-        try {
-            client.patchUpdateResource(res2);
-            Assert.fail("Shouldn't be able to patch update resource with existing id: " + res1.getId());
-        }
-        catch (JackanException ex) {
+    
 
-        }
-    }
-
-    @Test
-    @Parameters(method = "wrongIds")
-    public void testPatchUpdateWrongId(String id) {
+    @Test    
+    public void testPatchUpdateNonExistingResource() {
 
         CkanDataset dataset = createRandomDataset();
 
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
-        resource.setId(id);
+        resource.setId(randomUUID());
         try {
             client.patchUpdateResource(resource);
-            Assert.fail("Shouldn't be able to patch update resource with wrong id " + id);
+            Assert.fail("Shouldn't be able to patch update non existing resource!");
         }
         catch (JackanException ex) {
 
         }
     }
 
+ @Test
+    @Parameters(method = "wrongUrls")
+    public void testPatchUpdatWithWrongUrl(String url) {
+
+        CkanResource resource = createRandomResource();
+        resource.setUrl(url);
+        
+        try {            
+            client.patchUpdateResource(resource);
+            Assert.fail("Shouldn't be able to patch update resource with wrong url: " + url);
+        }
+        catch (JackanException ex) {
+
+        }
+    }    
+    
     /**
      * This shows it is not possible to move a resource from one dataset to
      * another by updating the resource packageId.
      */
     @Test
-    public void testPatchUpdateDataset() {
+    public void testPatchUpdateWithDifferentDatasetId() {
 
         CkanDataset dataset1 = createRandomDataset();
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset1.getId());

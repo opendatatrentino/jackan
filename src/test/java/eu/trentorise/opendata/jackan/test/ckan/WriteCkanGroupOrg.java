@@ -81,7 +81,7 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
     public void testCreateById() {
         T groupOrg = newEmpty();
         groupOrg.setId(UUID.randomUUID().toString());
-        groupOrg.setName("test-org-"+groupOrg.getId());
+        groupOrg.setName("jackan-test-org-"+groupOrg.getId());
         T retGroupOrg = create(groupOrg);
         assertEquals(groupOrg.getId(), retGroupOrg.getId());
         assertEquals(groupOrg.getName(), retGroupOrg.getName());
@@ -89,7 +89,7 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
     
     @Test
     public void testCreateWithPackages(){
-        T groupOrg = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
+        T groupOrg = newName("jackan-test-org-" + UUID.randomUUID().getMostSignificantBits());
         CkanDataset dataset = createRandomDataset();        
         groupOrg.setPackages(Lists.newArrayList(dataset));
         T retGroupOrg = create(groupOrg);
@@ -99,7 +99,7 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
     @Test
     public void testCreateWithDatasetsWithoutId(){
         T org = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
-        CkanDataset dataset = new CkanDataset("test-dataset-"+UUID.randomUUID().toString());        
+        CkanDataset dataset = new CkanDataset("jackan-test-dataset-"+UUID.randomUUID().toString());        
         org.setPackages(Lists.newArrayList(dataset));
         try {
             T retGroupOrg = create(org);
@@ -111,7 +111,7 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
     
 @Test
     public void testCreateWithUser(){
-        T groupOrg = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
+        T groupOrg = newName("jackan-test-org-" + UUID.randomUUID().getMostSignificantBits());
         
         CkanUser user = createRandomUser();
         
@@ -135,8 +135,8 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
     
     @Test
     public void testCreateWithNonExistingPackages(){
-        T groupOrg = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
-        CkanDataset dataset = new CkanDataset("test-dataset-"+UUID.randomUUID().toString());
+        T groupOrg = newName("jackan-test-org-" + UUID.randomUUID().getMostSignificantBits());
+        CkanDataset dataset = new CkanDataset("jackan-test-dataset-"+UUID.randomUUID().toString());
         dataset.setId(UUID.randomUUID().toString());
         groupOrg.setPackages(Lists.newArrayList(dataset));
         try {
@@ -177,20 +177,36 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
 
         }
     }
+    
+    @Test
+    @Parameters(method = "wrongIds")
+    public void testCreateWithWrongId(String id) {        
+
+        try {
+            T groupOrg = newName("jackan-test-group-" + randomUUID());
+            groupOrg.setId(id);
+            create(groupOrg);
+            Assert.fail("Shouldn't be able to create "+ className() + " with wrong id " + id);
+        }
+        catch (JackanException ex) {
+
+        }
+    }    
 
     @Test
     public void testCreateWithDuplicateName() {
 
-        String name = "test-grouporg-jackan-" + UUID.randomUUID().getMostSignificantBits();
+        String name = "jackan-test-grouporg-jackan-" + UUID.randomUUID().getMostSignificantBits();
 
         T groupOrg = newName(name);
         create(groupOrg);
+        groupOrg.setId(null);
         try {
             create(groupOrg);
             Assert.fail("Shouldn't be able to create "+ className() + " with same name " + name);
         }
         catch (JackanException ex) {
-
+            LOG.fine("");
         }
     }
 
@@ -198,12 +214,15 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
     public void testCreateWithDuplicateId() {
 
         T groupOrg = newEmpty();
-        groupOrg.setId(UUID.randomUUID().toString());
-        groupOrg.setName("test-grouporg-" + groupOrg.getId());
-        create(groupOrg);
+        groupOrg.setId(randomUUID());
+        groupOrg.setName("jackan-test-grouporg-" + groupOrg.getId());
+        T retGroupOrg1 = create(groupOrg);
+        assertEquals(retGroupOrg1.getId(), groupOrg.getId());
+        retGroupOrg1.setName("jackan-test-grouporg-" + randomUUID());
         try {
-            create(groupOrg);
-            Assert.fail("Shouldn't be able to create "+ className() + " with same id " + groupOrg.getId());
+            T retGroupOrg2 = create(retGroupOrg1);
+            assertEquals(retGroupOrg1.getId(), retGroupOrg2.getId());
+            Assert.fail("Shouldn't be able to create "+ className() + " with same id " + groupOrg.getId());            
         }
         catch (JackanException ex) {
 

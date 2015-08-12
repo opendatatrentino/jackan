@@ -100,6 +100,13 @@ public class WriteCkanOrganizationIT extends WriteCkanGroupOrg<CkanOrganization>
     public void testCreateWithDatasetsWithoutId() {
         super.testCreateWithDatasetsWithoutId(); 
     }
+    
+   @Override
+    @Test
+    @Parameters(method = "wrongIds")
+    public void testCreateWithWrongId(String id) {
+        super.testCreateWithWrongId(id); 
+    }    
 
     @Override
     @Test

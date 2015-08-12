@@ -28,12 +28,13 @@ import java.util.Map;
 public class CkanError {
 
     
-    public static String AUTHORIZATION_ERROR = "Authorization Error";
-    public static String INTEGRITY_ERROR = "Integrity Error";
-    public static String NOT_FOUND_ERROR = "Not Found Error";
-    public static String SEARCH_QUERY_ERROR = "Search Query Error";
-    public static String SEARCH_ERROR = "Search Error";
-    public static String SEARCH_INDEX_ERROR = "Search Index Error";
+    public static final String AUTHORIZATION_ERROR = "Authorization Error";
+    public static final String INTEGRITY_ERROR = "Integrity Error";
+    public static final String NOT_FOUND_ERROR = "Not Found Error";
+    public static final String SEARCH_QUERY_ERROR = "Search Query Error";
+    public static final String SEARCH_ERROR = "Search Error";
+    public static final String SEARCH_INDEX_ERROR = "Search Index Error";
+    public static final String VALIDATION_ERROR = "Validation Error";
     
     
     private String message;
