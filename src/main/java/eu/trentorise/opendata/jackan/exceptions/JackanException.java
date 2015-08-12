@@ -1,5 +1,5 @@
-/*
- * Copyright 2015 Trento Rise.
+/* 
+ * Copyright 2015 Trento Rise  (trentorise.eu) 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan;
+package eu.trentorise.opendata.jackan.exceptions;
 
-import eu.trentorise.opendata.jackan.model.CkanResponse;
 
 /**
- * Thrown when Ckan tells us something was not found. Notice this is not related
- * to more generic {@link NotFoundException}
- *
+ * Generic Jackan Runtime Exception.
+ * 
  * @author David Leoni
  */
-public class CkanNotFoundException extends CkanException {
-
-    public CkanNotFoundException(String msg, CkanResponse ckanResponse, CkanClient client) {
-        super(msg, ckanResponse, client);
+public class JackanException extends RuntimeException {
+    
+    public JackanException(String msg) {
+        super(msg);
     }
 
-    public CkanNotFoundException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
-        super(msg, ckanResponse, client, ex);
+    public JackanException(String msg, Throwable ex) {
+        super(msg, ex);
     }
-
+ 
+    
 }

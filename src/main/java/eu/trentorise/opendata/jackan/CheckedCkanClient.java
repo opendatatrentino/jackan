@@ -15,6 +15,9 @@
  */
 package eu.trentorise.opendata.jackan;
 
+import eu.trentorise.opendata.jackan.exceptions.CkanException;
+import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
+import eu.trentorise.opendata.jackan.exceptions.CkanValidationException;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;

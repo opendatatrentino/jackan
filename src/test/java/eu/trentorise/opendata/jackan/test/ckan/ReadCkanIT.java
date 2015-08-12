@@ -20,12 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.CkanException;
-import eu.trentorise.opendata.jackan.CkanNotFoundException;
+import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanGroup;
 import eu.trentorise.opendata.jackan.model.CkanLicense;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
@@ -403,9 +401,8 @@ public class ReadCkanIT {
 
     @Test
     public void testFullSearch() {
-        throw new RuntimeException("TODO make it work with generic catalog");
-        /* 
-         SearchResults<CkanDataset> r = client.searchDatasets(CkanQuery.filter()
+                 
+         SearchResults<CkanDataset> r = new CkanClient(DATI_TRENTINO).searchDatasets(CkanQuery.filter()
          .byText("elenco dei prodotti trentini")
          .byGroupNames("agricoltura")
          .byOrganizationName("pat-s-sviluppo-rurale")
@@ -413,8 +410,7 @@ public class ReadCkanIT {
          .byLicenseId("cc-zero"), 10, 0);
          assertEquals("cc-zero", r.getResults().get(0).getLicenseId());
          assertTrue("I should get at least one result", r.getResults().size() > 0);
-        
-         */
+                
     }
 
 }

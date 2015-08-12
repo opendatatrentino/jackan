@@ -15,6 +15,10 @@
  */
 package eu.trentorise.opendata.jackan;
 
+import eu.trentorise.opendata.jackan.exceptions.CkanException;
+import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
+import eu.trentorise.opendata.jackan.exceptions.CkanValidationException;
+import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;

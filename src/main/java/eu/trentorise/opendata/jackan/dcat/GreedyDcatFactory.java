@@ -17,7 +17,7 @@ package eu.trentorise.opendata.jackan.dcat;
 
 import com.google.common.annotations.Beta;
 import eu.trentorise.opendata.commons.Dict;
-import eu.trentorise.opendata.jackan.NotFoundException;
+import eu.trentorise.opendata.jackan.exceptions.NotFoundException;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanGroup;

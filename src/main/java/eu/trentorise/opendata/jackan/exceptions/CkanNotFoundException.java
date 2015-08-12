@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.trentorise.opendata.jackan;
+package eu.trentorise.opendata.jackan.exceptions;
 
+import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanResponse;
 
 /**
- * Thrown when Ckan tells us something was not in the proper format.
+ * Thrown when Ckan tells us something was not found. Notice this is not related
+ * to more generic {@link NotFoundException}
+ *
  * @author David Leoni
  */
-public class CkanValidationException extends CkanException {
+public class CkanNotFoundException extends CkanException {
 
-    public CkanValidationException(String msg, CkanClient client, Throwable ex) {
-        super(msg, client, ex);
-    }    
-    
-    public CkanValidationException(String msg, CkanClient client) {
-        super(msg, client);
-    }
-    
-    public CkanValidationException(String msg, CkanResponse ckanResponse, CkanClient client) {
+    public CkanNotFoundException(String msg, CkanResponse ckanResponse, CkanClient client) {
         super(msg, ckanResponse, client);
     }
 
-    public CkanValidationException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
+    public CkanNotFoundException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
         super(msg, ckanResponse, client, ex);
     }
 

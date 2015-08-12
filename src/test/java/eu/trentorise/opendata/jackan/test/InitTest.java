@@ -17,7 +17,6 @@ package eu.trentorise.opendata.jackan.test;
 
 import eu.trentorise.opendata.commons.BuildInfo;
 import eu.trentorise.opendata.commons.OdtConfig;
-import java.util.UUID;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,8 +39,4 @@ public class InitTest {
         assertTrue(buildInfo.getScmUrl().length() > 0);
     }
     
-    @Test
-    public void testUUID(){
-        UUID.fromString("123");
-    }
 }
