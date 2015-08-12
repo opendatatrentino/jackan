@@ -15,6 +15,8 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
@@ -24,10 +26,18 @@ import eu.trentorise.opendata.jackan.model.CkanState;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junitparams.Parameters;
+import org.apache.http.client.fluent.Form;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
+import org.apache.http.entity.ContentType;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -89,9 +99,6 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertEquals(resource.getId(), retRes.getId());
 
     }
-    
-       
-    
 
     @Test
     @Parameters(method = "wrongIds")
@@ -168,7 +175,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         resource.setPackageId(dataset.getId());
 
         resource.setId(randomUUID());
-        
+
         CkanResource retResource = client.createResource(resource);
 
         checkNotEmpty(retResource.getId(), "Invalid resource id!");
@@ -202,9 +209,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertEquals(null, retRes2.getOwner());  // owner is not among api docs for creation, so hopefully was jsonignored when sending retRes1            
     }
 
-    
-
-    @Test    
+    @Test
     public void testPatchUpdateNonExistingResource() {
 
         CkanDataset dataset = createRandomDataset();
@@ -220,22 +225,22 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         }
     }
 
- @Test
+    @Test
     @Parameters(method = "wrongUrls")
     public void testPatchUpdatWithWrongUrl(String url) {
 
         CkanResource resource = createRandomResource();
         resource.setUrl(url);
-        
-        try {            
+
+        try {
             client.patchUpdateResource(resource);
             Assert.fail("Shouldn't be able to patch update resource with wrong url: " + url);
         }
         catch (JackanException ex) {
 
         }
-    }    
-    
+    }
+
     /**
      * This shows it is not possible to move a resource from one dataset to
      * another by updating the resource packageId.
@@ -274,7 +279,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanResource resource = createRandomResource();
         resource.setState(CkanState.deleted);
         CkanResource retResource1 = client.patchUpdateResource(resource);
-        assertEquals(CkanState.active, retResource1.getState());      
+        assertEquals(CkanState.active, retResource1.getState());
 
     }
 
@@ -291,7 +296,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanResource retResource = client.getResource(resourceId);
         assertEquals(CkanState.deleted, retResource.getState());
     }
-    
+
     /**
      * Shows resources are just marked as 'deleted', but still accessible from
      * webapi.
@@ -302,10 +307,11 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         try {
             client.deleteResource(resourceId);
             Assert.fail("Shouldn't be possible to delete non existing resource!");
-        } catch(JackanException ex){
-            
+        }
+        catch (JackanException ex) {
+
         }
 
     }
-    
+   
 }

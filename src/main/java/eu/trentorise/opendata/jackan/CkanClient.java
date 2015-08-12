@@ -393,9 +393,8 @@ public class CkanClient {
      * POSTs a body via HTTP. If {@link CkanResponse#isSuccess()} is false
      * throws {@link CkanException}.
      *
-     * @param <T>
      * @param responseType a descendant of CkanResponse
-     * @param path something like 1/api/3/action/package_create
+     * @param path something like /api/3/action/package_create
      * @param body the body of the POST
      * @param contentType
      * @param params list of key, value parameters. They must be not be url
@@ -420,7 +419,7 @@ public class CkanClient {
             Request request = Request.Post(fullUrl);
             if (proxy != null) {
                 request.viaProxy(proxy);
-            }
+            }                                
             Response response = request.bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
 
             InputStream stream = response.returnResponse().getEntity().getContent();

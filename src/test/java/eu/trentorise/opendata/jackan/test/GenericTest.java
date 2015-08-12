@@ -17,6 +17,8 @@ package eu.trentorise.opendata.jackan.test;
 
 import eu.trentorise.opendata.commons.BuildInfo;
 import eu.trentorise.opendata.commons.OdtConfig;
+import java.util.Random;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,11 +27,11 @@ import org.junit.Test;
  *
  * @author David Leoni
  */
-public class InitTest {
+public class GenericTest {
 
     @BeforeClass
     public static void setUpClass() {
-        OdtConfig.loadLogConfig(InitTest.class);
+        OdtConfig.loadLogConfig(GenericTest.class);
     }
 
     @Test
@@ -39,4 +41,8 @@ public class InitTest {
         assertTrue(buildInfo.getScmUrl().length() > 0);
     }
     
+    @Test
+    public void testRandom(){
+        assertNotEquals(new Random().nextLong(), new Random().nextLong());
+    }    
 }

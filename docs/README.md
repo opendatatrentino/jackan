@@ -3,73 +3,82 @@ WARNING: WORK IN PROGRESS - THIS IS ONLY A TEMPLATE FOR THE DOCUMENTATION. <br/>
 RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" target="_blank">PROJECT WEBSITE</a>
 </p>
 
-This release allows to write in CKAN and convert CKAN metadata into DCAT format.
+This release allows to search Ckan, write into it and convert CKAN metadata into DCAT format. If you are upgrading from previous version, see [Release notes](CHANGES.md).
 
-### Maven
+### Getting started
 
-Jackan is available on Maven Central. To use it, put this in the dependencies section of your _pom.xml_:
+**With Maven**: If you use Maven as build system, put this in the `dependencies` section of your `pom.xml`:
 
 ```
     <dependency>
         <groupId>eu.trentorise.opendata</groupId>
         <artifactId>jackan</artifactId>
-        <version>#{version}</version>            
+        <version>#{version}</version>
     </dependency>
 ```
 
-In case updates are available, version numbers follows <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.
+**Without Maven**: you can download Jackan jar and its dependencies <a href="../releases/jackan-#{version}.zip" target="_blank"> from here</a>, then copy the jars to your project classpath.
 
-### Usage examples
+
+In case updates are available, version numbers follow <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.
+### Search ckan
 
 #### Get the dataset list of dati.trentino.it:
 
-Test code can be found in <a href="../src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp.java" target="_blank">TestApp.java</a>
+Code can be found in <a href="../src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp1.java" target="_blank">TestApp1.java</a>
 
-```
+```java
 
-    import eu.trentorise.opendata.jackan.JackanException;
-    import eu.trentorise.opendata.jackan.ckan.CkanClient;
+import eu.trentorise.opendata.jackan.CkanClient;
 
-    public class App {
-        public static void main( String[] args )
-        {        
-            CkanClient cc = new CkanClient("http://dati.trentino.it");        
-            System.out.println(cc.getDatasetList());               
-        }
+public class TestApp1 {
+
+    public static void main(String[] args) {
+
+        CkanClient cc = new CkanClient("http://dati.trentino.it");
+        System.out.println(cc.getDatasetList());
+
     }
+}
 
 ```
 
 #### Get list of first 10 datasets of dati.trentino.it and print their resources:
 
-```
 
-    import eu.trentorise.opendata.jackan.ckan.CkanClient;
-    import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-    import eu.trentorise.opendata.jackan.ckan.CkanResource;
+
+Code can be found in <a href="../src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp2.java" target="_blank">TestApp2.java</a>
+
+
+```java
+
+    import eu.trentorise.opendata.jackan.CkanClient;
+    import eu.trentorise.opendata.jackan.model.CkanDataset;
+    import eu.trentorise.opendata.jackan.model.CkanResource;
     import java.util.List;
 
-    public class App 
-    {
-        public static void main( String[] args )
-        {
+    public class TestApp2 {
+
+        public static void main(String[] args) {
 
             CkanClient cc = new CkanClient("http://dati.trentino.it");
 
             List<String> ds = cc.getDatasetList(10, 0);
 
-            for (String s : ds){
+            for (String s : ds) {
                 System.out.println();
                 System.out.println("DATASET: " + s);
-                CkanDataset d = cc.getDataset(s);            
+                CkanDataset d = cc.getDataset(s);
                 System.out.println("  RESOURCES:");
-                for (CkanResource r : d.getResources()){                
+                for (CkanResource r : d.getResources()) {
                     System.out.println("    " + r.getName());
                     System.out.println("    FORMAT: " + r.getFormat());
                     System.out.println("       URL: " + r.getUrl());
                 }
             }
+
         }
+
     }
 
 ```
@@ -114,58 +123,150 @@ Should give something like this:
 
 #### Search datasets filtering by tags and groups:
 
+Code can be found in <a href="../src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp3.java" target="_blank">TestApp3.java</a>
 
-```
 
-    import eu.trentorise.opendata.jackan.ckan.CkanClient;
-    import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-    import eu.trentorise.opendata.jackan.ckan.CkanQuery;
+```java
 
-    public class TestApp 
-    {
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.CkanQuery;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import java.util.List;
 
-        public static void main( String[] args )
-        {
-            CkanQuery query = CkanQuery.filter().byTagNames("settori economici", "agricoltura").byGroupNames("conoscenza");
+public class TestApp3 {
 
-            List<CkanDataset> filteredDatasets = cc.searchDatasets(query, 10, 0).getResults();
+    public static void main(String[] args) {
 
-            for (CkanDataset d : filteredDatasets){
-                System.out.println();
-                System.out.println("DATASET: " + d.getName());           
-            } 
+        CkanClient cc = new CkanClient("http://dati.trentino.it");        
+        CkanQuery query = CkanQuery.filter().byGroupNames("turismo").byTagNames("ristoranti");
+        List<CkanDataset> filteredDatasets = cc.searchDatasets(query, 10, 0).getResults();
+
+        for (CkanDataset d : filteredDatasets) {
+            System.out.println();
+            System.out.println("DATASET: " + d.getName());
         }
     }
+}
 ```
 
 Should give something like this:
 
 ```
 
-    DATASET: produzione-di-mele
+DATASET: osterie-tipiche-trentine
 
-    DATASET: produzione-di-uva-da-vino
+DATASET: poi-trento
 
-    DATASET: produzione-lorda-vendibile-frutticoltura
+DATASET: punti-di-interesse-valsugana
 
-    DATASET: produzione-lorda-vendibile-viticoltura
+DATASET: poi-altopiano-di-pine-e-valle-di-cembra
 
-    DATASET: produzione-lorda-vendibile-zootecnia
+DATASET: punti-di-ristoro-vivifiemme-2013
+```
 
-    DATASET: produzione-lorda-vendibile-silvicoltura
+### Write in Ckan
+
+
+#### Supported operations
+
+First, a brief recap of operations for writing offered by ckan:
+
+* `create`: in ckan creation often acts more as _upsert_, that is, if object with existing id/name already exists it is updated
+* `update`: update completely replaces stuff on server, and if you don't send a list or set it to null it gets emptied on the server. This can problematic for example when updating datasets containg a list of resources.
+* `patch`: added in Ckan 2.3 for less destructive updates. Jackan does not implement `patch` operations so far and instead offers so-called `patch-update` operations that emulate `patch` but only by calling `update` (so they work also in ckan < 2.3) 
+* `delete`: marks objects as as non-visible in the website, but they will still be retrievable with the webapi if you know the ids. To really delete things `purge` operations would need to be implemented. 
+* `purge`: this one _really_ deletes stuff
+
+Currently Jackan supports:
+
+
+|               | create| update| patch  |patch update  | delete|purge |
+|---------------|-------|-------|--------|--------------|-------|------|
+|Resource       | X     | X     |        |X             | X     |      |
+|Dataset        |X      |X      |        |X             | X     |      |
+|Group          |X      |       |        |              |       |      |
+|Organization   |X      |       |        |              |       |      |
+|User           |X      |       |        |              |       |      |
+|Tag            |X      |       |        |              |       |      |
+|Vocabulary     |X      |       |        |              |       |      |
+
+
+#### Data validation
+
+Sometimes Ckan forgets to properly validate input. For example, at least with Ckan 2.2 we have been able to create resources with empty id :-/  To prevent writing such garbage we extended default `CkanClient` with `CheckedCkanClient`, which is more picky about possibly inconsistent input. If you also care about data integrity you might want to use the Checked client or extend it with your own validation rules when writing into Ckan. To try how different clients behave against the extensive Jackan test suite when running tests we set the client client class to use as parameter `jackan.test.ckan.client-class=eu.trentorise.opendata.jackan.CheckedCkanClient` in <a href="../conf/jackan.test.properties" target="_blank">conf/jackan.test.properties</a>
+Maybe in the future we will implement also <a href="http://beanvalidation.org/" target="_blank" >java.validation api</a> support.
+
+#### What we POST
+All writable classes have an ancestor with `"Base"` appended to the Ckan object name, like `CkanDatasetBase`.
+When writing Jackan sends to Ckan only the non-null fields of such base classes (except for patch-update, which is more sophisticated).
+
+#### Examples for writing
+
+Many test cases for writing can be found in <a href="../src/test/java/eu/trentorise/opendata/jackan/test/ckan/" target="_blank">WriteCkan*IT.java</a> files. Here we just report a couple of them.
+
+##### Write a dataset
+
+```java
+ 	  // here we use CheckedCkanClient for extra safety
+        CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
+
+        CkanDatasetBase dataset = new CkanDatasetBase();
+        dataset.setName("my-cool-dataset-" + new Random().nextLong());
+        // notice Jackan will only send field 'name' as it is non-null
+        CkanDataset createdDataset = myClient.createDataset(dataset);
+
+        checkNotEmpty(createdDataset.getId(), "Invalid dataset id!");
+        assertEquals(dataset.getName(), createdDataset.getName());
+        System.out.println("Dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
+
+```
+
+
+
+##### Patch update a dataset
+
+Shows Jackan-specific patch-update functionality, in this case for changing tags assigned to a dataset (and also shows that new free tags can be created at dataset creation)
+
+
+```java
+        // here we use CheckedCkanClient for extra safety
+        CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
+
+		// we create a dataset with one tag 'cool'
+        CkanDatasetBase dataset = new CkanDatasetBase("my-dataset-" + new Random().nextLong());
+        List<CkanTag> tags_1 = new ArrayList();
+        tags_1.add(new CkanTag("cool"));
+        dataset.setTags(tags_1);
+        CkanDataset createdDataset = myClient.createDataset(dataset);
+
+        // now we assign a new array with one tag ["amazing"] 
+        List<CkanTag> tags_2 = new ArrayList();
+        tags_2.add(new CkanTag("amazing"));
+        createdDataset.setTags(tags_2);
+
+        // let's patch-update, jackan will take care of merging tags to prevent erasure of 'cool'
+        CkanDataset updatedDataset = myClient.patchUpdateDataset(createdDataset);
+
+        assert 2 == updatedDataset.getTags().size(); //  'amazing' has been added to ['cool']
+        System.out.println("Merged tags = "
+                + updatedDataset.getTags().get(0).getName()
+                + ", " + updatedDataset.getTags().get(1).getName());
+
+        System.out.println("Updated dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
 ```
 
 ### JSON Serialization
 
+There are two kinds of configurations used, a default one for reading from ckan and one for writing (that is, POSTing). Most probably you are interested in the default one.
 
-
-For serialization Jackson library annotations are used. Notice that although field names of Java objects are camelcase (like `authorEmail`), serialized fields follows CKAN API stlye and use underscores (like `author_email`). There are two kinds of configurations used, a default one for reading from ckan and one for writing (that is, POSTing). Most probably you are interested in the default one.
+Jackson library annotations are used to automatically convert to/from JSON using Jackson's `ObjectMapper` object. Notice that although field names of Java objects are camelcase (like `authorEmail`), serialized fields follows CKAN API stlye and use underscores (like `author_email`).
 
 #### Default Json Ser/deserialization
 
 Here is an example of serialization/deserialization:
 
-```
+```java
+		// your Jackson ObjectMapper
         ObjectMapper objectMapper = new ObjectMapper();
         
         CkanClient.configureObjectMapper(objectMapper);
@@ -182,24 +283,24 @@ Here is an example of serialization/deserialization:
         assert "hello".equals(reconstructed.getName());
 ```
 
-For more fine-grained control you can just register jackson `JackanModule` into your object mapper:
+For more fine-grained control you can just register `JackanModule` into your Jackson object mapper:
 
-```
+```java
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JackanModule());
 ```
 
-#### Json config for posting
+#### Posting Json
 
-This more advanced usage is for the case you want to do your own POST operations to ckan (or maybe extend Jackan :-) ...
+This more advanced usage is for the case you want to do your own POST operations (create/update/delete/purge) to ckan (or maybe extend Jackan :-) ...
 
 Notice for this you might need a different object mapper for each class you intend to post, so to be able to configure each mapper in a fine-grained way. You can find an example  for datasets in method `CkanClient.configureObjectMapperForPosting`:
 
-```
+```java
         ObjectMapper mapperForDatasetPosting = new ObjectMapper();
         CkanClient.configureObjectMapperForPosting(mapperForDatasetPosting, CkanDatasetBase.class);
                 
-        CkanDataset dataset = new CkanDataset("random-name-" + Math.random());
+        CkanDataset dataset = new CkanDataset("random-name-" + new Random().nextLong());
         
         // this would be the POST body. 
         String json = mapperForDatasetPosting.writeValueAsString(dataset);
@@ -208,12 +309,14 @@ Notice for this you might need a different object mapper for each class you inte
 
 ### Timestamps
 
-CKAN uses timestamps in a format like `1970-01-01T01:00:00.000010`. In the client we store them as `java.sql.Timestamp` so to be able to preserve the microseconds. To parse/format Ckan timestamps, use 
+CKAN uses timestamps in a format like `1970-01-01T01:00:00.000010`. In the client we store them as `java.sql.Timestamp` so to be able to preserve the microseconds. To parse/format Ckan timestamps, use
 
-```
+```java
     CkanClient.formatTimestamp(new Timestamp(123));
     CkanClient.parseTimestamp("1970-01-01T01:00:00.000010");
 ```
+
+
 
 ### DCAT
 

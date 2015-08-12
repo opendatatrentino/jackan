@@ -17,19 +17,19 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.CkanQuery;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import java.util.List;
 
-public class TestApp {
+/**
+ * GETTING FIRST 10 DATASETS, SHOWING RESOURCES
+ * @author David Leoni 
+ */
+public class TestApp2 {
 
     public static void main(String[] args) {
-
+                   
         CkanClient cc = new CkanClient("http://dati.trentino.it");
-
-        System.out.println("*************************    GETTING FIRST 10 DATASETS, SHOWING RESOURCES   *************************");
-        System.out.println();
-        System.out.println();
+       
         List<String> ds = cc.getDatasetList(10, 0);
 
         for (String s : ds) {
@@ -42,21 +42,6 @@ public class TestApp {
                 System.out.println("    FORMAT: " + r.getFormat());
                 System.out.println("       URL: " + r.getUrl());
             }
-        }
-
-        System.out.println();
-        System.out.println();
-        System.out.println("*************************    SEARCHING DATASETS   *************************");
-        System.out.println();
-        System.out.println();
-
-        CkanQuery query = CkanQuery.filter().byTagNames("settori economici", "agricoltura").byGroupNames("conoscenza");
-
-        List<CkanDataset> filteredDatasets = cc.searchDatasets(query, 10, 0).getResults();
-
-        for (CkanDataset d : filteredDatasets) {
-            System.out.println();
-            System.out.println("DATASET: " + d.getName());
         }
 
     }

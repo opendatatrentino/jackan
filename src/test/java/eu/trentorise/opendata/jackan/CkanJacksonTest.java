@@ -27,6 +27,7 @@ import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import java.io.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,6 +85,7 @@ public class CkanJacksonTest {
     @Test
     public void jacksonExample() throws JsonProcessingException, IOException {
         
+        // your Jackson ObjectMapper
         ObjectMapper objectMapper = new ObjectMapper();
         
         CkanClient.configureObjectMapper(objectMapper);
@@ -103,13 +105,14 @@ public class CkanJacksonTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JackanModule());
     }
+                
     
     @Test
     public void jacksonPostingExample() throws JsonProcessingException{
         ObjectMapper mapperForDatasetPosting = new ObjectMapper();
         CkanClient.configureObjectMapperForPosting(mapperForDatasetPosting, CkanDatasetBase.class);
                 
-        CkanDataset dataset = new CkanDataset("random-name-" + Math.random());
+        CkanDataset dataset = new CkanDataset("random-name-" + new Random().nextLong());
         
         // this would be the POST body. 
         String json = mapperForDatasetPosting.writeValueAsString(dataset);

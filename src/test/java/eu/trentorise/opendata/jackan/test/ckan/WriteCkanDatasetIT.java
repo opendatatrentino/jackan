@@ -17,6 +17,8 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.google.common.collect.Lists;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
+import eu.trentorise.opendata.jackan.CheckedCkanClient;
+import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
@@ -32,6 +34,8 @@ import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +63,58 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         checkNotEmpty(retDataset.getId(), "Invalid dataset id!");
         assertEquals(dataset.getName(), retDataset.getName());
         LOG.log(Level.INFO, "created dataset with id {0} in catalog {1}", new Object[]{retDataset.getId(), JackanTestConfig.of().getOutputCkan()});
+    }
+
+    @Test
+    @SuppressWarnings("UnusedAssignment")
+    public void createExample() {
+        // here we use CheckedCkanClient for extra safety
+        CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
+        myClient = client; // little trick so test is going to run for real...
+
+        CkanDatasetBase dataset = new CkanDatasetBase();
+        dataset.setName("my-cool-dataset-" + new Random().nextLong());
+        // notice Jackan will only send field 'name' as it is non-null
+        CkanDataset createdDataset = myClient.createDataset(dataset);
+
+        checkNotEmpty(createdDataset.getId(), "Invalid dataset id!");
+        assertEquals(dataset.getName(), createdDataset.getName());
+        System.out.println("Dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
+    }
+
+    /**
+     * Shows Jackan-specific patch-update functionality to change tags assigned to a dataset
+     * (and also that new free tags can be created at dataset creation)
+     */
+    @Test
+    @SuppressWarnings("UnusedAssignment")
+    public void patchUpdateExample() {
+
+        // here we use CheckedCkanClient for extra safety
+        CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
+
+        CkanDatasetBase dataset = new CkanDatasetBase("my-dataset-" + new Random().nextLong());
+
+        // we create a dataset with one tag 'cool'
+        List<CkanTag> tags_1 = new ArrayList();
+        tags_1.add(new CkanTag("cool"));
+        dataset.setTags(tags_1);
+        CkanDataset createdDataset = myClient.createDataset(dataset);
+
+        // now we assign a new array with one tag ["amazing"] 
+        List<CkanTag> tags_2 = new ArrayList();
+        tags_2.add(new CkanTag("amazing"));
+        createdDataset.setTags(tags_2);
+
+        // let's patch-update, jackan will take care of merging tags to prevent erasure of 'cool'
+        CkanDataset updatedDataset = myClient.patchUpdateDataset(createdDataset);
+
+        assert 2 == updatedDataset.getTags().size(); //  'amazing' has been added to ['cool']
+        System.out.println("Merged tags = "
+                + updatedDataset.getTags().get(0).getName()
+                + ", " + updatedDataset.getTags().get(1).getName());
+
+        System.out.println("Updated dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
     }
 
     @Test
