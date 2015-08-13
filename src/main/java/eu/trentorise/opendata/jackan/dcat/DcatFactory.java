@@ -49,43 +49,64 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 /**
- * Factory to generate Dcat objects from Ckan ones. 
- * Conversion is done according to
+ * Factory to generate Dcat objects from Ckan ones. Conversion is done according
+ * to
  * <a href="https://github.com/ckan/ckanext-dcat#rdf-dcat-to-ckan-dataset-mapping" target="_blank">this
  * mapping </a> in Ckanext-dcat repository. In most cases this mapping is
  * deliberately a loose one, for instance, it does not try to link the DCAT
  * publisher property with a CKAN dataset author, maintainer or organization, as
  * the link between them is not straight-forward and may depend on a particular
  * instance needs.
- * 
- * To create a factory, call {@link #of()} method
  *
  * To extract more stuff during conversion, you can use
- * {@link GreedyDcatFactory}
+ * {@link GreedyDcatFactory} or extend this class and override the extract*
+ * and/or postProcess* methods.
  *
  * @author David Leoni
  */
 public class DcatFactory {
 
-    private static final Logger LOG = Logger.getLogger(DcatFactory.class.getName());
-
-    private static final DcatFactory INSTANCE = new DcatFactory();
+    private Logger logger;
 
     private ObjectMapper objectMapper;
 
     /**
      * Creates a factory with default configuration.
      */
-    protected DcatFactory() {
+    public DcatFactory() {
+        this.logger = Logger.getLogger(DcatFactory.class.getName());
         this.objectMapper = new ObjectMapper();
         TraceProvModule.registerModulesInto(this.objectMapper);
     }
 
     /**
-     * Creates a factory with default configuration.
+     * Returns internal logger
+     */    
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    /**
+     * Sets internal logger
      */
-    public static DcatFactory of() {
-        return INSTANCE;
+    protected void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+     /**
+     * Returns internal object mapper
+     */
+    protected ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    /**
+     * Sets internal object mapper, registering also required modules of
+     * traceprov
+     */
+    protected void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+        TraceProvModule.registerModulesInto(this.objectMapper);
     }
 
     /**
@@ -162,7 +183,7 @@ public class DcatFactory {
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private String extractFieldAsString(CkanDataset dataset, String field) {
+    protected String extractFieldAsString(CkanDataset dataset, String field) {
         checkNotNull(dataset);
         checkNotEmpty(field, "Invalid field to search!");
 
@@ -194,7 +215,7 @@ public class DcatFactory {
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private String extractFieldAsString(CkanResource resource, String field) {
+    protected String extractFieldAsString(CkanResource resource, String field) {
         checkNotNull(resource);
         checkNotEmpty(field, "Invalid field to search!");
 
@@ -215,13 +236,13 @@ public class DcatFactory {
 
     /**
      * Searches a field in {@link CkanDataset#getOthers() } and then in {@link CkanDataset#getExtras()
-     * }. If search fails throws JackanException, even if field is found but has
-     * null value.
+     * }. If search fails throws NotFoundException, even if field is found but
+     * has null value.
      *
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private Object extractFieldAsObject(CkanDataset dataset, String field) {
+    protected Object extractFieldAsObject(CkanDataset dataset, String field) {
         checkNotNull(dataset);
         checkNotEmpty(field, "Invalid field to search!");
 
@@ -250,7 +271,7 @@ public class DcatFactory {
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private <T> T extractField(CkanDataset dataset, String field, TypeReference<T> toType) {
+    protected <T> T extractField(CkanDataset dataset, String field, TypeReference<T> toType) {
         String json = extractFieldAsNonEmptyString(dataset, field);
         try {
             return objectMapper.readValue(json, toType);
@@ -267,7 +288,7 @@ public class DcatFactory {
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private <T> T extractField(CkanDataset dataset, String field, Class<T> toClass) {
+    protected <T> T extractField(CkanDataset dataset, String field, Class<T> toClass) {
         String json = extractFieldAsNonEmptyString(dataset, field);
         try {
             return objectMapper.readValue(json, toClass);
@@ -286,8 +307,6 @@ public class DcatFactory {
     }
 
     /**
-     *
-     *
      * @throws NotFoundException if spatial is not found
      * @throws JackanException for other errors.
      */
@@ -302,17 +321,17 @@ public class DcatFactory {
 
         try {
             id = extractFieldAsNonEmptyString(dataset, "spatial_uri").trim();
-            LOG.info("Found dataset 'spatial_uri' field, will set it to '@id' field of GeoJSON-LD");
+            logger.info("Found dataset 'spatial_uri' field, will set it to '@id' field of GeoJSON-LD");
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find dataset 'spatial_uri' field");
+            logger.info("Couldn't find dataset 'spatial_uri' field");
         }
 
         try {
             name = extractFieldAsNonEmptyString(dataset, "spatial_text").trim();
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find dataset 'spatial_text' field (should hold the natural language name of the place)");
+            logger.info("Couldn't find dataset 'spatial_text' field (should hold the natural language name of the place)");
         }
 
         String spatial = "";
@@ -320,14 +339,14 @@ public class DcatFactory {
             spatial = extractFieldAsNonEmptyString(dataset, "spatial");
         }
         catch (NotFoundException ex) {
-            LOG.info("Could not find dataset 'spatial' field");
+            logger.info("Could not find dataset 'spatial' field");
         }
         if (!spatial.isEmpty()) {
             try {
                 geoJson = objectMapper.readValue(spatial, GeoJson.class);
             }
             catch (Exception ex) {
-                LOG.log(Level.SEVERE, "Error while parsing dataset 'spatial' field as GeoJson, will put the problematic json into Feature.properties['description'] ", ex);
+                logger.log(Level.SEVERE, "Error while parsing dataset 'spatial' field as GeoJson, will put the problematic json into Feature.properties['description'] ", ex);
                 description = spatial;
             }
         }
@@ -348,7 +367,7 @@ public class DcatFactory {
                         .build();
             }
 
-            LOG.log(Level.INFO, "Putting found natural language name in Feature.properties['name']");
+            logger.log(Level.INFO, "Putting found natural language name in Feature.properties['name']");
             if (!name.isEmpty() && description.isEmpty()) {
                 return Feature.ofName(name).withId(id);
             }
@@ -451,13 +470,13 @@ public class DcatFactory {
             start = extractFieldAsNonEmptyString(dataset, "temporal_start").trim();
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid dataset field 'temporal_start'");
+            logger.info("Couldn't find valid dataset field 'temporal_start'");
         }
         try {
             end = extractFieldAsNonEmptyString(dataset, "temporal_end").trim();
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid dataset field 'temporal_end'");
+            logger.info("Couldn't find valid dataset field 'temporal_end'");
         }
 
         if (start.isEmpty() && end.isEmpty()) {
@@ -542,28 +561,28 @@ public class DcatFactory {
             pubBuilder.setUri(extractFieldAsNonEmptyString(dataset, "publisher_uri").trim());
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid field 'publisher_uri'");
+            logger.info("Couldn't find valid field 'publisher_uri'");
         }
 
         try {
             pubBuilder.setName(Dict.of(locale, extractFieldAsNonEmptyString(dataset, "publisher_name").trim()));
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid field 'publisher_name'");
+            logger.info("Couldn't find valid field 'publisher_name'");
         }
 
         try {
             pubBuilder.setMbox(extractFieldAsNonEmptyString(dataset, "publisher_email").trim());
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid field 'publisher_email'");
+            logger.info("Couldn't find valid field 'publisher_email'");
 
             String candidateTitle = "";
             if (dataset.getOrganization() != null && dataset.getOrganization().getTitle() != null) {
                 candidateTitle = dataset.getOrganization().getTitle().trim();
             }
             if (candidateTitle.isEmpty()) {
-                LOG.info("Couldn't find valid organization:title to use as publisher MBox");
+                logger.info("Couldn't find valid organization:title to use as publisher MBox");
             } else {
                 pubBuilder.setMbox(candidateTitle);
             }
@@ -573,7 +592,7 @@ public class DcatFactory {
             pubBuilder.setHomepage(extractFieldAsNonEmptyString(dataset, "publisher_url").trim());
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid field 'publisher_url' for publisher homepage");
+            logger.info("Couldn't find valid field 'publisher_url' for publisher homepage");
         }
 
         FoafAgent ret = pubBuilder.build();
@@ -598,7 +617,7 @@ public class DcatFactory {
             cpb.setUri(extractFieldAsNonEmptyString(dataset, "contact_uri"));
         }
         catch (NotFoundException ex) {
-            LOG.info("Couldn't find valid dataset contact uri, skipping it.");
+            logger.info("Couldn't find valid dataset contact uri, skipping it.");
         }
 
         String candidateContactName = "";
@@ -613,7 +632,7 @@ public class DcatFactory {
             }
         }
         if (candidateContactName.isEmpty()) {
-            LOG.info("Couldn't find valid dataset contact fn, skipping it.");
+            logger.info("Couldn't find valid dataset contact fn, skipping it.");
         } else {
             cpb.setFn(candidateContactName);
         }
@@ -630,7 +649,7 @@ public class DcatFactory {
             }
         }
         if (candidateContactEmail.isEmpty()) {
-            LOG.info("Couldn't find valid dataset contact email, skipping it.");
+            logger.info("Couldn't find valid dataset contact email, skipping it.");
         } else {
             cpb.setEmail(candidateContactEmail);
         }
@@ -667,7 +686,7 @@ public class DcatFactory {
      * Returns a new string with spaces removed at begin and end. If provided
      * string is null returns the empty string.
      */
-    protected String trim(@Nullable String s) {
+    protected static String trim(@Nullable String s) {
         if (s == null) {
             return "";
         } else {
@@ -718,20 +737,20 @@ public class DcatFactory {
         }
     }
 
-    private void log(String clazz, String attribute) {
-        LOG.log(Level.INFO, "Couldn''t extract any valid " + clazz + " {0}, skipping it", attribute);
+    protected void logCantFind(String clazz, String attribute) {
+        logger.log(Level.INFO, "Couldn''t find any valid " + clazz + " {0}, skipping it", attribute);
     }
 
-    private void logError(String clazz, String attribute, Throwable ex) {
-        LOG.log(Level.SEVERE, "Error while extracting " + clazz + " " + attribute + ", skipping it", ex);
+    protected void logCanExtract(String clazz, String attribute, Throwable ex) {
+        logger.log(Level.SEVERE, "Error while extracting " + clazz + " " + attribute + ", skipping it", ex);
     }
 
-    private void logDataset(String attribute) {
-        log("dataset", attribute);
+    protected void logDatasetCantFind(String attribute) {
+        logCantFind("dataset", attribute);
     }
 
-    private void logDatasetError(String attribute, Throwable ex) {
-        logError("dataset", attribute, ex);
+    protected void logDatasetCantExtract(String attribute, Throwable ex) {
+        logCanExtract("dataset", attribute, ex);
     }
 
     /**
@@ -747,7 +766,7 @@ public class DcatFactory {
     @Beta
     public DcatDataset dataset(CkanDataset dataset, String catalogUrl, Locale locale) {
 
-        LOG.warning("CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
+        logger.warning("CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
 
         OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalog URL");
         checkNotNull(locale, "invalid dcat dataset locale");
@@ -758,7 +777,7 @@ public class DcatFactory {
 
         String sanitizedLicenceId = dataset.getLicenseId() == null ? "" : dataset.getLicenseId();
 
-        LOG.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
+        logger.warning("TODO - CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAL, IT MIGHT BE INCOMPLETE!!!");
 
         DcatDataset.Builder ddb = DcatDataset.builder();
 
@@ -766,30 +785,30 @@ public class DcatFactory {
             ddb.setAccrualPeriodicity(extractAccrualPeriodicity(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("accrualPeriodicity");
+            logDatasetCantFind("accrualPeriodicity");
         }
         catch (Exception ex) {
-            logDatasetError("accrualPeriodicity", ex);
+            logDatasetCantExtract("accrualPeriodicity", ex);
         }
 
         try {
             ddb.setContactPoint(extractContactPoint(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("contactPoint");
+            logDatasetCantFind("contactPoint");
         }
         catch (Exception ex) {
-            logDatasetError("contactPoint", ex);
+            logDatasetCantExtract("contactPoint", ex);
         }
 
         try {
             ddb.setDescription(extractDescription(dataset, locale));
         }
         catch (NotFoundException ex) {
-            logDataset("description");
+            logDatasetCantFind("description");
         }
         catch (Exception ex) {
-            logDatasetError("description", ex);
+            logDatasetCantExtract("description", ex);
         }
 
         if (dataset.getResources() != null) {
@@ -798,7 +817,7 @@ public class DcatFactory {
                     ddb.addDistributions(distribution(cr, sanitizedCatalogUrl, sanitizedId, sanitizedLicenceId, locale));
                 }
                 catch (Exception ex) {
-                    logDatasetError("distribution", ex);
+                    logDatasetCantExtract("distribution", ex);
                 }
             }
         }
@@ -807,30 +826,30 @@ public class DcatFactory {
             ddb.setIdentifier(extractIdentifier(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("identifier");
+            logDatasetCantFind("identifier");
         }
         catch (Exception ex) {
-            logDatasetError("identifier", ex);
+            logDatasetCantExtract("identifier", ex);
         }
 
         try {
             ddb.setIssued(extractIssued(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("issued");
+            logDatasetCantFind("issued");
         }
         catch (Exception ex) {
-            logDatasetError("issued", ex);
+            logDatasetCantExtract("issued", ex);
         }
 
         try {
             ddb.setKeywords(extractKeywords(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("keywords");
+            logDatasetCantFind("keywords");
         }
         catch (Exception ex) {
-            logDatasetError("keywords", ex);
+            logDatasetCantExtract("keywords", ex);
 
         }
 
@@ -838,26 +857,26 @@ public class DcatFactory {
             ddb.setLandingPage(extractLandingPage(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("landingPage");
+            logDatasetCantFind("landingPage");
         }
         catch (Exception ex) {
-            logDatasetError("landingPage", ex);
+            logDatasetCantExtract("landingPage", ex);
         }
 
         try {
             ddb.setLanguages(extractLanguages(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("language");
+            logDatasetCantFind("language");
             if (!Locale.ROOT.equals(locale)) {
-                LOG.log(Level.INFO, "Setting language field to provided locale {0}", locale);
+                logger.log(Level.INFO, "Setting language field to provided locale {0}", locale);
                 ddb.addLanguages(locale);
             }
         }
         catch (Exception ex) {
-            logDatasetError("language", ex);
+            logDatasetCantExtract("language", ex);
             if (!Locale.ROOT.equals(locale)) {
-                LOG.log(Level.INFO, "Setting language field to provided locale {0}", locale);
+                logger.log(Level.INFO, "Setting language field to provided locale {0}", locale);
                 ddb.addLanguages(locale);
             }
         }
@@ -866,70 +885,70 @@ public class DcatFactory {
             ddb.setModified(extractModified(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("modified");
+            logDatasetCantFind("modified");
         }
         catch (Exception ex) {
-            logDatasetError("modified", ex);
+            logDatasetCantExtract("modified", ex);
         }
 
         try {
             ddb.setPublisher(extractPublisher(dataset, locale));
         }
         catch (NotFoundException ex) {
-            logDataset("publisher");
+            logDatasetCantFind("publisher");
         }
         catch (Exception ex) {
-            logDatasetError("publisher", ex);
+            logDatasetCantExtract("publisher", ex);
         }
 
         try {
             ddb.setSpatial(extractSpatial(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("spatial");
+            logDatasetCantFind("spatial");
         }
         catch (Exception ex) {
-            logDatasetError("spatial", ex);
+            logDatasetCantExtract("spatial", ex);
         }
 
         try {
             ddb.setTemporal(extractTemporal(dataset));
         }
         catch (NotFoundException ex) {
-            logDataset("temporal");
+            logDatasetCantFind("temporal");
         }
         catch (Exception ex) {
-            logDatasetError("temporal", ex);
+            logDatasetCantExtract("temporal", ex);
         }
 
         try {
             ddb.setThemes(extractThemes(dataset, locale, sanitizedCatalogUrl));
         }
         catch (NotFoundException ex) {
-            logDataset("theme");
+            logDatasetCantFind("theme");
         }
         catch (Exception ex) {
-            logDatasetError("theme", ex);
+            logDatasetCantExtract("theme", ex);
         }
 
         try {
             ddb.setTitle(extractTitle(dataset, locale));
         }
         catch (NotFoundException ex) {
-            logDataset("title");
+            logDatasetCantFind("title");
         }
         catch (Exception ex) {
-            logDatasetError("title", ex);
+            logDatasetCantExtract("title", ex);
         }
 
         try {
             ddb.setUri(extractUri(dataset, sanitizedCatalogUrl));
         }
         catch (NotFoundException ex) {
-            logDataset("uri");
+            logDatasetCantFind("uri");
         }
         catch (Exception ex) {
-            logDatasetError("uri", ex);
+            logDatasetCantExtract("uri", ex);
         }
 
         postProcessDataset(ddb, catalogUrl, locale);
@@ -953,11 +972,11 @@ public class DcatFactory {
     }
 
     private void logDistrib(String attribute) {
-        log("distribution", attribute);
+        logCantFind("distribution", attribute);
     }
 
     private void logDistribError(String attribute, Throwable ex) {
-        logError("resource", attribute, ex);
+        logCanExtract("resource", attribute, ex);
     }
 
     /**
@@ -1150,7 +1169,7 @@ public class DcatFactory {
      */
     protected Dict extractTitle(CkanResource resource, Locale locale) {
         if (isTrimmedEmpty(resource.getName())) {
-            LOG.info("Couldn't find valid distribution title, skipping it");
+            logger.info("Couldn't find valid distribution title, skipping it");
             throw new NotFoundException("Couldn't find a valid title!");
         } else {
             return Dict.of(locale, resource.getName().trim());
@@ -1182,7 +1201,7 @@ public class DcatFactory {
             String license,
             Locale locale
     ) {
-        LOG.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
+        logger.warning("CONVERSION FROM CKAN RESOURCE TO DCAT DISTRIBUTION IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
 
         checkNotNull(resource, "invalid ckan resource");
         checkNotEmpty(catalogURL, "invalid catalog URL");
@@ -1201,7 +1220,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("uri", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution uri, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution uri, skipping it", ex);
         }
 
         try {
@@ -1212,7 +1231,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("accessURL", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution accessUrl, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution accessUrl, skipping it", ex);
         }
 
         try {
@@ -1223,7 +1242,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("downloadURL", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution downloadUrl, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution downloadUrl, skipping it", ex);
         }
 
         try {
@@ -1234,7 +1253,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("byteSize", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution byteSize, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution byteSize, skipping it", ex);
         }
 
         ddb.setDatasetUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, datasetId));
@@ -1247,7 +1266,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("description", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution description, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution description, skipping it", ex);
         }
 
         try {
@@ -1258,7 +1277,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("format", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution format, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution format, skipping it", ex);
         }
 
         try {
@@ -1269,7 +1288,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("issued", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution issued, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution issued, skipping it", ex);
         }
 
         try {
@@ -1280,7 +1299,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("license", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution license, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution license, skipping it", ex);
         }
 
         try {
@@ -1291,7 +1310,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("modified", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution issued, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution issued, skipping it", ex);
         }
 
         try {
@@ -1302,7 +1321,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("mediaType", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution media type, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution media type, skipping it", ex);
         }
 
         try {
@@ -1313,7 +1332,7 @@ public class DcatFactory {
         }
         catch (Exception ex) {
             logDistribError("rights", ex);
-            LOG.log(Level.SEVERE, "Error while extracting distribution rights, skipping it", ex);
+            logger.log(Level.SEVERE, "Error while extracting distribution rights, skipping it", ex);
         }
 
         try {

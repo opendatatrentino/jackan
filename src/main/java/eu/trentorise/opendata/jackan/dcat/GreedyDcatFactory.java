@@ -40,10 +40,11 @@ import java.util.logging.Logger;
 @Beta
 public class GreedyDcatFactory extends DcatFactory {
 
-    private static final Logger LOG = Logger.getLogger(GreedyDcatFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(GreedyDcatFactory.class.getName());   
 
-    private static final GreedyDcatFactory INSTANCE = new GreedyDcatFactory();
-
+    /**
+     * Creates a factory with default configuration.
+     */
     public GreedyDcatFactory() {
         super();
     }
@@ -114,10 +115,6 @@ public class GreedyDcatFactory extends DcatFactory {
         }
     }
 
-    /**
-     * Creates a factory with default configuration.
-     */
-    public static GreedyDcatFactory of() {
-        return INSTANCE;
-    }
+    
+    
 }

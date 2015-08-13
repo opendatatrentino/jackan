@@ -23,7 +23,6 @@ import eu.trentorise.opendata.jackan.dcat.DcatFactory;
 import eu.trentorise.opendata.jackan.dcat.GreedyDcatFactory;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import eu.trentorise.opendata.jackan.test.ckan.FailedResourceException;
-import eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TOSCANA;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TRENTINO;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.TEST_ELEMENTS;
@@ -42,7 +41,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- *
+ * To try out the factory with data in the wild
+ * todo methods don't really assert much
  * @author David Leoni
  */
 @RunWith(JUnitParamsRunner.class)
@@ -66,8 +66,8 @@ public class DcatFactoryIT {
     public void setUp() {
         objectMapper = new ObjectMapper();
         CkanClient.configureObjectMapper(objectMapper);
-        dcatFactory = DcatFactory.of();
-        greedyDcatFactory = GreedyDcatFactory.of();
+        dcatFactory = new DcatFactory();
+        greedyDcatFactory = new GreedyDcatFactory();
     }
 
     @After

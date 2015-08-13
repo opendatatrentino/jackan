@@ -18,11 +18,13 @@ package eu.trentorise.opendata.jackan.test.dcat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanPair;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.dcat.DcatFactory;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+import eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT;
 import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
 import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
 import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
@@ -32,15 +34,16 @@ import java.util.Locale;
 import java.util.UUID;
 
 import junitparams.JUnitParamsRunner;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Performs integration tests. Many tests here are also used by
- * {@link CkanTestReporter}
+ * * TODO methods don't really assert anything
  *
  * @author David Leoni
  */
@@ -49,10 +52,23 @@ public class DcatFactoryTest {
 
     private static final String CATALOG_URL = "https://github.com/opendatatrentino/jackan";
 
+    private DcatFactory dcatFactory;
+    
     @BeforeClass
     public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
     }
+    
+    @Before
+    public void setUp() {                        
+        dcatFactory = new DcatFactory();
+    }
+
+    @After
+    public void tearDown() {
+        dcatFactory = null;
+    }    
+    
 
     private static String makeUuid(int i) {
         if (i < 0 || i > 255){
@@ -66,7 +82,7 @@ public class DcatFactoryTest {
     public void testDistribution() {
         CkanResource res = new CkanResource();
 
-        DcatDistribution distribution = DcatFactory.of().distribution(
+        DcatDistribution distribution = new DcatFactory().distribution(
                 res,
                 CATALOG_URL,
                 makeUuid(1),

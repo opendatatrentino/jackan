@@ -27,21 +27,36 @@ import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
 import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
 import java.util.Locale;
 import java.util.UUID;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
+ * TODO methods don't really assert anything
  * @author David Leoni
  */
 public class GreedyDcatFactoryTest {
      private static final String CATALOG_URL = "https://github.com/opendatatrentino/jackan";
 
+     private GreedyDcatFactory dcatFactory = new GreedyDcatFactory();
+     
     @BeforeClass
     public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
     }
+    
+    @Before
+    public void setUp() {                        
+        dcatFactory = new GreedyDcatFactory();
+    }
+
+    @After
+    public void tearDown() {
+        dcatFactory = null;
+    }    
+        
 
     private static String makeUuid(int i) {
         if (i < 0 || i > 255){
@@ -55,7 +70,7 @@ public class GreedyDcatFactoryTest {
     public void testDistribution() {
         CkanResource res = new CkanResource();
 
-        DcatDistribution distribution = GreedyDcatFactory.of().distribution(
+        DcatDistribution distribution = dcatFactory.distribution(
                 res,
                 CATALOG_URL,
                 makeUuid(1),
@@ -69,7 +84,7 @@ public class GreedyDcatFactoryTest {
         CkanDataset dataset = new CkanDataset();
         dataset.putOthers("language", "[\"it\"]");
 
-        DcatDataset dcatDataset = GreedyDcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.dataset(dataset, CATALOG_URL, Locale.ENGLISH);
         assertEquals(1, dcatDataset.getLanguages().size());
         assertEquals(Locale.ITALIAN, dcatDataset.getLanguages().get(0));
     }
@@ -79,7 +94,7 @@ public class GreedyDcatFactoryTest {
         CkanDataset dataset = new CkanDataset();
         dataset.setExtras(Lists.newArrayList(new CkanPair("language", "[\"it\"]")));
 
-        DcatDataset dcatDataset = GreedyDcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.dataset(dataset, CATALOG_URL, Locale.ENGLISH);
         assertEquals(1, dcatDataset.getLanguages().size());
         assertEquals(Locale.ITALIAN, dcatDataset.getLanguages().get(0));
     }
@@ -90,7 +105,7 @@ public class GreedyDcatFactoryTest {
         dataset.setId(makeUuid(1));
         dataset.setResources(Lists.newArrayList(new CkanResource(CATALOG_URL, null)));
 
-        DcatDataset dcatDataset = GreedyDcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.dataset(dataset, CATALOG_URL, Locale.ENGLISH);
         
         assertEquals(1, dcatDataset.getDistributions().size());
         assertEquals(CATALOG_URL, dcatDataset.getDistributions().get(0).getAccessURL());
@@ -105,7 +120,7 @@ public class GreedyDcatFactoryTest {
         group.setName("abc");
         dataset.setGroups(Lists.newArrayList(group));
         
-        DcatDataset dcatDataset = GreedyDcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = new GreedyDcatFactory().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
         
         assertEquals(1, dcatDataset.getThemes().size());
         assertEquals(Dict.of(Locale.ENGLISH, "xyz"), dcatDataset.getThemes().get(0).getPrefLabel());

@@ -92,7 +92,8 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
 
         // here we use CheckedCkanClient for extra safety
         CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
-
+        myClient = client; // little trick so test is going to run for real...
+        
         CkanDatasetBase dataset = new CkanDatasetBase("my-dataset-" + new Random().nextLong());
 
         // we create a dataset with one tag 'cool'
