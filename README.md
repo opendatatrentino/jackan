@@ -41,7 +41,7 @@ Main dependencies are
 * Guava 
 * Apache HTTP client 
 * Jackson for JSON
-* [TraceProv](https://github.com/opendatatrentino/traceprov) for conversion to DCAT
+* <a href="https://github.com/opendatatrentino/traceprov" target="_blank">TraceProv</a> for conversion to DCAT
 
 
 #### Projects using Jackan

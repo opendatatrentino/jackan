@@ -209,7 +209,7 @@ public class CkanTestReporter {
         catch (Throwable t) {
             error = Optional.of(t);
         }
-        return new TestResult(testId, testName, client.getCatalogURL(), catalogName, error);
+        return new TestResult(testId, testName, client.getCatalogUrl(), catalogName, error);
     }
 
     public static class RunSuite {

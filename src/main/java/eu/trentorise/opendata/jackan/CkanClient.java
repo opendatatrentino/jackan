@@ -22,7 +22,6 @@ import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Charsets;
@@ -57,12 +56,10 @@ import eu.trentorise.opendata.jackan.model.CkanError;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,21 +67,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
-import org.apache.http.HttpEntity;
 
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 /**
  * Client to access a ckan instance. Threadsafe.
@@ -140,7 +127,7 @@ public class CkanClient {
      */
     public static final ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
 
-    private final String catalogURL;
+    private final String catalogUrl;
 
     @Nullable
     private final String ckanToken;
@@ -279,14 +266,14 @@ public class CkanClient {
     /**
      * Creates a Ckan client.
      *
-     * @param URL the catalog url i.e. http://data.gov.uk. Internally, it will
+     * @param catalogUrl the catalog url i.e. http://data.gov.uk. Internally, it will
      * be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
      * @param proxy the proxy used to perform GET and POST calls
      */
-    public CkanClient(String URL, @Nullable String token, @Nullable HttpHost proxy) {
-        checkNotEmpty(URL, "invalid ckan catalog url");
-        this.catalogURL = removeTrailingSlash(URL);
+    public CkanClient(String catalogUrl, @Nullable String token, @Nullable HttpHost proxy) {
+        checkNotEmpty(catalogUrl, "invalid ckan catalog url");
+        this.catalogUrl = removeTrailingSlash(catalogUrl);
         this.ckanToken = token;
         this.proxy = proxy;
     }
@@ -294,7 +281,7 @@ public class CkanClient {
     @Override
     public String toString() {
         String maskedToken = ckanToken == null ? null : "*****MASKED_TOKEN*******";
-        return "CkanClient{" + "catalogURL=" + catalogURL + ", ckanToken=" + maskedToken + '}';
+        return "CkanClient{" + "catalogURL=" + catalogUrl + ", ckanToken=" + maskedToken + '}';
     }
 
     /**
@@ -310,7 +297,7 @@ public class CkanClient {
         checkNotNull(path);
 
         try {
-            StringBuilder sb = new StringBuilder().append(catalogURL).append(path);
+            StringBuilder sb = new StringBuilder().append(catalogUrl).append(path);
             for (int i = 0; i < params.length; i += 2) {
                 sb.append(i == 0 ? "?" : "&")
                         .append(URLEncoder.encode(params[i].toString(), "UTF-8"))
@@ -462,8 +449,8 @@ public class CkanClient {
     /**
      * Returns the catalog URL (normalized).
      */
-    public String getCatalogURL() {
-        return catalogURL;
+    public String getCatalogUrl() {
+        return catalogUrl;
     }
 
     /**
@@ -484,7 +471,7 @@ public class CkanClient {
      *
      * @param catalogUrl i.e. http://dati.trentino.it
      */
-    public static String makeDatasetURL(String catalogUrl, String datasetIdOrName) {
+    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdOrName;
@@ -505,7 +492,7 @@ public class CkanClient {
      * @param resourceId the alphanumerical id of the resource (DON'T use
      * resource name)
      */
-    public static String makeResourceURL(String catalogUrl, String datasetIdOrName, String resourceId) {
+    public static String makeResourceUrl(String catalogUrl, String datasetIdOrName, String resourceId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         checkNotEmpty(resourceId, "invalid resource id");
@@ -527,7 +514,7 @@ public class CkanClient {
      * @param groupNameOrId the group name as in {@link CkanGroup#getName()}
      * (preferred), or the group's alphanumerical id.
      */
-    public static String makeGroupURL(String catalogUrl, String groupNameOrId) {
+    public static String makeGroupUrl(String catalogUrl, String groupNameOrId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
         checkNotEmpty(groupNameOrId, "invalid group identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
@@ -548,7 +535,7 @@ public class CkanClient {
      * {@link CkanOrganization#getName()} (preferred), or the group's
      * alphanumerical id.
      */
-    public static String makeOrganizationURL(String catalogUrl, String orgNameOrId) {
+    public static String makeOrganizationUrl(String catalogUrl, String orgNameOrId) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
         checkNotEmpty(orgNameOrId, "invalid organization identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgNameOrId;
@@ -607,7 +594,7 @@ public class CkanClient {
      * @throws JackanException on error
      */
     private synchronized int getApiVersion(int number) {
-        String fullUrl = catalogURL + "/api/" + number;
+        String fullUrl = catalogUrl + "/api/" + number;
         LOG.log(Level.FINE, "getting {0}", fullUrl);
         try {
             Request request = Request.Get(fullUrl);
@@ -675,10 +662,7 @@ public class CkanClient {
     public synchronized CkanUser createUser(CkanUserBase user) {
         checkNotNull(user, "Need a valid user!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create user" + user.getName() + ", but ckan token was not set!", this);
-
-        }
+        checkToken("Tried to create user" + user.getName());
 
         ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanUserBase.class
         );
@@ -722,9 +706,7 @@ public class CkanClient {
     public synchronized CkanResource createResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create resource" + resource.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to create resource " + resource.getName());
 
         ObjectMapper om = CkanClient.getObjectMapperForPosting(CkanResourceBase.class);
         String json = null;
@@ -758,11 +740,8 @@ public class CkanClient {
      */
     public synchronized CkanResource updateResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
-
-        if (ckanToken == null) {
-            throw new CkanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!", this);
-        }
-
+        checkToken("Tried to update resource" + resource.getName());
+        
         String json = null;
         try {
             json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
@@ -794,10 +773,8 @@ public class CkanClient {
      */
     public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
+        checkToken("Tried to update resource" + resource.getName());
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to update resource" + resource.getName() + ", but ckan token was not set!", this);
-        }
 
         CkanResource origResource = getResource(resource.getId());
         // others 
@@ -838,10 +815,7 @@ public class CkanClient {
      */
     public synchronized void deleteResource(String id) {
         checkNotNull(id, "Need a valid id!");
-
-        if (ckanToken == null) {
-            throw new CkanException("Tried to delete resource with id " + id + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to delete resource with id " + id);
 
         String json = "{\"id\":\"" + id + "\"}";
         postHttp(ResourceResponse.class, "/api/3/action/resource_delete", json, ContentType.APPLICATION_JSON);
@@ -936,9 +910,7 @@ public class CkanClient {
     public synchronized CkanTag createTag(CkanTagBase tag) {
         checkNotNull(tag, "Need a valid tag!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create tag" + tag.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to create tag" + tag.getName());
 
         String json = null;
         try {
@@ -993,10 +965,8 @@ public class CkanClient {
     public synchronized CkanVocabulary createVocabulary(CkanVocabularyBase vocabulary) {
         checkNotNull(vocabulary, "Need a valid vocabulary!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create vocabulary" + vocabulary.getName() + ", but ckan token was not set!", this);
-        }
-
+        checkToken("Tried to create vocabulary" + vocabulary.getName());
+        
         String json = null;
         try {
             json = getObjectMapperForPosting(CkanVocabularyBase.class).writeValueAsString(vocabulary);
@@ -1147,6 +1117,16 @@ public class CkanClient {
 
         return dsr.result;
     }
+    
+    /**
+     * @msg the prepended error message. 
+     * @throws CkanException
+     */
+    private void checkToken(@Nullable String prependedErrorMessage){
+        if (ckanToken == null) {
+            throw new CkanException(String.valueOf(prependedErrorMessage) + ", but ckan token was not set!", this);
+        }        
+    }
 
     /**
      * Creates CkanDataset on the server. Will also create eventual resources
@@ -1159,9 +1139,8 @@ public class CkanClient {
     public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create dataset" + dataset.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to create dataset" + dataset.getName());
+        
         String json = null;
         try {
 
@@ -1188,9 +1167,7 @@ public class CkanClient {
     public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to update dataset" + dataset.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to update dataset" + dataset.getName());
 
         String json = null;
         try {
@@ -1308,9 +1285,8 @@ public class CkanClient {
     public synchronized CkanDataset patchUpdateDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to patch update dataset" + dataset.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to patch update dataset" + dataset.getName());
+        
         CkanDataset origDataset = getDataset(dataset.idOrName());
 
         // others 
@@ -1398,9 +1374,7 @@ public class CkanClient {
     public synchronized void deleteDataset(String nameOrId) {
         checkNotNull(nameOrId, "Need a valid name or id!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to delete dataset" + nameOrId + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to delete dataset" + nameOrId);
 
         String json = "{\"id\":\"" + nameOrId + "\"}";
         postHttp(CkanResponse.class, "/api/3/action/package_delete", json, ContentType.APPLICATION_JSON);
@@ -1417,9 +1391,7 @@ public class CkanClient {
     public synchronized CkanOrganization createOrganization(CkanOrganization organization) {
         checkNotNull(organization, "Need a valid " + organization + "!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create organization " + organization.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to create organization " + organization.getName());
 
         String json = null;
         try {
@@ -1443,9 +1415,7 @@ public class CkanClient {
     public synchronized CkanGroup createGroup(CkanGroup group) {
         checkNotNull(group, "Need a valid " + group + "!");
 
-        if (ckanToken == null) {
-            throw new CkanException("Tried to create group " + group.getName() + ", but ckan token was not set!", this);
-        }
+        checkToken("Tried to create group " + group.idOrName());
 
         String json = null;
         try {

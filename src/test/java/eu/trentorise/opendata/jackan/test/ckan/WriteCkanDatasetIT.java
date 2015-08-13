@@ -79,7 +79,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
 
         checkNotEmpty(createdDataset.getId(), "Invalid dataset id!");
         assertEquals(dataset.getName(), createdDataset.getName());
-        System.out.println("Dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
+        System.out.println("Dataset is available online at " + CkanClient.makeDatasetUrl(myClient.getCatalogUrl(), dataset.getName()));
     }
 
     /**
@@ -115,7 +115,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
                 + updatedDataset.getTags().get(0).getName()
                 + ", " + updatedDataset.getTags().get(1).getName());
 
-        System.out.println("Updated dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
+        System.out.println("Updated dataset is available online at " + CkanClient.makeDatasetUrl(myClient.getCatalogUrl(), dataset.getName()));
     }
 
     @Test

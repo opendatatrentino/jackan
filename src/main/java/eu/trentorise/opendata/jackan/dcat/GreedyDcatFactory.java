@@ -76,7 +76,7 @@ public class GreedyDcatFactory extends DcatFactory {
                 if (cg != null && !isTrimmedEmpty(cg.getTitle())) {
                     ret.add(SkosConcept.of(SkosConceptScheme.of(),
                             Dict.of(locale, cg.getTitle()),
-                            CkanClient.makeGroupURL(catalogUrl, cg.nameOrId())));
+                            CkanClient.makeGroupUrl(catalogUrl, cg.nameOrId())));
                 }
             }
 
@@ -90,7 +90,7 @@ public class GreedyDcatFactory extends DcatFactory {
             if (cg != null && !isTrimmedEmpty(cg.getTitle())) {
                 ret.add(SkosConcept.of(SkosConceptScheme.of(),
                         Dict.of(locale, cg.getTitle()),
-                        CkanClient.makeOrganizationURL(catalogUrl, cg.nameOrId())));
+                        CkanClient.makeOrganizationUrl(catalogUrl, cg.nameOrId())));
             }
 
         }
@@ -110,7 +110,7 @@ public class GreedyDcatFactory extends DcatFactory {
             if (!isTrimmedEmpty(resource.getLastModified())) {
                 return resource.getLastModified();
             } else {
-                throw new NotFoundException("Couldn't find modified nor lastModified valid fields in resource!");
+                throw new NotFoundException("Couldn't find modified nor lastModified valid fields in resource!", ex);
             }
         }
     }

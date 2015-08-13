@@ -15,7 +15,6 @@
  */
 package eu.trentorise.opendata.jackan;
 
-import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.exceptions.CkanValidationException;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -54,12 +53,12 @@ public class CheckedCkanClient extends CkanClient {
         super(url);
     }
 
-    public CheckedCkanClient(String URL, String token) {
-        super(URL, token);
+    public CheckedCkanClient(String catalogUrl, String token) {
+        super(catalogUrl, token);
     }
 
-    public CheckedCkanClient(String URL, String token, HttpHost proxy) {
-        super(URL, token, proxy);
+    public CheckedCkanClient(String catalogUrl, String token, HttpHost proxy) {
+        super(catalogUrl, token, proxy);
     }
 
     private void checkUrl(String url, String prependedErrorMessage) {
@@ -67,7 +66,7 @@ public class CheckedCkanClient extends CkanClient {
             new URL(url).toURI();
         }
         catch (MalformedURLException | URISyntaxException ex) {
-            throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed url:" + url, this);
+            throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed url:" + url, this, ex);
         }
     }
     
@@ -163,7 +162,7 @@ public class CheckedCkanClient extends CkanClient {
                     getGroup(group.idOrName());
                 }
                 catch (CkanNotFoundException ex) {
-                    throw new CkanException(prependedErrorMessage + " -- Tried to refer to non existing group " + group.idOrName(), this);
+                    throw new CkanValidationException(prependedErrorMessage + " -- Tried to refer to non existing group " + group.idOrName(), this, ex);
                 }
             }
         }

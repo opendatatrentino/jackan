@@ -24,6 +24,7 @@ merged pull requests:
 BREAKING CHANGES: 
 
 - renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model
+- renamed URL to Url in functions and fields. i.e. catalogURL -> catalogUrl, CkanClient.makeDatasetURL -> makeDatasetUrl, ...
 - renamed and split `CkanGroupStructure` into `CkanGroupOrgBase` and `CkanGroupOrg`
 - now Joda `DateTime` is not used anymore, for timestamps now we use `java.sql.Timestamp`
 - CkanClient.getObjectMapperClone() is gone. See [new json configuration](README.md#default-json-serdeserialization) instead

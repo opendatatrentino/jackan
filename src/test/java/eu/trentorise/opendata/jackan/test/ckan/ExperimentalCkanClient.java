@@ -60,7 +60,7 @@ class ExperimentalCkanClient extends CkanClient {
 
             //	get the form fields required from ckan storage
             // notice if you put '3/' it gives not found :-/
-            String formUrl = getCatalogURL() + "/api/storage/auth/form/file/" + fileLabel;
+            String formUrl = getCatalogUrl() + "/api/storage/auth/form/file/" + fileLabel;
             HttpGet getFormFields = new HttpGet(formUrl);
             getFormFields.setHeader("Authorization", getCkanToken());
             formFields = client.execute(getFormFields);
@@ -74,7 +74,7 @@ class ExperimentalCkanClient extends CkanClient {
                 JsonNode obj = new ObjectMapper().readTree(os.toString());
 
                 //post the file now
-                String uploadFileUrl = getCatalogURL() + obj.get("action").asText();
+                String uploadFileUrl = getCatalogUrl() + obj.get("action").asText();
                 HttpPost postFile = new HttpPost(uploadFileUrl);
                 postFile.setHeader("Authorization", getCkanToken());
                 MultipartEntity mpEntity = new MultipartEntity(HttpMultipartMode.STRICT);
@@ -121,7 +121,7 @@ class ExperimentalCkanClient extends CkanClient {
                 if (fileUploadResponse.getStatusLine().getStatusCode() < 200 || fileUploadResponse.getStatusLine().getStatusCode() >= 300) {
                     throw new RuntimeException("failed to add the file to CKAN storage. response status line from " + uploadFileUrl + " was: " + fileUploadResponse.getStatusLine());
                 }
-                return getCatalogURL() + "/storage/f/" + filekey;
+                return getCatalogUrl() + "/storage/f/" + filekey;
 
                 //return CKAN_STORAGE_FILES_BASE_URI + filekey;
             }
@@ -133,6 +133,6 @@ class ExperimentalCkanClient extends CkanClient {
     }
 
     public static ExperimentalCkanClient of(CkanClient client) {
-        return new ExperimentalCkanClient(client.getCatalogURL(), client.getCkanToken(), client.getProxy());
+        return new ExperimentalCkanClient(client.getCatalogUrl(), client.getCkanToken(), client.getProxy());
     }
 }

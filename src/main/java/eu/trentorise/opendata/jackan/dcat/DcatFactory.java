@@ -310,6 +310,46 @@ public class DcatFactory {
     }
 
     /**
+     * Returns a GeoJson made only with textual, possibly low-quality information.
+     * 
+     * @param name  the name of the geometry, if not known use empty string
+     * @param description the description of the geometry, if not known use empty string
+     * @param id the Jsonld id for the geometric object
+     * @param spatialDump the geometry in any format, could even be an unparseable json or xml dump
+     * @return 
+     */
+    private GeoJson calcGeoJson(String name, String description, String id, String spatialDump) {
+        if (name.isEmpty() && description.isEmpty()) {
+            throw new NotFoundException("Could not find valid dataset spatial field nor natural language name!");
+        }
+        if (name.isEmpty() && !description.isEmpty()) {
+            return Feature
+                    .builder()
+                    .setProperties(
+                            ImmutableMap.of(
+                                    "description", spatialDump))
+                    .setId(id)
+                    .build();
+        }
+
+        logger.log(Level.INFO, "Putting found natural language name in Feature.properties['name']");
+        if (!name.isEmpty() && description.isEmpty()) {
+            return Feature.ofName(name).withId(id);
+        }
+        if (!name.isEmpty() && !description.isEmpty()) {
+            return Feature
+                    .builder()
+                    .setProperties(
+                            ImmutableMap.of(
+                                    "name", name,
+                                    "description", spatialDump))
+                    .setId(id)
+                    .build();
+        }
+        throw new JackanException("Internal error, reached a supposedly unreachable place while extracting spatial attribute from CkanDataset.");
+    }
+
+    /**
      * @throws NotFoundException if spatial is not found
      * @throws JackanException for other errors.
      */
@@ -318,6 +358,7 @@ public class DcatFactory {
         String name = "";
         String description = "";
         String id = "";
+        String spatial = "";
 
         @Nullable
         GeoJson geoJson = null;
@@ -337,7 +378,7 @@ public class DcatFactory {
             logger.info("Couldn't find dataset 'spatial_text' field (should hold the natural language name of the place)");
         }
 
-        String spatial = "";
+        
         try {
             spatial = extractFieldAsNonEmptyString(dataset, "spatial");
         }
@@ -357,34 +398,7 @@ public class DcatFactory {
         if (geoJson != null) {
             return geoJson;
         } else {
-            if (name.isEmpty() && description.isEmpty()) {
-                throw new NotFoundException("Could not find valid dataset spatial field nor natural language name!");
-            }
-            if (name.isEmpty() && !description.isEmpty()) {
-                return Feature
-                        .builder()
-                        .setProperties(
-                                ImmutableMap.of(
-                                        "description", spatial))
-                        .setId(id)
-                        .build();
-            }
-
-            logger.log(Level.INFO, "Putting found natural language name in Feature.properties['name']");
-            if (!name.isEmpty() && description.isEmpty()) {
-                return Feature.ofName(name).withId(id);
-            }
-            if (!name.isEmpty() && !description.isEmpty()) {
-                return Feature
-                        .builder()
-                        .setProperties(
-                                ImmutableMap.of(
-                                        "name", name,
-                                        "description", spatial))
-                        .setId(id)
-                        .build();
-            }
-            throw new JackanException("Internal error, reached a supposedly unreachable place while extracting spatial attribute from CkanDataset.");
+            return calcGeoJson(name, description, id, spatial);
         }
 
     }
@@ -394,7 +408,8 @@ public class DcatFactory {
      * 'others' and then 'extras', and doesn't fall back on groups. In case
      * nothing is found, just returns an empty collection.
      *
-     * @param locale the locale of the theme names. If unknown pass {@link Locale#ROOT}
+     * @param locale the locale of the theme names. If unknown pass
+     * {@link Locale#ROOT}
      * @throws NotFoundException if needed fields are missing.
      * @throws JackanException on generic error
      */
@@ -450,7 +465,7 @@ public class DcatFactory {
 
         if (isTrimmedEmpty(uri)) {
             if (!isTrimmedEmpty(dataset.getId())) {
-                return CkanClient.makeDatasetURL(catalogUrl, dataset.getId());
+                return CkanClient.makeDatasetUrl(catalogUrl, dataset.getId());
             } else {
                 throw new NotFoundException("Couldn't find any valid dataset uri!");
             }
@@ -1005,7 +1020,7 @@ public class DcatFactory {
 
         if (candidateUri.isEmpty()) {
             if (isNotEmpty(catalogUrl) && isNotEmpty(datasetId) && isNotEmpty(resource.getId())) {
-                return CkanClient.makeResourceURL(catalogUrl, datasetId, resource.getId());
+                return CkanClient.makeResourceUrl(catalogUrl, datasetId, resource.getId());
             } else {
                 throw new NotFoundException("Couldn't find valid 'uri' for resource!");
             }
@@ -1097,7 +1112,7 @@ public class DcatFactory {
         catch (NumberFormatException ex) {
             throw new JackanException("COULDN'T CONVERT CKAN RESOURCE SIZE TO DCAT! "
                     + "REQUIRED AN INTEGER, FOUND " + resource.getSize()
-                    + " (ALTHOUGH STRINGS ARE VALID CKAN SIZES)");
+                    + " (ALTHOUGH STRINGS ARE VALID CKAN SIZES)", ex);
         }
     }
 
@@ -1143,7 +1158,7 @@ public class DcatFactory {
             if (isNotEmpty(license)) {
                 return license;
             } else {
-                throw new NotFoundException("Couldn't find valid license in resource!");
+                throw new NotFoundException("Couldn't find valid license in resource!", ex);
             }
         }
         if (isTrimmedEmpty(license)) {
@@ -1268,7 +1283,7 @@ public class DcatFactory {
             logDistribCantExtract("byteSize", ex);
         }
 
-        ddb.setDatasetUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, datasetIdOrName));
+        ddb.setDatasetUri(CkanClient.makeDatasetUrl(sanitizedCatalogUrl, datasetIdOrName));
 
         try {
             ddb.setDescription(extractDescription(resource, locale));

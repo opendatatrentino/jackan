@@ -57,7 +57,7 @@ public class FailedResourceException extends RuntimeException {
     public String toString() {
         String descr;
         try {
-            descr = "resource ckan url=" + CkanClient.makeResourceURL(client.getCatalogURL(), datasetName, resourceId);
+            descr = "resource ckan url=" + CkanClient.makeResourceUrl(client.getCatalogUrl(), datasetName, resourceId);
         } catch (Exception ex) {
             descr = "datasetName: " + datasetName + "resourceId: " + resourceId;
         }
