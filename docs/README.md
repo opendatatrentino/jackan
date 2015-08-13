@@ -9,7 +9,7 @@ This release allows to search Ckan, write into it and convert CKAN metadata into
 
 **With Maven**: If you use Maven as build system, put this in the `dependencies` section of your `pom.xml`:
 
-```
+```xml
     <dependency>
         <groupId>eu.trentorise.opendata</groupId>
         <artifactId>jackan</artifactId>
@@ -182,13 +182,15 @@ Currently Jackan supports:
 
 |               | create| update| patch  |patch update  | delete|purge |
 |---------------|-------|-------|--------|--------------|-------|------|
-|Resource       | X     | X     |        |X             | X     |      |
+|Resource       | X*    |X*     |        |X*            | X     |      |
 |Dataset        |X      |X      |        |X             | X     |      |
 |Group          |X      |       |        |              |       |      |
 |Organization   |X      |       |        |              |       |      |
 |User           |X      |       |        |              |       |      |
 |Tag            |X      |       |        |              |       |      |
 |Vocabulary     |X      |       |        |              |       |      |
+
+Resource `create` and `update` change only metadata, the don't allow uploading/modifying files.
 
 
 #### Data validation
@@ -198,7 +200,7 @@ Maybe in the future we will implement also <a href="http://beanvalidation.org/" 
 
 #### What we POST
 All writable classes have an ancestor with `"Base"` appended to the Ckan object name, like `CkanDatasetBase`.
-When writing Jackan sends to Ckan only the non-null fields of such base classes (except for patch-update, which is more sophisticated).
+When writing Jackan sends to Ckan only the non-null fields of such base classes (except for patch-update, which is more sophisticated). Notice CKAN instances might have <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html" target="_blank"> custom data schemas</a> that force presence of custom properties among 'regular' ones. In this case, they go to java `others` hashmap and when serialized are put into the main json body (Note that to further complicate things there is also an `extras`field).
 
 #### Examples for writing
 
@@ -327,9 +329,35 @@ dataset metadata by navigating to /dataset/{id}.rdf or /dataset/{id}.n3.
 These were rendered using templates, and were outdated, incomplete and
 broken [1].
 ```
-Situation on ckan side is getting much better with the new version of the plugin in progress, but we cannot expect all CKAN instances around the world to adopt it now. So currently we provide a class to convert from CKAN objects to their DCAT equivalent:
+Situation on ckan side is getting much better with the <a href="https://github.com/ckan/ckanext-dcat" target="_blank">new version of the plugin </a> in progress, but we cannot expect all CKAN instances around the world to adopt it now. So currently we provide a class to convert from CKAN objects to their DCAT equivalent called <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a>. It will convert a `CkanDataset` to a `DcatDataset` and a `CkanResource` to a `DcatDistribution` <a href="https://github.com/ckan/ckanext-dcat#rdf-dcat-to-ckan-dataset-mapping" target="_blank"> according to this mapping</a>.
 
-todo write about DcatFactory
+Examples code:
+
+
+```java
+        DcatFactory dcatFactory = new DcatFactory();
+
+        CkanDataset ckanDataset = new CkanDataset("my-dataset");
+        DcatDataset dcatDataset
+                = dcatFactory.makeDataset(
+                        ckanDataset,
+                        "http://dati.trentino.it",
+                        Locale.ITALIAN); // default locale of metadata
+
+        CkanResource ckanResource = new CkanResource(
+        "http://my-department.org/expenses.csv",
+        "my-dataset");
+
+        DcatDistribution dcatDistribution
+                = dcatFactory.makeDistribution(
+                        ckanResource,
+                        "http://dati.trentino.it",
+                        "my-dataset", // owner dataset id
+                        "cc-zero", // license id
+                        Locale.ITALIAN); // default locale of metadata
+```
+
+To extract more stuff during conversion, you can use <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a> and override the extract* and/or postProcess* methods.
 
 ### Logging
 

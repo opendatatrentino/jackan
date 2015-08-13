@@ -81,7 +81,7 @@ public class DcatFactory {
 
     /**
      * Returns internal logger
-     */    
+     */
     protected Logger getLogger() {
         return logger;
     }
@@ -93,7 +93,7 @@ public class DcatFactory {
         this.logger = logger;
     }
 
-     /**
+    /**
      * Returns internal object mapper
      */
     protected ObjectMapper getObjectMapper() {
@@ -110,9 +110,12 @@ public class DcatFactory {
     }
 
     /**
+     * Formats languages list so they can be put into a ckan extras field as
+     * string (i.e. "[\"ca\", \"en\", \"es\"]")
+     *
      * @throws JackanException on error
      */
-    public String formatLanguages(Iterable<Locale> locales) {
+    protected String formatLanguages(Iterable<Locale> locales) {
         try {
             return objectMapper.writeValueAsString(locales);
         }
@@ -122,12 +125,12 @@ public class DcatFactory {
     }
 
     /**
-     * i.e. "[\"ca\", \"en\", \"es\"]"}
+     * i.e. "[\"ca\", \"en\", \"es\"]"
      *
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private List<Locale> extractLanguages(CkanDataset dataset) {
+    protected List<Locale> extractLanguages(CkanDataset dataset) {
 
         String string = extractFieldAsNonEmptyString(dataset, "language");
         try {
@@ -147,7 +150,7 @@ public class DcatFactory {
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private String extractFieldAsNonEmptyString(CkanDataset dataset, String field) {
+    protected String extractFieldAsNonEmptyString(CkanDataset dataset, String field) {
         String ret = extractFieldAsString(dataset, field).trim();
 
         if (ret.isEmpty()) {
@@ -165,7 +168,7 @@ public class DcatFactory {
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    private String extractFieldAsNonEmptyString(CkanResource resource, String field) {
+    protected String extractFieldAsNonEmptyString(CkanResource resource, String field) {
         String ret = extractFieldAsString(resource, field).trim();
 
         if (ret.isEmpty()) {
@@ -299,10 +302,10 @@ public class DcatFactory {
     }
 
     /**
-     * Formats timestamp according to ISO 8601. Differently from CKAN, it adds a
-     * 'Z' for clarity.
+     * Formats CKAN timestamp according to ISO 8601. Differently from CKAN, it
+     * adds a 'Z' for clarity.
      */
-    public String formatTimestamp(Timestamp timestamp) {
+    protected String formatTimestamp(Timestamp timestamp) {
         return CkanClient.formatTimestamp(timestamp) + "Z";
     }
 
@@ -391,6 +394,7 @@ public class DcatFactory {
      * 'others' and then 'extras', and doesn't fall back on groups. In case
      * nothing is found, just returns an empty collection.
      *
+     * @param locale the locale of the theme names. If unknown pass {@link Locale#ROOT}
      * @throws NotFoundException if needed fields are missing.
      * @throws JackanException on generic error
      */
@@ -710,7 +714,7 @@ public class DcatFactory {
     }
 
     /**
-     *
+     * @param locale if unknown pass {@link Locale#ROOT}
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
@@ -741,7 +745,7 @@ public class DcatFactory {
         logger.log(Level.INFO, "Couldn''t find any valid " + clazz + " {0}, skipping it", attribute);
     }
 
-    protected void logCanExtract(String clazz, String attribute, Throwable ex) {
+    protected void logCantExtract(String clazz, String attribute, Throwable ex) {
         logger.log(Level.SEVERE, "Error while extracting " + clazz + " " + attribute + ", skipping it", ex);
     }
 
@@ -750,7 +754,7 @@ public class DcatFactory {
     }
 
     protected void logDatasetCantExtract(String attribute, Throwable ex) {
-        logCanExtract("dataset", attribute, ex);
+        logCantExtract("dataset", attribute, ex);
     }
 
     /**
@@ -764,7 +768,7 @@ public class DcatFactory {
      * {@link Locale#ROOT}. todo write about data locale
      */
     @Beta
-    public DcatDataset dataset(CkanDataset dataset, String catalogUrl, Locale locale) {
+    public DcatDataset makeDataset(CkanDataset dataset, String catalogUrl, Locale locale) {
 
         logger.warning("CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
 
@@ -814,7 +818,7 @@ public class DcatFactory {
         if (dataset.getResources() != null) {
             for (CkanResource cr : dataset.getResources()) {
                 try {
-                    ddb.addDistributions(distribution(cr, sanitizedCatalogUrl, sanitizedId, sanitizedLicenceId, locale));
+                    ddb.addDistributions(makeDistribution(cr, sanitizedCatalogUrl, sanitizedId, sanitizedLicenceId, locale));
                 }
                 catch (Exception ex) {
                     logDatasetCantExtract("distribution", ex);
@@ -971,12 +975,12 @@ public class DcatFactory {
     protected void postProcessDataset(DcatDataset.Builder datasetBuilder, String catalogUrl, Locale locale) {
     }
 
-    private void logDistrib(String attribute) {
+    protected void logDistribCantFind(String attribute) {
         logCantFind("distribution", attribute);
     }
 
-    private void logDistribError(String attribute, Throwable ex) {
-        logCanExtract("resource", attribute, ex);
+    protected void logDistribCantExtract(String attribute, Throwable ex) {
+        logCantExtract("distribution", attribute, ex);
     }
 
     /**
@@ -1098,7 +1102,7 @@ public class DcatFactory {
     }
 
     /**
-     *
+     * @param locale if unknown pass {@link Locale#ROOT}
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
@@ -1126,11 +1130,22 @@ public class DcatFactory {
     }
 
     /**
-     *
+     * @param license value used if resource does not already have a license
+     * field. If unknown pass the empty string.
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
     protected String extractLicense(CkanResource resource, String license) {
+        try {
+            extractFieldAsNonEmptyString(resource, "license");
+        }
+        catch (NotFoundException ex) {
+            if (isNotEmpty(license)) {
+                return license;
+            } else {
+                throw new NotFoundException("Couldn't find valid license in resource!");
+            }
+        }
         if (isTrimmedEmpty(license)) {
             throw new NotFoundException("Couldn't find a valid license!");
         } else {
@@ -1163,7 +1178,7 @@ public class DcatFactory {
     }
 
     /**
-     *
+     * @param locale if unknown pass {@link Locale#ROOT}
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
@@ -1184,8 +1199,9 @@ public class DcatFactory {
      *
      * @param resource must be non null, but it may have missing or null fields.
      * @param catalogURL catalog string, i.e. http://dati.trentino.it
-     * @param datasetId dataset name like "production-of-apples" (preferred
-     * form), or alphanumerical id
+     * @param datasetIdOrName owner dataset alphanumerical id (i.e.
+     * fccc07ce-3750-4970-92fd-6a6f432b4466, preferred as stable) or dataset
+     * name (less preferred, as names can change over time)
      * @param license A link to the license document under which the
      * distribution is made available. For more info, see {@link eu.trentorise.opendata.traceprov.dcat.AbstractDcatDistribution#getLicense()
      * }. If license is unknown, use an empty string.
@@ -1194,10 +1210,10 @@ public class DcatFactory {
      *
      */
     @Beta
-    public DcatDistribution distribution(
+    public DcatDistribution makeDistribution(
             CkanResource resource,
             String catalogURL,
-            String datasetId,
+            String datasetIdOrName,
             String license,
             Locale locale
     ) {
@@ -1205,7 +1221,7 @@ public class DcatFactory {
 
         checkNotNull(resource, "invalid ckan resource");
         checkNotEmpty(catalogURL, "invalid catalog URL");
-        checkNotEmpty(datasetId, "invalid dataset id");
+        checkNotEmpty(datasetIdOrName, "invalid dataset id");
         checkNotNull(license, "invalid license");
 
         String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogURL);
@@ -1213,139 +1229,128 @@ public class DcatFactory {
         DcatDistribution.Builder ddb = DcatDistribution.builder();
 
         try {
-            ddb.setUri(extractUri(resource, sanitizedCatalogUrl, datasetId));
+            ddb.setUri(extractUri(resource, sanitizedCatalogUrl, datasetIdOrName));
         }
         catch (NotFoundException ex) {
-            logDistrib("uri");
+            logDistribCantFind("uri");
         }
         catch (Exception ex) {
-            logDistribError("uri", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution uri, skipping it", ex);
+            logDistribCantExtract("uri", ex);
         }
 
         try {
             ddb.setAccessURL(extractAccessUrl(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("accessURL");
+            logDistribCantFind("accessURL");
         }
         catch (Exception ex) {
-            logDistribError("accessURL", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution accessUrl, skipping it", ex);
+            logDistribCantExtract("accessURL", ex);
         }
 
         try {
             ddb.setDownloadURL(extractDownloadUrl(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("downloadURL");
+            logDistribCantFind("downloadURL");
         }
         catch (Exception ex) {
-            logDistribError("downloadURL", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution downloadUrl, skipping it", ex);
+            logDistribCantExtract("downloadURL", ex);
         }
 
         try {
             ddb.setByteSize(extractByteSize(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("byteSize");
+            logDistribCantFind("byteSize");
         }
         catch (Exception ex) {
-            logDistribError("byteSize", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution byteSize, skipping it", ex);
+            logDistribCantExtract("byteSize", ex);
         }
 
-        ddb.setDatasetUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, datasetId));
+        ddb.setDatasetUri(CkanClient.makeDatasetURL(sanitizedCatalogUrl, datasetIdOrName));
 
         try {
             ddb.setDescription(extractDescription(resource, locale));
         }
         catch (NotFoundException ex) {
-            logDistrib("description");
+            logDistribCantFind("description");
         }
         catch (Exception ex) {
-            logDistribError("description", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution description, skipping it", ex);
+            logDistribCantExtract("description", ex);
         }
 
         try {
             ddb.setFormat(extractFormat(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("format");
+            logDistribCantFind("format");
         }
         catch (Exception ex) {
-            logDistribError("format", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution format, skipping it", ex);
+            logDistribCantExtract("format", ex);
         }
 
         try {
             ddb.setIssued(extractIssued(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("issued");
+            logDistribCantFind("issued");
         }
         catch (Exception ex) {
-            logDistribError("issued", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution issued, skipping it", ex);
+            logDistribCantExtract("issued", ex);
         }
 
         try {
             ddb.setLicense(extractLicense(resource, license));
         }
         catch (NotFoundException ex) {
-            logDistrib("license");
+            logDistribCantFind("license");
         }
         catch (Exception ex) {
-            logDistribError("license", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution license, skipping it", ex);
+            logDistribCantExtract("license", ex);
         }
 
         try {
             ddb.setModified(extractModified(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("modified");
+            logDistribCantFind("modified");
         }
         catch (Exception ex) {
-            logDistribError("modified", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution issued, skipping it", ex);
+            logDistribCantExtract("modified", ex);
         }
 
         try {
             ddb.setMediaType(extractMediaType(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("mediaType");
+            logDistribCantFind("mediaType");
         }
         catch (Exception ex) {
-            logDistribError("mediaType", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution media type, skipping it", ex);
+            logDistribCantExtract("mediaType", ex);
         }
 
         try {
             ddb.setRights(extractRights(resource));
         }
         catch (NotFoundException ex) {
-            logDistrib("rights");
+            logDistribCantFind("rights");
         }
         catch (Exception ex) {
-            logDistribError("rights", ex);
-            logger.log(Level.SEVERE, "Error while extracting distribution rights, skipping it", ex);
+            logDistribCantExtract("rights", ex);
         }
 
         try {
             ddb.setTitle(extractTitle(resource, locale));
         }
         catch (NotFoundException ex) {
-            logDistrib("title");
+            logDistribCantFind("title");
         }
         catch (Exception ex) {
-            logDistribError("title", ex);
+            logDistribCantExtract("title", ex);
         }
 
-        postProcessDistribution(ddb, resource, sanitizedCatalogUrl, datasetId, license, locale);
+        postProcessDistribution(ddb, resource, sanitizedCatalogUrl, datasetIdOrName, license, locale);
 
         return ddb.build();
     }

@@ -15,21 +15,14 @@
  */
 package eu.trentorise.opendata.jackan.test.dcat;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanPair;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.dcat.DcatFactory;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT;
-import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
 import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
 import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -53,25 +46,24 @@ public class DcatFactoryTest {
     private static final String CATALOG_URL = "https://github.com/opendatatrentino/jackan";
 
     private DcatFactory dcatFactory;
-    
+
     @BeforeClass
     public static void setUpClass() {
         JackanTestConfig.of().loadConfig();
     }
-    
+
     @Before
-    public void setUp() {                        
+    public void setUp() {
         dcatFactory = new DcatFactory();
     }
 
     @After
     public void tearDown() {
         dcatFactory = null;
-    }    
-    
+    }
 
     private static String makeUuid(int i) {
-        if (i < 0 || i > 255){
+        if (i < 0 || i > 255) {
             throw new RuntimeException("Provided integer must be 0 <= i < 255");
         }
         byte[] bs = {(byte) i};
@@ -82,12 +74,12 @@ public class DcatFactoryTest {
     public void testDistribution() {
         CkanResource res = new CkanResource();
 
-        DcatDistribution distribution = new DcatFactory().distribution(
+        DcatDistribution distribution = new DcatFactory().makeDistribution(
                 res,
                 CATALOG_URL,
                 makeUuid(1),
                 "cc-zero",
-                Locale.ITALIAN);                        
+                Locale.ITALIAN);
 
     }
 
@@ -96,7 +88,7 @@ public class DcatFactoryTest {
         CkanDataset dataset = new CkanDataset();
         dataset.putOthers("language", "[\"it\"]");
 
-        DcatDataset dcatDataset = DcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
         assertEquals(1, dcatDataset.getLanguages().size());
         assertEquals(Locale.ITALIAN, dcatDataset.getLanguages().get(0));
     }
@@ -106,20 +98,43 @@ public class DcatFactoryTest {
         CkanDataset dataset = new CkanDataset();
         dataset.setExtras(Lists.newArrayList(new CkanPair("language", "[\"it\"]")));
 
-        DcatDataset dcatDataset = DcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
         assertEquals(1, dcatDataset.getLanguages().size());
         assertEquals(Locale.ITALIAN, dcatDataset.getLanguages().get(0));
     }
-    
+
     @Test
-    public void testDatasetWithResource(){
+    public void testDatasetWithResource() {
         CkanDataset dataset = new CkanDataset();
         dataset.setId(makeUuid(1));
         dataset.setResources(Lists.newArrayList(new CkanResource(CATALOG_URL, null)));
 
-        DcatDataset dcatDataset = DcatFactory.of().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
-        
+        DcatDataset dcatDataset = dcatFactory.makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
+
         assertEquals(1, dcatDataset.getDistributions().size());
         assertEquals(CATALOG_URL, dcatDataset.getDistributions().get(0).getAccessURL());
     }
+
+    @Test
+    public void exampleFactory() {
+
+        DcatFactory dcatFactory = new DcatFactory();
+
+        CkanDataset ckanDataset = new CkanDataset("my-dataset");
+        DcatDataset dcatDataset
+                = dcatFactory.makeDataset(
+                        ckanDataset,
+                        "http://dati.trentino.it", // default locale of metadata
+                        Locale.ITALIAN);
+
+        CkanResource ckanResource = new CkanResource("http://my-department.org/expenses.csv", "my-dataset");
+        DcatDistribution dcatDistribution
+                = dcatFactory.makeDistribution(
+                        ckanResource,
+                        "http://dati.trentino.it",
+                        "my-dataset", // owner dataset id
+                        "cc-zero", // license id
+                        Locale.ITALIAN); // default locale of metadata
+    }
+
 }

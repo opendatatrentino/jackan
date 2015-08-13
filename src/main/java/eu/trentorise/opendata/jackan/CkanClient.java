@@ -22,6 +22,7 @@ import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Charsets;
@@ -56,10 +57,12 @@ import eu.trentorise.opendata.jackan.model.CkanError;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,11 +70,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
+import org.apache.http.HttpEntity;
 
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 /**
  * Client to access a ckan instance. Threadsafe.
@@ -419,7 +432,7 @@ public class CkanClient {
             Request request = Request.Post(fullUrl);
             if (proxy != null) {
                 request.viaProxy(proxy);
-            }                                
+            }
             Response response = request.bodyString(body, contentType).addHeader("Authorization", ckanToken).execute();
 
             InputStream stream = response.returnResponse().getEntity().getContent();
@@ -724,6 +737,14 @@ public class CkanClient {
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
+
+    private static final String CKAN_STORAGE_BASE_URI = "http://datahub.io/api/storage";
+    private static final String CKAN_STORAGE_FILES_BASE_URI = "http://datahub.io/storage/f/";
+
+    
+    
+    
+   
 
     /**
      * Updates a resource on the server using a straight {@code resource_update}

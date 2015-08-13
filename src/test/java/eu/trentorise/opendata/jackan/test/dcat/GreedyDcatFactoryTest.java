@@ -70,7 +70,7 @@ public class GreedyDcatFactoryTest {
     public void testDistribution() {
         CkanResource res = new CkanResource();
 
-        DcatDistribution distribution = dcatFactory.distribution(
+        DcatDistribution distribution = dcatFactory.makeDistribution(
                 res,
                 CATALOG_URL,
                 makeUuid(1),
@@ -84,7 +84,7 @@ public class GreedyDcatFactoryTest {
         CkanDataset dataset = new CkanDataset();
         dataset.putOthers("language", "[\"it\"]");
 
-        DcatDataset dcatDataset = dcatFactory.dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
         assertEquals(1, dcatDataset.getLanguages().size());
         assertEquals(Locale.ITALIAN, dcatDataset.getLanguages().get(0));
     }
@@ -94,7 +94,7 @@ public class GreedyDcatFactoryTest {
         CkanDataset dataset = new CkanDataset();
         dataset.setExtras(Lists.newArrayList(new CkanPair("language", "[\"it\"]")));
 
-        DcatDataset dcatDataset = dcatFactory.dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
         assertEquals(1, dcatDataset.getLanguages().size());
         assertEquals(Locale.ITALIAN, dcatDataset.getLanguages().get(0));
     }
@@ -105,7 +105,7 @@ public class GreedyDcatFactoryTest {
         dataset.setId(makeUuid(1));
         dataset.setResources(Lists.newArrayList(new CkanResource(CATALOG_URL, null)));
 
-        DcatDataset dcatDataset = dcatFactory.dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = dcatFactory.makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
         
         assertEquals(1, dcatDataset.getDistributions().size());
         assertEquals(CATALOG_URL, dcatDataset.getDistributions().get(0).getAccessURL());
@@ -120,7 +120,7 @@ public class GreedyDcatFactoryTest {
         group.setName("abc");
         dataset.setGroups(Lists.newArrayList(group));
         
-        DcatDataset dcatDataset = new GreedyDcatFactory().dataset(dataset, CATALOG_URL, Locale.ENGLISH);
+        DcatDataset dcatDataset = new GreedyDcatFactory().makeDataset(dataset, CATALOG_URL, Locale.ENGLISH);
         
         assertEquals(1, dcatDataset.getThemes().size());
         assertEquals(Dict.of(Locale.ENGLISH, "xyz"), dcatDataset.getThemes().get(0).getPrefLabel());

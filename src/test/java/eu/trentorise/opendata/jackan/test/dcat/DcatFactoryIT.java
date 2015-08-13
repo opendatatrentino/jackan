@@ -106,14 +106,14 @@ public class DcatFactoryIT {
         for (String datasetName : dsl.subList(0, Math.min(dsl.size(), TEST_ELEMENTS))) {
             CkanDataset dataset = client.getDataset(datasetName);
             assertEquals(datasetName, dataset.getName());
-            dcatFactory.dataset(dataset, client.getCatalogURL(), Locale.ITALIAN);
-            greedyDcatFactory.dataset(dataset, client.getCatalogURL(), Locale.ITALIAN);
+            dcatFactory.makeDataset(dataset, client.getCatalogURL(), Locale.ITALIAN);
+            greedyDcatFactory.makeDataset(dataset, client.getCatalogURL(), Locale.ITALIAN);
             
             for (CkanResource resource : dataset.getResources().subList(0, Math.min(dataset.getResources().size(), TEST_ELEMENTS))) {
                 try {
                     CkanResource res = client.getResource(resource.getId());
-                    dcatFactory.distribution(res, datasetName, client.getCatalogURL(), dataset.getId(), Locale.ITALIAN);
-                    greedyDcatFactory.distribution(res, datasetName, client.getCatalogURL(), dataset.getId(), Locale.ITALIAN);                   
+                    dcatFactory.makeDistribution(res, datasetName, client.getCatalogURL(), dataset.getId(), Locale.ITALIAN);
+                    greedyDcatFactory.makeDistribution(res, datasetName, client.getCatalogURL(), dataset.getId(), Locale.ITALIAN);                   
                 }
                 catch (Exception ex) {
                     failedResources.add(new FailedResourceException(client, "Error while fetching/converting resource!", datasetName, resource.getId(), ex));

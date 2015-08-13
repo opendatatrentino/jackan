@@ -21,6 +21,10 @@ import java.util.UUID;
 import junitparams.Parameters;
 import org.junit.Test;
 
+/**
+ *  IMPORTANT: OVERRIDDEN METHODS MUST COPY ANNOTATIONS @Test AND
+ * EVENTUAL JUnitParams TAGS
+*/
 public class WriteCkanGroupIT extends WriteCkanGroupOrg<CkanGroup> {
 
     public WriteCkanGroupIT() {

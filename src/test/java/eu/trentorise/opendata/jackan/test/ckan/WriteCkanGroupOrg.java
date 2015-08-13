@@ -32,41 +32,39 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
+ * Abstract class with common tests for both CkanOrganization and CkanGroup.
+ *
+ * IMPORTANT: OVERRIDDEN METHODS IN DESCENDANTS MUST COPY annotations @Test AND
+ * EVENTUAL JUnitParams TAGS
  *
  * @author David Leoni
  */
-
-/**
- * Abstract class with common tests for both CkanOrganization and CkanGroup
- * @author David Leoni
- */
 abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
+
     private static final Logger LOG = Logger.getLogger(WriteCkanGroupOrg.class.getName());
 
     public WriteCkanGroupOrg() {
         super();
     }
-    
-    
-    
+
     protected abstract T newRandom();
-    
+
     protected abstract T createRandom();
-    
+
     protected abstract T create(T groupOrg);
-    
+
     protected abstract T newEmpty();
-    
+
     protected abstract T newName(String name);
 
     protected abstract T getGroupOrg(CkanClient client, String nameOrId);
 
     protected abstract String getExistingDatiTrentinoGroupOrgName();
-    
-    protected String className(){
+
+    protected String className() {
         return newEmpty().getClass().getSimpleName();
     }
-    
+
     @Test
     public void testCreateMinimal() {
         T groupOrg = newRandom();
@@ -74,79 +72,80 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
         T retGroupOrg = create(groupOrg);
 
         assertEquals(groupOrg.getName(), retGroupOrg.getName());
-        LOG.log(Level.INFO, "created "+ className() + " with id {0} in catalog {1}", new Object[]{retGroupOrg.getId(), JackanTestConfig.of().getOutputCkan()});
+        LOG.log(Level.INFO, "created " + className() + " with id {0} in catalog {1}", new Object[]{retGroupOrg.getId(), JackanTestConfig.of().getOutputCkan()});
     }
-    
+
     @Test
     public void testCreateById() {
         T groupOrg = newEmpty();
         groupOrg.setId(UUID.randomUUID().toString());
-        groupOrg.setName("jackan-test-org-"+groupOrg.getId());
+        groupOrg.setName("jackan-test-org-" + groupOrg.getId());
         T retGroupOrg = create(groupOrg);
         assertEquals(groupOrg.getId(), retGroupOrg.getId());
         assertEquals(groupOrg.getName(), retGroupOrg.getName());
-    }    
-    
+    }
+
     @Test
-    public void testCreateWithPackages(){
+    public void testCreateWithPackages() {
         T groupOrg = newName("jackan-test-org-" + UUID.randomUUID().getMostSignificantBits());
-        CkanDataset dataset = createRandomDataset();        
+        CkanDataset dataset = createRandomDataset();
         groupOrg.setPackages(Lists.newArrayList(dataset));
         T retGroupOrg = create(groupOrg);
-        CkanDataset retDataset = client.getDataset(dataset.getId());        
-    }    
-    
+        CkanDataset retDataset = client.getDataset(dataset.getId());
+    }
+
     @Test
-    public void testCreateWithDatasetsWithoutId(){
+    public void testCreateWithDatasetsWithoutId() {
         T org = newName("test-org-" + UUID.randomUUID().getMostSignificantBits());
-        CkanDataset dataset = new CkanDataset("jackan-test-dataset-"+UUID.randomUUID().toString());        
+        CkanDataset dataset = new CkanDataset("jackan-test-dataset-" + UUID.randomUUID().toString());
         org.setPackages(Lists.newArrayList(dataset));
         try {
             T retGroupOrg = create(org);
-            Assert.fail("Shouldn't be possible to create an "+ className() + " with datasets withour ids!");
-        } catch (JackanException ex){
-            
-        }        
-    }  
-    
-@Test
-    public void testCreateWithUser(){
+            Assert.fail("Shouldn't be possible to create an " + className() + " with datasets withour ids!");
+        }
+        catch (JackanException ex) {
+
+        }
+    }
+
+    @Test
+    public void testCreateWithUser() {
         T groupOrg = newName("jackan-test-org-" + UUID.randomUUID().getMostSignificantBits());
-        
+
         CkanUser user = createRandomUser();
-        
+
         groupOrg.setUsers(Lists.newArrayList(user));
-        
+
         T retGroupOrg = create(groupOrg);
-        
+
         assertEquals(2, retGroupOrg.getUsers().size());
         boolean found = false;
-        for (CkanUser u : retGroupOrg.getUsers()){
-            if (user.getId().equals(u.getId())){
+        for (CkanUser u : retGroupOrg.getUsers()) {
+            if (user.getId().equals(u.getId())) {
                 found = true;
             }
         }
-        if (!found){
+        if (!found) {
             Assert.fail();
         }
-        
-    }      
-    
-    
+
+    }
+
     @Test
-    public void testCreateWithNonExistingPackages(){
+    public void testCreateWithNonExistingPackages() {
         T groupOrg = newName("jackan-test-org-" + UUID.randomUUID().getMostSignificantBits());
-        CkanDataset dataset = new CkanDataset("jackan-test-dataset-"+UUID.randomUUID().toString());
+        CkanDataset dataset = new CkanDataset("jackan-test-dataset-" + UUID.randomUUID().toString());
         dataset.setId(UUID.randomUUID().toString());
         groupOrg.setPackages(Lists.newArrayList(dataset));
         try {
             T retGroupOrg = create(groupOrg);
-            Assert.fail("Shouldn't be possible to create an "+ className() + " with nonexisting datasets!");
-        } catch (JackanException ex){
-            
-        }        
-    }        
-    
+            Assert.fail("Shouldn't be possible to create an " + className() + " with nonexisting datasets!");
+        }
+        catch (JackanException ex) {
+
+        }
+    }
+
     @Test
     public void testCreateMirror() {
 
@@ -157,41 +156,39 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
 
         T retGroupOrg = create(groupOrg);
 
-        checkNotEmpty(retGroupOrg.getId(), "Invalid "+ className() + " id!");
+        checkNotEmpty(retGroupOrg.getId(), "Invalid " + className() + " id!");
 
-        LOG.log(Level.INFO, "created "+ className() + " with id {0} in catalog {1}", new Object[]{retGroupOrg.getId(), JackanTestConfig.of().getOutputCkan()});
+        LOG.log(Level.INFO, "created " + className() + " with id {0} in catalog {1}", new Object[]{retGroupOrg.getId(), JackanTestConfig.of().getOutputCkan()});
     }
-    
-
 
     @Test
     @Parameters(method = "wrongGroupOrgNames")
-    public void testCreateWithWrongName(String groupOrgName) {        
+    public void testCreateWithWrongName(String groupOrgName) {
 
         try {
             T groupOrg = newName(groupOrgName);
             create(groupOrg);
-            Assert.fail("Shouldn't be able to create "+ className() + " with wrong name " + groupOrgName);
+            Assert.fail("Shouldn't be able to create " + className() + " with wrong name " + groupOrgName);
         }
         catch (JackanException ex) {
 
         }
     }
-    
+
     @Test
     @Parameters(method = "wrongIds")
-    public void testCreateWithWrongId(String id) {        
+    public void testCreateWithWrongId(String id) {
 
         try {
             T groupOrg = newName("jackan-test-group-" + randomUUID());
             groupOrg.setId(id);
             create(groupOrg);
-            Assert.fail("Shouldn't be able to create "+ className() + " with wrong id " + id);
+            Assert.fail("Shouldn't be able to create " + className() + " with wrong id " + id);
         }
         catch (JackanException ex) {
 
         }
-    }    
+    }
 
     @Test
     public void testCreateWithDuplicateName() {
@@ -203,7 +200,7 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
         groupOrg.setId(null);
         try {
             create(groupOrg);
-            Assert.fail("Shouldn't be able to create "+ className() + " with same name " + name);
+            Assert.fail("Shouldn't be able to create " + className() + " with same name " + name);
         }
         catch (JackanException ex) {
             LOG.fine("");
@@ -222,12 +219,11 @@ abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
         try {
             T retGroupOrg2 = create(retGroupOrg1);
             assertEquals(retGroupOrg1.getId(), retGroupOrg2.getId());
-            Assert.fail("Shouldn't be able to create "+ className() + " with same id " + groupOrg.getId());            
+            Assert.fail("Shouldn't be able to create " + className() + " with same id " + groupOrg.getId());
         }
         catch (JackanException ex) {
 
         }
     }
-
 
 }

@@ -15,8 +15,6 @@
  */
 package eu.trentorise.opendata.jackan.test.ckan;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
@@ -26,18 +24,10 @@ import eu.trentorise.opendata.jackan.model.CkanState;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junitparams.Parameters;
-import org.apache.http.client.fluent.Form;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Response;
-import org.apache.http.entity.ContentType;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -313,5 +303,5 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         }
 
     }
-   
+       
 }
