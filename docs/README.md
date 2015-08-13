@@ -190,12 +190,12 @@ Currently Jackan supports:
 |Tag            |X      |       |        |              |       |      |
 |Vocabulary     |X      |       |        |              |       |      |
 
-Resource `create` and `update` change only metadata, the don't allow uploading/modifying files.
+*Resource `create` and `update` change only metadata, the don't allow uploading/modifying files.
 
 
 #### Data validation
 
-Sometimes Ckan forgets to properly validate input. For example, at least with Ckan 2.2 we have been able to create resources with empty id :-/  To prevent writing such garbage we extended default `CkanClient` with `CheckedCkanClient`, which is more picky about possibly inconsistent input. If you also care about data integrity you might want to use the Checked client or extend it with your own validation rules when writing into Ckan. To try how different clients behave against the extensive Jackan test suite when running tests we set the client client class to use as parameter `jackan.test.ckan.client-class=eu.trentorise.opendata.jackan.CheckedCkanClient` in <a href="../conf/jackan.test.properties" target="_blank">conf/jackan.test.properties</a>
+Sometimes Ckan forgets to properly validate input. For example, at least with Ckan 2.2 we have been able to create resources with empty id :-/  To prevent writing such garbage we extended default `CkanClient` with `CheckedCkanClient`, which is more picky about possibly inconsistent input. If you also care about data integrity you might want to use the Checked client or extend it with your own validation rules when writing into Ckan. To try how different clients behave against the extensive Jackan test suite when running tests we set the client client class to use as parameter `jackan.test.ckan.client-class=eu.trentorise.opendata.jackan.CheckedCkanClient` in `conf/jackan.test.properties`
 Maybe in the future we will implement also <a href="http://beanvalidation.org/" target="_blank" >java.validation api</a> support.
 
 #### What we POST
@@ -259,11 +259,11 @@ Shows Jackan-specific patch-update functionality, in this case for changing tags
 
 ### JSON Serialization
 
-There are two kinds of configurations used, a default one for reading from ckan and one for writing (that is, POSTing). Most probably you are interested in the default one.
+For ser/deserializing JSON there are two kinds of configurations, a default one for reading from ckan and one for writing (that is, POSTing). Most probably you are interested in the default one.
 
 Jackson library annotations are used to automatically convert to/from JSON using Jackson's `ObjectMapper` object. Notice that although field names of Java objects are camelcase (like `authorEmail`), serialized fields follows CKAN API stlye and use underscores (like `author_email`).
 
-#### Default Json Ser/deserialization
+#### Default JSON Ser/deserialization
 
 Here is an example of serialization/deserialization:
 
@@ -292,7 +292,7 @@ For more fine-grained control you can just register `JackanModule` into your Jac
         objectMapper.registerModule(new JackanModule());
 ```
 
-#### Posting Json
+#### Posting JSON
 
 This more advanced usage is for the case you want to do your own POST operations (create/update/delete/purge) to ckan (or maybe extend Jackan :-) ...
 

@@ -34,6 +34,15 @@ _Latest integration report is <a href="http://opendatatrentino.github.io/jackan/
 
 Jackan supports installations of CKAN >= 2.2a. Although officially the web api version used is always the _v3_, unfortunately CKAN instances behave quite differently from each other according to their software version. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, [let us know](https://github.com/opendatatrentino/jackan/issues), if the error occurs in several catalogs we might devote some time to fix it.
 
+#### Dependencies
+
+Main dependencies are 
+
+* Guava 
+* Apache HTTP client 
+* Jackson for JSON
+* [TraceProv](https://github.com/opendatatrentino/traceprov) for conversion to DCAT
+
 
 #### Projects using Jackan
 
