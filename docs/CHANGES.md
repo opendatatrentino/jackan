@@ -9,10 +9,10 @@ Project website: http://opendatatrentino.github.io/jackan
 #### 0.4.x   todo in progress
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
+- implemented DcatFactory for conversion to Dcat, see [supported operations table](README.md#dcat)
 - split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)
-- implemented DcatFactory for conversion to Dcat (dcat models are in <a href="https://github.com/opendatatrentino/traceprov/tree/master/src/main/java/eu/trentorise/opendata/traceprov/dcat" target="_blank">traceprov repo</a>)
 - now creating release zip with jar and dependencies
-- Adapted to josman docs structure
+- Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
 - added many exceptions (all inherit from JackanException)
 
 merged pull requests:
