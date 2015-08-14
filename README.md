@@ -38,10 +38,11 @@ Jackan supports installations of CKAN >= 2.2a. Although officially the web api v
 
 Main dependencies are 
 
-* Guava 
-* Apache HTTP client 
 * Jackson for JSON
+* Apache HTTP client 
 * <a href="https://github.com/opendatatrentino/traceprov" target="_blank">TraceProv</a> for conversion to DCAT
+* Guava as toolbox
+
 
 
 #### Projects using Jackan
