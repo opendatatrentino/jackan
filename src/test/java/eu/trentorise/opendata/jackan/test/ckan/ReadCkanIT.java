@@ -242,13 +242,17 @@ public class ReadCkanIT {
     }
 
     /**
-     * Tries to get the "admin" user.
+     * Tries to get some users.
      */
     @Test
     @Parameters(method = "clients")
     public void testUser(CkanClient client) {
-        CkanUser u = client.getUser("admin");
-        assertEquals("admin", u.getName());
+        List<CkanUser> ul = client.getUserList();
+        assertTrue(ul.size() > 0);        
+        for (CkanUser u : ul.subList(0, Math.min(ul.size(), TEST_ELEMENTS))) {
+            CkanUser fetchedUser = client.getUser(u.getId());
+            assertEquals(u.getName(), fetchedUser.getName());
+        }
     }
 
     @Test
@@ -257,7 +261,7 @@ public class ReadCkanIT {
         List<CkanGroup> gl = client.getGroupList();
         assertTrue(gl.size() > 0);
         // api actually returns the number of datasets, so we check they are properly 'converted'.
-        assertEquals(new ArrayList(), gl.get(0).getPackages());
+        assertEquals(null, gl.get(0).getPackages());
 
     }
 
@@ -286,7 +290,7 @@ public class ReadCkanIT {
         List<CkanOrganization> gl = client.getOrganizationList();
         assertTrue(gl.size() > 0);
         // api actually returns the number of datasets, so we check they are properly 'converted'.
-        assertEquals(new ArrayList(), gl.get(0).getPackages());
+        assertEquals(null, gl.get(0).getPackages());
     }
 
     @Test

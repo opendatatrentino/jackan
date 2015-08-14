@@ -32,7 +32,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import org.apache.http.HttpHost;
 
@@ -45,9 +44,7 @@ import org.apache.http.HttpHost;
  *
  * @author David Leoni
  */
-public class CheckedCkanClient extends CkanClient {
-
-    private static final Logger LOG = Logger.getLogger(CheckedCkanClient.class.getName());
+public class CheckedCkanClient extends CkanClient {    
 
     public CheckedCkanClient(String url) {
         super(url);
@@ -104,7 +101,7 @@ public class CheckedCkanClient extends CkanClient {
             checkUuid(resource.getId(), "Jackan validation failed! Tried to create resource with invalid id:" + resource.getId() );
             
             try {
-                CkanResource dupRes = getResource(resource.getId());
+                getResource(resource.getId());
                 throw new CkanValidationException("Jackan validation failed! Tried to create resource with existing id! " + resource.getId(), this);
             }
             catch (CkanNotFoundException ex) {
@@ -180,8 +177,8 @@ public class CheckedCkanClient extends CkanClient {
                 }
             }
             if (!found) {
-                throw new CkanValidationException("Jackan validation error! Tried to create dataset with licenseId '"
-                        + licenseId + "', which doesn't belong to allowed licenses: " + licenseList.toString(), this);
+                throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- licenseId '"
+                        + licenseId + "' doesn't belong to allowed licenses: " + licenseList.toString(), this);
             }
         }
     }

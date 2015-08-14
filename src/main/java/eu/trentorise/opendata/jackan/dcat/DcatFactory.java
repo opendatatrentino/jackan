@@ -66,6 +66,12 @@ import javax.annotation.Nullable;
  */
 public class DcatFactory {
 
+    protected static final String ISSUED = "issued";
+    protected static final String MODIFIED = "modified";
+    protected static final String DESCRIPTION = "description";
+    protected static final String URI_FIELD = "uri";
+    protected static final String TITLE = "title";
+
     private Logger logger;
 
     private ObjectMapper objectMapper;
@@ -199,10 +205,10 @@ public class DcatFactory {
             }
         }
 
-        if (candidateString == null) {
-            if (dataset.getExtras() != null) {
-                candidateString = dataset.getExtrasAsHashMap().get(field);
-            }
+        if (candidateString == null
+                && dataset.getExtras() != null) {
+            candidateString = dataset.getExtrasAsHashMap().get(field);
+
         }
 
         if (candidateString == null) {
@@ -255,13 +261,13 @@ public class DcatFactory {
             candidateObject = dataset.getOthers().get(field);
         }
 
-        if (candidateObject == null) {
-            if (dataset.getExtras() != null) {
-                candidateObject = dataset.getExtrasAsHashMap().get(field);
-            }
+        if (candidateObject == null && dataset.getExtras() != null) {
+            candidateObject = dataset.getExtrasAsHashMap().get(field);
+
         }
 
-        if (candidateObject == null) {
+        if (candidateObject
+                == null) {
             throw new NotFoundException("Can't find object field " + field + "!");
         }
         return candidateObject;
@@ -310,13 +316,16 @@ public class DcatFactory {
     }
 
     /**
-     * Returns a GeoJson made only with textual, possibly low-quality information.
-     * 
-     * @param name  the name of the geometry, if not known use empty string
-     * @param description the description of the geometry, if not known use empty string
+     * Returns a GeoJson made only with textual, possibly low-quality
+     * information.
+     *
+     * @param name the name of the geometry, if not known use empty string
+     * @param description the description of the geometry, if not known use
+     * empty string
      * @param id the Jsonld id for the geometric object
-     * @param spatialDump the geometry in any format, could even be an unparseable json or xml dump
-     * @return 
+     * @param spatialDump the geometry in any format, could even be an
+     * unparseable json or xml dump
+     * @return
      */
     private GeoJson calcGeoJson(String name, String description, String id, String spatialDump) {
         if (name.isEmpty() && description.isEmpty()) {
@@ -378,16 +387,17 @@ public class DcatFactory {
             logger.info("Couldn't find dataset 'spatial_text' field (should hold the natural language name of the place)");
         }
 
-        
         try {
             spatial = extractFieldAsNonEmptyString(dataset, "spatial");
         }
         catch (NotFoundException ex) {
             logger.info("Could not find dataset 'spatial' field");
+
         }
         if (!spatial.isEmpty()) {
             try {
-                geoJson = objectMapper.readValue(spatial, GeoJson.class);
+                geoJson = objectMapper.readValue(spatial, GeoJson.class
+                );
             }
             catch (Exception ex) {
                 logger.log(Level.SEVERE, "Error while parsing dataset 'spatial' field as GeoJson, will put the problematic json into Feature.properties['description'] ", ex);
@@ -431,7 +441,7 @@ public class DcatFactory {
                 String uri;
                 Dict prefLabel;
                 try {
-                    URI.create(ts);
+                    java.net.URI.create(ts);
                     uri = ts;
                     prefLabel = Dict.of();
                 }
@@ -458,7 +468,7 @@ public class DcatFactory {
 
         String uri = "";
         try {
-            uri = extractFieldAsNonEmptyString(dataset, "uri");
+            uri = extractFieldAsNonEmptyString(dataset, URI_FIELD);
         }
         catch (NotFoundException ex) {
         }
@@ -537,7 +547,7 @@ public class DcatFactory {
      */
     protected String extractIssued(CkanDataset dataset) {
         try {
-            return extractFieldAsNonEmptyString(dataset, "issued");
+            return extractFieldAsNonEmptyString(dataset, ISSUED);
         }
         catch (NotFoundException ex) {
             if (dataset.getMetadataCreated() != null) {
@@ -554,7 +564,7 @@ public class DcatFactory {
      */
     protected String extractModified(CkanDataset dataset) {
         try {
-            return extractFieldAsString(dataset, "modified");
+            return extractFieldAsString(dataset, MODIFIED);
         }
         catch (NotFoundException ex) {
             if (dataset.getMetadataModified() != null) {
@@ -855,10 +865,10 @@ public class DcatFactory {
             ddb.setIssued(extractIssued(dataset));
         }
         catch (NotFoundException ex) {
-            logDatasetCantFind("issued");
+            logDatasetCantFind(ISSUED);
         }
         catch (Exception ex) {
-            logDatasetCantExtract("issued", ex);
+            logDatasetCantExtract(ISSUED, ex);
         }
 
         try {
@@ -904,10 +914,10 @@ public class DcatFactory {
             ddb.setModified(extractModified(dataset));
         }
         catch (NotFoundException ex) {
-            logDatasetCantFind("modified");
+            logDatasetCantFind(MODIFIED);
         }
         catch (Exception ex) {
-            logDatasetCantExtract("modified", ex);
+            logDatasetCantExtract(MODIFIED, ex);
         }
 
         try {
@@ -954,20 +964,20 @@ public class DcatFactory {
             ddb.setTitle(extractTitle(dataset, locale));
         }
         catch (NotFoundException ex) {
-            logDatasetCantFind("title");
+            logDatasetCantFind(TITLE);
         }
         catch (Exception ex) {
-            logDatasetCantExtract("title", ex);
+            logDatasetCantExtract(TITLE, ex);
         }
 
         try {
             ddb.setUri(extractUri(dataset, sanitizedCatalogUrl));
         }
         catch (NotFoundException ex) {
-            logDatasetCantFind("uri");
+            logDatasetCantFind(URI_FIELD);
         }
         catch (Exception ex) {
-            logDatasetCantExtract("uri", ex);
+            logDatasetCantExtract(URI_FIELD, ex);
         }
 
         postProcessDataset(ddb, catalogUrl, locale);
@@ -1012,7 +1022,7 @@ public class DcatFactory {
         String candidateUri = "";
 
         try {
-            candidateUri = extractFieldAsString(resource, "uri").trim();
+            candidateUri = extractFieldAsString(resource, URI_FIELD).trim();
         }
         catch (NotFoundException ex) {
 
@@ -1067,7 +1077,7 @@ public class DcatFactory {
      * @throws JackanException on generic error
      */
     protected String extractModified(CkanResource resource) {
-        return extractFieldAsString(resource, "modified").trim();
+        return extractFieldAsString(resource, MODIFIED).trim();
     }
 
     /**
@@ -1075,7 +1085,7 @@ public class DcatFactory {
      * @throws JackanException on generic error
      */
     protected String extractIssued(CkanResource resource) {
-        return extractFieldAsString(resource, "issued").trim();
+        return extractFieldAsString(resource, ISSUED).trim();
     }
 
     /**
@@ -1247,10 +1257,10 @@ public class DcatFactory {
             ddb.setUri(extractUri(resource, sanitizedCatalogUrl, datasetIdOrName));
         }
         catch (NotFoundException ex) {
-            logDistribCantFind("uri");
+            logDistribCantFind(URI_FIELD);
         }
         catch (Exception ex) {
-            logDistribCantExtract("uri", ex);
+            logDistribCantExtract(URI_FIELD, ex);
         }
 
         try {
@@ -1309,10 +1319,10 @@ public class DcatFactory {
             ddb.setIssued(extractIssued(resource));
         }
         catch (NotFoundException ex) {
-            logDistribCantFind("issued");
+            logDistribCantFind(ISSUED);
         }
         catch (Exception ex) {
-            logDistribCantExtract("issued", ex);
+            logDistribCantExtract(ISSUED, ex);
         }
 
         try {
@@ -1329,10 +1339,10 @@ public class DcatFactory {
             ddb.setModified(extractModified(resource));
         }
         catch (NotFoundException ex) {
-            logDistribCantFind("modified");
+            logDistribCantFind(MODIFIED);
         }
         catch (Exception ex) {
-            logDistribCantExtract("modified", ex);
+            logDistribCantExtract(MODIFIED, ex);
         }
 
         try {
@@ -1359,10 +1369,10 @@ public class DcatFactory {
             ddb.setTitle(extractTitle(resource, locale));
         }
         catch (NotFoundException ex) {
-            logDistribCantFind("title");
+            logDistribCantFind(TITLE);
         }
         catch (Exception ex) {
-            logDistribCantExtract("title", ex);
+            logDistribCantExtract(TITLE, ex);
         }
 
         postProcessDistribution(ddb, resource, sanitizedCatalogUrl, datasetIdOrName, license, locale);

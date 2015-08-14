@@ -138,19 +138,19 @@ public class CkanClient {
     private HttpHost proxy;
 
     @JsonSerialize(as = CkanResourceBase.class)
-    private static abstract class CkanResourceForPosting {
+    private abstract static class CkanResourceForPosting {
     }
 
     @JsonSerialize(as = CkanDatasetBase.class)
-    private static abstract class CkanDatasetForPosting {
+    private abstract static class CkanDatasetForPosting {
     }
 
     @JsonSerialize(as = CkanGroupOrgBase.class)
-    private static abstract class CkanGroupOrgForPosting {
+    private abstract static class CkanGroupOrgForPosting {
     }
 
     @JsonSerialize(as = GroupForDatasetPosting.class)
-    private static abstract class GroupForDatasetPosting extends CkanGroupOrgBase {
+     static abstract class GroupForDatasetPosting extends CkanGroupOrgBase {
 
         @JsonIgnore
         @Override
@@ -160,11 +160,11 @@ public class CkanClient {
     }
 
     @JsonSerialize(as = CkanUserBase.class)
-    private static abstract class CkanUserForPosting {
+    private abstract static class CkanUserForPosting {
     }
 
     @JsonSerialize(as = CkanTagBase.class)
-    private static abstract class CkanTagForPosting {
+    private abstract static class CkanTagForPosting {
     }
 
     /**
@@ -209,7 +209,7 @@ public class CkanClient {
         om.addMixInAnnotations(CkanTag.class, CkanTagForPosting.class);
     }
 
-    private static final Map<String, ObjectMapper> objectMappersForPosting = new HashMap();
+    private static final Map<String, ObjectMapper> OBJECT_MAPPERS_FOR_POSTING = new HashMap();
 
     /**
      * Retrieves the Jackson object mapper configured for creation/update
@@ -221,14 +221,14 @@ public class CkanClient {
     static ObjectMapper getObjectMapperForPosting(Class clazz) {
         checkNotNull(clazz, "Invalid class! If you don't know the class just use Object.class");
 
-        if (objectMappersForPosting.get(clazz.getName()) == null) {
+        if (OBJECT_MAPPERS_FOR_POSTING.get(clazz.getName()) == null) {
             LOG.log(Level.FINE, "Generating ObjectMapper for posting class {0}", clazz);
             ObjectMapper om = new ObjectMapper();
             configureObjectMapperForPosting(om, clazz);
-            objectMappersForPosting.put(clazz.getName(), om);
+            OBJECT_MAPPERS_FOR_POSTING.put(clazz.getName(), om);
         }
 
-        return objectMappersForPosting.get(clazz.getName());
+        return OBJECT_MAPPERS_FOR_POSTING.get(clazz.getName());
     }
 
     /**
@@ -460,6 +460,10 @@ public class CkanClient {
         return ckanToken;
     }
 
+    private static void checkCatalogUrl(String catalogUrl){
+        checkNotEmpty(catalogUrl, "invalid catalog url");
+    }
+    
     /**
      * Returns the URL of dataset page in the catalog website.
      *
@@ -471,8 +475,8 @@ public class CkanClient {
      *
      * @param catalogUrl i.e. http://dati.trentino.it
      */
-    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {
-        checkNotEmpty(catalogUrl, "invalid catalog url");
+    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {        
+        checkCatalogUrl(catalogUrl);
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdOrName;
     }
@@ -493,7 +497,7 @@ public class CkanClient {
      * resource name)
      */
     public static String makeResourceUrl(String catalogUrl, String datasetIdOrName, String resourceId) {
-        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkCatalogUrl(catalogUrl);
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         checkNotEmpty(resourceId, "invalid resource id");
         return OdtUtils.removeTrailingSlash(catalogUrl)
@@ -515,7 +519,7 @@ public class CkanClient {
      * (preferred), or the group's alphanumerical id.
      */
     public static String makeGroupUrl(String catalogUrl, String groupNameOrId) {
-        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkCatalogUrl(catalogUrl);
         checkNotEmpty(groupNameOrId, "invalid group identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
     }
@@ -536,7 +540,7 @@ public class CkanClient {
      * alphanumerical id.
      */
     public static String makeOrganizationUrl(String catalogUrl, String orgNameOrId) {
-        checkNotEmpty(catalogUrl, "invalid catalog url");
+        checkCatalogUrl(catalogUrl);
         checkNotEmpty(orgNameOrId, "invalid organization identifier");
         return OdtUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgNameOrId;
     }
@@ -672,7 +676,7 @@ public class CkanClient {
             json = om.writeValueAsString(user);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanUser!", this, e);
+            throw new CkanException(COULDNT_JSONIZE + user.getClass().getSimpleName(), this, e);
 
         }
 
@@ -714,20 +718,13 @@ public class CkanClient {
             json = om.writeValueAsString(resource);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanResource!", this, e);
+            throw new CkanException(COULDNT_JSONIZE + resource.getClass().getSimpleName(), this, e);
 
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
     }
-
-    private static final String CKAN_STORAGE_BASE_URI = "http://datahub.io/api/storage";
-    private static final String CKAN_STORAGE_FILES_BASE_URI = "http://datahub.io/storage/f/";
-
     
-    
-    
-   
-
+    private static final String COULDNT_JSONIZE = "Couldn't jsonize the provided ";
     /**
      * Updates a resource on the server using a straight {@code resource_update}
      * call. Null fields will not be sent and thus won't get updated, but be
@@ -747,7 +744,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
         }
         catch (IOException ex) {
-            throw new CkanException("Couldn't jsonize the provided CkanResource!", this, ex);
+            throw new CkanException(COULDNT_JSONIZE + resource.getClass().getSimpleName(), this, ex);
 
         }
 
@@ -793,7 +790,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
         }
         catch (IOException ex) {
-            throw new CkanException("Couldn't jsonize the provided CkanResource!", this, ex);
+            throw new CkanException(COULDNT_JSONIZE + resource.getClass().getSimpleName(), this, ex);
 
         }
 
@@ -917,7 +914,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanTagBase.class).writeValueAsString(tag);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanTag!", this, e);
+            throw new CkanException(COULDNT_JSONIZE + tag.getClass().getSimpleName(), this, e);
 
         }
         TagResponse response = postHttp(TagResponse.class, "/api/3/action/tag_create", json, ContentType.APPLICATION_JSON);
@@ -972,7 +969,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanVocabularyBase.class).writeValueAsString(vocabulary);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanVocabulary!", this, e);
+            throw new CkanException(COULDNT_JSONIZE + vocabulary.getClass().getSimpleName(), this, e);
 
         }
         VocabularyResponse response = postHttp(VocabularyResponse.class, "/api/3/action/vocabulary_create", json, ContentType.APPLICATION_JSON);
@@ -1147,7 +1144,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanDataset!", this, e);
+            throw new CkanException(COULDNT_JSONIZE  + dataset.getClass().getSimpleName(), this, e);
         }
 
         DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
@@ -1174,7 +1171,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException ex) {
-            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
+            throw new CkanException(COULDNT_JSONIZE + dataset.getClass().getSimpleName(), this, ex);
 
         }
 
@@ -1350,7 +1347,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException ex) {
-            throw new JackanException("Couldn't jsonize the provided CkanResource!", ex);
+            throw new JackanException(COULDNT_JSONIZE + dataset.getClass().getSimpleName(), ex);
 
         }
 
@@ -1398,7 +1395,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanOrganization.class).writeValueAsString(organization);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanOrganization!", this, e);
+            throw new CkanException(COULDNT_JSONIZE + organization.getClass().getSimpleName(), this, e);
 
         }
         return postHttp(OrganizationResponse.class, "/api/3/action/organization_create", json, ContentType.APPLICATION_JSON).result;
@@ -1422,7 +1419,7 @@ public class CkanClient {
             json = getObjectMapperForPosting(CkanGroup.class).writeValueAsString(group);
         }
         catch (IOException e) {
-            throw new CkanException("Couldn't serialize the provided CkanGroup!", this, e);
+            throw new CkanException(COULDNT_JSONIZE + group.getClass().getSimpleName(), this, e);
 
         }
         return postHttp(GroupResponse.class, "/api/3/action/group_create", json, ContentType.APPLICATION_JSON).result;

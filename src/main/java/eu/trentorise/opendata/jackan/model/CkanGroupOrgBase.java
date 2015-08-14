@@ -16,43 +16,11 @@
 package eu.trentorise.opendata.jackan.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.common.base.Strings;
 import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
-import java.io.IOException;
-import java.util.ArrayList;
+import eu.trentorise.opendata.jackan.JackanModule;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
-
-class GroupOrgPackagesDeserializer extends JsonDeserializer<List<CkanDataset>> {
-    private static final Logger LOG = Logger.getLogger(GroupOrgPackagesDeserializer.class.getName());
-
-    
-    @Override
-    public List<CkanDataset> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        
-        JsonToken t = jp.getCurrentToken();
-
-        if (t == JsonToken.VALUE_NUMBER_INT) {
-            return new ArrayList();
-        }
-
-        if (t == JsonToken.START_ARRAY) {
-            return jp.readValueAs(new TypeReference<List<CkanDataset>>(){});
-        }
-
-        LOG.log(Level.SEVERE, "Unrecognized token {0} for 'packages' field, returning an empty array.", t.asString());
-        return new ArrayList();
-    }
-}
 
 /**
  * Abstract class to model the same data structure that Ckan uses for creating
@@ -74,7 +42,7 @@ public abstract class CkanGroupOrgBase {
     private String imageUrl;
     private String name;
     private boolean organization;
-    @JsonDeserialize(using = GroupOrgPackagesDeserializer.class)
+    @JsonDeserialize(using = JackanModule.GroupOrgPackagesDeserializer.class)
     private List<CkanDataset> packages;
 
     private CkanState state;
@@ -150,7 +118,7 @@ public abstract class CkanGroupOrgBase {
     }
 
     /**
-     * The URL to an image to be displayed on the group/org’s page (optional) 
+     * The URL to an image to be displayed on the group/org’s page (optional)
      */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
@@ -171,8 +139,7 @@ public abstract class CkanGroupOrgBase {
     public void setName(String name) {
         this.name = name;
     }
-    
-    
+
     /**
      * A ckan group can also be an organization.
      */
@@ -190,22 +157,20 @@ public abstract class CkanGroupOrgBase {
     }
 
     /**
-     * The datasets of the group. May be empty according to the api call.
+     * The datasets of the group. Some api return the *number* of packages, in
+     * this case we set the value to null.
      */
     public List<CkanDataset> getPackages() {
         return packages;
     }
 
-    /**
-     * The datasets of the group. May be empty according to the api call.
-     */    
+     /**
+     * The datasets of the group. Some api return the *number* of packages, in
+     * this case we set the value to null.
+     */
     public void setPackages(List<CkanDataset> packages) {
         this.packages = packages;
     }
-
-    
-
-   
 
     /**
      * The current state of the group, e.g. 'active' or 'deleted', only active
@@ -255,7 +220,7 @@ public abstract class CkanGroupOrgBase {
     public void setType(String type) {
         this.type = type;
     }
-    
+
     public List<CkanUser> getUsers() {
         return users;
     }
@@ -264,20 +229,20 @@ public abstract class CkanGroupOrgBase {
         this.users = users;
     }
 
-     /**
+    /**
      * Returns the id if non-empty, the name otherwise
      */
     @Nullable
-    public String idOrName() {        
+    public String idOrName() {
         return isNotEmpty(getId()) ? getId() : getName();
     }
-    
+
     /**
      * Returns the name if non-empty, the id otherwise
      */
     @Nullable
-    public String nameOrId() {       
-                
+    public String nameOrId() {
+
         return isNotEmpty(getName()) ? getName() : getId();
     }
 

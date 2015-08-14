@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -26,8 +27,11 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import static eu.trentorise.opendata.jackan.CkanClient.formatTimestamp;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,7 +76,7 @@ public class JackanModule extends SimpleModule {
         addDeserializer(Timestamp.class, new JsonDeserializer<Timestamp>() {
 
             @Override
-            public Timestamp deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            public Timestamp deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
                 JsonToken t = jp.getCurrentToken();
 
                 if (t == JsonToken.VALUE_STRING) {
@@ -96,6 +100,33 @@ public class JackanModule extends SimpleModule {
             }
 
         });
+    }
+
+    /**
+     * group org packages sometimes are arrays, sometimes numbers. If a number
+     * is found null is returned.
+     */
+    public static class GroupOrgPackagesDeserializer extends JsonDeserializer<List<CkanDataset>> {
+
+        private static final Logger LOG = Logger.getLogger(GroupOrgPackagesDeserializer.class.getName());
+
+        @Override
+        public List<CkanDataset> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+
+            JsonToken t = jp.getCurrentToken();
+
+            if (t == JsonToken.VALUE_NUMBER_INT) {
+                return null;
+            }
+
+            if (t == JsonToken.START_ARRAY) {
+                return jp.readValueAs(new TypeReference<List<CkanDataset>>() {
+                });
+            }
+
+            LOG.log(Level.SEVERE, "Unrecognized token {0} for 'packages' field, returning an empty array.", t.asString());
+            return new ArrayList();
+        }
     }
 
 }
