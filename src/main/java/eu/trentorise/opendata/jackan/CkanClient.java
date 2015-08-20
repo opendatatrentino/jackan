@@ -375,6 +375,7 @@ public class CkanClient {
      * Throws CkanException or a subclass of it according to CkanError#getType()
      *
      * @throws CkanException
+     * @since 0.4.1
      */
     protected <T extends CkanResponse> void throwCkanException(String msg, T ckanResponse) {
         if (ckanResponse.getError() != null && ckanResponse.getError().getType() != null) {
@@ -710,6 +711,7 @@ public class CkanClient {
      * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
      * @return the newly created resource
      * @throws JackanException
+     * @since 0.4.1
      */
     public synchronized CkanResource createResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
@@ -737,7 +739,8 @@ public class CkanClient {
      * see
      * {@link #patchUpdateResource(eu.trentorise.opendata.jackan.ckan.CkanResourceBase) }
      *
-     * @throws JackanException
+     * @throws CkanException on error
+     * @since 0.4.1
      */
     public synchronized CkanResource updateResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
@@ -769,8 +772,8 @@ public class CkanClient {
      * for update.
      *
      * @see #updateResource(eu.trentorise.opendata.jackan.ckan.CkanResourceBase)
-     * @throws JackanException
-     *
+     * @throws CkanException on error
+     * @since 0.4.1
      */
     public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
@@ -812,7 +815,8 @@ public class CkanClient {
      * @param id The alphanumerical id of the resource, such as
      * d0892ada-b8b9-43b6-81b9-47a86be126db.
      *
-     * @throws JackanException on error
+     * @throws CkanException on error
+     * @since 0.4.1
      */
     public synchronized void deleteResource(String id) {
         checkNotNull(id, "Need a valid id!");
@@ -1026,6 +1030,7 @@ public class CkanClient {
      *
      * @throws IllegalArgumentException if timestamp can't be parsed.
      * @see #formatTimestamp(java.sql.Timestamp) for the inverse process.
+     * @since 0.4.1
      */
     public static Timestamp parseTimestamp(String timestamp) {
         if (timestamp == null) {
@@ -1044,6 +1049,7 @@ public class CkanClient {
      * precision up to microseconds.
      *
      * @see #parseTimestamp(java.lang.String) for the inverse process.
+     * @since 0.4.1
      */
     @Nullable
     public static String formatTimestamp(Timestamp timestamp) {
@@ -1136,6 +1142,7 @@ public class CkanClient {
      * @param dataset Ckan dataset without id
      * @return the newly created dataset
      * @throws CkanException
+     * @since 0.4.1
      */
     public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
@@ -1163,7 +1170,8 @@ public class CkanClient {
      * erased on the server! To prevent this behaviour, see
      * {@link #patchUpdateDataset(eu.trentorise.opendata.jackan.ckan.CkanDatasetBase)}
      *
-     * @throws CkanException
+     * @throws CkanException on error
+     * @since 0.4.1
      */
     public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
@@ -1280,8 +1288,8 @@ public class CkanClient {
      * support this behaviour provided {@code dataset} might be patched with
      * latest metadata from the server prior sending it for update.
      *
-     * @throws CkanException
-     *
+     * @throws CkanException on error
+     * @since 0.4.1
      */
     public synchronized CkanDataset patchUpdateDataset(CkanDatasetBase dataset) {
         checkNotNull(dataset, "Need a valid dataset!");
@@ -1388,6 +1396,7 @@ public class CkanClient {
      * fields of {@link CkanGroupOrgBase} will be sent to server.
      * @return a new object with the created organization.
      * @throws CkanException on error.
+     * @since 0.4.1
      */
     public synchronized CkanOrganization createOrganization(CkanOrganization organization) {
         checkNotNull(organization, "Need a valid " + organization + "!");
@@ -1412,6 +1421,7 @@ public class CkanClient {
      * {@link CkanGroupOrgBase} will be sent to server.
      * @return a new object with the created group.
      * @throws CkanException on error.
+     * @since 0.4.1
      */
     public synchronized CkanGroup createGroup(CkanGroup group) {
         checkNotNull(group, "Need a valid " + group + "!");
@@ -1431,6 +1441,7 @@ public class CkanClient {
 
     /**
      * Returns the proxy used by the client.
+     * @since 0.4.1
      */
     @Nullable
     public HttpHost getProxy() {
