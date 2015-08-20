@@ -19,6 +19,7 @@ import eu.trentorise.opendata.jackan.CkanClient;
 
 /**
  * Gets dataset list
+ * @since 0.4.1
  */
 public class TestApp1 {
 

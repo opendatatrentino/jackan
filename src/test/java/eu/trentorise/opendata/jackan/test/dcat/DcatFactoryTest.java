@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
  * * TODO methods don't really assert anything
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 @RunWith(JUnitParamsRunner.class)
 public class DcatFactoryTest {

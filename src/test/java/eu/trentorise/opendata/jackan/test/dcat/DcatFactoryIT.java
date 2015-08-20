@@ -44,6 +44,7 @@ import org.junit.runner.RunWith;
  * To try out the factory with data in the wild
  * todo methods don't really assert much
  * @author David Leoni
+ * @since 0.4.1
  */
 @RunWith(JUnitParamsRunner.class)
 public class DcatFactoryIT {

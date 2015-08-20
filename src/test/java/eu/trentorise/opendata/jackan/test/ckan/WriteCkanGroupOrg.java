@@ -38,6 +38,7 @@ import org.junit.Test;
  * EVENTUAL JUnitParams TAGS
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 abstract class WriteCkanGroupOrg<T extends CkanGroupOrg> extends WriteCkanTest {
 

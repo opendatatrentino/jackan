@@ -22,6 +22,7 @@ import org.junit.Test;
 /**
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class WriteExperimentsIT extends WriteCkanTest {
 

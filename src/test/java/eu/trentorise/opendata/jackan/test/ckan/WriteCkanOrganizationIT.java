@@ -25,6 +25,7 @@ import org.junit.Test;
 /**
  *  IMPORTANT: OVERRIDDEN METHODS MUST COPY ANNOTATIONS @Test AND
  * EVENTUAL JUnitParams TAGS
+ * @since 0.4.1
 */
 public class WriteCkanOrganizationIT extends WriteCkanGroupOrg<CkanOrganization> {
 

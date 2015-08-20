@@ -41,6 +41,7 @@ import org.junit.runner.RunWith;
  * {@link CkanTestReporter}
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 @RunWith(JUnitParamsRunner.class)
 public abstract class WriteCkanTest {

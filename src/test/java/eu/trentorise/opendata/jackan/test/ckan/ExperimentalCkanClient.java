@@ -38,6 +38,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * This client include features that probably... just don't work
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 class ExperimentalCkanClient extends CkanClient {
 

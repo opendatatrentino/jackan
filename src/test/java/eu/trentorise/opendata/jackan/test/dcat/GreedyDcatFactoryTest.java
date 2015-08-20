@@ -36,6 +36,7 @@ import org.junit.Test;
 /**
  * TODO methods don't really assert anything
  * @author David Leoni
+ * @since 0.4.1
  */
 public class GreedyDcatFactoryTest {
      private static final String CATALOG_URL = "https://github.com/opendatatrentino/jackan";
