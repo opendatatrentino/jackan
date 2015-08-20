@@ -98,6 +98,8 @@ public class CkanClient {
      *
      * @see #parseTimestamp(java.lang.String)
      * @see #formatTimestamp(java.sql.Timestamp)
+     *
+     * @since 0.4.1
      */
     public static final String CKAN_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";
 
@@ -108,31 +110,41 @@ public class CkanClient {
      * also  <a href="https://github.com/ckan/ckan/issues/1874"> ckan issue 874
      * </a> and
      * <a href="https://github.com/ckan/ckan/pull/2519">ckan pull 2519</a>
+     * 
+     * @since 0.4.1
      */
     public static final String CKAN_NO_MILLISECS_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
-    /**
-     * Sometimes we get back Python "None" as a string instead of proper JSON
-     * null
-     */
-    public static final String NONE = "None";
-
-    @Nullable
-    private static ObjectMapper objectMapper;
-
-    /**
+/**
      * Notice that even for the same api version (at least for versions up to 3
      * included) different CKAN instances can behave quite differently, either
      * for differences in software or custom server permissions.
      */
-    public static final ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);
+    public static final ImmutableList<Integer> SUPPORTED_API_VERSIONS = ImmutableList.of(3);    
+    
+    /**
+     * Sometimes we get back Python "None" as a string instead of proper JSON
+     * null
+     *
+     * @since 0.4.1
+     */
+    public static final String NONE = "None";
+
+    private static final Logger LOG = Logger.getLogger(CkanClient.class.getName());    
+    
+    private static final String COULDNT_JSONIZE = "Couldn't jsonize the provided ";
+    
+    @Nullable
+    private static ObjectMapper objectMapper;
+
+    private static final Map<String, ObjectMapper> OBJECT_MAPPERS_FOR_POSTING = new HashMap();    
+    
+    
 
     private final String catalogUrl;
 
     @Nullable
     private final String ckanToken;
-
-    private static final Logger LOG = Logger.getLogger(CkanClient.class.getName());
 
     @Nullable
     private HttpHost proxy;
@@ -150,7 +162,7 @@ public class CkanClient {
     }
 
     @JsonSerialize(as = GroupForDatasetPosting.class)
-     static abstract class GroupForDatasetPosting extends CkanGroupOrgBase {
+    static abstract class GroupForDatasetPosting extends CkanGroupOrgBase {
 
         @JsonIgnore
         @Override
@@ -168,8 +180,8 @@ public class CkanClient {
     }
 
     /**
-     * Configures the provided Jackson ObjectMapper exactly as the internal
-     * JSON mapper used for reading operations. If you want to perform
+     * Configures the provided Jackson ObjectMapper exactly as the internal JSON
+     * mapper used for reading operations. If you want to perform
      * create/update/delete operations, use {@link  #configureObjectMapperForPosting(com.fasterxml.jackson.databind.ObjectMapper, java.lang.Class)
      * } instead.
      *
@@ -211,7 +223,7 @@ public class CkanClient {
         om.addMixInAnnotations(CkanTag.class, CkanTagForPosting.class);
     }
 
-    private static final Map<String, ObjectMapper> OBJECT_MAPPERS_FOR_POSTING = new HashMap();
+    
 
     /**
      * Retrieves the Jackson object mapper configured for creation/update
@@ -269,8 +281,8 @@ public class CkanClient {
     /**
      * Creates a Ckan client.
      *
-     * @param catalogUrl the catalog url i.e. http://data.gov.uk. Internally, it will
-     * be stored in a normalized format (to avoid i.e. trailing slashes).
+     * @param catalogUrl the catalog url i.e. http://data.gov.uk. Internally, it
+     * will be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
      * @param proxy the proxy used to perform GET and POST calls
      * @since 0.4.1
@@ -465,10 +477,10 @@ public class CkanClient {
         return ckanToken;
     }
 
-    private static void checkCatalogUrl(String catalogUrl){
+    private static void checkCatalogUrl(String catalogUrl) {
         checkNotEmpty(catalogUrl, "invalid catalog url");
     }
-    
+
     /**
      * Returns the URL of dataset page in the catalog website.
      *
@@ -480,7 +492,7 @@ public class CkanClient {
      *
      * @param catalogUrl i.e. http://dati.trentino.it
      */
-    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {        
+    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {
         checkCatalogUrl(catalogUrl);
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdOrName;
@@ -728,9 +740,8 @@ public class CkanClient {
 
         }
         return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json, ContentType.APPLICATION_JSON).result;
-    }
-    
-    private static final String COULDNT_JSONIZE = "Couldn't jsonize the provided ";
+    }   
+
     /**
      * Updates a resource on the server using a straight {@code resource_update}
      * call. Null fields will not be sent and thus won't get updated, but be
@@ -745,7 +756,7 @@ public class CkanClient {
     public synchronized CkanResource updateResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
         checkToken("Tried to update resource" + resource.getName());
-        
+
         String json = null;
         try {
             json = getObjectMapperForPosting(CkanResourceBase.class).writeValueAsString(resource);
@@ -778,7 +789,6 @@ public class CkanClient {
     public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
         checkNotNull(resource, "Need a valid resource!");
         checkToken("Tried to update resource" + resource.getName());
-
 
         CkanResource origResource = getResource(resource.getId());
         // others 
@@ -971,7 +981,7 @@ public class CkanClient {
         checkNotNull(vocabulary, "Need a valid vocabulary!");
 
         checkToken("Tried to create vocabulary" + vocabulary.getName());
-        
+
         String json = null;
         try {
             json = getObjectMapperForPosting(CkanVocabularyBase.class).writeValueAsString(vocabulary);
@@ -1124,15 +1134,15 @@ public class CkanClient {
 
         return dsr.result;
     }
-    
+
     /**
-     * @msg the prepended error message. 
+     * @msg the prepended error message.
      * @throws CkanException
      */
-    private void checkToken(@Nullable String prependedErrorMessage){
+    private void checkToken(@Nullable String prependedErrorMessage) {
         if (ckanToken == null) {
             throw new CkanException(String.valueOf(prependedErrorMessage) + ", but ckan token was not set!", this);
-        }        
+        }
     }
 
     /**
@@ -1148,14 +1158,14 @@ public class CkanClient {
         checkNotNull(dataset, "Need a valid dataset!");
 
         checkToken("Tried to create dataset" + dataset.getName());
-        
+
         String json = null;
         try {
 
             json = getObjectMapperForPosting(CkanDatasetBase.class).writeValueAsString(dataset);
         }
         catch (IOException e) {
-            throw new CkanException(COULDNT_JSONIZE  + dataset.getClass().getSimpleName(), this, e);
+            throw new CkanException(COULDNT_JSONIZE + dataset.getClass().getSimpleName(), this, e);
         }
 
         DatasetResponse response = postHttp(DatasetResponse.class, "/api/3/action/package_create", json, ContentType.APPLICATION_JSON);
@@ -1295,7 +1305,7 @@ public class CkanClient {
         checkNotNull(dataset, "Need a valid dataset!");
 
         checkToken("Tried to patch update dataset" + dataset.getName());
-        
+
         CkanDataset origDataset = getDataset(dataset.idOrName());
 
         // others 
@@ -1441,6 +1451,7 @@ public class CkanClient {
 
     /**
      * Returns the proxy used by the client.
+     *
      * @since 0.4.1
      */
     @Nullable
