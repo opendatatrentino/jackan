@@ -39,6 +39,7 @@ import javax.annotation.Nullable;
  * {@code name}.
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class CkanDatasetBase {
 

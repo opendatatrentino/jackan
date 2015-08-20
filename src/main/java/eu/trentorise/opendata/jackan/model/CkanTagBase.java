@@ -29,6 +29,7 @@ package eu.trentorise.opendata.jackan.model;
  * {@code name}.
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class CkanTagBase {
 

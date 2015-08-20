@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class CkanLicense {
 

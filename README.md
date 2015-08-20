@@ -18,6 +18,7 @@ Java client library for CKAN catalogs. Features:
   * well documented
   * unit tested with proper integration tests
   * uses ckan api v3
+  * allows reading and (to some degree) writing
   * supports Java 7+
 
 Usage: See [docs](docs)

@@ -169,11 +169,12 @@ public class CkanClient {
 
     /**
      * Configures the provided Jackson ObjectMapper exactly as the internal
-     * Jackan mapper used for reading operations. If you want to perform
+     * JSON mapper used for reading operations. If you want to perform
      * create/update/delete operations, use {@link  #configureObjectMapperForPosting(com.fasterxml.jackson.databind.ObjectMapper, java.lang.Class)
      * } instead.
      *
      * @param om a Jackson object mapper
+     * @since 0.4.1
      */
     public static void configureObjectMapper(ObjectMapper om) {
         om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -191,6 +192,7 @@ public class CkanClient {
      *
      * @param om a Jackson object mapper
      * @param class the class of the objects you wish to create/update/delete.
+     * @since 0.4.1
      */
     public static void configureObjectMapperForPosting(ObjectMapper om, Class clazz) {
         configureObjectMapper(om);
@@ -217,6 +219,7 @@ public class CkanClient {
      *
      * @param the clazz the class you want to post. For generic class, just put
      * Object.class
+     * @since 0.4.1
      */
     static ObjectMapper getObjectMapperForPosting(Class clazz) {
         checkNotNull(clazz, "Invalid class! If you don't know the class just use Object.class");
@@ -270,6 +273,7 @@ public class CkanClient {
      * be stored in a normalized format (to avoid i.e. trailing slashes).
      * @param token the private token string for ckan repository
      * @param proxy the proxy used to perform GET and POST calls
+     * @since 0.4.1
      */
     public CkanClient(String catalogUrl, @Nullable String token, @Nullable HttpHost proxy) {
         checkNotEmpty(catalogUrl, "invalid ckan catalog url");

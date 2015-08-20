@@ -17,7 +17,6 @@ package eu.trentorise.opendata.jackan;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -49,6 +48,7 @@ import java.util.logging.Logger;
  * +1 for GMT, which we don't want.
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class JackanModule extends SimpleModule {
 

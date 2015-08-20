@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
  * } field).
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public abstract class CkanGroupOrgBase {
 

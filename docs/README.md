@@ -322,6 +322,8 @@ CKAN uses timestamps in a format like `1970-01-01T01:00:00.000010`. In the clien
 
 ### DCAT
 
+<a href="http://www.w3.org/TR/vocab-dcat/" target="_blank">DCAT</a> is an emerging W3C standard for representing catalog metadata. For this reason, when we use Jackan we usually convert Ckan objects to their DCAT representation, which gives us a consistent well defined view of open data catalogs.
+
 There has long been a plugin for ckan to serve metadata as rdf in <a href="http://www.w3.org/TR/vocab-dcat/" target="_blank">DCAT format</a>, but <a href="https://lists.okfn.org/pipermail/ckan-dev/2015-July/009164.html" target="_blank">according to maintainer (July 2015):</a>
 ```
 Historically you have been able to access an RDF representation of a CKAN
@@ -358,6 +360,8 @@ Examples code:
 ```
 
 To extract more stuff during conversion, you can use <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a> and override the extract* and/or postProcess* methods.
+
+todo write about serializing Dcat to json?
 
 ### Logging
 

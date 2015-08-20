@@ -6,7 +6,7 @@ Project website: http://opendatatrentino.github.io/jackan
 
 <br/>
 
-#### 0.4.x   todo in progress
+#### 0.4.1   todo in progress
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
 - implemented DcatFactory for conversion to Dcat, see [supported operations table](README.md#dcat)
@@ -14,6 +14,7 @@ Project website: http://opendatatrentino.github.io/jackan
 - now creating release zip with jar and dependencies
 - Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
 - added many exceptions (all inherit from JackanException)
+- added reading licences 
 
 merged pull requests:
 
@@ -23,11 +24,13 @@ merged pull requests:
 
 BREAKING CHANGES: 
 
+- now requiring Java 7+
 - renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model
 - renamed URL to Url in functions and fields. i.e. catalogURL -> catalogUrl, CkanClient.makeDatasetURL -> makeDatasetUrl, ...
 - renamed and split `CkanGroupStructure` into `CkanGroupOrgBase` and `CkanGroupOrg`
 - now Joda `DateTime` is not used anymore, for timestamps now we use `java.sql.Timestamp`
-- CkanClient.getObjectMapperClone() is gone. See [new json configuration](README.md#default-json-serdeserialization) instead
+- `CkanClient.getObjectMapperClone()` is gone. See [new json configuration](README.md#default-json-serdeserialization) instead
+- renamed `TrackingSummary` into `CkanTrackingSummary`
 
 
 #### 0.3.1  -  19 January 2015

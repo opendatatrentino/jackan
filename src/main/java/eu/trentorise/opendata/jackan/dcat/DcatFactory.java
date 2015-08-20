@@ -63,6 +63,7 @@ import javax.annotation.Nullable;
  * and/or postProcess* methods.
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class DcatFactory {
 

@@ -36,6 +36,7 @@ import java.util.logging.Logger;
  * than none
  *
  * @see DcatFactory for more prudent factory.
+ * @since 0.4.1
  */
 @Beta
 public class GreedyDcatFactory extends DcatFactory {

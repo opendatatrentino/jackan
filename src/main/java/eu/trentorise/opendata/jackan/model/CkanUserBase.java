@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
  * This class initializes nothing to fully preserve all we get from ckan. In
  * practice, all fields of retrieved resources can be null except maybe
  * {@code name}.
+ * @since 0.4.1
  */
 public class CkanUserBase {
 

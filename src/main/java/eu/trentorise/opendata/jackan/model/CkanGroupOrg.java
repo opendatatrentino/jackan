@@ -22,6 +22,7 @@ import java.sql.Timestamp;
  * organizations.
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public abstract class CkanGroupOrg extends CkanGroupOrgBase {
 

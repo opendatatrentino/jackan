@@ -43,6 +43,7 @@ import org.apache.http.HttpHost;
  * class as well..
  *
  * @author David Leoni
+ * @since 0.4.1
  */
 public class CheckedCkanClient extends CkanClient {    
 
