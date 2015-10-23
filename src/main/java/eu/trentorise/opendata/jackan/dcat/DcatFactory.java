@@ -27,6 +27,8 @@ import com.google.common.annotations.Beta;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableMap;
 import eu.trentorise.opendata.commons.OdtUtils;
+import eu.trentorise.opendata.commons.PeriodOfTime;
+
 import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
@@ -486,13 +488,13 @@ public class DcatFactory {
     }
 
     /**
-     * Returns a string with values trying to respoect ISO 8601 format for time
+     * Returns a string with values trying to respect ISO 8601 format for time
      * intervals: https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
      * @throws NotFoundException when not found
      * @throws JackanException on generic error
      */
-    protected String extractTemporal(CkanDataset dataset) {
+    protected PeriodOfTime extractTemporal(CkanDataset dataset) {
         String start = "";
         String end = "";
 
@@ -510,10 +512,10 @@ public class DcatFactory {
         }
 
         if (start.isEmpty() && end.isEmpty()) {
-            throw new NotFoundException("Couldn find any valid temporal information!");
+            throw new NotFoundException("Couldn't find any valid temporal information!");
         }
 
-        return start + "/" + end;
+        return PeriodOfTime.of(start, end);
     }
 
     /**

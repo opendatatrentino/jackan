@@ -13,12 +13,12 @@ RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" targ
 
 Java client library for CKAN catalogs. Features:
 
+  * allows reading and (<a href="docs/README.md#supported-operations" target="_blank">to some degree</a>) writing in Ckan  
   * dependency handling with Maven
   * liberal Apache 2.0 license
   * well documented
   * unit tested with proper integration tests
-  * uses ckan api v3
-  * allows reading and (to some degree) writing
+  * uses ckan api v3    
   * supports Java 7+
 
 Usage: See [docs](docs)
