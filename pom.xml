@@ -1,251 +1,278 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!--  
-        /* 
-         * Copyright 2015 Trento Rise  (trentorise.eu) 
-         *
-         * Licensed under the Apache License, Version 2.0 (the "License");
-         * you may not use this file except in compliance with the License.
-         * You may obtain a copy of the License at
-         *
-         *      http://www.apache.org/licenses/LICENSE-2.0
-         *
-         * Unless required by applicable law or agreed to in writing, software
-         * distributed under the License is distributed on an "AS IS" BASIS,
-         * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-         * See the License for the specific language governing permissions and
-         * limitations under the License.
-         */  
-    -->
-    
-    <modelVersion>4.0.0</modelVersion>
+	<!-- /* * Copyright 2015 Trento Rise (trentorise.eu) * * Licensed under 
+		the Apache License, Version 2.0 (the "License"); * you may not use this file 
+		except in compliance with the License. * You may obtain a copy of the License 
+		at * * http://www.apache.org/licenses/LICENSE-2.0 * * Unless required by 
+		applicable law or agreed to in writing, software * distributed under the 
+		License is distributed on an "AS IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS 
+		OF ANY KIND, either express or implied. * See the License for the specific 
+		language governing permissions and * limitations under the License. */ -->
 
-    <groupId>eu.trentorise.opendata</groupId>
-    <artifactId>jackan</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+	<modelVersion>4.0.0</modelVersion>
 
-    <name>Jackan</name>
-    <url>https://github.com/opendatatrentino/jackan</url>
-    <description>Java client to access CKAN repositories. </description>
-    
-    <parent>
-        <groupId>eu.trentorise.opendata.commons</groupId>
-        <artifactId>odt-super-pom</artifactId>
-        <version>1.3.0-SNAPSHOT</version>
-    </parent>   
+	<groupId>eu.trentorise.opendata</groupId>
+	<artifactId>jackan</artifactId>
+	<version>0.4.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-    <scm>
-        <url>${project.url}</url>
-        <connection>scm:git:${project.url}.git</connection>
-        <developerConnection>scm:git:${project.url}.git</developerConnection>        
-        <tag>HEAD</tag>
-    </scm>
+	<name>Jackan</name>
+	<url>https://github.com/opendatatrentino/jackan</url>
+	<description>Java client to access CKAN repositories. </description>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>                
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>                            
-                                    <overWriteIfNewer>true</overWriteIfNewer>
-                                    <excludeGroupIds>
-                                        junit,pl.pragmatists,org.hamcrest
-                                    </excludeGroupIds>
-                                </configuration>
-                            </execution>
-                        </executions>                
-                    </plugin>
-            
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.5.3</version>
-                        <configuration>
-                            <descriptor>src/assembly/bin.xml</descriptor>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>create-archive</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>                 
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+	<parent>
+		<groupId>eu.trentorise.opendata.commons</groupId>
+		<artifactId>odt-super-pom</artifactId>
+		<version>1.3.0-SNAPSHOT</version>
+	</parent>
 
-    <build>
-        <plugins>
-                                  
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-            </plugin>               
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-            </plugin>
-                        
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>                
-            <plugin>
-                <groupId>eu.trentorise.opendata.josman</groupId>
-                <artifactId>josman-maven-plugin</artifactId>              
-            </plugin>    
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <configuration>
-                    <merge>true</merge>
-                </configuration>
-                
-            </plugin>  
-            
-            <!-- **************   TEST PLUGINS    *****************  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>               
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>               
-            </plugin>
-           
-        </plugins>      
+	<scm>
+		<url>${project.url}</url>
+		<connection>scm:git:${project.url}.git</connection>
+		<developerConnection>scm:git:${project.url}.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
-    </build>
-    
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-dependencies</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<overWriteIfNewer>true</overWriteIfNewer>
+									<excludeGroupIds>
+										junit,pl.pragmatists,org.hamcrest
+									</excludeGroupIds>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-    <developers>
-        <developer>
-            <id>d.leoni</id>
-            <name>David Leoni</name>
-            <email>david.leoni@trentorise.eu</email>
-            <organization>DISI, University of Trento</organization>
-        </developer>
-        
-        <developer>
-            <id>i.tankoyeu</id>
-            <name>Ivan Tankoyeu</name>
-            <email>tankoyeu@disi.unitn.it</email>
-            <organization>DISI, University of Trento</organization>
-        </developer>
-    </developers>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<descriptor>src/assembly/bin.xml</descriptor>
+							<finalName>${project.artifactId}-${project.version}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-archive</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<includes>
+									<include> eu.trentorise.opendata.jackan* </include>
+									
+									<include>org.apache.httpcomponents:httpcore</include>
+									<include>org.apache.httpcomponents:httpcore-nio</include>
+									<include>org.apache.httpcomponents:httpmime</include>
+									<include>org.apache.httpcomponents:fluent-hc</include>
+									<include>org.apache.httpcomponents:httpclient</include>
+								</includes>
+							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>org.apache.http</pattern>
+									<shadedPattern>eu.trentorise.opendata.jackan.internal.org.apache.http</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 
-    <dependencies>
-        
-        <dependency>
-            <groupId>eu.trentorise.opendata</groupId>
-            <artifactId>traceprov</artifactId>            
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.3.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.3.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpcore</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-                                                                                               
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>4.3.1</version>
-        </dependency>   
-        
-        <!-- *****************************   STUFF FOR TESTING ********************************  -->
+			<plugin>
+				<groupId>eu.trentorise.opendata.josman</groupId>
+				<artifactId>josman-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<configuration>
+					<merge>true</merge>
+				</configuration>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>            
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>pl.pragmatists</groupId>
-            <artifactId>JUnitParams</artifactId>            
-            <scope>test</scope>
-        </dependency>               
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-            <scope>test</scope>
-        </dependency> 
-        
-        <dependency>
-            <groupId>org.rendersnake</groupId>
-            <artifactId>rendersnake</artifactId>
-            <version>1.8</version>
-            <scope>test</scope>
-        </dependency>                
-        
-    </dependencies>
-    
-    
-    
-    <reporting>
-        <plugins>
-            
-            <!-- todo what's this for? -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.3</version>
-            </plugin>
-                
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.12.1</version>
-                <configuration>
-                    <configLocation>config/sun_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-            
-        </plugins>
-    </reporting>    
+			</plugin>
+
+			<!-- ************** TEST PLUGINS ***************** -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+
+	<developers>
+		<developer>
+			<id>d.leoni</id>
+			<name>David Leoni</name>
+			<email>david.leoni@trentorise.eu</email>
+			<organization>DISI, University of Trento</organization>
+		</developer>
+
+		<developer>
+			<id>i.tankoyeu</id>
+			<name>Ivan Tankoyeu</name>
+			<email>tankoyeu@disi.unitn.it</email>
+			<organization>DISI, University of Trento</organization>
+		</developer>
+	</developers>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>eu.trentorise.opendata</groupId>
+			<artifactId>traceprov</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.3.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpcore</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+
+		<!-- ***************************** STUFF FOR TESTING ******************************** -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>pl.pragmatists</groupId>
+			<artifactId>JUnitParams</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.rendersnake</groupId>
+			<artifactId>rendersnake</artifactId>
+			<version>1.8</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+
+
+	<reporting>
+		<plugins>
+
+			<!-- todo what's this for? -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<configLocation>config/sun_checks.xml</configLocation>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</reporting>
 </project>
