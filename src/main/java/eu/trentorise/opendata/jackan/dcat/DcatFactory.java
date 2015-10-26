@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableMap;
 import eu.trentorise.opendata.commons.OdtUtils;
 import eu.trentorise.opendata.commons.PeriodOfTime;
 
-import static eu.trentorise.opendata.commons.OdtUtils.checkNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.exceptions.NotFoundException;
@@ -43,7 +43,6 @@ import eu.trentorise.opendata.traceprov.dcat.SkosConceptScheme;
 import eu.trentorise.opendata.traceprov.dcat.VCard;
 import eu.trentorise.opendata.traceprov.geojson.Feature;
 import eu.trentorise.opendata.traceprov.geojson.GeoJson;
-import java.net.URI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -211,7 +210,6 @@ public class DcatFactory {
         if (candidateString == null
                 && dataset.getExtras() != null) {
             candidateString = dataset.getExtrasAsHashMap().get(field);
-
         }
 
         if (candidateString == null) {
@@ -515,7 +513,12 @@ public class DcatFactory {
             throw new NotFoundException("Couldn't find any valid temporal information!");
         }
 
-        return PeriodOfTime.of(start, end);
+        try {
+            return PeriodOfTime.of(start, end);
+        } catch (IllegalStateException ex){
+            logger.info("Couldn't find valid ISO8061 temporal_start/end fields, storing raw string.'");
+            return PeriodOfTime.of(start + PeriodOfTime.SEP + end);
+        }
     }
 
     /**
