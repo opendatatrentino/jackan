@@ -241,6 +241,14 @@
 			<scope>test</scope>
 		</dependency>
 
+       <!--  needed even if it is a junit dep because maven shade excluding it from builds :-/ -->          	
+		<dependency>
+			<artifactId>hamcrest-core</artifactId>
+			<groupId>org.hamcrest</groupId>
+			<scope>test</scope>			
+		</dependency>
+
+
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
