@@ -487,8 +487,8 @@ public class CkanClient {
      * Valid URLs have this format with the name:
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013
      *
-     * @param datasetIdOrName either of name the dataset (preferred) or the
-     * alphanumerical id.
+     * @param datasetIdOrName either the dataset's 
+     * {@link CkanDataset#getId() alphanumerical id} (preferred as it is more stable) or the {@link CkanDataset#getName() dataset name}
      *
      * @param catalogUrl i.e. http://dati.trentino.it
      */
@@ -507,11 +507,11 @@ public class CkanClient {
      * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02
      *
      * @param catalogUrl i.e. http://dati.trentino.it
-     * @param datasetIdOrName the dataset name (preferred) or the alphanumerical
-     * id
+     * @param datasetIdOrName either the dataset's alphanumerical
+     * {@link CkanDataset#getId() id} (preferred as it is more stable) or the {@link CkanDataset#getName() dataset name}
      *
-     * @param resourceId the alphanumerical id of the resource (DON'T use
-     * resource name)
+     * @param resourceId the  {@link CkanResource#getId() alphanumerical id} of the resource (DON'T use
+     *  {@link CkanResource#getName() resource name})
      */
     public static String makeResourceUrl(String catalogUrl, String datasetIdOrName, String resourceId) {
         checkCatalogUrl(catalogUrl);
