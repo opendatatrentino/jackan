@@ -26,11 +26,11 @@ import java.util.logging.Level;
 import com.google.common.annotations.Beta;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableMap;
-import eu.trentorise.opendata.commons.OdtUtils;
+import eu.trentorise.opendata.commons.TodUtils;
 import eu.trentorise.opendata.commons.PeriodOfTime;
 
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
+import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.exceptions.NotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
@@ -803,11 +803,11 @@ public class DcatFactory {
 
         logger.warning("CONVERSION FROM CKAN DATASET TO DCAT DATASET IS STILL EXPERIMENTAIL, IT MIGHT BE INCOMPLETE!!!");
 
-        OdtUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalog URL");
+        TodUtils.checkNotEmpty(catalogUrl, "invalid dcat dataset catalog URL");
         checkNotNull(locale, "invalid dcat dataset locale");
         checkNotNull(dataset, "Invalid dataset!");
 
-        String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogUrl);
+        String sanitizedCatalogUrl = TodUtils.removeTrailingSlash(catalogUrl);
         String sanitizedId = dataset.getId() == null ? "" : dataset.getId();
 
         String sanitizedLicenceId = dataset.getLicenseId() == null ? "" : dataset.getLicenseId();
@@ -1255,7 +1255,7 @@ public class DcatFactory {
         checkNotEmpty(datasetIdOrName, "invalid dataset id");
         checkNotNull(license, "invalid license");
 
-        String sanitizedCatalogUrl = OdtUtils.removeTrailingSlash(catalogURL);
+        String sanitizedCatalogUrl = TodUtils.removeTrailingSlash(catalogURL);
 
         DcatDistribution.Builder ddb = DcatDistribution.builder();
 

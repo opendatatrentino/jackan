@@ -22,10 +22,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import eu.trentorise.opendata.commons.BuildInfo;
-import eu.trentorise.opendata.commons.OdtConfig;
+import eu.trentorise.opendata.commons.TodConfig;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import eu.trentorise.opendata.commons.OdtUtils;
+import eu.trentorise.opendata.commons.TodUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -156,7 +156,7 @@ public class CkanTestReporter {
                 if (readingName) {
                     name = str;
                 } else {
-                    catalogsBuilder.put(OdtUtils.removeTrailingSlash(str), name);
+                    catalogsBuilder.put(TodUtils.removeTrailingSlash(str), name);
                 }
 
                 readingName = !readingName;
@@ -282,7 +282,7 @@ public class CkanTestReporter {
     public static String renderRunSuite(Map<String, String> catalogs, List<String> testNames, RunSuite runSuite) {
         String outputFileContent;
 
-        BuildInfo buildInfo = OdtConfig.of(JackanTestConfig.class).getBuildInfo();
+        BuildInfo buildInfo = TodConfig.of(JackanTestConfig.class).getBuildInfo();
 
         try {
 

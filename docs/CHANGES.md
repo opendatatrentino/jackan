@@ -6,7 +6,9 @@ Project website: http://opendatatrentino.github.io/jackan
 
 <br/>
 
-#### 0.4.1   todo in progress
+#### 0.4.1   
+
+November 7th, 2015
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
 - implemented DcatFactory for conversion to Dcat, see [supported operations table](README.md#dcat)
@@ -24,7 +26,8 @@ merged pull requests:
 
 BREAKING CHANGES: 
 
-- now requiring Java 7+
+- now requiring at least Java 7
+- renamed dependency Odt commons into Tod commons, so classes and files starting with `Odt*` change to `Tod*`. Also `odt.commons.logging.properties` changed to `tod.commons.logging.properties` 
 - renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model
 - renamed URL to Url in functions and fields. i.e. catalogURL -> catalogUrl, CkanClient.makeDatasetURL -> makeDatasetUrl, ...
 - renamed and split `CkanGroupStructure` into `CkanGroupOrgBase` and `CkanGroupOrg`

@@ -17,7 +17,7 @@ package eu.trentorise.opendata.jackan.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
+import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
 import eu.trentorise.opendata.jackan.JackanModule;
 import java.util.List;
 import javax.annotation.Nullable;

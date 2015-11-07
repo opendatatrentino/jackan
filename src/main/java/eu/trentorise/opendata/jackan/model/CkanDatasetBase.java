@@ -18,7 +18,7 @@ package eu.trentorise.opendata.jackan.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import static eu.trentorise.opendata.commons.OdtUtils.isNotEmpty;
+import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

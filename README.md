@@ -65,7 +65,7 @@ Contributors:
 * David Moravek http://davidmoravek.cz/
 * Florent André https://github.com/florent-andre
 
-We also wish to thank our very first beta tester Giulio Pilotto
+We also wish to thank our very first beta tester Giulio Pilotto https://about.me/giuliopilotto
 
 
 

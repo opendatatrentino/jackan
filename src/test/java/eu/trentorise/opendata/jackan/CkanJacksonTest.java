@@ -20,7 +20,7 @@ import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.opendata.commons.OdtConfig;
+import eu.trentorise.opendata.commons.TodConfig;
 import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 
@@ -58,7 +58,7 @@ public class CkanJacksonTest {
 
     @BeforeClass
     public static void setUpClass() {
-        OdtConfig.loadLogConfig(CkanJacksonTest.class);
+        TodConfig.loadLogConfig(CkanJacksonTest.class);
     }
 
     @AfterClass

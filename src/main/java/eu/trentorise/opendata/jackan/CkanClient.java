@@ -32,7 +32,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 
-import eu.trentorise.opendata.commons.OdtUtils;
+import eu.trentorise.opendata.commons.TodUtils;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 import eu.trentorise.opendata.jackan.model.CkanDatasetRelationship;
@@ -51,7 +51,7 @@ import eu.trentorise.opendata.jackan.model.CkanUserBase;
 import eu.trentorise.opendata.jackan.model.CkanVocabulary;
 import eu.trentorise.opendata.jackan.model.CkanVocabularyBase;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import static eu.trentorise.opendata.commons.OdtUtils.removeTrailingSlash;
+import static eu.trentorise.opendata.commons.TodUtils.removeTrailingSlash;
 import eu.trentorise.opendata.jackan.model.CkanError;
 
 import java.io.*;
@@ -517,7 +517,7 @@ public class CkanClient {
         checkCatalogUrl(catalogUrl);
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         checkNotEmpty(resourceId, "invalid resource id");
-        return OdtUtils.removeTrailingSlash(catalogUrl)
+        return TodUtils.removeTrailingSlash(catalogUrl)
                 + "/" + datasetIdOrName + "/resource/" + resourceId;
     }
 
@@ -538,7 +538,7 @@ public class CkanClient {
     public static String makeGroupUrl(String catalogUrl, String groupNameOrId) {
         checkCatalogUrl(catalogUrl);
         checkNotEmpty(groupNameOrId, "invalid group identifier");
-        return OdtUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
+        return TodUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
     }
 
     /**
@@ -559,7 +559,7 @@ public class CkanClient {
     public static String makeOrganizationUrl(String catalogUrl, String orgNameOrId) {
         checkCatalogUrl(catalogUrl);
         checkNotEmpty(orgNameOrId, "invalid organization identifier");
-        return OdtUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgNameOrId;
+        return TodUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgNameOrId;
     }
 
     /**

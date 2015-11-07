@@ -12,7 +12,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>eu.trentorise.opendata</groupId>
+	<parent>
+		<groupId>eu.trentorise.opendata</groupId>
+		<artifactId>tod-super-pom</artifactId>
+		<version>1.3.0-SNAPSHOT</version>
+	</parent>
+
 	<artifactId>jackan</artifactId>
 	<version>0.4.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -21,11 +26,6 @@
 	<url>https://github.com/opendatatrentino/jackan</url>
 	<description>Java client to access CKAN repositories. </description>
 
-	<parent>
-		<groupId>eu.trentorise.opendata.commons</groupId>
-		<artifactId>odt-super-pom</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
-	</parent>
 
 	<scm>
 		<url>${project.url}</url>

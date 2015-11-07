@@ -15,7 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.test;
 
-import eu.trentorise.opendata.commons.OdtConfig;
+import eu.trentorise.opendata.commons.TodConfig;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
@@ -63,10 +63,10 @@ public class JackanTestConfig {
      */
     private String clientClass;
 
-    private OdtConfig odtConfig;
+    private TodConfig todConfig;
 
     private JackanTestConfig() {
-        odtConfig = OdtConfig.of(JackanTestConfig.class);
+        todConfig = TodConfig.of(JackanTestConfig.class);
     }
 
     /**
@@ -103,11 +103,11 @@ public class JackanTestConfig {
     
 
     /**
-     * Loads logging config (see {@link OdtConfig#loadLogConfig()}) and
+     * Loads logging config (see {@link TodConfig#loadLogConfig()}) and
      * configuration for writing tests at path {@link #TEST_PROPERTIES_PATH}
      */
     public void loadConfig() {
-        OdtConfig.loadLogConfig(this.getClass());
+        TodConfig.loadLogConfig(this.getClass());
 
         Logger logger = Logger.getLogger(JackanTestConfig.class.getName());
         //final InputStream inputStream = JackanTestConfig.class.getResourceAsStream("/" + TEST_PROPERTIES_PATH);                
