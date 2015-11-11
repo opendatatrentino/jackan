@@ -141,9 +141,9 @@ public class CkanDatasetBase {
 
     /**
      * Notice that if the dataset was obtained with a
-     * {@link CkanClient#getDataset(java.lang.String)} call, the returned group
+     * {@link eu.trentorise.opendata.jackan.CkanClient#getDataset(java.lang.String)} call, the returned group
      * won't have all the params you would get with a
-     * {@link CkanClient#getGroup(java.lang.String)} call.
+     * {@link eu.trentorise.opendata.jackan.CkanClient#getGroup(java.lang.String)} call.
      */
     public List<CkanGroup> getGroups() {
         return groups;

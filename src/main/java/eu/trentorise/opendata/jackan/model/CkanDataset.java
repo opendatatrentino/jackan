@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import javax.annotation.Nullable;
 
 /**
- * {@inheritDoc}
+ * Extends {@link CkanDatasetBase} with fields found in search operations.
  */
 public class CkanDataset extends CkanDatasetBase {
 
@@ -43,15 +43,12 @@ public class CkanDataset extends CkanDatasetBase {
     private Boolean priv;
     private String revisionId;
     private Timestamp revisionTimestamp;
-
-    /**
-     * {@inheritDoc}     
-     */    
+    
     public CkanDataset() {
     }
 
     /**
-     * {@inheritDoc}     
+     * @see CkanDatasetBase#CkanDatasetBase(String)     
      */
     public CkanDataset(String name) {        
         super(name);
@@ -151,9 +148,9 @@ public class CkanDataset extends CkanDatasetBase {
      * The organization that owns the dataset.
      *
      * Notice that if the dataset was obtained with a
-     * {@link CkanClient#getDataset(java.lang.String)} call, the returned
+     * {@link eu.trentorise.opendata.jackan.CkanClient#getDataset(java.lang.String)} call, the returned
      * organization won't have all the params you would get with a
-     * {@link CkanClient#getOrganization(java.lang.String)} call.
+     * {@link eu.trentorise.opendata.jackan.CkanClient#getOrganization(java.lang.String)} call.
      */
     public CkanOrganization getOrganization() {
         return organization;

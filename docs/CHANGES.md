@@ -8,7 +8,7 @@ Project website: http://opendatatrentino.github.io/jackan
 
 #### 0.4.1   
 
-November 7th, 2015
+November 11th, 2015
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
 - implemented DcatFactory for conversion to Dcat, see [supported operations table](README.md#dcat)

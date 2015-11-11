@@ -247,7 +247,7 @@ public class CkanResourceBase {
      * Jackan note: this field should represent the timestamp of the last update
      * of the resource *data*, not metadata. I think it's set by extensions and
      * harvesters. Notice Ckan always refers to UTC timezone in
-     * {@link CkanClient#CKAN_TIMESTAMP_PATTERN} format, so this field probably
+     * {@link eu.trentorise.opendata.jackan.CkanClient#CKAN_TIMESTAMP_PATTERN} format, so this field probably
      * should follow the same format.
      */
     public String getLastModified() {
@@ -258,7 +258,7 @@ public class CkanResourceBase {
      * Jackan note: this field should represent the timestamp of the last update
      * of the resource *data*, not metadata. I think it's set by extensions and
      * harvesters. Notice Ckan always refers to UTC timezone in
-     * {@link CkanClient#CKAN_TIMESTAMP_PATTERN} format, so this field probably
+     * {@link eu.trentorise.opendata.jackan.CkanClient#CKAN_TIMESTAMP_PATTERN} format, so this field probably
      * should follow the same format.
      */
     public void setLastModified(String lastModified) {

@@ -15,9 +15,10 @@
 	<parent>
 		<groupId>eu.trentorise.opendata</groupId>
 		<artifactId>tod-super-pom</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.3.0</version>
 	</parent>
 
+    <groupId>eu.trentorise.opendata</groupId>
 	<artifactId>jackan</artifactId>
 	<version>0.4.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -158,12 +159,13 @@
 
 
 			<plugin>
-				<groupId>eu.trentorise.opendata.josman</groupId>
+				<groupId>eu.trentorise.opendata</groupId>
 				<artifactId>josman-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
+				<version>0.12</version>
 				<configuration>
 					<merge>true</merge>
 				</configuration>

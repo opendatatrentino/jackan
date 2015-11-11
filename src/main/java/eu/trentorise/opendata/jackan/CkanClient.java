@@ -203,7 +203,7 @@ public class CkanClient {
      * } on the mapper prior to this call.
      *
      * @param om a Jackson object mapper
-     * @param class the class of the objects you wish to create/update/delete.
+     * @param clazz the class of the objects you wish to create/update/delete.
      * @since 0.4.1
      */
     public static void configureObjectMapperForPosting(ObjectMapper om, Class clazz) {
@@ -229,7 +229,7 @@ public class CkanClient {
      * Retrieves the Jackson object mapper configured for creation/update
      * operations. Internally, Object mapper is initialized at first call.
      *
-     * @param the clazz the class you want to post. For generic class, just put
+     * @param clazz the class you want to post. For generic class, just put
      * Object.class
      * @since 0.4.1
      */
@@ -720,7 +720,7 @@ public class CkanClient {
      *
      * @param resource ckan resource object with the minimal set of parameters
      * required. See
-     * {@link CkanResource#CkanResource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
+     * {@link CkanResource#CkanResource(String, String)}
      * @return the newly created resource
      * @throws JackanException
      * @since 0.4.1
@@ -748,7 +748,7 @@ public class CkanClient {
      * careful about custom fields of {@link CkanResourceBase#getOthers()}, if
      * not sent they will be erased on the server! To prevent this behaviour,
      * see
-     * {@link #patchUpdateResource(eu.trentorise.opendata.jackan.ckan.CkanResourceBase) }
+     * {@link #patchUpdateResource(CkanResourceBase) }
      *
      * @throws CkanException on error
      * @since 0.4.1
@@ -782,7 +782,7 @@ public class CkanClient {
      * might be patched with latest metadata from the server prior sending it
      * for update.
      *
-     * @see #updateResource(eu.trentorise.opendata.jackan.ckan.CkanResourceBase)
+     * @see #updateResource(CkanResourceBase)
      * @throws CkanException on error
      * @since 0.4.1
      */
@@ -816,9 +816,10 @@ public class CkanClient {
     }
 
     /**
+     * 
      * Marks a resource as 'deleted'.
      *
-     * Note this will just set resource state to {@link CkanState#deleted} and
+     * Note this will just set resource state to {@link eu.trentorise.opendata.jackan.model.CkanState#deleted} and
      * make it inaccessible from the website, but you will still be able to get
      * the resource with the web api.
      *
@@ -1178,7 +1179,7 @@ public class CkanClient {
      * {@code package_update} call. Null fields will not be sent and thus won't
      * get updated, but be careful about list fields, if not sent they will be
      * erased on the server! To prevent this behaviour, see
-     * {@link #patchUpdateDataset(eu.trentorise.opendata.jackan.ckan.CkanDatasetBase)}
+     * {@link #patchUpdateDataset(CkanDatasetBase)}
      *
      * @throws CkanException on error
      * @since 0.4.1
@@ -1380,12 +1381,12 @@ public class CkanClient {
     /**
      * Marks a dataset as 'deleted'.
      *
-     * Note this will just set dataset state to {@link CkanState#deleted} and
+     * Note this will just set dataset state to {@link eu.trentorise.opendata.jackan.model.CkanState#deleted} and
      * make it inaccessible from the website, but you will still be able to get
      * the dataset with the web api. Resources contained within will still be
      * 'active'.
      *
-     * @param idOrName either the dataset name (i.e. apple-production) or the
+     * @param nameOrId either the dataset name (i.e. apple-production) or the
      * the alphanumerical id (i.e. fe507a10-4c49-4b18-8bf6-6705198cfd42)
      *
      * @throws CkanException on error

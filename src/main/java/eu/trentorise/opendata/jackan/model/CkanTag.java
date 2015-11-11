@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import javax.annotation.Nullable;
 
 /**
- * {@inheritDoc}
+ * Extends {@link CkanTagBase} with fields found in search operations.
  */
 public class CkanTag extends CkanTagBase {
 

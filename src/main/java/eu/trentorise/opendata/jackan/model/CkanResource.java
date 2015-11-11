@@ -18,7 +18,7 @@ package eu.trentorise.opendata.jackan.model;
 import javax.annotation.Nullable;
 
 /**
- * {@inheritDoc}
+ * Extends {@link CkanResourceBase} with fields found in search operations.
  */
 public class CkanResource extends CkanResourceBase {
 
@@ -34,14 +34,15 @@ public class CkanResource extends CkanResourceBase {
     }
 
     /**
-     * {@inheritDoc}     
+     * 
+     * @see CkanResourceBase#CkanResourceBase(String, String)            
      */
     public CkanResource(String url, String packageId) {
         super(url, packageId);
     }
     
 
-/**
+    /**
      * todo - What the hell is this? alphanumerical id, i.e.
      * "fd6375cd-1d6a-41e8-8e10-460a11e2308e"
      */
