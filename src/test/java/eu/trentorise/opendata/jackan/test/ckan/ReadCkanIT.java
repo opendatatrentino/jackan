@@ -23,6 +23,7 @@ import com.google.common.collect.Multimap;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanGroup;
 import eu.trentorise.opendata.jackan.model.CkanLicense;
@@ -69,6 +70,9 @@ public class ReadCkanIT {
     public static String DATA_GOV_UK = "http://data.gov.uk";
     public static String DATA_GOV_US = "http://catalog.data.gov";
 
+    /** for testing timeouts */
+    public static String UNREACHABLE_HOST = "http://10.0.0.0";
+    
     /**
      * National Oceanic and Atmospheric Administration (United States)
      */
@@ -453,4 +457,25 @@ public class ReadCkanIT {
                 
     }
 
+    @Test
+    public void testTimeout(){
+        CkanClient myClient = CkanClient.builder()
+                .setCatalogUrl(UNREACHABLE_HOST)
+        .setTimeout(500)
+        .build();
+        
+        try {
+            myClient.getApiVersion();
+        } catch (CkanException ex){
+            
+        }
+        
+        try {
+            myClient.getDatasetList();
+        } catch (CkanException ex){
+            
+        }
+        
+    }
+    
 }

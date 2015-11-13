@@ -179,7 +179,7 @@ public class CkanClient {
     }
 
     @JsonSerialize(as = GroupForDatasetPosting.class)
-    static abstract class GroupForDatasetPosting extends CkanGroupOrgBase {
+    abstract static class GroupForDatasetPosting extends CkanGroupOrgBase {
 
         @JsonIgnore
         @Override
@@ -343,9 +343,17 @@ public class CkanClient {
      *
      */
     public static class Builder {
-        protected CkanClient client;
-        protected boolean created;
+        private CkanClient client;
+        private boolean created;
 
+        protected CkanClient getClient(){
+            return client;
+        }
+        
+        protected boolean getCreated(){
+            return created;
+        }
+        
         protected void checkNotCreated() {
             if (created) {
                 throw new IllegalStateException("Builder was already used to create a client!");
@@ -786,9 +794,7 @@ public class CkanClient {
         LOG.log(Level.FINE, "getting {0}", fullUrl);
         try {
             Request request = Request.Get(fullUrl);
-            if (proxy != null) {
-                request.viaProxy(proxy);
-            }
+            configureRequest(request);
             String json = request.execute()
                                  .returnContent()
                                  .asString();
