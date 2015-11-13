@@ -33,7 +33,7 @@ public class TestResult {
     /**
      *
      * @param id The unique identifier of the test result
-     * @param error The throwable, if an erorr actually occurred.
+     * @param error The throwable, if an error actually occurred.
      */
     public TestResult(int id, String testName, String catalogURL, String catalogName, Optional<Throwable> error) {
         this.id = id;
