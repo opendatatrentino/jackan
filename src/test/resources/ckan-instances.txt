@@ -5,7 +5,7 @@ http://dati.toscana.it/
 dati.piemonte.it
 http://www.dati.piemonte.it/rpapisrv/
 dati.gov.it
-http://www.dati.gov.it/catalog/
+http://www.dati.gov.it/
 Annuario statistico del Comune di Firenze
 http://annuario.comune.fi.it/
 Il Portale Opendata della Provincia di Roma

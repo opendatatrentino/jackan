@@ -337,10 +337,11 @@ public class CkanTestReporter {
                 .write(" Report - " + formatDateUpToDay(runSuite.getStartTime()))
                 ._h1()
                 .b()
-                .write("Note: ")
+                .write("NOTE: ")
                 ._b()
                 .span()
-                .write("Some tests might fail due to missing items in the target catalog (i.e. catalog has no tags or no organizations)")
+                .write("Some tests might fail due to missing items in the target catalog (i.e. catalog has no tags or no organizations). "
+                        + "Also, some catalogs might only be ckan-compatible and support a subset of ckan functionality (i.e. DKAN). ")
                 ._span()
                 .br()
                 .br()
