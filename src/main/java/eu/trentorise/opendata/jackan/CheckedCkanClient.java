@@ -33,7 +33,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import org.apache.http.HttpHost;
 
 /**
  * This client performs additional checks when writing to CKAN to ensure written
@@ -53,220 +52,228 @@ import org.apache.http.HttpHost;
  */
 public class CheckedCkanClient extends CkanClient {
 
-	public CheckedCkanClient(String url) {
-		super(url);
-	}
+    protected CheckedCkanClient() {
+        super();
+    }
+    
+    protected CheckedCkanClient(String url) {
+        super(url);
+    }
 
-	public CheckedCkanClient(String catalogUrl, String token) {
-		super(catalogUrl, token);
-	}
+    public CheckedCkanClient(String catalogUrl, @Nullable String ckanToken) {
+        super(catalogUrl, ckanToken);
+    }
 
-	public CheckedCkanClient(String catalogUrl, String token, HttpHost proxy) {
-		super(catalogUrl, token, proxy);
-	}
+    /**
+     * Returns a builder instance. The builder is not threadsafe and you can use
+     * one builder instance to build only one client instance.
+     */
+    public static CkanClient.Builder builder() {
+        return new CkanClient.Builder(new CheckedCkanClient());
+    }
 
-	private void checkUrl(String url, String prependedErrorMessage) {
-		try {
-			new URL(url).toURI();
-		} catch (MalformedURLException | URISyntaxException ex) {
-			throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed url:" + url, this,
-					ex);
-		}
-	}
+    private void checkUrl(String url, String prependedErrorMessage) {
+        try {
+            new URL(url).toURI();
+        } catch (MalformedURLException | URISyntaxException ex) {
+            throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed url:" + url, this,
+                    ex);
+        }
+    }
 
-	private void checkUuid(String uuid, String prependedErrorMessage) {
-		try {
-			UUID.fromString(uuid);
-		} catch (Exception ex) {
-			throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed uuid:" + uuid,
-					this, ex);
-		}
+    private void checkUuid(String uuid, String prependedErrorMessage) {
+        try {
+            UUID.fromString(uuid);
+        } catch (Exception ex) {
+            throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- Ill-formed uuid:" + uuid,
+                    this, ex);
+        }
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * NOTE: In CheckedCkanClient {@code create} operations fail if item already
-	 * exists. This is different from Ckan default behaviour, which updates
-	 * items if they already exist.
-	 * </p>
-	 */
-	@Override
-	public synchronized CkanOrganization createOrganization(CkanOrganization org) {
-		if (org.getId() != null) {
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>
+     * NOTE: In CheckedCkanClient {@code create} operations fail if item already
+     * exists. This is different from Ckan default behaviour, which updates
+     * items if they already exist.
+     * </p>
+     */
+    @Override
+    public synchronized CkanOrganization createOrganization(CkanOrganization org) {
+        if (org.getId() != null) {
 
-			checkUuid(org.getId(),
-					"Jackan validation failed! Tried to create organization with invalid id:" + org.getId());
+            checkUuid(org.getId(),
+                    "Jackan validation failed! Tried to create organization with invalid id:" + org.getId());
 
-			try {
-				getOrganization(org.getId());
-				throw new CkanValidationException(
-						"Jackan validation failed! Tried to create organization with existing id! " + org.getId(),
-						this);
-			} catch (CkanNotFoundException ex) {
+            try {
+                getOrganization(org.getId());
+                throw new CkanValidationException(
+                        "Jackan validation failed! Tried to create organization with existing id! " + org.getId(),
+                        this);
+            } catch (CkanNotFoundException ex) {
 
-			}
-		}
+            }
+        }
 
-		return super.createOrganization(org);
-	}
+        return super.createOrganization(org);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * NOTE: In CheckedCkanClient {@code create} operations fail if item already
-	 * exists. This is different from Ckan default behaviour, which updates
-	 * items if they already exist.
-	 * </p>
-	 */
-	@Override
-	public synchronized CkanResource createResource(CkanResourceBase resource) {
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>
+     * NOTE: In CheckedCkanClient {@code create} operations fail if item already
+     * exists. This is different from Ckan default behaviour, which updates
+     * items if they already exist.
+     * </p>
+     */
+    @Override
+    public synchronized CkanResource createResource(CkanResourceBase resource) {
 
-		if (resource.getId() != null) {
-			checkUuid(resource.getId(),
-					"Jackan validation failed! Tried to create resource with invalid id:" + resource.getId());
+        if (resource.getId() != null) {
+            checkUuid(resource.getId(),
+                    "Jackan validation failed! Tried to create resource with invalid id:" + resource.getId());
 
-			try {
-				getResource(resource.getId());
-				throw new CkanValidationException(
-						"Jackan validation failed! Tried to create resource with existing id! " + resource.getId(),
-						this);
-			} catch (CkanNotFoundException ex) {
+            try {
+                getResource(resource.getId());
+                throw new CkanValidationException(
+                        "Jackan validation failed! Tried to create resource with existing id! " + resource.getId(),
+                        this);
+            } catch (CkanNotFoundException ex) {
 
-			}
-		}
+            }
+        }
 
-		checkUrl(resource.getUrl(),
-				"Jackan validation error! Tried to create resource " + resource.getId() + " with wrong url!");
+        checkUrl(resource.getUrl(),
+                "Jackan validation error! Tried to create resource " + resource.getId() + " with wrong url!");
 
-		return super.createResource(resource);
-	}
+        return super.createResource(resource);
+    }
 
-	@Override
-	public synchronized CkanResource updateResource(CkanResourceBase resource) {
+    @Override
+    public synchronized CkanResource updateResource(CkanResourceBase resource) {
 
-		checkUrl(resource.getUrl(),
-				"Jackan validation error! Tried to update resource " + resource.getId() + " with wrong url!");
+        checkUrl(resource.getUrl(),
+                "Jackan validation error! Tried to update resource " + resource.getId() + " with wrong url!");
 
-		return super.updateResource(resource);
-	}
+        return super.updateResource(resource);
+    }
 
-	@Override
-	public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
+    @Override
+    public synchronized CkanResource patchUpdateResource(CkanResourceBase resource) {
 
-		checkUrl(resource.getUrl(),
-				"Jackan validation error! Tried to patch update resource " + resource.getId() + " with wrong url!");
+        checkUrl(resource.getUrl(),
+                "Jackan validation error! Tried to patch update resource " + resource.getId() + " with wrong url!");
 
-		return super.patchUpdateResource(resource);
-	}
+        return super.patchUpdateResource(resource);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * NOTE: In CheckedCkanClient {@code create} operations fail if item already
-	 * exists. This is different from Ckan default behaviour, which updates
-	 * items if they already exist.
-	 * </p>
-	 */
-	@Override
-	public synchronized CkanGroup createGroup(CkanGroup group) {
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>
+     * NOTE: In CheckedCkanClient {@code create} operations fail if item already
+     * exists. This is different from Ckan default behaviour, which updates
+     * items if they already exist.
+     * </p>
+     */
+    @Override
+    public synchronized CkanGroup createGroup(CkanGroup group) {
 
-		if (group.getId() != null) {
+        if (group.getId() != null) {
 
-			checkUuid(group.getId(),
-					"Jackan validation failed! Tried to create group with invalid id:" + group.getId());
+            checkUuid(group.getId(),
+                    "Jackan validation failed! Tried to create group with invalid id:" + group.getId());
 
-			try {
-				getGroup(group.getId());
-				throw new CkanValidationException(
-						"Jackan validation failed! Tried to create group with existing id! " + group.getId(), this);
-			} catch (CkanNotFoundException ex) {
+            try {
+                getGroup(group.getId());
+                throw new CkanValidationException(
+                        "Jackan validation failed! Tried to create group with existing id! " + group.getId(), this);
+            } catch (CkanNotFoundException ex) {
 
-			}
-		}
+            }
+        }
 
-		return super.createGroup(group);
-	}
+        return super.createGroup(group);
+    }
 
-	private void checkGroupsExist(Iterable<CkanGroup> groups, String prependedErrorMessage) {
-		if (groups != null) {
-			for (CkanGroup group : groups) {
-				checkNotNull(group, String.valueOf(prependedErrorMessage) + " -- Found null group! ");
-				checkNotEmpty(group.idOrName(),
-						String.valueOf(prependedErrorMessage) + " -- Found group with both id and name invalid!");
+    private void checkGroupsExist(Iterable<CkanGroup> groups, String prependedErrorMessage) {
+        if (groups != null) {
+            for (CkanGroup group : groups) {
+                checkNotNull(group, String.valueOf(prependedErrorMessage) + " -- Found null group! ");
+                checkNotEmpty(group.idOrName(),
+                        String.valueOf(prependedErrorMessage) + " -- Found group with both id and name invalid!");
 
-				try {
-					getGroup(group.idOrName());
-				} catch (CkanNotFoundException ex) {
-					throw new CkanValidationException(
-							prependedErrorMessage + " -- Tried to refer to non existing group " + group.idOrName(),
-							this, ex);
-				}
-			}
-		}
+                try {
+                    getGroup(group.idOrName());
+                } catch (CkanNotFoundException ex) {
+                    throw new CkanValidationException(
+                            prependedErrorMessage + " -- Tried to refer to non existing group " + group.idOrName(),
+                            this, ex);
+                }
+            }
+        }
 
-	}
+    }
 
-	private void checkLicenseExist(@Nullable String licenseId, String prependedErrorMessage) {
-		if (isNotEmpty(licenseId)) {
-			List<CkanLicense> licenseList = getLicenseList();
-			boolean found = false;
-			for (CkanLicense lic : licenseList) {
-				if (licenseId.equals(lic.getId())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- licenseId '" + licenseId
-						+ "' doesn't belong to allowed licenses: " + licenseList.toString(), this);
-			}
-		}
-	}
+    private void checkLicenseExist(@Nullable String licenseId, String prependedErrorMessage) {
+        if (isNotEmpty(licenseId)) {
+            List<CkanLicense> licenseList = getLicenseList();
+            boolean found = false;
+            for (CkanLicense lic : licenseList) {
+                if (licenseId.equals(lic.getId())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new CkanValidationException(String.valueOf(prependedErrorMessage) + " -- licenseId '" + licenseId
+                        + "' doesn't belong to allowed licenses: " + licenseList.toString(), this);
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * NOTE: In CheckedCkanClient {@code create} operations fail if item already
-	 * exists. This is different from Ckan default behaviour, which updates
-	 * items if they already exist.
-	 * </p>
-	 */
-	@Override
-	public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>
+     * NOTE: In CheckedCkanClient {@code create} operations fail if item already
+     * exists. This is different from Ckan default behaviour, which updates
+     * items if they already exist.
+     * </p>
+     */
+    @Override
+    public synchronized CkanDataset createDataset(CkanDatasetBase dataset) {
 
-		checkGroupsExist(dataset.getGroups(), "Jackan validation error when creating dataset " + dataset.getName());
+        checkGroupsExist(dataset.getGroups(), "Jackan validation error when creating dataset " + dataset.getName());
 
-		checkLicenseExist(dataset.getLicenseId(), "Jackan validation error when creating dataset " + dataset.getName());
+        checkLicenseExist(dataset.getLicenseId(), "Jackan validation error when creating dataset " + dataset.getName());
 
-		return super.createDataset(dataset);
-	}
+        return super.createDataset(dataset);
+    }
 
-	@Override
-	public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
+    @Override
+    public synchronized CkanDataset updateDataset(CkanDatasetBase dataset) {
 
-		checkGroupsExist(dataset.getGroups(), "Jackan validation error when updating dataset " + dataset.getName());
+        checkGroupsExist(dataset.getGroups(), "Jackan validation error when updating dataset " + dataset.getName());
 
-		checkLicenseExist(dataset.getLicenseId(), "Jackan validation error updating dataset " + dataset.getName());
+        checkLicenseExist(dataset.getLicenseId(), "Jackan validation error updating dataset " + dataset.getName());
 
-		return super.updateDataset(dataset);
-	}
+        return super.updateDataset(dataset);
+    }
 
-	@Override
-	public synchronized CkanDataset patchUpdateDataset(CkanDatasetBase dataset) {
+    @Override
+    public synchronized CkanDataset patchUpdateDataset(CkanDatasetBase dataset) {
 
-		checkGroupsExist(dataset.getGroups(),
-				"Jackan validation error when patch updating dataset " + dataset.getName());
+        checkGroupsExist(dataset.getGroups(),
+                "Jackan validation error when patch updating dataset " + dataset.getName());
 
-		checkLicenseExist(dataset.getLicenseId(),
-				"Jackan validation error when patch updating dataset " + dataset.getName());
+        checkLicenseExist(dataset.getLicenseId(),
+                "Jackan validation error when patch updating dataset " + dataset.getName());
 
-		return super.patchUpdateDataset(dataset);
-	}
+        return super.patchUpdateDataset(dataset);
+    }
 
 }

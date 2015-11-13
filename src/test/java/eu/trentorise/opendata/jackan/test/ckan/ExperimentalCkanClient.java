@@ -42,8 +42,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
  */
 class ExperimentalCkanClient extends CkanClient {
 
-    public ExperimentalCkanClient(String URL, String token, HttpHost proxy) {
-        super(URL, token, proxy);
+    public ExperimentalCkanClient(String URL, String token) {
+        super(URL, token);
     }
 
     /**
@@ -134,6 +134,6 @@ class ExperimentalCkanClient extends CkanClient {
     }
 
     public static ExperimentalCkanClient of(CkanClient client) {
-        return new ExperimentalCkanClient(client.getCatalogUrl(), client.getCkanToken(), client.getProxy());
+        return new ExperimentalCkanClient(client.getCatalogUrl(), client.getCkanToken());
     }
 }

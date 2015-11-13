@@ -19,14 +19,18 @@ import eu.trentorise.opendata.commons.TodConfig;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.CkanClient.Builder;
+
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.http.HttpHost;
+
+import javax.annotation.Nullable;
+
 
 /**
  *
@@ -44,6 +48,8 @@ public class JackanTestConfig {
     private static final String OUTPUT_CKAN_PROPERTY = "jackan.test.ckan.output";
     private static final String OUTPUT_CKAN_TOKEN_PROPERTY = "jackan.test.ckan.output-token";
     private static final String CLIENT_CLASS_PROPERTY = "jackan.test.ckan.client-class";
+    private static final String PROXY_PROPERTY = "jackan.test.ckan.proxy";
+    private static final String TIMEOUT_PROPERTY = "jackan.test.ckan.timeout";
 
     private Properties properties;
     private boolean initialized = false;
@@ -62,6 +68,10 @@ public class JackanTestConfig {
      * By default tests will use {@link CheckedCkanClient}
      */
     private String clientClass;
+        
+    private String proxy;
+    
+    private int timeout = CkanClient.DEFAULT_TIMEOUT;
 
     private TodConfig todConfig;
 
@@ -126,15 +136,23 @@ public class JackanTestConfig {
 
             properties = new Properties();
             properties.load(inputStream);
+            
+            @Nullable String timeoutString = properties.getProperty(TIMEOUT_PROPERTY);
+            if (timeoutString != null){
+                timeout = Integer.parseInt(timeoutString);
+            }
+            
+            proxy = properties.getProperty(PROXY_PROPERTY);
+                        
             outputCkan = properties.getProperty(OUTPUT_CKAN_PROPERTY);
-            if (outputCkan == null) {
+            if (outputCkan == null || outputCkan.trim().isEmpty()) {
                 throw new IOException("Couldn't find property " + OUTPUT_CKAN_PROPERTY + " in configuration file " + TEST_PROPERTIES_PATH);
             } else {
                 logger.log(Level.INFO, "Will use {0} for CKAN write tests", outputCkan);
             }
 
             outputCkanToken = properties.getProperty(OUTPUT_CKAN_TOKEN_PROPERTY);
-            if (outputCkanToken == null) {
+            if (outputCkanToken == null || outputCkanToken.trim().isEmpty()) {
                 throw new IOException("COULDN'T FIND PROPERTY " + OUTPUT_CKAN_TOKEN_PROPERTY + " IN CONFIGURATION FILE " + TEST_PROPERTIES_PATH);
             } else {
                 logger.log(Level.INFO, "Will use token {0} for CKAN write tests", outputCkanToken);
@@ -156,14 +174,12 @@ public class JackanTestConfig {
             } catch (Exception ex){
                 throw new Exception("Could not make test instance for client class " + clientClass, ex);
             }            
-
-            
-            
+                        
             initialized = true;
 
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, "JACKAN ERROR - COULDN'T INITIALIZE TEST ENVIRONMENT PROPERLY! TESTS REQUIRING WRITING MIGHT FAIL BECAUSE OF THIS.", e);
+            logger.log(Level.SEVERE, "JACKAN ERROR - COULDN'T INITIALIZE TEST ENVIRONMENT PROPERLY! INTEGRATION TESTS (ESPECIALLY FOR WRITING) MIGHT FAIL BECAUSE OF THIS!!", e);
         }
 
     }
@@ -185,24 +201,21 @@ public class JackanTestConfig {
         catch (Exception ex) {
             throw new RuntimeException("Couldn't find client class " + clientClass + "!", ex);        
         }
-        Constructor ctr;
-        try {
-            ctr = forName.getDeclaredConstructor(String.class, String.class, HttpHost.class);
-        }
-        catch (NoSuchMethodException | SecurityException ex) {
-            throw new RuntimeException("Could not find constructor (String URL, @Nullable String token, @Nullable HttpHost proxy) in client class " + clientClass, ex);
-        }
-        Object[] args = new Object[3];
-        args[0] = outputCkan;
-        args[1] = outputCkanToken;
-        args[2] = null;
         
+        Method method;
+        CkanClient.Builder builder;
         try {
-            return (CkanClient) ctr.newInstance(args);
+            method = forName.getMethod("builder");
+            builder =  (Builder) method.invoke(null);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new RuntimeException("Could not find builder() static method in client class " + clientClass, ex);
         }
-        catch (Exception ex) {
-            throw new RuntimeException("Couldn't instantiate the client of class " + clientClass + "!");
-        }                        
+        
+        return builder.setCatalogUrl(outputCkan) 
+                .setCkanToken(outputCkanToken)
+                .setProxy(proxy)
+                .setTimeout(timeout)
+                .build();                             
     }
 
     /**

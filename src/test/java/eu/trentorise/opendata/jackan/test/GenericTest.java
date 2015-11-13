@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
+ * Non-ckan related tests.
  * @author David Leoni
  */
 public class GenericTest {

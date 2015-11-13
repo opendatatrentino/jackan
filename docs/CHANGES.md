@@ -8,15 +8,23 @@ Project website: http://opendatatrentino.github.io/jackan
 
 #### 0.4.1   
 
-November 11th, 2015
+November 13th, 2015
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
+- added CkanClient.builder() for setting connection parameters (proxy, timeout)
 - implemented DcatFactory for conversion to Dcat, see [supported operations table](README.md#dcat)
 - split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)
 - now creating release zip with jar and dependencies
-- Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
 - added many exceptions (all inherit from JackanException)
 - added reading licences 
+- Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
+- shaded dependencies not exposed in api (ie. apache http client)
+- set default timeout to 15 secs
+
+- upgraded:
+	* traceprov to 0.3.0
+	* odt-commons to tod-commons 1.1.0
+	* jackson to 2.6.0
 
 merged pull requests:
 
@@ -26,13 +34,13 @@ merged pull requests:
 
 BREAKING CHANGES: 
 
-- now requiring at least Java 7
-- renamed dependency Odt commons into Tod commons, so classes and files starting with `Odt*` change to `Tod*`. Also `odt.commons.logging.properties` changed to `tod.commons.logging.properties` 
+- now requiring at least Java 7 
 - renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model
 - renamed URL to Url in functions and fields. i.e. catalogURL -> catalogUrl, CkanClient.makeDatasetURL -> makeDatasetUrl, ...
 - renamed and split `CkanGroupStructure` into `CkanGroupOrgBase` and `CkanGroupOrg`
 - now Joda `DateTime` is not used anymore, for timestamps now we use `java.sql.Timestamp`
 - `CkanClient.getObjectMapperClone()` is gone. See [new json configuration](README.md#default-json-serdeserialization) instead
+- renamed dependency Odt commons into Tod commons, so classes and files starting with `Tod*` change to `Tod*`. Also `odt.commons.logging.properties` changed to `tod.commons.logging.properties`
 - renamed `TrackingSummary` into `CkanTrackingSummary`
 
 
