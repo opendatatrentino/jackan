@@ -16,10 +16,11 @@ November 13th, 2015
 - split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)
 - now creating release zip with jar and dependencies
 - added many exceptions (all inherit from JackanException)
+- set default timeout to 15 secs
 - added reading licences 
 - Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
-- shaded dependencies not exposed in api (ie. apache http client)
-- set default timeout to 15 secs
+- shaded dependencies not directly exposed in api (ie. apache http client)
+- improved test reporter
 
 - upgraded:
 	* traceprov to 0.3.0

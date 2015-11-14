@@ -206,30 +206,30 @@ public class CkanTestReporter {
         }
 
         /**
-         * Returns the number of tests under the given name that failed.
+         * Returns the number of passed tests under the given name.
          */
-        public int getErrorsByTestName(String testName) {
-            int ret = 0;
+        public List<TestResult> getPassedTestsByName(String testName) {
+            ImmutableList.Builder<TestResult> retb = ImmutableList.builder();
             for (TestResult tr : results) {
-                if (!tr.passed() && testName.equals(tr.getTestName())) {
-                    ret += 1;
+                if (tr.passed() && testName.equals(tr.getTestName())) {
+                    retb.add(tr);
                 }
             }
-            return ret;
+            return retb.build();
         }
 
         /**
-         * Returns the number of tests of provided catalog that failed.
+         * Returns the number of passed tests of provided catalog.
          */
-        public int getErrorsByCatalogUrl(String catalogUrl) {
+        public List<TestResult> getPassedTestsByCatalogUrl(String catalogUrl) {
             String cat = TodUtils.removeTrailingSlash(catalogUrl);
-            int ret = 0;
+            ImmutableList.Builder<TestResult> retb = ImmutableList.builder();
             for (TestResult tr : results) {
-                if (!tr.passed() && cat.equals(tr.getCatalogURL())) {
-                    ret += 1;
+                if (tr.passed() && cat.equals(tr.getCatalogURL())) {
+                    retb.add(tr);
                 }
             }
-            return ret;
+            return retb.build();
         }
 
         public Date getStartTime() {
@@ -287,12 +287,45 @@ public class CkanTestReporter {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         return formatter.format(date);
     }
-    
-    private static HtmlAttributes errClass(int errors){
-        if (errors > 0) {
-            return class_(ERROR_CLASS);
-        } else {
+
+    private static HtmlAttributes errClass(int passed, int total) {
+        if (passed == total) {
             return class_(PASSED_CLASS);
+        } else {
+            return class_(ERROR_CLASS);
+        }
+    }
+
+    /**
+     * Puts in bold label name and a value after it
+     */
+    private static HtmlCanvas labelValue(HtmlCanvas html, String label, String value) {
+        try {
+            return html.br()
+                       .b()
+                       .write(label)
+                       ._b()
+                       .span()
+                       .write(value)
+                       ._span();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Puts in bold label name and a span after it. Remember to close tag with
+     * _span()
+     */
+    private static HtmlCanvas labelValue(HtmlCanvas html, String label) {
+        try {
+            return html.br()
+                       .b()
+                       .write(label)
+                       ._b()
+                       .span();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -343,34 +376,20 @@ public class CkanTestReporter {
                 .write("Some tests might fail due to missing items in the target catalog (i.e. catalog has no tags or no organizations). "
                         + "Also, some catalogs might only be ckan-compatible and support a subset of ckan functionality (i.e. DKAN). ")
                 ._span()
-                .br()
-                .br()
-                .b()
-                .write("Jackan Version: ")
-                ._b()
-                .span()
-                .write(buildInfo.getVersion() + " ")
-                .a(href("https://github.com/opendatatrentino/jackan/commit/" + buildInfo.getGitSha()).target("_blank"))
-                .write("Git commit")
-                ._a()
-                ._span()
-                .br()
-                .b()
-                .write("Started: ")
-                ._b()
-                .span()
-                .write(formatDateUpToSecond(runSuite.getStartTime()))
-                ._span()
-                .br()
-                .b()
-                .write("Finished: ")
-                ._b()
-                .span()
-                .write(formatDateUpToSecond(runSuite.getEndTime()))
-                ._span()
-                .br()
                 .br();
-
+            labelValue(html, "Jackan Version: ").write(buildInfo.getVersion() + " ")
+                                                .a(href("https://github.com/opendatatrentino/jackan/commit/"
+                                                        + buildInfo.getGitSha()).target("_blank"))
+                                                .write("Git commit")
+                                                ._a()
+                                                ._span();
+            labelValue(html, "Started: ", formatDateUpToSecond(runSuite.getStartTime()));
+            labelValue(html, "Finished: ", formatDateUpToSecond(runSuite.getEndTime()));
+            labelValue(html, "Catalogs scanned: ", Integer.toString(catalogs.keySet()                                                                            .size()));
+            labelValue(html, "Tests per catalog executed: ", Integer.toString(testNames.size()));            
+            html.br()
+                .br();
+                        
             Escaper escaper = HtmlEscapers.htmlEscaper();
 
             html.div(class_("outer"))
@@ -382,7 +401,7 @@ public class CkanTestReporter {
                 ._th();
 
             html.td()
-                .write("Errors")
+                .write("Passed")
                 ._td();
             for (String catalogUrl : catalogs.keySet()) {
                 html.td()
@@ -395,15 +414,16 @@ public class CkanTestReporter {
 
             html.tr();
             html.th()
-                .write("Errors")
+                .write("Passed")
                 ._th()
                 .td()
                 ._td();
             for (String catalogUrl : catalogs.keySet()) {
-                int errsByCat = runSuite.getErrorsByCatalogUrl(catalogUrl);
-                html.td(errClass(errsByCat))                
-                        .write(errsByCat)
-                    ._td();                                                  
+                int passedByCat = runSuite.getPassedTestsByCatalogUrl(catalogUrl)
+                                          .size();
+                html.td(errClass(passedByCat, testNames.size()))
+                    .write(passedByCat + "/" + testNames.size())
+                    ._td();
             }
             html._tr();
 
@@ -417,10 +437,11 @@ public class CkanTestReporter {
                     .write(testName)
                     ._b()
                     ._th();
-                int errsByName = runSuite.getErrorsByTestName(testName); 
-                html.td(errClass(errsByName))
+                int passedByName = runSuite.getPassedTestsByName(testName)
+                                         .size();
+                html.td(errClass(passedByName, catalogs.size()))
                     .b()
-                    .write(errsByName)
+                    .write(passedByName + "/" + catalogs.size())                                                     
                     ._b()
                     ._td();
 
@@ -456,6 +477,23 @@ public class CkanTestReporter {
             outputFileContent = "HTML generation problem!" + ex;
         }
         return outputFileContent;
+    }
+
+   
+    
+    private static int catalogsWithErrors(RunSuite runSuite) {
+        Map<String, Integer> map = new HashMap();
+        for (TestResult tr : runSuite.getResults()){
+            if (!tr.passed()){
+                String key = tr.getCatalogURL();
+                if (map.containsKey(key)){
+                    map.put(key, map.get(key) + 1);
+                } else {
+                    map.put(key, 1);
+                }
+            }
+        }
+        return map.size();
     }
 
     /**

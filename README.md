@@ -41,7 +41,7 @@ Main dependencies are
 
 * Jackson for JSON
 * Apache HTTP client 
-* <a href="https://github.com/opendatatrentino/traceprov" target="_blank">TraceProv</a> for conversion to DCAT
+* <a href="http://opendatatrentino.github.io/traceprov" target="_blank">TraceProv</a> for conversion to DCAT
 * Guava as toolbox
 
 
@@ -49,7 +49,6 @@ Main dependencies are
 #### Projects using Jackan
 
 * [OpenDataRise](https://github.com/opendatatrentino/OpenDataRise): power tool to cleanse and semantify open data, based on OpenRefine
-* [Open Memory](https://github.com/opendatatrentino/open-memory): Program to query datasets harvested from Ckan and stored into a Hadoop Distributed File System.
 * [Ckanalyze](https://github.com/opendatatrentino/CKANalyze): Tool to perform statistics on CKAN datasets written in Java.
 
 
