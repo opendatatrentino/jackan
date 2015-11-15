@@ -8,7 +8,7 @@ Project website: http://opendatatrentino.github.io/jackan
 
 #### 0.4.1   
 
-November 13th, 2015
+November 15th, 2015
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
 - added CkanClient.builder() for setting connection parameters (proxy, timeout)

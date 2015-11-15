@@ -382,7 +382,7 @@ public class CkanClient {
         }
 
         /**
-         * @Sets the private token string for ckan repository
+         * Sets the private token string for ckan repository
          */
         public Builder setCkanToken(@Nullable String ckanToken) {
             checkNotCreated();
