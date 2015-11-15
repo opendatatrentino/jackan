@@ -1,0 +1,469 @@
+<html><head><title>Jackan Test #2140</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #2140</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor173.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:188)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:266)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:293)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: eu.trentorise.opendata.jackan.exceptions.CkanException: Couldn't interpret json returned by the server! Returned text was: &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML+RDFa 1.0//EN&quot;
+  &quot;http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd&quot;&gt;
+&lt;html lang=&quot;ja&quot; dir=&quot;ltr&quot;
+  xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;
+  xmlns:dc=&quot;http://purl.org/dc/terms/&quot;
+  xmlns:foaf=&quot;http://xmlns.com/foaf/0.1/&quot;
+  xmlns:og=&quot;http://ogp.me/ns#&quot;
+  xmlns:rdfs=&quot;http://www.w3.org/2000/01/rdf-schema#&quot;
+  xmlns:sioc=&quot;http://rdfs.org/sioc/ns#&quot;
+  xmlns:sioct=&quot;http://rdfs.org/sioc/types#&quot;
+  xmlns:skos=&quot;http://www.w3.org/2004/02/skos/core#&quot;
+  xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema#&quot;
+  xmlns:owl=&quot;http://www.w3.org/2002/07/owl#&quot;
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:rss=&quot;http://purl.org/rss/1.0/&quot;
+  xmlns:site=&quot;http://udct-data.aigid.jp/ns#&quot;
+  xmlns:dcat=&quot;http://www.w3.org/ns/dcat#&quot;&gt;
+&lt;head profile=&quot;http://www.w3.org/1999/xhtml/vocab&quot;&gt;
+  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge, chrome=1&quot;&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+&lt;meta name=&quot;Generator&quot; content=&quot;Drupal 7 (http://drupal.org)&quot; /&gt;
+&lt;link rel=&quot;shortcut icon&quot; href=&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/favicon.ico&quot; type=&quot;image/vnd.microsoft.icon&quot; /&gt;
+  &lt;title&gt;ページが見つかりません | アーバンデータチャレンジ データポータル&lt;/title&gt;
+  &lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/modules/system/system.base.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/system/system.messages.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/system/system.theme.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/date/date_api/date.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/date/date_popup/themes/datepicker.1.7.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/field/theme/field.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/node/node.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/radix_layouts/radix_layouts.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/search/search.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/user/user.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/views/css/views.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/apachesolr_autocomplete.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/ctools/css/ctools.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/panels/css/panels.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/styles/shCore.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/styles/shThemeDefault.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;//fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot; media=&quot;all&quot; /&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/dkan/dkan_dataset/css/dkan_dataset.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/screen.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/font-awesome.min.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/dkan-flaticon.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/custom.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;print&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/print.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://udct-data.aigid.jp/sites/default/files/colorizer/nuboot_radix-54bfeb53.css&quot; media=&quot;all&quot; /&gt;
+
+&lt;!--[if lte IE 9]&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/ie.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 7]&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/ie7.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 8]&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/ie8.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;![endif]--&gt;
+  &lt;!-- HTML5 element support for IE6-8 --&gt;
+  &lt;!--[if lt IE 9]&gt;
+    &lt;script src=&quot;//html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+    &lt;link href=&quot;/css/ie.css&quot; media=&quot;screen&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+  &lt;![endif]--&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/jquery_update/replace/jquery/1.7/jquery.min.js?v=1.7.2&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/misc/jquery.once.js?v=1.2&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/misc/drupal.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/scripts/shCore.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/scripts/shBrushPhp.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/scripts/shBrushXml.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/default/files/languages/ja_sUYN2Sl8tQ2UnGCFsVTg3O8THtms5TAOi4ucW4kVVvA.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/apachesolr_autocomplete.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/contrib/google_analytics/googleanalytics.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+(function(i,s,o,g,r,a,m){i[&quot;GoogleAnalyticsObject&quot;]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,&quot;script&quot;,&quot;//www.google-analytics.com/analytics.js&quot;,&quot;ga&quot;);ga(&quot;create&quot;, &quot;UA-54278159-1&quot;, {&quot;cookieDomain&quot;:&quot;.udct-data.aigid.jp&quot;});ga(&quot;set&quot;, &quot;anonymizeIp&quot;, true);ga(&quot;set&quot;, &quot;page&quot;, &quot;/404.html?page=&quot; + document.location.pathname + document.location.search + &quot;&amp;from=&quot; + document.referrer);ga(&quot;send&quot;, &quot;pageview&quot;);
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/profiles/dkan/themes/contrib/radix/assets/javascripts/modernizr.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/javascripts/sitewide.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/javascripts/svgeezy.min.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+jQuery.extend(Drupal.settings, {&quot;basePath&quot;:&quot;\/&quot;,&quot;pathPrefix&quot;:&quot;&quot;,&quot;ajaxPageState&quot;:{&quot;theme&quot;:&quot;nuboot_radix&quot;,&quot;theme_token&quot;:&quot;7wbstFTySwEJW9YAyphDWhaG3yzlas-H4kWcFbIVofA&quot;,&quot;js&quot;:{&quot;sites\/all\/modules\/contrib\/syntaxhighlighter\/syntaxhighlighter.min.js&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/jquery_update\/replace\/jquery\/1.7\/jquery.min.js&quot;:1,&quot;misc\/jquery.once.js&quot;:1,&quot;misc\/drupal.js&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shCore.js&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shBrushPhp.js&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shBrushXml.js&quot;:1,&quot;public:\/\/languages\/ja_sUYN2Sl8tQ2UnGCFsVTg3O8THtms5TAOi4ucW4kVVvA.js&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/apachesolr_autocomplete.js&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/jquery-autocomplete\/jquery.autocomplete.js&quot;:1,&quot;sites\/all\/modules\/contrib\/google_analytics\/googleanalytics.js&quot;:1,&quot;0&quot;:1,&quot;http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.1.1\/js\/bootstrap.min.js&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/javascripts\/modernizr.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/sitewide.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/svgeezy.min.js&quot;:1},&quot;css&quot;:{&quot;modules\/system\/system.base.css&quot;:1,&quot;modules\/system\/system.messages.css&quot;:1,&quot;modules\/system\/system.theme.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_api\/date.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_popup\/themes\/datepicker.1.7.css&quot;:1,&quot;modules\/field\/theme\/field.css&quot;:1,&quot;modules\/node\/node.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/radix_layouts\/radix_layouts.css&quot;:1,&quot;modules\/search\/search.css&quot;:1,&quot;modules\/user\/user.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/views\/css\/views.css&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/apachesolr_autocomplete.css&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/jquery-autocomplete\/jquery.autocomplete.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/ctools\/css\/ctools.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/panels\/css\/panels.css&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/styles\/shCore.css&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/styles\/shThemeDefault.css&quot;:1,&quot;\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot;:1,&quot;profiles\/dkan\/modules\/dkan\/dkan_dataset\/css\/dkan_dataset.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/screen.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/font-awesome.min.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/dkan-flaticon.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/custom.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/print.css&quot;:1,&quot;http:\/\/udct-data.aigid.jp\/sites\/default\/files\/colorizer\/nuboot_radix-54bfeb53.css&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie7.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie8.css&quot;:1}},&quot;apachesolr_autocomplete&quot;:{&quot;path&quot;:&quot;\/apachesolr_autocomplete&quot;,&quot;forms&quot;:{&quot;search-block-form&quot;:{&quot;id&quot;:&quot;search-block-form&quot;,&quot;path&quot;:&quot;\/apachesolr_autocomplete\/0&quot;}}},&quot;googleanalytics&quot;:{&quot;trackOutbound&quot;:1,&quot;trackMailto&quot;:1,&quot;trackDownload&quot;:1,&quot;trackDownloadExtensions&quot;:&quot;7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip&quot;,&quot;trackDomainMode&quot;:&quot;1&quot;},&quot;urlIsAjaxTrusted&quot;:{&quot;\/search\/node&quot;:true,&quot;\/api\/3\/action\/license_list&quot;:true}});
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body class=&quot;html not-front not-logged-in no-sidebars page-api page-api- page-api-3 page-api-action page-api-action-license-list&quot; &gt;
+  &lt;div id=&quot;skip-link&quot;&gt;
+    &lt;a href=&quot;#main-content&quot; class=&quot;element-invisible element-focusable&quot;&gt;メインコンテンツに移動&lt;/a&gt;
+  &lt;/div&gt;
+    &lt;header id=&quot;header&quot; class=&quot;header&quot; role=&quot;header&quot;&gt;
+  &lt;div class=&quot;branding container&quot;&gt;
+          &lt;a class=&quot;logo navbar-btn pull-left&quot; href=&quot;/&quot; title=&quot;ホーム&quot;&gt;
+        &lt;img  style=&quot;width:95%;&quot; src=&quot;http://udct-data.aigid.jp/sites/default/files/id.png&quot; alt=&quot;ホーム&quot; /&gt;
+      &lt;/a&gt;
+                &lt;!-- views exposed search --&gt;
+    &lt;section id=&quot;block-search-form&quot; class=&quot;block block-search clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;form action=&quot;/api/3/action/license_list&quot; method=&quot;post&quot; id=&quot;search-block-form&quot; accept-charset=&quot;UTF-8&quot; role=&quot;form&quot;&gt;&lt;div&gt;&lt;div class=&quot;container-inline form-inline&quot;&gt;
+      &lt;h2 class=&quot;element-invisible&quot;&gt;検索フォーム&lt;/h2&gt;
+    &lt;div class=&quot;form-item form-type-textfield form-item-search-block-form form-group&quot;&gt;
+  &lt;label class=&quot;element-invisible&quot; for=&quot;edit-search-block-form--2&quot;&gt;検索 &lt;/label&gt;
+ &lt;input title=&quot;検索したいキーワードを入力してください&quot; class=&quot;apachesolr-autocomplete unprocessed form-control form-text&quot; data-apachesolr-autocomplete-id=&quot;search-block-form&quot; type=&quot;text&quot; id=&quot;edit-search-block-form--2&quot; name=&quot;search_block_form&quot; value=&quot;&quot; size=&quot;15&quot; maxlength=&quot;128&quot; /&gt;
+&lt;/div&gt;
+&lt;div class=&quot;form-actions form-wrapper&quot; id=&quot;edit-actions&quot;&gt;&lt;input type=&quot;submit&quot; id=&quot;edit-submit--2&quot; name=&quot;op&quot; value=&quot;検索&quot; class=&quot;form-submit btn btn-default btn-primary&quot; /&gt;&lt;/div&gt;&lt;input type=&quot;hidden&quot; name=&quot;form_build_id&quot; value=&quot;form-SqXash1mERfQkjsK3rKPeZesq9U8vUlv8lux81MaCtc&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;form_id&quot; value=&quot;search_block_form&quot; /&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/form&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;navigation-wrapper&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;nav class=&quot;navbar navbar-default&quot; role=&quot;navigation&quot;&gt;
+        &lt;div class=&quot;navbar-header&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#navbar-collapse&quot;&gt;
+            &lt;span class=&quot;sr-only&quot;&gt;Toggle navigation&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+          &lt;/button&gt;
+        &lt;/div&gt; &lt;!-- /.navbar-header --&gt;
+
+        &lt;!-- Collect the nav links, forms, and other content for toggling --&gt;
+        &lt;div class=&quot;collapse navbar-collapse&quot; id=&quot;navbar-collapse&quot;&gt;
+                      &lt;ul id=&quot;main-menu&quot; class=&quot;menu nav navbar-nav&quot;&gt;
+              &lt;li class=&quot;first leaf menu-link-データセット&quot;&gt;&lt;a href=&quot;/dataset&quot;&gt;データセット&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-グループ&quot;&gt;&lt;a href=&quot;/groups&quot;&gt;グループ&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-アプリとアイデア&quot;&gt;&lt;a href=&quot;/related&quot;&gt;アプリとアイデア&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;expanded dropdown menu-link-統計&quot;&gt;&lt;a href=&quot;/stats&quot; title=&quot;&quot; class=&quot;dropdown-toggle&quot; data-toggle=&quot;dropdown&quot; data-target=&quot;#&quot;&gt;統計&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt;&lt;ul class=&quot;dropdown-menu&quot;&gt;&lt;li class=&quot;first leaf menu-link-データーセット数&quot;&gt;&lt;a href=&quot;/stats/total-datasets&quot;&gt;データーセット数&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-最大グループ&quot;&gt;&lt;a href=&quot;/stats/group&quot;&gt;最大グループ&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-トップタグ&quot;&gt;&lt;a href=&quot;/stats/top-tag&quot;&gt;トップタグ&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-最もデータセットを所有しているユーザ&quot;&gt;&lt;a href=&quot;/stats/authors&quot;&gt;最もデータセットを所有しているユーザ&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-このサイトについて&quot;&gt;&lt;a href=&quot;/about&quot;&gt;このサイトについて&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+                    
+          &lt;!-- user menu --&gt;
+          &lt;section id=&quot;block-dkan-sitewide-dkan-sitewide-user-menu&quot; class=&quot;block block-dkan-sitewide clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;span class=&quot;links&quot;&gt;&lt;a href=&quot;/user/login&quot;&gt;ログイン&lt;/a&gt;&lt;a href=&quot;/user/register&quot; class=&quot;sub&quot;&gt;登録&lt;/a&gt;&lt;/span&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+        &lt;/div&gt;&lt;!-- /.navbar-collapse --&gt;
+      &lt;/nav&gt;&lt;!-- /.navbar --&gt;
+    &lt;/div&gt;&lt;!-- /.container --&gt;
+  &lt;/div&gt; &lt;!-- /.navigation --&gt;
+&lt;/header&gt;
+
+&lt;div id=&quot;main-wrapper&quot;&gt;
+  &lt;div id=&quot;main&quot; class=&quot;main container&quot;&gt;
+
+    &lt;ul class=&quot;breadcrumb&quot;&gt;&lt;li class=&quot;home-link&quot;&gt;&lt;a href=&quot;/&quot;&gt;&lt;i class=&quot;fa fa fa-home&quot;&gt;&lt;/i&gt;&lt;span&gt; ホーム&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;active-trail&quot;&gt;ページが見つかりません&lt;/li&gt;&lt;/ul&gt;        
+
+    &lt;div class=&quot;main-row&quot;&gt;
+
+      &lt;section&gt; 
+        &lt;a id=&quot;main-content&quot;&gt;&lt;/a&gt;
+                                                  &lt;div class=&quot;region region-content&quot;&gt;
+    &lt;section id=&quot;block-system-main&quot; class=&quot;block block-system clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	リクエストされたページ &quot;/api/3/action/license_list@&quot; は見つかりませんでした。  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+      &lt;/section&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt; &lt;!-- /#main --&gt;
+&lt;/div&gt; &lt;!-- /#main-wrapper --&gt;
+
+&lt;footer id=&quot;footer&quot; class=&quot;footer&quot; role=&quot;footer&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+          &lt;small class=&quot;copyright pull-left&quot;&gt;&lt;p&gt;&lt;a href=&quot;http://aigid.jp/&quot;&gt;一般社団法人社会基盤情報流通推進協議会&lt;/a&gt;&lt;/p&gt;
+&lt;/small&gt;
+        &lt;small class=&quot;pull-right&quot;&gt;  &lt;div class=&quot;region region-footer&quot;&gt;
+    &lt;section id=&quot;block-block-1&quot; class=&quot;block block-block clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;p&gt;Powered by &lt;a href=&quot;http://nucivic.com/dkan&quot;&gt;DKAN&lt;/a&gt;, supported by &lt;a href=&quot;http://an-nai.jp/&quot;&gt;ANNAI&lt;/a&gt;, &lt;a href=&quot;http://yosegi.me&quot;&gt;YOSEGI&lt;/a&gt;&lt;/p&gt;
+  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+&lt;/small&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/contrib/syntaxhighlighter/syntaxhighlighter.min.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+  CkanClient{catalogURL=http://udct-data.aigid.jp, ckanToken=null}
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:530)
+	at eu.trentorise.opendata.jackan.CkanClient.getLicenseList(CkanClient.java:765)
+	at eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.testSearchDatasetsByLicenseIds(ReadCkanIT.java:421)
+	... 12 more
+Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('&lt;' (code 60)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')
+ at [Source: &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML+RDFa 1.0//EN&quot;
+  &quot;http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd&quot;&gt;
+&lt;html lang=&quot;ja&quot; dir=&quot;ltr&quot;
+  xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;
+  xmlns:dc=&quot;http://purl.org/dc/terms/&quot;
+  xmlns:foaf=&quot;http://xmlns.com/foaf/0.1/&quot;
+  xmlns:og=&quot;http://ogp.me/ns#&quot;
+  xmlns:rdfs=&quot;http://www.w3.org/2000/01/rdf-schema#&quot;
+  xmlns:sioc=&quot;http://rdfs.org/sioc/ns#&quot;
+  xmlns:sioct=&quot;http://rdfs.org/sioc/types#&quot;
+  xmlns:skos=&quot;http://www.w3.org/2004/02/skos/core#&quot;
+  xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema#&quot;
+  xmlns:owl=&quot;http://www.w3.org/2002/07/owl#&quot;
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:rss=&quot;http://purl.org/rss/1.0/&quot;
+  xmlns:site=&quot;http://udct-data.aigid.jp/ns#&quot;
+  xmlns:dcat=&quot;http://www.w3.org/ns/dcat#&quot;&gt;
+&lt;head profile=&quot;http://www.w3.org/1999/xhtml/vocab&quot;&gt;
+  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge, chrome=1&quot;&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+&lt;meta name=&quot;Generator&quot; content=&quot;Drupal 7 (http://drupal.org)&quot; /&gt;
+&lt;link rel=&quot;shortcut icon&quot; href=&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/favicon.ico&quot; type=&quot;image/vnd.microsoft.icon&quot; /&gt;
+  &lt;title&gt;ページが見つかりません | アーバンデータチャレンジ データポータル&lt;/title&gt;
+  &lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/modules/system/system.base.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/system/system.messages.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/system/system.theme.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/date/date_api/date.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/date/date_popup/themes/datepicker.1.7.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/field/theme/field.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/node/node.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/radix_layouts/radix_layouts.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/search/search.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/modules/user/user.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/views/css/views.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/apachesolr_autocomplete.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/ctools/css/ctools.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/panels/css/panels.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/styles/shCore.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/styles/shThemeDefault.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;//fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot; media=&quot;all&quot; /&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/profiles/dkan/modules/dkan/dkan_dataset/css/dkan_dataset.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/screen.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/font-awesome.min.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/dkan-flaticon.css?nx7wg5&quot;);
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/custom.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;print&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/print.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://udct-data.aigid.jp/sites/default/files/colorizer/nuboot_radix-54bfeb53.css&quot; media=&quot;all&quot; /&gt;
+
+&lt;!--[if lte IE 9]&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/ie.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 7]&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/ie7.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 8]&gt;
+&lt;style type=&quot;text/css&quot; media=&quot;all&quot;&gt;
+@import url(&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/stylesheets/ie8.css?nx7wg5&quot;);
+&lt;/style&gt;
+&lt;![endif]--&gt;
+  &lt;!-- HTML5 element support for IE6-8 --&gt;
+  &lt;!--[if lt IE 9]&gt;
+    &lt;script src=&quot;//html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+    &lt;link href=&quot;/css/ie.css&quot; media=&quot;screen&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+  &lt;![endif]--&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/profiles/dkan/modules/contrib/jquery_update/replace/jquery/1.7/jquery.min.js?v=1.7.2&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/misc/jquery.once.js?v=1.2&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/misc/drupal.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/scripts/shCore.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/scripts/shBrushPhp.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/libraries/syntaxhighlighter_3.0.83/scripts/shBrushXml.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/default/files/languages/ja_sUYN2Sl8tQ2UnGCFsVTg3O8THtms5TAOi4ucW4kVVvA.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/apachesolr_autocomplete.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/contrib/google_analytics/googleanalytics.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+(function(i,s,o,g,r,a,m){i[&quot;GoogleAnalyticsObject&quot;]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,&quot;script&quot;,&quot;//www.google-analytics.com/analytics.js&quot;,&quot;ga&quot;);ga(&quot;create&quot;, &quot;UA-54278159-1&quot;, {&quot;cookieDomain&quot;:&quot;.udct-data.aigid.jp&quot;});ga(&quot;set&quot;, &quot;anonymizeIp&quot;, true);ga(&quot;set&quot;, &quot;page&quot;, &quot;/404.html?page=&quot; + document.location.pathname + document.location.search + &quot;&amp;from=&quot; + document.referrer);ga(&quot;send&quot;, &quot;pageview&quot;);
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/profiles/dkan/themes/contrib/radix/assets/javascripts/modernizr.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/javascripts/sitewide.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/themes/nuboot_radix/assets/javascripts/svgeezy.min.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+jQuery.extend(Drupal.settings, {&quot;basePath&quot;:&quot;\/&quot;,&quot;pathPrefix&quot;:&quot;&quot;,&quot;ajaxPageState&quot;:{&quot;theme&quot;:&quot;nuboot_radix&quot;,&quot;theme_token&quot;:&quot;7wbstFTySwEJW9YAyphDWhaG3yzlas-H4kWcFbIVofA&quot;,&quot;js&quot;:{&quot;sites\/all\/modules\/contrib\/syntaxhighlighter\/syntaxhighlighter.min.js&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/jquery_update\/replace\/jquery\/1.7\/jquery.min.js&quot;:1,&quot;misc\/jquery.once.js&quot;:1,&quot;misc\/drupal.js&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shCore.js&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shBrushPhp.js&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shBrushXml.js&quot;:1,&quot;public:\/\/languages\/ja_sUYN2Sl8tQ2UnGCFsVTg3O8THtms5TAOi4ucW4kVVvA.js&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/apachesolr_autocomplete.js&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/jquery-autocomplete\/jquery.autocomplete.js&quot;:1,&quot;sites\/all\/modules\/contrib\/google_analytics\/googleanalytics.js&quot;:1,&quot;0&quot;:1,&quot;http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.1.1\/js\/bootstrap.min.js&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/javascripts\/modernizr.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/sitewide.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/svgeezy.min.js&quot;:1},&quot;css&quot;:{&quot;modules\/system\/system.base.css&quot;:1,&quot;modules\/system\/system.messages.css&quot;:1,&quot;modules\/system\/system.theme.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_api\/date.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_popup\/themes\/datepicker.1.7.css&quot;:1,&quot;modules\/field\/theme\/field.css&quot;:1,&quot;modules\/node\/node.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/radix_layouts\/radix_layouts.css&quot;:1,&quot;modules\/search\/search.css&quot;:1,&quot;modules\/user\/user.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/views\/css\/views.css&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/apachesolr_autocomplete.css&quot;:1,&quot;sites\/all\/modules\/apachesolr_autocomplete\/jquery-autocomplete\/jquery.autocomplete.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/ctools\/css\/ctools.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/panels\/css\/panels.css&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/styles\/shCore.css&quot;:1,&quot;sites\/all\/libraries\/syntaxhighlighter_3.0.83\/styles\/shThemeDefault.css&quot;:1,&quot;\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot;:1,&quot;profiles\/dkan\/modules\/dkan\/dkan_dataset\/css\/dkan_dataset.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/screen.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/font-awesome.min.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/dkan-flaticon.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/custom.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/print.css&quot;:1,&quot;http:\/\/udct-data.aigid.jp\/sites\/default\/files\/colorizer\/nuboot_radix-54bfeb53.css&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie7.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie8.css&quot;:1}},&quot;apachesolr_autocomplete&quot;:{&quot;path&quot;:&quot;\/apachesolr_autocomplete&quot;,&quot;forms&quot;:{&quot;search-block-form&quot;:{&quot;id&quot;:&quot;search-block-form&quot;,&quot;path&quot;:&quot;\/apachesolr_autocomplete\/0&quot;}}},&quot;googleanalytics&quot;:{&quot;trackOutbound&quot;:1,&quot;trackMailto&quot;:1,&quot;trackDownload&quot;:1,&quot;trackDownloadExtensions&quot;:&quot;7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip&quot;,&quot;trackDomainMode&quot;:&quot;1&quot;},&quot;urlIsAjaxTrusted&quot;:{&quot;\/search\/node&quot;:true,&quot;\/api\/3\/action\/license_list&quot;:true}});
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body class=&quot;html not-front not-logged-in no-sidebars page-api page-api- page-api-3 page-api-action page-api-action-license-list&quot; &gt;
+  &lt;div id=&quot;skip-link&quot;&gt;
+    &lt;a href=&quot;#main-content&quot; class=&quot;element-invisible element-focusable&quot;&gt;メインコンテンツに移動&lt;/a&gt;
+  &lt;/div&gt;
+    &lt;header id=&quot;header&quot; class=&quot;header&quot; role=&quot;header&quot;&gt;
+  &lt;div class=&quot;branding container&quot;&gt;
+          &lt;a class=&quot;logo navbar-btn pull-left&quot; href=&quot;/&quot; title=&quot;ホーム&quot;&gt;
+        &lt;img  style=&quot;width:95%;&quot; src=&quot;http://udct-data.aigid.jp/sites/default/files/id.png&quot; alt=&quot;ホーム&quot; /&gt;
+      &lt;/a&gt;
+                &lt;!-- views exposed search --&gt;
+    &lt;section id=&quot;block-search-form&quot; class=&quot;block block-search clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;form action=&quot;/api/3/action/license_list&quot; method=&quot;post&quot; id=&quot;search-block-form&quot; accept-charset=&quot;UTF-8&quot; role=&quot;form&quot;&gt;&lt;div&gt;&lt;div class=&quot;container-inline form-inline&quot;&gt;
+      &lt;h2 class=&quot;element-invisible&quot;&gt;検索フォーム&lt;/h2&gt;
+    &lt;div class=&quot;form-item form-type-textfield form-item-search-block-form form-group&quot;&gt;
+  &lt;label class=&quot;element-invisible&quot; for=&quot;edit-search-block-form--2&quot;&gt;検索 &lt;/label&gt;
+ &lt;input title=&quot;検索したいキーワードを入力してください&quot; class=&quot;apachesolr-autocomplete unprocessed form-control form-text&quot; data-apachesolr-autocomplete-id=&quot;search-block-form&quot; type=&quot;text&quot; id=&quot;edit-search-block-form--2&quot; name=&quot;search_block_form&quot; value=&quot;&quot; size=&quot;15&quot; maxlength=&quot;128&quot; /&gt;
+&lt;/div&gt;
+&lt;div class=&quot;form-actions form-wrapper&quot; id=&quot;edit-actions&quot;&gt;&lt;input type=&quot;submit&quot; id=&quot;edit-submit--2&quot; name=&quot;op&quot; value=&quot;検索&quot; class=&quot;form-submit btn btn-default btn-primary&quot; /&gt;&lt;/div&gt;&lt;input type=&quot;hidden&quot; name=&quot;form_build_id&quot; value=&quot;form-SqXash1mERfQkjsK3rKPeZesq9U8vUlv8lux81MaCtc&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;form_id&quot; value=&quot;search_block_form&quot; /&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/form&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;navigation-wrapper&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;nav class=&quot;navbar navbar-default&quot; role=&quot;navigation&quot;&gt;
+        &lt;div class=&quot;navbar-header&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#navbar-collapse&quot;&gt;
+            &lt;span class=&quot;sr-only&quot;&gt;Toggle navigation&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+          &lt;/button&gt;
+        &lt;/div&gt; &lt;!-- /.navbar-header --&gt;
+
+        &lt;!-- Collect the nav links, forms, and other content for toggling --&gt;
+        &lt;div class=&quot;collapse navbar-collapse&quot; id=&quot;navbar-collapse&quot;&gt;
+                      &lt;ul id=&quot;main-menu&quot; class=&quot;menu nav navbar-nav&quot;&gt;
+              &lt;li class=&quot;first leaf menu-link-データセット&quot;&gt;&lt;a href=&quot;/dataset&quot;&gt;データセット&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-グループ&quot;&gt;&lt;a href=&quot;/groups&quot;&gt;グループ&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-アプリとアイデア&quot;&gt;&lt;a href=&quot;/related&quot;&gt;アプリとアイデア&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;expanded dropdown menu-link-統計&quot;&gt;&lt;a href=&quot;/stats&quot; title=&quot;&quot; class=&quot;dropdown-toggle&quot; data-toggle=&quot;dropdown&quot; data-target=&quot;#&quot;&gt;統計&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt;&lt;ul class=&quot;dropdown-menu&quot;&gt;&lt;li class=&quot;first leaf menu-link-データーセット数&quot;&gt;&lt;a href=&quot;/stats/total-datasets&quot;&gt;データーセット数&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-最大グループ&quot;&gt;&lt;a href=&quot;/stats/group&quot;&gt;最大グループ&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-トップタグ&quot;&gt;&lt;a href=&quot;/stats/top-tag&quot;&gt;トップタグ&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-最もデータセットを所有しているユーザ&quot;&gt;&lt;a href=&quot;/stats/authors&quot;&gt;最もデータセットを所有しているユーザ&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-このサイトについて&quot;&gt;&lt;a href=&quot;/about&quot;&gt;このサイトについて&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+                    
+          &lt;!-- user menu --&gt;
+          &lt;section id=&quot;block-dkan-sitewide-dkan-sitewide-user-menu&quot; class=&quot;block block-dkan-sitewide clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;span class=&quot;links&quot;&gt;&lt;a href=&quot;/user/login&quot;&gt;ログイン&lt;/a&gt;&lt;a href=&quot;/user/register&quot; class=&quot;sub&quot;&gt;登録&lt;/a&gt;&lt;/span&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+        &lt;/div&gt;&lt;!-- /.navbar-collapse --&gt;
+      &lt;/nav&gt;&lt;!-- /.navbar --&gt;
+    &lt;/div&gt;&lt;!-- /.container --&gt;
+  &lt;/div&gt; &lt;!-- /.navigation --&gt;
+&lt;/header&gt;
+
+&lt;div id=&quot;main-wrapper&quot;&gt;
+  &lt;div id=&quot;main&quot; class=&quot;main container&quot;&gt;
+
+    &lt;ul class=&quot;breadcrumb&quot;&gt;&lt;li class=&quot;home-link&quot;&gt;&lt;a href=&quot;/&quot;&gt;&lt;i class=&quot;fa fa fa-home&quot;&gt;&lt;/i&gt;&lt;span&gt; ホーム&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;active-trail&quot;&gt;ページが見つかりません&lt;/li&gt;&lt;/ul&gt;        
+
+    &lt;div class=&quot;main-row&quot;&gt;
+
+      &lt;section&gt; 
+        &lt;a id=&quot;main-content&quot;&gt;&lt;/a&gt;
+                                                  &lt;div class=&quot;region region-content&quot;&gt;
+    &lt;section id=&quot;block-system-main&quot; class=&quot;block block-system clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	リクエストされたページ &quot;/api/3/action/license_list@&quot; は見つかりませんでした。  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+      &lt;/section&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt; &lt;!-- /#main --&gt;
+&lt;/div&gt; &lt;!-- /#main-wrapper --&gt;
+
+&lt;footer id=&quot;footer&quot; class=&quot;footer&quot; role=&quot;footer&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+          &lt;small class=&quot;copyright pull-left&quot;&gt;&lt;p&gt;&lt;a href=&quot;http://aigid.jp/&quot;&gt;一般社団法人社会基盤情報流通推進協議会&lt;/a&gt;&lt;/p&gt;
+&lt;/small&gt;
+        &lt;small class=&quot;pull-right&quot;&gt;  &lt;div class=&quot;region region-footer&quot;&gt;
+    &lt;section id=&quot;block-block-1&quot; class=&quot;block block-block clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;p&gt;Powered by &lt;a href=&quot;http://nucivic.com/dkan&quot;&gt;DKAN&lt;/a&gt;, supported by &lt;a href=&quot;http://an-nai.jp/&quot;&gt;ANNAI&lt;/a&gt;, &lt;a href=&quot;http://yosegi.me&quot;&gt;YOSEGI&lt;/a&gt;&lt;/p&gt;
+  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+&lt;/small&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://udct-data.aigid.jp/sites/all/modules/contrib/syntaxhighlighter/syntaxhighlighter.min.js?nx7wg5&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+; line: 1, column: 2]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1576)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:533)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:462)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1624)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:689)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3742)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3687)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2714)
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:528)
+	... 14 more
+</pre></body>

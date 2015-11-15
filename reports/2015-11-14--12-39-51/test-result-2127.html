@@ -1,0 +1,1309 @@
+<html><head><title>Jackan Test #2127</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #2127</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor173.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:188)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:266)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:293)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: eu.trentorise.opendata.jackan.exceptions.CkanException: Couldn't interpret json returned by the server! Returned text was: &lt;!DOCTYPE html&gt;
+&lt;!--[if IE 7]&gt; &lt;html lang=&quot;es&quot; class=&quot;ie ie7&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 8]&gt; &lt;html lang=&quot;es&quot; class=&quot;ie ie8&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 9]&gt; &lt;html lang=&quot;es&quot; class=&quot;ie9&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if gt IE 8]&gt;&lt;!--&gt; &lt;html lang=&quot;es&quot;&gt; &lt;!--&lt;![endif]--&gt;
+  &lt;head&gt;
+    &lt;!--[if lte ie 8]&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/html5.min.js&quot;&gt;&lt;/script&gt;&lt;![endif]--&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/select2/select2.css&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/css/:version:2015-07-14T18:24:40/main.css&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/font-awesome/css/font-awesome.min.css&quot; /&gt;
+&lt;!--[if ie 7]&gt;&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/font-awesome/css/font-awesome-ie7.min.css&quot; /&gt;&lt;![endif]--&gt;
+
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+      &lt;meta name=&quot;generator&quot; content=&quot;ckan 2.5.0a&quot; /&gt;
+      &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Error 404 - Datos &lt;/title&gt;
+
+    
+    &lt;link rel=&quot;shortcut icon&quot; href=&quot;/images/icons/ckan.ico&quot; /&gt;
+    
+      
+    
+
+    
+      
+      
+    &lt;style&gt;
+        body {
+  background: #b9b9ba url(&quot;http://www.gobiernoabierto.gob.ar/public/ga/imagenes/encabezado/Portal_GA_Fondo.png&quot;) no-repeat;
+}
+.box {
+    box-shadow: none;
+}
+.wrapper {
+  box-shadow: none;
+}
+.media-heading {
+  word-break: keep-all;
+}
+.heading {
+    word-break: keep-all !important;
+}
+.homepage .stats ul li a {
+    text-align: center;
+}
+.homepage .stats ul li {
+    width: 33%;
+}
+a {
+  color: #07A5DB;
+}
+a:hover, a:focus {
+  color: #107391;
+}
+.search-form h2 {
+    color: #0382b4;
+}
+.toolbar .breadcrumb {
+    font-size: 16px;
+}
+  [role=main],
+  .main {
+        padding: 0 20px 20px;
+      width: auto;
+      max-width: 940px;
+      margin: 0 auto;
+      background: none #fff;
+  }
+  .homepage [role=&quot;main&quot;] {
+       padding: 0 20px 20px;
+  }
+.hero {
+    background: #fff none repeat scroll 0 0;
+}
+.btn-primary {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #3C3C3C;
+  background-image: -moz-linear-gradient(top, #545252, #3C3C3C);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#545252), to(#3C3C3C));
+  background-image: -webkit-linear-gradient(top, #545252, #3C3C3C);
+  background-image: -o-linear-gradient(top, #545252, #3C3C3C);
+  background-image: linear-gradient(to bottom, #545252, #3C3C3C );
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff30778d', endColorstr='#ff085871', GradientType=0);
+  border-color: #3C3C3C #3C3C3C #03202a;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  color: #ffffff;
+  background-color: #3C3C3C;
+  *background-color: #3C3C3C;
+}
+.btn-primary:active,
+.btn-primary.active {
+  background-color: #545252 \9;
+}
+.media-view:hover, .media-view.hovered {
+    border-color: #B9B9BA;
+}
+.account-masthead .account .notifications a span {
+    background-color: rgb(44, 44, 44);
+}
+.homepage .module-search .module-content {
+    background-color: rgb(180, 180, 182);
+}
+.homepage .module-search .tags {
+  padding: 5px 10px 10px 10px;
+  background-color: #282828;
+}
+.module-image {
+    width: auto;
+}
+.homepage .module-search {
+   margin: 0;
+}
+.homepage .module-search .search-giant input {
+  border-color: #B9B9BA;
+}
+.site-footer {
+  background: transparent;
+  padding: 0;
+}
+.site-footer, .site-footer label, .site-footer small, .site-footer a {
+    color: #f8f8f8;
+}
+.site-footer .container {
+  background: #3C3C3C;
+    padding: 20px;
+}
+.account-masthead {
+  background: none #161007;
+   padding: 5px 0;
+  border-bottom: 7px solid #f6a336;
+}
+
+.account-masthead .account ul li a {
+    color: #e7e7e7;
+}
+.account-masthead .account ul li a:hover {
+    background-color: transparent;
+}
+.masthead {
+  background: none repeat scroll 0 0 transparent;
+}
+.masthead .container {
+  background: url(&quot;http://observatoriotic.gobiernoabierto.gob.ar/public/observatorio/imagenes/encabezado/Logo_SSTG_SGCA.png&quot;) no-repeat scroll 490px 23px #ffffff;
+padding: 15px 20px 20px 20px;
+}
+.header-image {
+  padding: 0 0 15px 0;
+}
+.masthead .nav-collapse {
+  background: none repeat scroll 0 0 #f8f8f8;
+  border-top: 1px solid #b3b4b3;
+  border-bottom: 1px solid #b3b4b3;
+}
+.navbar .nav &gt; li {
+    padding: 10px 0;
+}
+.navbar .nav &gt; li:hover {
+    background-color: #b4dcf6;
+}
+.masthead .nav &gt; li &gt; a,
+.masthead .nav &gt; li &gt; a:focus,
+.masthead .nav &gt; li &gt; a:hover,
+.masthead .nav &gt; .active &gt; a,
+.masthead .nav &gt; .active &gt; a:hover,
+.masthead .nav &gt; .active &gt; a:focus {
+    font-size: 1.25em;
+  display: block;
+  margin: 0;
+  padding: 3px 15px;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  border-right: 1px solid #999;
+  color: #4b4b4b;
+  border-radius: 0;
+}
+.masthead .navigation .nav-pills li a:hover,
+.masthead .navigation .nav-pills li.active a,
+.nav-pills li.active {
+  background-color: #b4dcf6;
+  box-shadow: none;
+}
+.nav-pills li.active, .masthead .navigation .nav-pills li.active a {
+  color: #65B6E2;
+  background-color: transparent;
+}
+.navigation .nav-pills li.active a:hover {
+  color: #3f637d;
+}
+.account-masthead .account ul li {
+  border-left: 1px solid #29211A;
+}
+.masthead .site-search {
+  float: right;
+  margin: 5px 23px 2px 0;
+}
+.masthead input[type=&quot;text&quot;] {
+  border-color: #B9B9BA;
+}
+@media (min-width: 980px) {
+.masthead .nav-collapse {
+  float: right;
+  width: calc(100% - 10px);
+  padding: 0 10px;
+}
+}
+@media (min-width: 768px) {
+  [role=main],
+  .main {
+        padding: 0 20px 20px;
+      width: auto;
+      max-width: 940px;
+      margin: 0 auto;
+       background: none #fff;
+  }
+  .homepage [role=&quot;main&quot;] {
+       padding: 0 20px 20px;
+       background: none #fff;
+  }
+}
+
+      &lt;/style&gt;
+    
+  &lt;/head&gt;
+
+  
+  &lt;body data-site-root=&quot;http://10.1.36.236/&quot; data-locale-root=&quot;http://10.1.36.236/&quot; &gt;
+
+    
+    &lt;div class=&quot;hide&quot;&gt;&lt;a href=&quot;#content&quot;&gt;Ir al contenido&lt;/a&gt;&lt;/div&gt;
+  
+
+  
+    
+
+  &lt;header class=&quot;account-masthead&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      
+        
+          &lt;nav class=&quot;account not-authed&quot;&gt;
+            &lt;ul class=&quot;unstyled&quot;&gt;
+              
+              &lt;li&gt;&lt;a href=&quot;/user/login&quot;&gt;Iniciar Sesi&oacute;n&lt;/a&gt;&lt;/li&gt;
+              
+              
+            &lt;/ul&gt;
+          &lt;/nav&gt;
+        
+      
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+&lt;header class=&quot;navbar navbar-static-top masthead&quot;&gt;
+  
+    
+  
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;button data-target=&quot;.nav-collapse&quot; data-toggle=&quot;collapse&quot; class=&quot;btn btn-navbar&quot; type=&quot;button&quot;&gt;
+      &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+    &lt;/button&gt;
+    
+    &lt;hgroup class=&quot;header-image pull-left&quot;&gt;
+
+      
+        
+          &lt;a class=&quot;logo&quot; href=&quot;/&quot;&gt;&lt;img src=&quot;/images/ckan_logo_fullname_long.png&quot; alt=&quot;Datos &quot; title=&quot;Datos &quot; /&gt;&lt;/a&gt;
+        
+      
+
+    &lt;/hgroup&gt;
+
+    &lt;div class=&quot;nav-collapse collapse&quot;&gt;
+
+      
+        &lt;nav class=&quot;section navigation&quot;&gt;
+          &lt;ul class=&quot;nav nav-pills&quot;&gt;
+            &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Inicio&lt;/a&gt;&lt;/li&gt;
+            
+              &lt;li&gt;&lt;a href=&quot;/dataset&quot;&gt;Conjuntos de datos&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;/organization&quot;&gt;Organizaciones&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;/group&quot;&gt;Grupos&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;/about&quot;&gt;SINDAP&lt;/a&gt;&lt;/li&gt;
+            
+          &lt;/ul&gt;
+        &lt;/nav&gt;
+      
+
+      
+      &lt;!--
+        &lt;form class=&quot;section site-search simple-input&quot; action=&quot;/dataset&quot; method=&quot;get&quot;&gt;
+          &lt;div class=&quot;field&quot;&gt;
+            &lt;label for=&quot;field-sitewide-search&quot;&gt;Buscar conjuntos de datos&lt;/label&gt;
+            &lt;input id=&quot;field-sitewide-search&quot; type=&quot;text&quot; name=&quot;q&quot; placeholder=&quot;B&uacute;squeda&quot; /&gt;
+            &lt;button class=&quot;btn-search&quot; type=&quot;submit&quot;&gt;&lt;i class=&quot;icon-search&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/form&gt;
+      --&gt;
+      
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+  
+    &lt;div role=&quot;main&quot;&gt;
+      &lt;div id=&quot;content&quot; class=&quot;container&quot;&gt;
+        
+          
+  
+  
+
+
+          
+            &lt;div class=&quot;toolbar&quot;&gt;
+              
+
+            &lt;/div&gt;
+          
+
+          &lt;div class=&quot;row wrapper no-nav&quot;&gt;
+
+            
+            
+            
+
+            
+  &lt;article class=&quot;module&quot;&gt;
+    &lt;div class=&quot;module-content&quot;&gt;
+      404 Not Found
+
+The resource could not be found.
+
+   
+    &lt;/div&gt;
+  &lt;/article&gt;
+
+
+            
+          &lt;/div&gt;
+        
+      &lt;/div&gt;
+    &lt;/div&gt;
+  
+    &lt;footer class=&quot;site-footer&quot;&gt;
+  &lt;div class=&quot;container&quot; style=&quot;padding:10px 20px 10px 20px;&quot;&gt;
+    
+    &lt;div class=&quot;row&quot;&gt;
+      
+      &lt;div class=&quot;span8 footer-links&quot; style=&quot;margin-top:10px;&quot;&gt;
+        
+          &lt;ul class=&quot;unstyled&quot;&gt;
+            
+              &lt;li&gt;&lt;a href=&quot;http://www.gobiernoabierto.gob.ar&quot; style=&quot;font-size:18px;&quot;&gt;Gobierno Abierto&lt;/a&gt;&lt;/li&gt;
+            
+          &lt;/ul&gt;
+          &lt;ul class=&quot;unstyled&quot;&gt;
+            
+              
+              &lt;li&gt;&lt;b&gt;&lt;a href=&quot;http://secretariagabinete.jefatura.gob.ar/tecnologia&quot;&gt;Secretar&iacute;a de Gabinete&lt;/a&gt;&lt;/b&gt;&lt;/li&gt;
+              &lt;li&gt;&lt;b&gt;&lt;a href=&quot;https://www.jefatura.gob.ar/&quot;&gt;Jefatura de Gabinete de Ministros&lt;/a&gt;&lt;/b&gt;&lt;/li&gt;
+              &lt;!--
+              &lt;li&gt;&lt;a href=&quot;http://www.opendefinition.org/okd/&quot;&gt;&lt;img src=&quot;/base/images/od_80x15_blue.png&quot;&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+
+            
+          &lt;/ul&gt;
+        
+      &lt;/div&gt;
+      &lt;div class=&quot;span4 attribution&quot; style=&quot;margin-top:10px;&quot;&gt;
+        
+          &lt;p&gt; &lt;a class=&quot;hide-text ckan-footer-logo&quot; href=&quot;http://ckan.org&quot;&gt;CKAN&lt;/a&gt;&lt;/p&gt;
+        
+        
+          
+&lt;!-- Snippet snippets/language_selector.html start --&gt;
+
+
+&lt;form class=&quot;form-inline form-select lang-select&quot; action=&quot;/util/redirect&quot; data-module=&quot;select-switch&quot; method=&quot;POST&quot;&gt;
+  &lt;label for=&quot;field-lang-select&quot;&gt;Idioma&lt;/label&gt;
+  &lt;select id=&quot;field-lang-select&quot; name=&quot;url&quot; data-module=&quot;autocomplete&quot; data-module-dropdown-class=&quot;lang-dropdown&quot; data-module-container-class=&quot;lang-container&quot;&gt;
+    
+      &lt;option value=&quot;/es/data/api/3/action/license_list&quot; selected=&quot;selected&quot;&gt;
+        espa&ntilde;ol
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en/data/api/3/action/license_list&quot; &gt;
+        English
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/pt_BR/data/api/3/action/license_list&quot; &gt;
+        portugu&ecirc;s (Brasil)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ja/data/api/3/action/license_list&quot; &gt;
+        日本語
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/it/data/api/3/action/license_list&quot; &gt;
+        italiano
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/cs_CZ/data/api/3/action/license_list&quot; &gt;
+        če&scaron;tina (Česk&aacute; republika)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ca/data/api/3/action/license_list&quot; &gt;
+        catal&agrave;
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/fr/data/api/3/action/license_list&quot; &gt;
+        fran&ccedil;ais
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/el/data/api/3/action/license_list&quot; &gt;
+        &Epsilon;&lambda;&lambda;&eta;&nu;&iota;&kappa;ά
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sv/data/api/3/action/license_list&quot; &gt;
+        svenska
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sr/data/api/3/action/license_list&quot; &gt;
+        Српски
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/no/data/api/3/action/license_list&quot; &gt;
+        Norwegian
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sk/data/api/3/action/license_list&quot; &gt;
+        slovensk&yacute;
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/fi/data/api/3/action/license_list&quot; &gt;
+        suomi
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ru/data/api/3/action/license_list&quot; &gt;
+        русский
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/de/data/api/3/action/license_list&quot; &gt;
+        Deutsch
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/pl/data/api/3/action/license_list&quot; &gt;
+        polski
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/nl/data/api/3/action/license_list&quot; &gt;
+        Nederlands
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/bg/data/api/3/action/license_list&quot; &gt;
+        български
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ko_KR/data/api/3/action/license_list&quot; &gt;
+        한국어 (대한민국)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/hu/data/api/3/action/license_list&quot; &gt;
+        magyar
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sl/data/api/3/action/license_list&quot; &gt;
+        sloven&scaron;čina
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/lv/data/api/3/action/license_list&quot; &gt;
+        latvie&scaron;u
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en_CA/data/api/3/action/license_list&quot; &gt;
+        English (Canada)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ro/data/api/3/action/license_list&quot; &gt;
+        rom&acirc;nă
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/vi_VN/data/api/3/action/license_list&quot; &gt;
+        Tiếng Việt (Việt Nam)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sq/data/api/3/action/license_list&quot; &gt;
+        shqipe
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/lo/data/api/3/action/license_list&quot; &gt;
+        ລາວ
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en_GB/data/api/3/action/license_list&quot; &gt;
+        English (United Kingdom)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ne/data/api/3/action/license_list&quot; &gt;
+        नेपाली
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/eu/data/api/3/action/license_list&quot; &gt;
+        euskara
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/lt/data/api/3/action/license_list&quot; &gt;
+        lietuvių
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sw/data/api/3/action/license_list&quot; &gt;
+        Kiswahili
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/da_DK/data/api/3/action/license_list&quot; &gt;
+        dansk (Danmark)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en_AU/data/api/3/action/license_list&quot; &gt;
+        English (Australia)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/my_MM/data/api/3/action/license_list&quot; &gt;
+        ဗမာ (မြန်မာ)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/zh_TW/data/api/3/action/license_list&quot; &gt;
+        中文 (台湾)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/my/data/api/3/action/license_list&quot; &gt;
+        ဗမာ
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/is/data/api/3/action/license_list&quot; &gt;
+        &iacute;slenska
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/zh_CN/data/api/3/action/license_list&quot; &gt;
+        中文 (中国)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/dv/data/api/3/action/license_list&quot; &gt;
+        ދިވެހިބަސް
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/pt_PT/data/api/3/action/license_list&quot; &gt;
+        portugu&ecirc;s (Portugal)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/fa_IR/data/api/3/action/license_list&quot; &gt;
+        فارسی (ایران)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/es_MX/data/api/3/action/license_list&quot; &gt;
+        espa&ntilde;ol (M&eacute;xico)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/tr/data/api/3/action/license_list&quot; &gt;
+        T&uuml;rk&ccedil;e
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ar/data/api/3/action/license_list&quot; &gt;
+        العربية
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/th/data/api/3/action/license_list&quot; &gt;
+        ไทย
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/vi/data/api/3/action/license_list&quot; &gt;
+        Tiếng Việt
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sr_Latn/data/api/3/action/license_list&quot; &gt;
+        Srpski (Latinica)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/he/data/api/3/action/license_list&quot; &gt;
+        עברית
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/km/data/api/3/action/license_list&quot; &gt;
+        ភាសាខ្មែរ
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/mn_MN/data/api/3/action/license_list&quot; &gt;
+        монгол (Монгол улс)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/uk_UA/data/api/3/action/license_list&quot; &gt;
+        українська (Україна)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/id/data/api/3/action/license_list&quot; &gt;
+        Bahasa Indonesia
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/hr/data/api/3/action/license_list&quot; &gt;
+        hrvatski
+      &lt;/option&gt;
+    
+  &lt;/select&gt;
+  &lt;button class=&quot;btn js-hide&quot; type=&quot;submit&quot;&gt;Ir&lt;/button&gt;
+&lt;/form&gt;
+&lt;!-- Snippet snippets/language_selector.html end --&gt;
+
+        
+      
+
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+    
+  &lt;/div&gt;
+
+  
+    
+  
+&lt;/footer&gt;
+  
+    
+    
+    
+  
+    
+
+      
+  &lt;script&gt;document.getElementsByTagName('html')[0].className += ' js';&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/base/:version:2015-07-14T18:24:40/:bundle:plugins/jquery.inherit.js;plugins/jquery.proxy-all.js;plugins/jquery.url-helpers.js;plugins/jquery.date-helpers.js;plugins/jquery.slug.js;plugins/jquery.slug-preview.js;plugins/jquery.truncator.js;plugins/jquery.masonry.js;plugins/jquery.form-warning.js;sandbox.js;module.js;pubsub.js;client.js;notify.js;i18n.js;main.js;modules/select-switch.js;modules/slug-preview.js;modules/basic-form.js;modules/confirm-action.js;modules/api-info.js;modules/autocomplete.js;modules/custom-fields.js;modules/related-item.js;modules/data-viewer.js;modules/table-selectable-rows.js;modules/resource-form.js;modules/resource-upload-field.js;modules/resource-reorder.js;modules/resource-view-reorder.js;modules/follow.js;modules/activity-stream.js;modules/dashboard.js;modules/resource-view-embed.js;view-filters.js;modules/resource-view-filters-form.js;modules/resource-view-filters.js;modules/table-toggle-more.js;modules/dataset-visibility.js;modules/media-grid.js;modules/image-upload.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;
+&lt;/html&gt;  CkanClient{catalogURL=http://datospublicos.gob.ar/data, ckanToken=null}
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:530)
+	at eu.trentorise.opendata.jackan.CkanClient.getLicenseList(CkanClient.java:765)
+	at eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.testSearchDatasetsByLicenseIds(ReadCkanIT.java:421)
+	... 12 more
+Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('&lt;' (code 60)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')
+ at [Source: &lt;!DOCTYPE html&gt;
+&lt;!--[if IE 7]&gt; &lt;html lang=&quot;es&quot; class=&quot;ie ie7&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 8]&gt; &lt;html lang=&quot;es&quot; class=&quot;ie ie8&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 9]&gt; &lt;html lang=&quot;es&quot; class=&quot;ie9&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if gt IE 8]&gt;&lt;!--&gt; &lt;html lang=&quot;es&quot;&gt; &lt;!--&lt;![endif]--&gt;
+  &lt;head&gt;
+    &lt;!--[if lte ie 8]&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/html5.min.js&quot;&gt;&lt;/script&gt;&lt;![endif]--&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/select2/select2.css&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/css/:version:2015-07-14T18:24:40/main.css&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/font-awesome/css/font-awesome.min.css&quot; /&gt;
+&lt;!--[if ie 7]&gt;&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/font-awesome/css/font-awesome-ie7.min.css&quot; /&gt;&lt;![endif]--&gt;
+
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+      &lt;meta name=&quot;generator&quot; content=&quot;ckan 2.5.0a&quot; /&gt;
+      &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Error 404 - Datos &lt;/title&gt;
+
+    
+    &lt;link rel=&quot;shortcut icon&quot; href=&quot;/images/icons/ckan.ico&quot; /&gt;
+    
+      
+    
+
+    
+      
+      
+    &lt;style&gt;
+        body {
+  background: #b9b9ba url(&quot;http://www.gobiernoabierto.gob.ar/public/ga/imagenes/encabezado/Portal_GA_Fondo.png&quot;) no-repeat;
+}
+.box {
+    box-shadow: none;
+}
+.wrapper {
+  box-shadow: none;
+}
+.media-heading {
+  word-break: keep-all;
+}
+.heading {
+    word-break: keep-all !important;
+}
+.homepage .stats ul li a {
+    text-align: center;
+}
+.homepage .stats ul li {
+    width: 33%;
+}
+a {
+  color: #07A5DB;
+}
+a:hover, a:focus {
+  color: #107391;
+}
+.search-form h2 {
+    color: #0382b4;
+}
+.toolbar .breadcrumb {
+    font-size: 16px;
+}
+  [role=main],
+  .main {
+        padding: 0 20px 20px;
+      width: auto;
+      max-width: 940px;
+      margin: 0 auto;
+      background: none #fff;
+  }
+  .homepage [role=&quot;main&quot;] {
+       padding: 0 20px 20px;
+  }
+.hero {
+    background: #fff none repeat scroll 0 0;
+}
+.btn-primary {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #3C3C3C;
+  background-image: -moz-linear-gradient(top, #545252, #3C3C3C);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#545252), to(#3C3C3C));
+  background-image: -webkit-linear-gradient(top, #545252, #3C3C3C);
+  background-image: -o-linear-gradient(top, #545252, #3C3C3C);
+  background-image: linear-gradient(to bottom, #545252, #3C3C3C );
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff30778d', endColorstr='#ff085871', GradientType=0);
+  border-color: #3C3C3C #3C3C3C #03202a;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  color: #ffffff;
+  background-color: #3C3C3C;
+  *background-color: #3C3C3C;
+}
+.btn-primary:active,
+.btn-primary.active {
+  background-color: #545252 \9;
+}
+.media-view:hover, .media-view.hovered {
+    border-color: #B9B9BA;
+}
+.account-masthead .account .notifications a span {
+    background-color: rgb(44, 44, 44);
+}
+.homepage .module-search .module-content {
+    background-color: rgb(180, 180, 182);
+}
+.homepage .module-search .tags {
+  padding: 5px 10px 10px 10px;
+  background-color: #282828;
+}
+.module-image {
+    width: auto;
+}
+.homepage .module-search {
+   margin: 0;
+}
+.homepage .module-search .search-giant input {
+  border-color: #B9B9BA;
+}
+.site-footer {
+  background: transparent;
+  padding: 0;
+}
+.site-footer, .site-footer label, .site-footer small, .site-footer a {
+    color: #f8f8f8;
+}
+.site-footer .container {
+  background: #3C3C3C;
+    padding: 20px;
+}
+.account-masthead {
+  background: none #161007;
+   padding: 5px 0;
+  border-bottom: 7px solid #f6a336;
+}
+
+.account-masthead .account ul li a {
+    color: #e7e7e7;
+}
+.account-masthead .account ul li a:hover {
+    background-color: transparent;
+}
+.masthead {
+  background: none repeat scroll 0 0 transparent;
+}
+.masthead .container {
+  background: url(&quot;http://observatoriotic.gobiernoabierto.gob.ar/public/observatorio/imagenes/encabezado/Logo_SSTG_SGCA.png&quot;) no-repeat scroll 490px 23px #ffffff;
+padding: 15px 20px 20px 20px;
+}
+.header-image {
+  padding: 0 0 15px 0;
+}
+.masthead .nav-collapse {
+  background: none repeat scroll 0 0 #f8f8f8;
+  border-top: 1px solid #b3b4b3;
+  border-bottom: 1px solid #b3b4b3;
+}
+.navbar .nav &gt; li {
+    padding: 10px 0;
+}
+.navbar .nav &gt; li:hover {
+    background-color: #b4dcf6;
+}
+.masthead .nav &gt; li &gt; a,
+.masthead .nav &gt; li &gt; a:focus,
+.masthead .nav &gt; li &gt; a:hover,
+.masthead .nav &gt; .active &gt; a,
+.masthead .nav &gt; .active &gt; a:hover,
+.masthead .nav &gt; .active &gt; a:focus {
+    font-size: 1.25em;
+  display: block;
+  margin: 0;
+  padding: 3px 15px;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  border-right: 1px solid #999;
+  color: #4b4b4b;
+  border-radius: 0;
+}
+.masthead .navigation .nav-pills li a:hover,
+.masthead .navigation .nav-pills li.active a,
+.nav-pills li.active {
+  background-color: #b4dcf6;
+  box-shadow: none;
+}
+.nav-pills li.active, .masthead .navigation .nav-pills li.active a {
+  color: #65B6E2;
+  background-color: transparent;
+}
+.navigation .nav-pills li.active a:hover {
+  color: #3f637d;
+}
+.account-masthead .account ul li {
+  border-left: 1px solid #29211A;
+}
+.masthead .site-search {
+  float: right;
+  margin: 5px 23px 2px 0;
+}
+.masthead input[type=&quot;text&quot;] {
+  border-color: #B9B9BA;
+}
+@media (min-width: 980px) {
+.masthead .nav-collapse {
+  float: right;
+  width: calc(100% - 10px);
+  padding: 0 10px;
+}
+}
+@media (min-width: 768px) {
+  [role=main],
+  .main {
+        padding: 0 20px 20px;
+      width: auto;
+      max-width: 940px;
+      margin: 0 auto;
+       background: none #fff;
+  }
+  .homepage [role=&quot;main&quot;] {
+       padding: 0 20px 20px;
+       background: none #fff;
+  }
+}
+
+      &lt;/style&gt;
+    
+  &lt;/head&gt;
+
+  
+  &lt;body data-site-root=&quot;http://10.1.36.236/&quot; data-locale-root=&quot;http://10.1.36.236/&quot; &gt;
+
+    
+    &lt;div class=&quot;hide&quot;&gt;&lt;a href=&quot;#content&quot;&gt;Ir al contenido&lt;/a&gt;&lt;/div&gt;
+  
+
+  
+    
+
+  &lt;header class=&quot;account-masthead&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      
+        
+          &lt;nav class=&quot;account not-authed&quot;&gt;
+            &lt;ul class=&quot;unstyled&quot;&gt;
+              
+              &lt;li&gt;&lt;a href=&quot;/user/login&quot;&gt;Iniciar Sesi&oacute;n&lt;/a&gt;&lt;/li&gt;
+              
+              
+            &lt;/ul&gt;
+          &lt;/nav&gt;
+        
+      
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+&lt;header class=&quot;navbar navbar-static-top masthead&quot;&gt;
+  
+    
+  
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;button data-target=&quot;.nav-collapse&quot; data-toggle=&quot;collapse&quot; class=&quot;btn btn-navbar&quot; type=&quot;button&quot;&gt;
+      &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+    &lt;/button&gt;
+    
+    &lt;hgroup class=&quot;header-image pull-left&quot;&gt;
+
+      
+        
+          &lt;a class=&quot;logo&quot; href=&quot;/&quot;&gt;&lt;img src=&quot;/images/ckan_logo_fullname_long.png&quot; alt=&quot;Datos &quot; title=&quot;Datos &quot; /&gt;&lt;/a&gt;
+        
+      
+
+    &lt;/hgroup&gt;
+
+    &lt;div class=&quot;nav-collapse collapse&quot;&gt;
+
+      
+        &lt;nav class=&quot;section navigation&quot;&gt;
+          &lt;ul class=&quot;nav nav-pills&quot;&gt;
+            &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Inicio&lt;/a&gt;&lt;/li&gt;
+            
+              &lt;li&gt;&lt;a href=&quot;/dataset&quot;&gt;Conjuntos de datos&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;/organization&quot;&gt;Organizaciones&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;/group&quot;&gt;Grupos&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;/about&quot;&gt;SINDAP&lt;/a&gt;&lt;/li&gt;
+            
+          &lt;/ul&gt;
+        &lt;/nav&gt;
+      
+
+      
+      &lt;!--
+        &lt;form class=&quot;section site-search simple-input&quot; action=&quot;/dataset&quot; method=&quot;get&quot;&gt;
+          &lt;div class=&quot;field&quot;&gt;
+            &lt;label for=&quot;field-sitewide-search&quot;&gt;Buscar conjuntos de datos&lt;/label&gt;
+            &lt;input id=&quot;field-sitewide-search&quot; type=&quot;text&quot; name=&quot;q&quot; placeholder=&quot;B&uacute;squeda&quot; /&gt;
+            &lt;button class=&quot;btn-search&quot; type=&quot;submit&quot;&gt;&lt;i class=&quot;icon-search&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/form&gt;
+      --&gt;
+      
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+  
+    &lt;div role=&quot;main&quot;&gt;
+      &lt;div id=&quot;content&quot; class=&quot;container&quot;&gt;
+        
+          
+  
+  
+
+
+          
+            &lt;div class=&quot;toolbar&quot;&gt;
+              
+
+            &lt;/div&gt;
+          
+
+          &lt;div class=&quot;row wrapper no-nav&quot;&gt;
+
+            
+            
+            
+
+            
+  &lt;article class=&quot;module&quot;&gt;
+    &lt;div class=&quot;module-content&quot;&gt;
+      404 Not Found
+
+The resource could not be found.
+
+   
+    &lt;/div&gt;
+  &lt;/article&gt;
+
+
+            
+          &lt;/div&gt;
+        
+      &lt;/div&gt;
+    &lt;/div&gt;
+  
+    &lt;footer class=&quot;site-footer&quot;&gt;
+  &lt;div class=&quot;container&quot; style=&quot;padding:10px 20px 10px 20px;&quot;&gt;
+    
+    &lt;div class=&quot;row&quot;&gt;
+      
+      &lt;div class=&quot;span8 footer-links&quot; style=&quot;margin-top:10px;&quot;&gt;
+        
+          &lt;ul class=&quot;unstyled&quot;&gt;
+            
+              &lt;li&gt;&lt;a href=&quot;http://www.gobiernoabierto.gob.ar&quot; style=&quot;font-size:18px;&quot;&gt;Gobierno Abierto&lt;/a&gt;&lt;/li&gt;
+            
+          &lt;/ul&gt;
+          &lt;ul class=&quot;unstyled&quot;&gt;
+            
+              
+              &lt;li&gt;&lt;b&gt;&lt;a href=&quot;http://secretariagabinete.jefatura.gob.ar/tecnologia&quot;&gt;Secretar&iacute;a de Gabinete&lt;/a&gt;&lt;/b&gt;&lt;/li&gt;
+              &lt;li&gt;&lt;b&gt;&lt;a href=&quot;https://www.jefatura.gob.ar/&quot;&gt;Jefatura de Gabinete de Ministros&lt;/a&gt;&lt;/b&gt;&lt;/li&gt;
+              &lt;!--
+              &lt;li&gt;&lt;a href=&quot;http://www.opendefinition.org/okd/&quot;&gt;&lt;img src=&quot;/base/images/od_80x15_blue.png&quot;&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+
+            
+          &lt;/ul&gt;
+        
+      &lt;/div&gt;
+      &lt;div class=&quot;span4 attribution&quot; style=&quot;margin-top:10px;&quot;&gt;
+        
+          &lt;p&gt; &lt;a class=&quot;hide-text ckan-footer-logo&quot; href=&quot;http://ckan.org&quot;&gt;CKAN&lt;/a&gt;&lt;/p&gt;
+        
+        
+          
+&lt;!-- Snippet snippets/language_selector.html start --&gt;
+
+
+&lt;form class=&quot;form-inline form-select lang-select&quot; action=&quot;/util/redirect&quot; data-module=&quot;select-switch&quot; method=&quot;POST&quot;&gt;
+  &lt;label for=&quot;field-lang-select&quot;&gt;Idioma&lt;/label&gt;
+  &lt;select id=&quot;field-lang-select&quot; name=&quot;url&quot; data-module=&quot;autocomplete&quot; data-module-dropdown-class=&quot;lang-dropdown&quot; data-module-container-class=&quot;lang-container&quot;&gt;
+    
+      &lt;option value=&quot;/es/data/api/3/action/license_list&quot; selected=&quot;selected&quot;&gt;
+        espa&ntilde;ol
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en/data/api/3/action/license_list&quot; &gt;
+        English
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/pt_BR/data/api/3/action/license_list&quot; &gt;
+        portugu&ecirc;s (Brasil)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ja/data/api/3/action/license_list&quot; &gt;
+        日本語
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/it/data/api/3/action/license_list&quot; &gt;
+        italiano
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/cs_CZ/data/api/3/action/license_list&quot; &gt;
+        če&scaron;tina (Česk&aacute; republika)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ca/data/api/3/action/license_list&quot; &gt;
+        catal&agrave;
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/fr/data/api/3/action/license_list&quot; &gt;
+        fran&ccedil;ais
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/el/data/api/3/action/license_list&quot; &gt;
+        &Epsilon;&lambda;&lambda;&eta;&nu;&iota;&kappa;ά
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sv/data/api/3/action/license_list&quot; &gt;
+        svenska
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sr/data/api/3/action/license_list&quot; &gt;
+        Српски
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/no/data/api/3/action/license_list&quot; &gt;
+        Norwegian
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sk/data/api/3/action/license_list&quot; &gt;
+        slovensk&yacute;
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/fi/data/api/3/action/license_list&quot; &gt;
+        suomi
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ru/data/api/3/action/license_list&quot; &gt;
+        русский
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/de/data/api/3/action/license_list&quot; &gt;
+        Deutsch
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/pl/data/api/3/action/license_list&quot; &gt;
+        polski
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/nl/data/api/3/action/license_list&quot; &gt;
+        Nederlands
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/bg/data/api/3/action/license_list&quot; &gt;
+        български
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ko_KR/data/api/3/action/license_list&quot; &gt;
+        한국어 (대한민국)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/hu/data/api/3/action/license_list&quot; &gt;
+        magyar
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sl/data/api/3/action/license_list&quot; &gt;
+        sloven&scaron;čina
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/lv/data/api/3/action/license_list&quot; &gt;
+        latvie&scaron;u
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en_CA/data/api/3/action/license_list&quot; &gt;
+        English (Canada)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ro/data/api/3/action/license_list&quot; &gt;
+        rom&acirc;nă
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/vi_VN/data/api/3/action/license_list&quot; &gt;
+        Tiếng Việt (Việt Nam)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sq/data/api/3/action/license_list&quot; &gt;
+        shqipe
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/lo/data/api/3/action/license_list&quot; &gt;
+        ລາວ
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en_GB/data/api/3/action/license_list&quot; &gt;
+        English (United Kingdom)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ne/data/api/3/action/license_list&quot; &gt;
+        नेपाली
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/eu/data/api/3/action/license_list&quot; &gt;
+        euskara
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/lt/data/api/3/action/license_list&quot; &gt;
+        lietuvių
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sw/data/api/3/action/license_list&quot; &gt;
+        Kiswahili
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/da_DK/data/api/3/action/license_list&quot; &gt;
+        dansk (Danmark)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/en_AU/data/api/3/action/license_list&quot; &gt;
+        English (Australia)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/my_MM/data/api/3/action/license_list&quot; &gt;
+        ဗမာ (မြန်မာ)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/zh_TW/data/api/3/action/license_list&quot; &gt;
+        中文 (台湾)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/my/data/api/3/action/license_list&quot; &gt;
+        ဗမာ
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/is/data/api/3/action/license_list&quot; &gt;
+        &iacute;slenska
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/zh_CN/data/api/3/action/license_list&quot; &gt;
+        中文 (中国)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/dv/data/api/3/action/license_list&quot; &gt;
+        ދިވެހިބަސް
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/pt_PT/data/api/3/action/license_list&quot; &gt;
+        portugu&ecirc;s (Portugal)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/fa_IR/data/api/3/action/license_list&quot; &gt;
+        فارسی (ایران)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/es_MX/data/api/3/action/license_list&quot; &gt;
+        espa&ntilde;ol (M&eacute;xico)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/tr/data/api/3/action/license_list&quot; &gt;
+        T&uuml;rk&ccedil;e
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/ar/data/api/3/action/license_list&quot; &gt;
+        العربية
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/th/data/api/3/action/license_list&quot; &gt;
+        ไทย
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/vi/data/api/3/action/license_list&quot; &gt;
+        Tiếng Việt
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/sr_Latn/data/api/3/action/license_list&quot; &gt;
+        Srpski (Latinica)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/he/data/api/3/action/license_list&quot; &gt;
+        עברית
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/km/data/api/3/action/license_list&quot; &gt;
+        ភាសាខ្មែរ
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/mn_MN/data/api/3/action/license_list&quot; &gt;
+        монгол (Монгол улс)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/uk_UA/data/api/3/action/license_list&quot; &gt;
+        українська (Україна)
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/id/data/api/3/action/license_list&quot; &gt;
+        Bahasa Indonesia
+      &lt;/option&gt;
+    
+      &lt;option value=&quot;/hr/data/api/3/action/license_list&quot; &gt;
+        hrvatski
+      &lt;/option&gt;
+    
+  &lt;/select&gt;
+  &lt;button class=&quot;btn js-hide&quot; type=&quot;submit&quot;&gt;Ir&lt;/button&gt;
+&lt;/form&gt;
+&lt;!-- Snippet snippets/language_selector.html end --&gt;
+
+        
+      
+
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+    
+  &lt;/div&gt;
+
+  
+    
+  
+&lt;/footer&gt;
+  
+    
+    
+    
+  
+    
+
+      
+  &lt;script&gt;document.getElementsByTagName('html')[0].className += ' js';&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/vendor/:version:2015-07-14T18:24:40/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/fanstatic/base/:version:2015-07-14T18:24:40/:bundle:plugins/jquery.inherit.js;plugins/jquery.proxy-all.js;plugins/jquery.url-helpers.js;plugins/jquery.date-helpers.js;plugins/jquery.slug.js;plugins/jquery.slug-preview.js;plugins/jquery.truncator.js;plugins/jquery.masonry.js;plugins/jquery.form-warning.js;sandbox.js;module.js;pubsub.js;client.js;notify.js;i18n.js;main.js;modules/select-switch.js;modules/slug-preview.js;modules/basic-form.js;modules/confirm-action.js;modules/api-info.js;modules/autocomplete.js;modules/custom-fields.js;modules/related-item.js;modules/data-viewer.js;modules/table-selectable-rows.js;modules/resource-form.js;modules/resource-upload-field.js;modules/resource-reorder.js;modules/resource-view-reorder.js;modules/follow.js;modules/activity-stream.js;modules/dashboard.js;modules/resource-view-embed.js;view-filters.js;modules/resource-view-filters-form.js;modules/resource-view-filters.js;modules/table-toggle-more.js;modules/dataset-visibility.js;modules/media-grid.js;modules/image-upload.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;
+&lt;/html&gt;; line: 1, column: 2]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1576)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:533)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:462)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1624)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:689)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3742)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3687)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2714)
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:528)
+	... 14 more
+</pre></body>

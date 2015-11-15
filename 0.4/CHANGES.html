@@ -62,9 +62,9 @@
             <div id="josman-content">
                 <div id="josman-internal-content"><h2><a href="#jackan-release-notes" name="jackan-release-notes">JACKAN RELEASE NOTES</a></h2><p>Project website: <a href="http://opendatatrentino.github.io/jackan">http://opendatatrentino.github.io/jackan</a> </p><p><br></p><h4><a href="#0-4-1" name="0-4-1">0.4.1</a></h4><p>November 15th, 2015</p>
 <ul>
-  <li>implemented writing into ckan, see <a href="README.md#supported-operations">supported operations table</a></li>
+  <li>implemented writing into ckan, see <a href="index.html#supported-operations">supported operations table</a></li>
   <li>added CkanClient.builder() for setting connection parameters (proxy, timeout)</li>
-  <li>implemented DcatFactory for conversion to Dcat, see <a href="README.md#dcat">supported operations table</a></li>
+  <li>implemented DcatFactory for conversion to Dcat, see <a href="index.html#dcat">ckan to dcat mappings</a></li>
   <li>split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)</li>
   <li>now creating release zip with jar and dependencies</li>
   <li>added many exceptions (all inherit from JackanException)</li>
@@ -92,7 +92,7 @@
   <li>renamed URL to Url in functions and fields. i.e. catalogURL -&gt; catalogUrl, CkanClient.makeDatasetURL -&gt; makeDatasetUrl, ...</li>
   <li>renamed and split <code>CkanGroupStructure</code> into <code>CkanGroupOrgBase</code> and <code>CkanGroupOrg</code></li>
   <li>now Joda <code>DateTime</code> is not used anymore, for timestamps now we use <code>java.sql.Timestamp</code></li>
-  <li><code>CkanClient.getObjectMapperClone()</code> is gone. See <a href="README.md#default-json-serdeserialization">new json configuration</a> instead</li>
+  <li><code>CkanClient.getObjectMapperClone()</code> is gone. See <a href="index.html#default-json-serdeserialization">new json configuration</a> instead</li>
   <li>renamed dependency Odt commons into Tod commons, so classes and files starting with <code>Tod*</code> change to <code>Tod*</code>. Also <code>odt.commons.logging.properties</code> changed to <code>tod.commons.logging.properties</code></li>
   <li>renamed <code>TrackingSummary</code> into <code>CkanTrackingSummary</code></li>
 </ul><h4><a href="#0-3-1-19-january-2015" name="0-3-1-19-january-2015">0.3.1 - 19 January 2015</a></h4>

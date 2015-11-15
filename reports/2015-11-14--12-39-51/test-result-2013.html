@@ -1,0 +1,32 @@
+<html><head><title>Jackan Test #2013</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #2013</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:188)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:266)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:293)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: eu.trentorise.opendata.jackan.exceptions.CkanException: Couldn't interpret json returned by the server! Returned text was: &quot;Bad request - JSON Error: No request body data&quot;  CkanClient{catalogURL=http://data.opencolorado.org, ckanToken=null}
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:530)
+	at eu.trentorise.opendata.jackan.CkanClient.getDatasetList(CkanClient.java:743)
+	at eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.testSearchDatasetsByTags(ReadCkanIT.java:387)
+	... 12 more
+Caused by: com.fasterxml.jackson.databind.JsonMappingException: Can not instantiate value of type [simple type, class eu.trentorise.opendata.jackan.DatasetListResponse] from String value ('Bad request - JSON Error: No request body data'); no single-String constructor/factory method
+ at [Source: &quot;Bad request - JSON Error: No request body data&quot;; line: 1, column: 1]
+	at com.fasterxml.jackson.databind.JsonMappingException.from(JsonMappingException.java:148)
+	at com.fasterxml.jackson.databind.DeserializationContext.mappingException(DeserializationContext.java:875)
+	at com.fasterxml.jackson.databind.deser.ValueInstantiator._createFromStringFallbacks(ValueInstantiator.java:279)
+	at com.fasterxml.jackson.databind.deser.std.StdValueInstantiator.createFromString(StdValueInstantiator.java:284)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromString(BeanDeserializerBase.java:1177)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeOther(BeanDeserializer.java:143)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:134)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3702)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2714)
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:528)
+	... 14 more
+</pre></body>

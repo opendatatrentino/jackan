@@ -1,0 +1,53 @@
+<html><head><title>Jackan Test #1992</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #1992</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:188)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:266)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:293)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: eu.trentorise.opendata.jackan.exceptions.CkanException: Couldn't interpret json returned by the server! Returned text was: 
+    &lt;html&gt;
+    &lt;head&gt;
+    &lt;title&gt;Server Error&lt;/title&gt;
+    
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;h1&gt;Server Error&lt;/h1&gt;
+    An internal server error occurred
+    
+    &lt;/body&gt;
+    &lt;/html&gt;  CkanClient{catalogURL=http://ckan.okfn.gr, ckanToken=null}
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:530)
+	at eu.trentorise.opendata.jackan.CkanClient.getDatasetList(CkanClient.java:743)
+	at eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.testSearchDatasetsByTags(ReadCkanIT.java:387)
+	... 12 more
+Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('&lt;' (code 60)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')
+ at [Source: 
+    &lt;html&gt;
+    &lt;head&gt;
+    &lt;title&gt;Server Error&lt;/title&gt;
+    
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;h1&gt;Server Error&lt;/h1&gt;
+    An internal server error occurred
+    
+    &lt;/body&gt;
+    &lt;/html&gt;; line: 2, column: 6]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1576)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:533)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:462)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1624)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:689)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3742)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3687)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2714)
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:528)
+	... 14 more
+</pre></body>

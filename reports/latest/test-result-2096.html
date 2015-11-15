@@ -1,0 +1,387 @@
+<html><head><title>Jackan Test #2096</title><style>.jackan-error {color:red}</style></head><body><h1>Jackan Test #2096</h1><h2>Test didn't pass!</h2><pre>java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor173.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTest(CkanTestReporter.java:188)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.runTests(CkanTestReporter.java:266)
+	at eu.trentorise.opendata.jackan.test.ckan.CkanTestReporter.main(CkanTestReporter.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:293)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: eu.trentorise.opendata.jackan.exceptions.CkanException: Couldn't interpret json returned by the server! Returned text was: &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML+RDFa 1.0//EN&quot;
+  &quot;http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd&quot;&gt;
+&lt;html lang=&quot;en&quot; dir=&quot;ltr&quot;
+  xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;
+  xmlns:dc=&quot;http://purl.org/dc/terms/&quot;
+  xmlns:foaf=&quot;http://xmlns.com/foaf/0.1/&quot;
+  xmlns:og=&quot;http://ogp.me/ns#&quot;
+  xmlns:rdfs=&quot;http://www.w3.org/2000/01/rdf-schema#&quot;
+  xmlns:sioc=&quot;http://rdfs.org/sioc/ns#&quot;
+  xmlns:sioct=&quot;http://rdfs.org/sioc/types#&quot;
+  xmlns:skos=&quot;http://www.w3.org/2004/02/skos/core#&quot;
+  xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema#&quot;
+  xmlns:owl=&quot;http://www.w3.org/2002/07/owl#&quot;
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:rss=&quot;http://purl.org/rss/1.0/&quot;
+  xmlns:site=&quot;http://www.healthdata.gov/ns#&quot;
+  xmlns:dcat=&quot;http://www.w3.org/ns/dcat#&quot;&gt;
+&lt;head profile=&quot;http://www.w3.org/1999/xhtml/vocab&quot;&gt;
+  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge, chrome=1&quot;&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;&lt;script type=&quot;text/javascript&quot;&gt;window.NREUM||(NREUM={}),__nr_require=function(e,n,t){function r(t){if(!n[t]){var o=n[t]={exports:{}};e[t][0].call(o.exports,function(n){var o=e[t][1][n];return r(o||n)},o,o.exports)}return n[t].exports}if(&quot;function&quot;==typeof __nr_require)return __nr_require;for(var o=0;o&lt;t.length;o++)r(t[o]);return r}({QJf3ax:[function(e,n){function t(e){function n(n,t,a){e&amp;&amp;e(n,t,a),a||(a={});for(var u=c(n),f=u.length,s=i(a,o,r),p=0;f&gt;p;p++)u[p].apply(s,t);return s}function a(e,n){f[e]=c(e).concat(n)}function c(e){return f[e]||[]}function u(){return t(n)}var f={};return{on:a,emit:n,create:u,listeners:c,_events:f}}function r(){return{}}var o=&quot;nr@context&quot;,i=e(&quot;gos&quot;);n.exports=t()},{gos:&quot;7eSDFh&quot;}],ee:[function(e,n){n.exports=e(&quot;QJf3ax&quot;)},{}],3:[function(e,n){function t(e){return function(){r(e,[(new Date).getTime()].concat(i(arguments)))}}var r=e(&quot;handle&quot;),o=e(1),i=e(2);&quot;undefined&quot;==typeof window.newrelic&amp;&amp;(newrelic=window.NREUM);var a=[&quot;setPageViewName&quot;,&quot;addPageAction&quot;,&quot;setCustomAttribute&quot;,&quot;finished&quot;,&quot;addToTrace&quot;,&quot;inlineHit&quot;,&quot;noticeError&quot;];o(a,function(e,n){window.NREUM[n]=t(&quot;api-&quot;+n)}),n.exports=window.NREUM},{1:12,2:13,handle:&quot;D5DuLP&quot;}],gos:[function(e,n){n.exports=e(&quot;7eSDFh&quot;)},{}],&quot;7eSDFh&quot;:[function(e,n){function t(e,n,t){if(r.call(e,n))return e[n];var o=t();if(Object.defineProperty&amp;&amp;Object.keys)try{return Object.defineProperty(e,n,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return e[n]=o,o}var r=Object.prototype.hasOwnProperty;n.exports=t},{}],D5DuLP:[function(e,n){function t(e,n,t){return r.listeners(e).length?r.emit(e,n,t):void(r.q&amp;&amp;(r.q[e]||(r.q[e]=[]),r.q[e].push(n)))}var r=e(&quot;ee&quot;).create();n.exports=t,t.ee=r,r.q={}},{ee:&quot;QJf3ax&quot;}],handle:[function(e,n){n.exports=e(&quot;D5DuLP&quot;)},{}],XL7HBI:[function(e,n){function t(e){var n=typeof e;return!e||&quot;object&quot;!==n&amp;&amp;&quot;function&quot;!==n?-1:e===window?0:i(e,o,function(){return r++})}var r=1,o=&quot;nr@id&quot;,i=e(&quot;gos&quot;);n.exports=t},{gos:&quot;7eSDFh&quot;}],id:[function(e,n){n.exports=e(&quot;XL7HBI&quot;)},{}],G9z0Bl:[function(e,n){function t(){var e=d.info=NREUM.info,n=f.getElementsByTagName(&quot;script&quot;)[0];if(e&amp;&amp;e.licenseKey&amp;&amp;e.applicationID&amp;&amp;n){c(p,function(n,t){n in e||(e[n]=t)});var t=&quot;https&quot;===s.split(&quot;:&quot;)[0]||e.sslForHttp;d.proto=t?&quot;https://&quot;:&quot;http://&quot;,a(&quot;mark&quot;,[&quot;onload&quot;,i()]);var r=f.createElement(&quot;script&quot;);r.src=d.proto+e.agent,n.parentNode.insertBefore(r,n)}}function r(){&quot;complete&quot;===f.readyState&amp;&amp;o()}function o(){a(&quot;mark&quot;,[&quot;domContent&quot;,i()])}function i(){return(new Date).getTime()}var a=e(&quot;handle&quot;),c=e(1),u=window,f=u.document;e(2);var s=(&quot;&quot;+location).split(&quot;?&quot;)[0],p={beacon:&quot;bam.nr-data.net&quot;,errorBeacon:&quot;bam.nr-data.net&quot;,agent:&quot;js-agent.newrelic.com/nr-768.min.js&quot;},d=n.exports={offset:i(),origin:s,features:{}};f.addEventListener?(f.addEventListener(&quot;DOMContentLoaded&quot;,o,!1),u.addEventListener(&quot;load&quot;,t,!1)):(f.attachEvent(&quot;onreadystatechange&quot;,r),u.attachEvent(&quot;onload&quot;,t)),a(&quot;mark&quot;,[&quot;firstbyte&quot;,i()])},{1:12,2:3,handle:&quot;D5DuLP&quot;}],loader:[function(e,n){n.exports=e(&quot;G9z0Bl&quot;)},{}],12:[function(e,n){function t(e,n){var t=[],o=&quot;&quot;,i=0;for(o in e)r.call(e,o)&amp;&amp;(t[i]=n(o,e[o]),i+=1);return t}var r=Object.prototype.hasOwnProperty;n.exports=t},{}],13:[function(e,n){function t(e,n,t){n||(n=0),&quot;undefined&quot;==typeof t&amp;&amp;(t=e?e.length:0);for(var r=-1,o=t-n||0,i=Array(0&gt;o?0:o);++r&lt;o;)i[r]=e[n+r];return i}n.exports=t},{}]},{},[&quot;G9z0Bl&quot;]);&lt;/script&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+&lt;meta name=&quot;Generator&quot; content=&quot;Drupal 7 (http://drupal.org)&quot; /&gt;
+&lt;link rel=&quot;shortcut icon&quot; href=&quot;http://www.healthdata.gov/sites/all/themes/nuboot_radix/favicon.ico&quot; type=&quot;image/vnd.microsoft.icon&quot; /&gt;
+  &lt;title&gt;Page not found | HealthData.gov&lt;/title&gt;
+  &lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_kShW4RPmRstZ3SpIC-ZvVGNFVAi0WEMuCnI0ZkYIaFw.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_N0bZMZ0-jXrdb42cIZt9_7WRF3XfWANb9RTTM7kKGy4.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_qBBf28RclbtHfBy2t2quLn-dSitA3_MetjUbIlyPZtI.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;//fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_8cf2bdMIzFgbGd1naKf1CYsCdbSbJEGdsFJwG2csM8Q.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_SlebFcDuv96Rh3O96L7x9Fuw9vWbsld4NCyYnpPDUZ8.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU.css&quot; media=&quot;print&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/colorizer/nuboot_radix-7ff914ab.css&quot; media=&quot;all&quot; /&gt;
+
+&lt;!--[if lte IE 9]&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_hsZ3k0wrmzQWA2MkIPbiQNGsgjuOxr3UwnKgVpkNAlo.css&quot; media=&quot;all&quot; /&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 7]&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU.css&quot; media=&quot;all&quot; /&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 8]&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU.css&quot; media=&quot;all&quot; /&gt;
+&lt;![endif]--&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_-GArdYmS7pg7rqbyveMXzxT9zDWEU6wo6mcLa_p3Vf0.css&quot; media=&quot;all&quot; /&gt;
+  &lt;!-- HTML5 element support for IE6-8 --&gt;
+  &lt;!--[if lt IE 9]&gt;
+    &lt;script src=&quot;//html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+    &lt;link href=&quot;/css/ie.css&quot; media=&quot;screen&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+  &lt;![endif]--&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_BAhqE0nsQns6shJD8cBPNaX58HANh3tzWfxSlYIKGGs.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_I8yX6RYPZb7AtMcDUA3QKDZqVkvEn35ED11_1i7vVpc.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+(function(i,s,o,g,r,a,m){i[&quot;GoogleAnalyticsObject&quot;]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,&quot;script&quot;,&quot;//www.google-analytics.com/analytics.js&quot;,&quot;ga&quot;);ga(&quot;create&quot;, &quot;UA-32212293-1&quot;, {&quot;cookieDomain&quot;:&quot;auto&quot;});ga(&quot;require&quot;, &quot;linkid&quot;, &quot;linkid.js&quot;);ga(&quot;set&quot;, &quot;anonymizeIp&quot;, true);ga(&quot;set&quot;, &quot;page&quot;, &quot;/404.html?page=&quot; + document.location.pathname + document.location.search + &quot;&amp;from=&quot; + document.referrer);ga(&quot;send&quot;, &quot;pageview&quot;);
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_SPF9sRbQny6Y6xYEa9vW6ikR_kuGs7fUsQmRGGhVvZw.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_rvsa2THti6kcxEBNpwrluE3hOjkjIcRbdebsKykjGsQ.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+jQuery.extend(Drupal.settings, {&quot;basePath&quot;:&quot;\/&quot;,&quot;pathPrefix&quot;:&quot;&quot;,&quot;ajaxPageState&quot;:{&quot;theme&quot;:&quot;nuboot_radix&quot;,&quot;theme_token&quot;:&quot;5M5iIrGts_1i7IyZ30ZoImQWSNX4RTKW2cNDh2XyQFo&quot;,&quot;js&quot;:{&quot;profiles\/dkan\/modules\/contrib\/jquery_update\/replace\/jquery\/1.8\/jquery.min.js&quot;:1,&quot;misc\/jquery.once.js&quot;:1,&quot;misc\/drupal.js&quot;:1,&quot;sites\/all\/modules\/contrib\/google_analytics\/googleanalytics.js&quot;:1,&quot;0&quot;:1,&quot;http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.1.1\/js\/bootstrap.min.js&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/javascripts\/modernizr.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/radix-script.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/sitewide.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/svgeezy.min.js&quot;:1},&quot;css&quot;:{&quot;modules\/system\/system.base.css&quot;:1,&quot;modules\/system\/system.messages.css&quot;:1,&quot;modules\/system\/system.theme.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_api\/date.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_popup\/themes\/datepicker.1.7.css&quot;:1,&quot;modules\/field\/theme\/field.css&quot;:1,&quot;modules\/node\/node.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/radix_layouts\/radix_layouts.css&quot;:1,&quot;modules\/user\/user.css&quot;:1,&quot;profiles\/dkan\/modules\/dkan\/dkan_workflow\/modules\/views_workflow_list\/views_workflow_list.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/views\/css\/views.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/ctools\/css\/ctools.css&quot;:1,&quot;sites\/all\/modules\/contrib\/debut_blog\/debut_blog.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/panels\/css\/panels.css&quot;:1,&quot;sites\/all\/modules\/dkan\/dkan_featured_topics\/dkan_featured_topics.css&quot;:1,&quot;\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot;:1,&quot;profiles\/dkan\/modules\/dkan\/dkan_dataset\/css\/dkan_dataset.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/screen.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/font-awesome.min.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/dkan-flaticon.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/print.css&quot;:1,&quot;http:\/\/www.healthdata.gov\/sites\/default\/files\/colorizer\/nuboot_radix-7ff914ab.css&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie7.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie8.css&quot;:1,&quot;sites\/all\/modules\/hhs\/healthdata_settings\/healthdata_settings.css&quot;:1}},&quot;googleanalytics&quot;:{&quot;trackOutbound&quot;:1,&quot;trackMailto&quot;:1,&quot;trackDownload&quot;:1,&quot;trackDownloadExtensions&quot;:&quot;7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip&quot;}});
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body class=&quot;html not-front not-logged-in one-sidebar sidebar-first page-api page-api- page-api-3 page-api-action page-api-action-license-list&quot; &gt;
+  &lt;div id=&quot;skip-link&quot;&gt;
+    &lt;a href=&quot;#main-content&quot; class=&quot;element-invisible element-focusable&quot;&gt;Skip to main content&lt;/a&gt;
+  &lt;/div&gt;
+    &lt;header id=&quot;header&quot; class=&quot;header&quot; role=&quot;header&quot;&gt;
+  &lt;div class=&quot;branding container&quot;&gt;
+          &lt;a class=&quot;logo navbar-btn pull-left&quot; href=&quot;/&quot; title=&quot;Home&quot;&gt;
+        &lt;img src=&quot;http://www.healthdata.gov/sites/default/files/betalogo2.png&quot; alt=&quot;Home&quot; /&gt;
+      &lt;/a&gt;
+                &lt;!-- views exposed search --&gt;
+    &lt;section id=&quot;block-dkan-sitewide-dkan-sitewide-search-bar&quot; class=&quot;block block-dkan-sitewide clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;form action=&quot;/api/3/action/license_list&quot; method=&quot;post&quot; id=&quot;dkan-sitewide-dataset-search-form&quot; accept-charset=&quot;UTF-8&quot; role=&quot;form&quot;&gt;&lt;div&gt;&lt;div class=&quot;form-item form-type-textfield form-item-search form-group&quot;&gt;
+  &lt;label for=&quot;edit-search&quot;&gt;Search &lt;/label&gt;
+ &lt;input placeholder=&quot;search&quot; class=&quot;form-control form-text&quot; type=&quot;text&quot; id=&quot;edit-search&quot; name=&quot;search&quot; value=&quot;&quot; size=&quot;30&quot; maxlength=&quot;128&quot; /&gt;
+&lt;/div&gt;
+&lt;input type=&quot;submit&quot; id=&quot;edit-submit&quot; name=&quot;op&quot; value=&quot;&quot; class=&quot;form-submit btn btn-default btn-primary&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;form_build_id&quot; value=&quot;form-UD1E2Ny6fqJiR3fgxzr4-CPV9O_Ikk-tsQhXtsbRL5Q&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;form_id&quot; value=&quot;dkan_sitewide_dataset_search_form&quot; /&gt;
+&lt;/div&gt;&lt;/form&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;navigation-wrapper&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;nav class=&quot;navbar navbar-default&quot; role=&quot;navigation&quot;&gt;
+        &lt;div class=&quot;navbar-header&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#navbar-collapse&quot;&gt;
+            &lt;span class=&quot;sr-only&quot;&gt;Toggle navigation&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+          &lt;/button&gt;
+        &lt;/div&gt; &lt;!-- /.navbar-header --&gt;
+
+        &lt;!-- Collect the nav links, forms, and other content for toggling --&gt;
+        &lt;div class=&quot;collapse navbar-collapse&quot; id=&quot;navbar-collapse&quot;&gt;
+                      &lt;ul id=&quot;main-menu&quot; class=&quot;menu nav navbar-nav&quot;&gt;
+              &lt;li class=&quot;first leaf menu-link-about&quot;&gt;&lt;a href=&quot;/content/about&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-datasets&quot;&gt;&lt;a href=&quot;/dataset?f[0]=type%3Adataset&quot;&gt;Datasets&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-blog&quot;&gt;&lt;a href=&quot;/blog&quot; title=&quot;View a listing of blog posts.&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;expanded dropdown menu-link-developers&quot;&gt;&lt;a href=&quot;/content/tools-and-resources-developers&quot; class=&quot;dropdown-toggle&quot; data-toggle=&quot;dropdown&quot; data-target=&quot;#&quot;&gt;Developers&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt;&lt;ul class=&quot;dropdown-menu&quot;&gt;&lt;li class=&quot;first leaf menu-link-data-api&quot;&gt;&lt;a href=&quot;/content/data-api&quot;&gt;Data API&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-healthdatagov-api&quot;&gt;&lt;a href=&quot;/api&quot;&gt;HealthData.gov API&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-agencies&quot;&gt;&lt;a href=&quot;/agencies&quot; title=&quot;&quot;&gt;Agencies&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-contact&quot;&gt;&lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          
+          &lt;!-- user menu --&gt;
+          &lt;section id=&quot;block-dkan-sitewide-dkan-sitewide-user-menu&quot; class=&quot;block block-dkan-sitewide clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;span class=&quot;links&quot;&gt;&lt;a href=&quot;/user/login&quot;&gt;Log in&lt;/a&gt;&lt;/span&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+        &lt;/div&gt;&lt;!-- /.navbar-collapse --&gt;
+      &lt;/nav&gt;&lt;!-- /.navbar --&gt;
+    &lt;/div&gt;&lt;!-- /.container --&gt;
+  &lt;/div&gt; &lt;!-- /.navigation --&gt;
+&lt;/header&gt;
+
+&lt;div id=&quot;main-wrapper&quot;&gt;
+  &lt;div id=&quot;main&quot; class=&quot;main container&quot;&gt;
+
+    &lt;ul class=&quot;breadcrumb&quot;&gt;&lt;li class=&quot;home-link&quot;&gt;&lt;a href=&quot;/&quot;&gt;&lt;i class=&quot;fa fa fa-home&quot;&gt;&lt;/i&gt;&lt;span&gt; Home&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;active-trail&quot;&gt;Page not found&lt;/li&gt;&lt;/ul&gt;        
+
+    &lt;div class=&quot;main-row&quot;&gt;
+
+      &lt;section&gt;
+        &lt;a id=&quot;main-content&quot;&gt;&lt;/a&gt;
+                          &lt;h1 class=&quot;page-header&quot;&gt;Page not found&lt;/h1&gt;
+                                          &lt;div class=&quot;region region-content&quot;&gt;
+    &lt;section id=&quot;block-system-main&quot; class=&quot;block block-system clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	The requested page &quot;/api/3/action/license_list&quot; could not be found.  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+      &lt;/section&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt; &lt;!-- /#main --&gt;
+&lt;/div&gt; &lt;!-- /#main-wrapper --&gt;
+
+&lt;footer id=&quot;footer&quot; class=&quot;footer&quot; role=&quot;footer&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+          &lt;small class=&quot;copyright pull-left&quot;&gt;&lt;p&gt;A federal government website managed by the &lt;a href=&quot;https://web.archive.org/web/20150418094738/http://www.hhs.gov/&quot;&gt;U.S. Department of Health &amp;amp; Human Services&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;200 Independence Avenue, S.W. - Washington, D.C. 20201&lt;/p&gt;
+
+&lt;ul style=&quot;list-style: none;&quot; class=&quot;links&quot;&gt;&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://healthdata.gov/content/about&quot;&gt;About Us&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/accessibility.html&quot;&gt;Accessibilty&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/privacy.html&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/open/plain-writing/index.html&quot;&gt;Plain Writing&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/disclaimer.html&quot;&gt;Disclaimers&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/asa/eeo/resources/index.html&quot;&gt;No FEAR&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/open&quot;&gt;HHS.gov/Open&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/foia/&quot;&gt;FOIA&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/&quot;&gt;HHS.gov&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;https://www.whitehouse.gov/&quot;&gt;WhiteHouse.gov&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.usa.gov/&quot;&gt;USA.gov&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.usa.gov/gobiernousa/&quot;&gt;GobiernoUSA.gov&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/small&gt;
+        &lt;small class=&quot;pull-right&quot;&gt;&lt;/small&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;
+  &lt;script type=&quot;text/javascript&quot;&gt;window.NREUM||(NREUM={});NREUM.info={&quot;beacon&quot;:&quot;bam.nr-data.net&quot;,&quot;licenseKey&quot;:&quot;c5817a23c4&quot;,&quot;applicationID&quot;:&quot;6034233&quot;,&quot;transactionName&quot;:&quot;M1BbYBAAWERTWhULXQoabEYLTl9ZVlwZTEIMRQ==&quot;,&quot;queueTime&quot;:0,&quot;applicationTime&quot;:106,&quot;atts&quot;:&quot;HxdYFlgaS0o=&quot;,&quot;errorBeacon&quot;:&quot;bam.nr-data.net&quot;,&quot;agent&quot;:&quot;js-agent.newrelic.com\/nr-768.min.js&quot;}&lt;/script&gt;&lt;/body&gt;
+&lt;/html&gt;
+  CkanClient{catalogURL=http://hub.healthdata.gov, ckanToken=null}
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:530)
+	at eu.trentorise.opendata.jackan.CkanClient.getLicenseList(CkanClient.java:765)
+	at eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.testSearchDatasetsByLicenseIds(ReadCkanIT.java:421)
+	... 12 more
+Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('&lt;' (code 60)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')
+ at [Source: &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML+RDFa 1.0//EN&quot;
+  &quot;http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd&quot;&gt;
+&lt;html lang=&quot;en&quot; dir=&quot;ltr&quot;
+  xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;
+  xmlns:dc=&quot;http://purl.org/dc/terms/&quot;
+  xmlns:foaf=&quot;http://xmlns.com/foaf/0.1/&quot;
+  xmlns:og=&quot;http://ogp.me/ns#&quot;
+  xmlns:rdfs=&quot;http://www.w3.org/2000/01/rdf-schema#&quot;
+  xmlns:sioc=&quot;http://rdfs.org/sioc/ns#&quot;
+  xmlns:sioct=&quot;http://rdfs.org/sioc/types#&quot;
+  xmlns:skos=&quot;http://www.w3.org/2004/02/skos/core#&quot;
+  xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema#&quot;
+  xmlns:owl=&quot;http://www.w3.org/2002/07/owl#&quot;
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:rss=&quot;http://purl.org/rss/1.0/&quot;
+  xmlns:site=&quot;http://www.healthdata.gov/ns#&quot;
+  xmlns:dcat=&quot;http://www.w3.org/ns/dcat#&quot;&gt;
+&lt;head profile=&quot;http://www.w3.org/1999/xhtml/vocab&quot;&gt;
+  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge, chrome=1&quot;&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;&lt;script type=&quot;text/javascript&quot;&gt;window.NREUM||(NREUM={}),__nr_require=function(e,n,t){function r(t){if(!n[t]){var o=n[t]={exports:{}};e[t][0].call(o.exports,function(n){var o=e[t][1][n];return r(o||n)},o,o.exports)}return n[t].exports}if(&quot;function&quot;==typeof __nr_require)return __nr_require;for(var o=0;o&lt;t.length;o++)r(t[o]);return r}({QJf3ax:[function(e,n){function t(e){function n(n,t,a){e&amp;&amp;e(n,t,a),a||(a={});for(var u=c(n),f=u.length,s=i(a,o,r),p=0;f&gt;p;p++)u[p].apply(s,t);return s}function a(e,n){f[e]=c(e).concat(n)}function c(e){return f[e]||[]}function u(){return t(n)}var f={};return{on:a,emit:n,create:u,listeners:c,_events:f}}function r(){return{}}var o=&quot;nr@context&quot;,i=e(&quot;gos&quot;);n.exports=t()},{gos:&quot;7eSDFh&quot;}],ee:[function(e,n){n.exports=e(&quot;QJf3ax&quot;)},{}],3:[function(e,n){function t(e){return function(){r(e,[(new Date).getTime()].concat(i(arguments)))}}var r=e(&quot;handle&quot;),o=e(1),i=e(2);&quot;undefined&quot;==typeof window.newrelic&amp;&amp;(newrelic=window.NREUM);var a=[&quot;setPageViewName&quot;,&quot;addPageAction&quot;,&quot;setCustomAttribute&quot;,&quot;finished&quot;,&quot;addToTrace&quot;,&quot;inlineHit&quot;,&quot;noticeError&quot;];o(a,function(e,n){window.NREUM[n]=t(&quot;api-&quot;+n)}),n.exports=window.NREUM},{1:12,2:13,handle:&quot;D5DuLP&quot;}],gos:[function(e,n){n.exports=e(&quot;7eSDFh&quot;)},{}],&quot;7eSDFh&quot;:[function(e,n){function t(e,n,t){if(r.call(e,n))return e[n];var o=t();if(Object.defineProperty&amp;&amp;Object.keys)try{return Object.defineProperty(e,n,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return e[n]=o,o}var r=Object.prototype.hasOwnProperty;n.exports=t},{}],D5DuLP:[function(e,n){function t(e,n,t){return r.listeners(e).length?r.emit(e,n,t):void(r.q&amp;&amp;(r.q[e]||(r.q[e]=[]),r.q[e].push(n)))}var r=e(&quot;ee&quot;).create();n.exports=t,t.ee=r,r.q={}},{ee:&quot;QJf3ax&quot;}],handle:[function(e,n){n.exports=e(&quot;D5DuLP&quot;)},{}],XL7HBI:[function(e,n){function t(e){var n=typeof e;return!e||&quot;object&quot;!==n&amp;&amp;&quot;function&quot;!==n?-1:e===window?0:i(e,o,function(){return r++})}var r=1,o=&quot;nr@id&quot;,i=e(&quot;gos&quot;);n.exports=t},{gos:&quot;7eSDFh&quot;}],id:[function(e,n){n.exports=e(&quot;XL7HBI&quot;)},{}],G9z0Bl:[function(e,n){function t(){var e=d.info=NREUM.info,n=f.getElementsByTagName(&quot;script&quot;)[0];if(e&amp;&amp;e.licenseKey&amp;&amp;e.applicationID&amp;&amp;n){c(p,function(n,t){n in e||(e[n]=t)});var t=&quot;https&quot;===s.split(&quot;:&quot;)[0]||e.sslForHttp;d.proto=t?&quot;https://&quot;:&quot;http://&quot;,a(&quot;mark&quot;,[&quot;onload&quot;,i()]);var r=f.createElement(&quot;script&quot;);r.src=d.proto+e.agent,n.parentNode.insertBefore(r,n)}}function r(){&quot;complete&quot;===f.readyState&amp;&amp;o()}function o(){a(&quot;mark&quot;,[&quot;domContent&quot;,i()])}function i(){return(new Date).getTime()}var a=e(&quot;handle&quot;),c=e(1),u=window,f=u.document;e(2);var s=(&quot;&quot;+location).split(&quot;?&quot;)[0],p={beacon:&quot;bam.nr-data.net&quot;,errorBeacon:&quot;bam.nr-data.net&quot;,agent:&quot;js-agent.newrelic.com/nr-768.min.js&quot;},d=n.exports={offset:i(),origin:s,features:{}};f.addEventListener?(f.addEventListener(&quot;DOMContentLoaded&quot;,o,!1),u.addEventListener(&quot;load&quot;,t,!1)):(f.attachEvent(&quot;onreadystatechange&quot;,r),u.attachEvent(&quot;onload&quot;,t)),a(&quot;mark&quot;,[&quot;firstbyte&quot;,i()])},{1:12,2:3,handle:&quot;D5DuLP&quot;}],loader:[function(e,n){n.exports=e(&quot;G9z0Bl&quot;)},{}],12:[function(e,n){function t(e,n){var t=[],o=&quot;&quot;,i=0;for(o in e)r.call(e,o)&amp;&amp;(t[i]=n(o,e[o]),i+=1);return t}var r=Object.prototype.hasOwnProperty;n.exports=t},{}],13:[function(e,n){function t(e,n,t){n||(n=0),&quot;undefined&quot;==typeof t&amp;&amp;(t=e?e.length:0);for(var r=-1,o=t-n||0,i=Array(0&gt;o?0:o);++r&lt;o;)i[r]=e[n+r];return i}n.exports=t},{}]},{},[&quot;G9z0Bl&quot;]);&lt;/script&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+&lt;meta name=&quot;Generator&quot; content=&quot;Drupal 7 (http://drupal.org)&quot; /&gt;
+&lt;link rel=&quot;shortcut icon&quot; href=&quot;http://www.healthdata.gov/sites/all/themes/nuboot_radix/favicon.ico&quot; type=&quot;image/vnd.microsoft.icon&quot; /&gt;
+  &lt;title&gt;Page not found | HealthData.gov&lt;/title&gt;
+  &lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_kShW4RPmRstZ3SpIC-ZvVGNFVAi0WEMuCnI0ZkYIaFw.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_N0bZMZ0-jXrdb42cIZt9_7WRF3XfWANb9RTTM7kKGy4.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_qBBf28RclbtHfBy2t2quLn-dSitA3_MetjUbIlyPZtI.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;//fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_8cf2bdMIzFgbGd1naKf1CYsCdbSbJEGdsFJwG2csM8Q.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_SlebFcDuv96Rh3O96L7x9Fuw9vWbsld4NCyYnpPDUZ8.css&quot; media=&quot;all&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU.css&quot; media=&quot;print&quot; /&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/colorizer/nuboot_radix-7ff914ab.css&quot; media=&quot;all&quot; /&gt;
+
+&lt;!--[if lte IE 9]&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_hsZ3k0wrmzQWA2MkIPbiQNGsgjuOxr3UwnKgVpkNAlo.css&quot; media=&quot;all&quot; /&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 7]&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU.css&quot; media=&quot;all&quot; /&gt;
+&lt;![endif]--&gt;
+
+&lt;!--[if IE 8]&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU.css&quot; media=&quot;all&quot; /&gt;
+&lt;![endif]--&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;http://www.healthdata.gov/sites/default/files/css/css_-GArdYmS7pg7rqbyveMXzxT9zDWEU6wo6mcLa_p3Vf0.css&quot; media=&quot;all&quot; /&gt;
+  &lt;!-- HTML5 element support for IE6-8 --&gt;
+  &lt;!--[if lt IE 9]&gt;
+    &lt;script src=&quot;//html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+    &lt;link href=&quot;/css/ie.css&quot; media=&quot;screen&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+  &lt;![endif]--&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_BAhqE0nsQns6shJD8cBPNaX58HANh3tzWfxSlYIKGGs.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_I8yX6RYPZb7AtMcDUA3QKDZqVkvEn35ED11_1i7vVpc.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+(function(i,s,o,g,r,a,m){i[&quot;GoogleAnalyticsObject&quot;]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,&quot;script&quot;,&quot;//www.google-analytics.com/analytics.js&quot;,&quot;ga&quot;);ga(&quot;create&quot;, &quot;UA-32212293-1&quot;, {&quot;cookieDomain&quot;:&quot;auto&quot;});ga(&quot;require&quot;, &quot;linkid&quot;, &quot;linkid.js&quot;);ga(&quot;set&quot;, &quot;anonymizeIp&quot;, true);ga(&quot;set&quot;, &quot;page&quot;, &quot;/404.html?page=&quot; + document.location.pathname + document.location.search + &quot;&amp;from=&quot; + document.referrer);ga(&quot;send&quot;, &quot;pageview&quot;);
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_SPF9sRbQny6Y6xYEa9vW6ikR_kuGs7fUsQmRGGhVvZw.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.healthdata.gov/sites/default/files/js/js_rvsa2THti6kcxEBNpwrluE3hOjkjIcRbdebsKykjGsQ.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--//--&gt;&lt;![CDATA[//&gt;&lt;!--
+jQuery.extend(Drupal.settings, {&quot;basePath&quot;:&quot;\/&quot;,&quot;pathPrefix&quot;:&quot;&quot;,&quot;ajaxPageState&quot;:{&quot;theme&quot;:&quot;nuboot_radix&quot;,&quot;theme_token&quot;:&quot;5M5iIrGts_1i7IyZ30ZoImQWSNX4RTKW2cNDh2XyQFo&quot;,&quot;js&quot;:{&quot;profiles\/dkan\/modules\/contrib\/jquery_update\/replace\/jquery\/1.8\/jquery.min.js&quot;:1,&quot;misc\/jquery.once.js&quot;:1,&quot;misc\/drupal.js&quot;:1,&quot;sites\/all\/modules\/contrib\/google_analytics\/googleanalytics.js&quot;:1,&quot;0&quot;:1,&quot;http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.1.1\/js\/bootstrap.min.js&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/javascripts\/modernizr.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/radix-script.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/sitewide.js&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/javascripts\/svgeezy.min.js&quot;:1},&quot;css&quot;:{&quot;modules\/system\/system.base.css&quot;:1,&quot;modules\/system\/system.messages.css&quot;:1,&quot;modules\/system\/system.theme.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_api\/date.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/date\/date_popup\/themes\/datepicker.1.7.css&quot;:1,&quot;modules\/field\/theme\/field.css&quot;:1,&quot;modules\/node\/node.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/radix_layouts\/radix_layouts.css&quot;:1,&quot;modules\/user\/user.css&quot;:1,&quot;profiles\/dkan\/modules\/dkan\/dkan_workflow\/modules\/views_workflow_list\/views_workflow_list.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/views\/css\/views.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/ctools\/css\/ctools.css&quot;:1,&quot;sites\/all\/modules\/contrib\/debut_blog\/debut_blog.css&quot;:1,&quot;profiles\/dkan\/modules\/contrib\/panels\/css\/panels.css&quot;:1,&quot;sites\/all\/modules\/dkan\/dkan_featured_topics\/dkan_featured_topics.css&quot;:1,&quot;\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&quot;:1,&quot;profiles\/dkan\/modules\/dkan\/dkan_dataset\/css\/dkan_dataset.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/screen.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/font-awesome.min.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/dkan-flaticon.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/print.css&quot;:1,&quot;http:\/\/www.healthdata.gov\/sites\/default\/files\/colorizer\/nuboot_radix-7ff914ab.css&quot;:1,&quot;profiles\/dkan\/themes\/contrib\/radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie7.css&quot;:1,&quot;sites\/all\/themes\/nuboot_radix\/assets\/stylesheets\/ie8.css&quot;:1,&quot;sites\/all\/modules\/hhs\/healthdata_settings\/healthdata_settings.css&quot;:1}},&quot;googleanalytics&quot;:{&quot;trackOutbound&quot;:1,&quot;trackMailto&quot;:1,&quot;trackDownload&quot;:1,&quot;trackDownloadExtensions&quot;:&quot;7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip&quot;}});
+//--&gt;&lt;!]]&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body class=&quot;html not-front not-logged-in one-sidebar sidebar-first page-api page-api- page-api-3 page-api-action page-api-action-license-list&quot; &gt;
+  &lt;div id=&quot;skip-link&quot;&gt;
+    &lt;a href=&quot;#main-content&quot; class=&quot;element-invisible element-focusable&quot;&gt;Skip to main content&lt;/a&gt;
+  &lt;/div&gt;
+    &lt;header id=&quot;header&quot; class=&quot;header&quot; role=&quot;header&quot;&gt;
+  &lt;div class=&quot;branding container&quot;&gt;
+          &lt;a class=&quot;logo navbar-btn pull-left&quot; href=&quot;/&quot; title=&quot;Home&quot;&gt;
+        &lt;img src=&quot;http://www.healthdata.gov/sites/default/files/betalogo2.png&quot; alt=&quot;Home&quot; /&gt;
+      &lt;/a&gt;
+                &lt;!-- views exposed search --&gt;
+    &lt;section id=&quot;block-dkan-sitewide-dkan-sitewide-search-bar&quot; class=&quot;block block-dkan-sitewide clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;form action=&quot;/api/3/action/license_list&quot; method=&quot;post&quot; id=&quot;dkan-sitewide-dataset-search-form&quot; accept-charset=&quot;UTF-8&quot; role=&quot;form&quot;&gt;&lt;div&gt;&lt;div class=&quot;form-item form-type-textfield form-item-search form-group&quot;&gt;
+  &lt;label for=&quot;edit-search&quot;&gt;Search &lt;/label&gt;
+ &lt;input placeholder=&quot;search&quot; class=&quot;form-control form-text&quot; type=&quot;text&quot; id=&quot;edit-search&quot; name=&quot;search&quot; value=&quot;&quot; size=&quot;30&quot; maxlength=&quot;128&quot; /&gt;
+&lt;/div&gt;
+&lt;input type=&quot;submit&quot; id=&quot;edit-submit&quot; name=&quot;op&quot; value=&quot;&quot; class=&quot;form-submit btn btn-default btn-primary&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;form_build_id&quot; value=&quot;form-UD1E2Ny6fqJiR3fgxzr4-CPV9O_Ikk-tsQhXtsbRL5Q&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;form_id&quot; value=&quot;dkan_sitewide_dataset_search_form&quot; /&gt;
+&lt;/div&gt;&lt;/form&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;navigation-wrapper&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;nav class=&quot;navbar navbar-default&quot; role=&quot;navigation&quot;&gt;
+        &lt;div class=&quot;navbar-header&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#navbar-collapse&quot;&gt;
+            &lt;span class=&quot;sr-only&quot;&gt;Toggle navigation&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+          &lt;/button&gt;
+        &lt;/div&gt; &lt;!-- /.navbar-header --&gt;
+
+        &lt;!-- Collect the nav links, forms, and other content for toggling --&gt;
+        &lt;div class=&quot;collapse navbar-collapse&quot; id=&quot;navbar-collapse&quot;&gt;
+                      &lt;ul id=&quot;main-menu&quot; class=&quot;menu nav navbar-nav&quot;&gt;
+              &lt;li class=&quot;first leaf menu-link-about&quot;&gt;&lt;a href=&quot;/content/about&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-datasets&quot;&gt;&lt;a href=&quot;/dataset?f[0]=type%3Adataset&quot;&gt;Datasets&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-blog&quot;&gt;&lt;a href=&quot;/blog&quot; title=&quot;View a listing of blog posts.&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;expanded dropdown menu-link-developers&quot;&gt;&lt;a href=&quot;/content/tools-and-resources-developers&quot; class=&quot;dropdown-toggle&quot; data-toggle=&quot;dropdown&quot; data-target=&quot;#&quot;&gt;Developers&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;&lt;/a&gt;&lt;ul class=&quot;dropdown-menu&quot;&gt;&lt;li class=&quot;first leaf menu-link-data-api&quot;&gt;&lt;a href=&quot;/content/data-api&quot;&gt;Data API&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-healthdatagov-api&quot;&gt;&lt;a href=&quot;/api&quot;&gt;HealthData.gov API&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li class=&quot;leaf menu-link-agencies&quot;&gt;&lt;a href=&quot;/agencies&quot; title=&quot;&quot;&gt;Agencies&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;last leaf menu-link-contact&quot;&gt;&lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          
+          &lt;!-- user menu --&gt;
+          &lt;section id=&quot;block-dkan-sitewide-dkan-sitewide-user-menu&quot; class=&quot;block block-dkan-sitewide clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	&lt;span class=&quot;links&quot;&gt;&lt;a href=&quot;/user/login&quot;&gt;Log in&lt;/a&gt;&lt;/span&gt;  &lt;/div&gt;
+
+&lt;/section&gt;
+        &lt;/div&gt;&lt;!-- /.navbar-collapse --&gt;
+      &lt;/nav&gt;&lt;!-- /.navbar --&gt;
+    &lt;/div&gt;&lt;!-- /.container --&gt;
+  &lt;/div&gt; &lt;!-- /.navigation --&gt;
+&lt;/header&gt;
+
+&lt;div id=&quot;main-wrapper&quot;&gt;
+  &lt;div id=&quot;main&quot; class=&quot;main container&quot;&gt;
+
+    &lt;ul class=&quot;breadcrumb&quot;&gt;&lt;li class=&quot;home-link&quot;&gt;&lt;a href=&quot;/&quot;&gt;&lt;i class=&quot;fa fa fa-home&quot;&gt;&lt;/i&gt;&lt;span&gt; Home&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;active-trail&quot;&gt;Page not found&lt;/li&gt;&lt;/ul&gt;        
+
+    &lt;div class=&quot;main-row&quot;&gt;
+
+      &lt;section&gt;
+        &lt;a id=&quot;main-content&quot;&gt;&lt;/a&gt;
+                          &lt;h1 class=&quot;page-header&quot;&gt;Page not found&lt;/h1&gt;
+                                          &lt;div class=&quot;region region-content&quot;&gt;
+    &lt;section id=&quot;block-system-main&quot; class=&quot;block block-system clearfix&quot;&gt;
+
+        &lt;div class=&quot;content&quot;&gt;
+  	The requested page &quot;/api/3/action/license_list&quot; could not be found.  &lt;/div&gt;
+
+&lt;/section&gt;
+  &lt;/div&gt;
+      &lt;/section&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt; &lt;!-- /#main --&gt;
+&lt;/div&gt; &lt;!-- /#main-wrapper --&gt;
+
+&lt;footer id=&quot;footer&quot; class=&quot;footer&quot; role=&quot;footer&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+          &lt;small class=&quot;copyright pull-left&quot;&gt;&lt;p&gt;A federal government website managed by the &lt;a href=&quot;https://web.archive.org/web/20150418094738/http://www.hhs.gov/&quot;&gt;U.S. Department of Health &amp;amp; Human Services&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;200 Independence Avenue, S.W. - Washington, D.C. 20201&lt;/p&gt;
+
+&lt;ul style=&quot;list-style: none;&quot; class=&quot;links&quot;&gt;&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://healthdata.gov/content/about&quot;&gt;About Us&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/accessibility.html&quot;&gt;Accessibilty&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/privacy.html&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/open/plain-writing/index.html&quot;&gt;Plain Writing&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/disclaimer.html&quot;&gt;Disclaimers&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/asa/eeo/resources/index.html&quot;&gt;No FEAR&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/open&quot;&gt;HHS.gov/Open&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/foia/&quot;&gt;FOIA&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.hhs.gov/&quot;&gt;HHS.gov&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;https://www.whitehouse.gov/&quot;&gt;WhiteHouse.gov&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.usa.gov/&quot;&gt;USA.gov&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;col-xs-12 col-sm-4 col-md-3&quot;&gt;&lt;a href=&quot;http://www.usa.gov/gobiernousa/&quot;&gt;GobiernoUSA.gov&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/small&gt;
+        &lt;small class=&quot;pull-right&quot;&gt;&lt;/small&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;
+  &lt;script type=&quot;text/javascript&quot;&gt;window.NREUM||(NREUM={});NREUM.info={&quot;beacon&quot;:&quot;bam.nr-data.net&quot;,&quot;licenseKey&quot;:&quot;c5817a23c4&quot;,&quot;applicationID&quot;:&quot;6034233&quot;,&quot;transactionName&quot;:&quot;M1BbYBAAWERTWhULXQoabEYLTl9ZVlwZTEIMRQ==&quot;,&quot;queueTime&quot;:0,&quot;applicationTime&quot;:106,&quot;atts&quot;:&quot;HxdYFlgaS0o=&quot;,&quot;errorBeacon&quot;:&quot;bam.nr-data.net&quot;,&quot;agent&quot;:&quot;js-agent.newrelic.com\/nr-768.min.js&quot;}&lt;/script&gt;&lt;/body&gt;
+&lt;/html&gt;
+; line: 1, column: 2]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1576)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:533)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:462)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(ReaderBasedJsonParser.java:1624)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:689)
+	at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:3742)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3687)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2714)
+	at eu.trentorise.opendata.jackan.CkanClient.getHttp(CkanClient.java:528)
+	... 14 more
+</pre></body>
