@@ -331,7 +331,7 @@ dataset metadata by navigating to /dataset/{id}.rdf or /dataset/{id}.n3.
 These were rendered using templates, and were outdated, incomplete and
 broken [1].
 ```
-Situation on ckan side is getting much better with the <a href="https://github.com/ckan/ckanext-dcat" target="_blank">new version of the plugin </a> in progress, but we cannot expect all CKAN instances around the world to adopt it now. So currently we provide a class to convert from CKAN objects to their DCAT equivalent called <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a>. It will convert a `CkanDataset` to a `DcatDataset` and a `CkanResource` to a `DcatDistribution` <a href="https://github.com/ckan/ckanext-dcat#rdf-dcat-to-ckan-dataset-mapping" target="_blank"> according to this mapping</a>.
+Situation on ckan side is getting much better with the <a href="https://github.com/ckan/ckanext-dcat" target="_blank">new version of the plugin </a> in progress, but we cannot expect all CKAN instances around the world to adopt it now. So currently we provide a class to convert from CKAN objects to their DCAT equivalent called <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/DcatFactory"> DcatFactory</a>. It will convert a `CkanDataset` to a `DcatDataset` and a `CkanResource` to a `DcatDistribution` <a href="https://github.com/ckan/ckanext-dcat#rdf-dcat-to-ckan-dataset-mapping" target="_blank"> according to this mapping</a>.
 
 Examples code:
 
@@ -359,9 +359,8 @@ Examples code:
                         Locale.ITALIAN); // default locale of metadata
 ```
 
-To extract more stuff during conversion, you can use <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="../src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a> and override the extract* and/or postProcess* methods.
+To extract more stuff during conversion, you can use <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/DcatFactory"> DcatFactory</a> and override the extract* and/or postProcess* methods.
 
-todo write about serializing Dcat to json?
 
 ### Logging
 

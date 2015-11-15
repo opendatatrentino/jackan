@@ -12,7 +12,7 @@ November 15th, 2015
 
 - implemented writing into ckan, see [supported operations table](README.md#supported-operations)
 - added CkanClient.builder() for setting connection parameters (proxy, timeout)
-- implemented DcatFactory for conversion to Dcat, see [supported operations table](README.md#dcat)
+- implemented DcatFactory for conversion to Dcat, see [ckan to dcat mappings](README.md#dcat)
 - split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)
 - now creating release zip with jar and dependencies
 - added many exceptions (all inherit from JackanException)
