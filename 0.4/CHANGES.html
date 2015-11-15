@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jackan</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link id="josman-stylesheet" rel="stylesheet" type="text/css" href="../css/josman.css">
+        <!-- <link id="bootstrap-stylesheet" rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+        <link id="bootstrap-theme-stylesheet" rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+        -->
+        <link rel="stylesheet" type="text/css" href="website-template/css/josman.css"> 
+        <!--
+        <link  rel="stylesheet" type="text/css" href="website-template/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="website-template/css/bootstrap-theme.min.css">
+        -->
+    </head>
+    <body>
+        <div id="josman-wrapper">
+            <div id="josman-header">
+
+                <div style="position:absolute;  min-height:100px; min-width:100%; ">
+                    <a id="josman-program-logo-link" href="../index.html">
+                        <img id="josman-program-logo" src="../img/jackan-logo-200px.png" alt="program logo">    
+                    </a>
+
+                    <a id="josman-repo-link" href="../index.html">Jackan</a>
+
+
+                    <a href="http://dati.trentino.it/en/" target="_blank">
+                        <img style="float:right; padding:10px; width:80px" src="../img/tod-logo.png" alt="organization logo">                        
+                    </a>
+
+                    <div id="josman-nav-header">
+                        <a id="josman-home" href="../index.html">Home</a>                        
+                        <span id="josman-usage" style="margin-left:15px">Usage:                        
+                            
+                            
+                        <a class="josman-version-tab-header josman-tag-selected" href="../0.4/index.html">0.4</a><a class="josman-version-tab-header " href="../0.3/index.html">0.3</a><a class="josman-version-tab-header " href="../0.2/index.html">0.2</a></span>
+                        <span style="margin-left:35px">
+                            <a id="josman-project" class="josman-external-link" href="https://github.com/opendatatrentino/jackan" target="_blank">Repo</a>
+                            <a id="josman-wiki" class="josman-external-link" href="https://github.com/opendatatrentino/jackan/wiki" target="_blank">Wiki</a> 
+                        </span>
+                    </div>
+                </div>                
+
+            </div>
+
+            <div id="josman-sidebar">
+                <div id="josman-internal-sidebar" class="josman-sidebar-block"><ul class="josman-tree"><li><div class="josman-sidebar-page-title"><a href="index.html">Usage</a></div><ul class="josman-tree"></ul></li><li><div class="josman-sidebar-page-title josman-sidebar-selected">Release notes</div><ul class="josman-tree"></ul></li></ul></div>
+
+
+
+                <div id="josman-sidebar-managed-block" class="josman-sidebar-block">
+
+                    <div id="josman-javadoc-link" class="josman-sidebar-page-title"><a class="josman-external-link" href="javadoc/index.html" target="_blank">Javadoc</a></div>
+                    <!-- <div><a href="CHANGES.html">Release notes</a></div> -->              
+                </div>
+
+
+            </div>
+
+            <div id="josman-content">
+                <div id="josman-internal-content"><h2><a href="#jackan-release-notes" name="jackan-release-notes">JACKAN RELEASE NOTES</a></h2><p>Project website: <a href="http://opendatatrentino.github.io/jackan">http://opendatatrentino.github.io/jackan</a> </p><p><br></p><h4><a href="#0-4-1" name="0-4-1">0.4.1</a></h4><p>November 15th, 2015</p>
+<ul>
+  <li>implemented writing into ckan, see <a href="README.md#supported-operations">supported operations table</a></li>
+  <li>added CkanClient.builder() for setting connection parameters (proxy, timeout)</li>
+  <li>implemented DcatFactory for conversion to Dcat, see <a href="README.md#dcat">supported operations table</a></li>
+  <li>split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)</li>
+  <li>now creating release zip with jar and dependencies</li>
+  <li>added many exceptions (all inherit from JackanException)</li>
+  <li>set default timeout to 15 secs</li>
+  <li>added reading licences</li>
+  <li>Adapted to <a href="https://github.com/opendatatrentino/josman">josman</a> docs structure</li>
+  <li>shaded dependencies not directly exposed in api (ie. apache http client)</li>
+  <li>improved test reporter</li>
+  <li>jackan test config lookup now walks directory tree (but still logging config is searched only in project root :-/</li>
+  <li><p>upgraded:</p>
+  <ul>
+    <li>traceprov to 0.3.0</li>
+    <li>odt-commons to tod-commons 1.1.0</li>
+    <li>jackson to 2.6.0</li>
+  </ul></li>
+</ul><p>merged pull requests:</p>
+<ul>
+  <li>Added support for Http Proxy by David Moravek: <a href="https://github.com/opendatatrentino/jackan/pull/12">https://github.com/opendatatrentino/jackan/pull/12</a></li>
+  <li>allowed sending token on GETs by Florent André: <a href="https://github.com/opendatatrentino/jackan/pull/15">https://github.com/opendatatrentino/jackan/pull/15</a></li>
+</ul><p>BREAKING CHANGES: </p>
+<ul>
+  <li>now requiring at least Java 7</li>
+  <li>renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model</li>
+  <li>moved JackanException to eu/trentorise/opendata/jackan/exceptions package.</li>
+  <li>renamed URL to Url in functions and fields. i.e. catalogURL -&gt; catalogUrl, CkanClient.makeDatasetURL -&gt; makeDatasetUrl, ...</li>
+  <li>renamed and split <code>CkanGroupStructure</code> into <code>CkanGroupOrgBase</code> and <code>CkanGroupOrg</code></li>
+  <li>now Joda <code>DateTime</code> is not used anymore, for timestamps now we use <code>java.sql.Timestamp</code></li>
+  <li><code>CkanClient.getObjectMapperClone()</code> is gone. See <a href="README.md#default-json-serdeserialization">new json configuration</a> instead</li>
+  <li>renamed dependency Odt commons into Tod commons, so classes and files starting with <code>Tod*</code> change to <code>Tod*</code>. Also <code>odt.commons.logging.properties</code> changed to <code>tod.commons.logging.properties</code></li>
+  <li>renamed <code>TrackingSummary</code> into <code>CkanTrackingSummary</code></li>
+</ul><h4><a href="#0-3-1-19-january-2015" name="0-3-1-19-january-2015">0.3.1 - 19 January 2015</a></h4>
+<ul>
+  <li>implemented reading and searching from CKAN</li>
+</ul><h4><a href="#0-2-0" name="0-2-0">0.2.0</a></h4>
+<ul>
+  <li>deprecated version - it's a legacy release for projects depending on it</li>
+</ul></div>
+            </div>
+
+        </div>        
+        <script src="../js/jquery-1.11.2.min.js"></script>
+        <!-- <script src="../js/bootstrap-3.3.4.min.js"></script> -->
+
+        <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-1.11.2.min.js"></script>
+        <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-3.3.4.min.js"></script>
+        <script>
+            // idotic CSS in style doesn't work, so use jquery instead: 
+            // also would like pre code but this will select code and won't work. There aren't selectors for parents
+
+            $("pre").css("max-width", "680px").css("overflow-x", "auto");
+
+            /* We don't support this yet...
+             $('.josman-tree-toggle').click(function () {
+             $(this).parent().children('ul.tree').toggle(200);
+             return false;
+             });
+             */
+        </script>
+    </body>
+</html>

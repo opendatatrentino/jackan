@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jackan</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link id="josman-stylesheet" rel="stylesheet" type="text/css" href="../css/josman.css">
+        <!-- <link id="bootstrap-stylesheet" rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+        <link id="bootstrap-theme-stylesheet" rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+        -->
+        <link rel="stylesheet" type="text/css" href="website-template/css/josman.css"> 
+        <!--
+        <link  rel="stylesheet" type="text/css" href="website-template/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="website-template/css/bootstrap-theme.min.css">
+        -->
+    </head>
+    <body>
+        <div id="josman-wrapper">
+            <div id="josman-header">
+
+                <div style="position:absolute;  min-height:100px; min-width:100%; ">
+                    <a id="josman-program-logo-link" href="../index.html">
+                        <img id="josman-program-logo" src="../img/jackan-logo-200px.png" alt="program logo">    
+                    </a>
+
+                    <a id="josman-repo-link" href="../index.html">Jackan</a>
+
+
+                    <a href="http://dati.trentino.it/en/" target="_blank">
+                        <img style="float:right; padding:10px; width:80px" src="../img/tod-logo.png" alt="organization logo">                        
+                    </a>
+
+                    <div id="josman-nav-header">
+                        <a id="josman-home" href="../index.html">Home</a>                        
+                        <span id="josman-usage" style="margin-left:15px">Usage:                        
+                            
+                            
+                        <a class="josman-version-tab-header josman-tag-selected" href="../0.4/index.html">0.4</a><a class="josman-version-tab-header " href="../0.3/index.html">0.3</a><a class="josman-version-tab-header " href="../0.2/index.html">0.2</a></span>
+                        <span style="margin-left:35px">
+                            <a id="josman-project" class="josman-external-link" href="https://github.com/opendatatrentino/jackan" target="_blank">Repo</a>
+                            <a id="josman-wiki" class="josman-external-link" href="https://github.com/opendatatrentino/jackan/wiki" target="_blank">Wiki</a> 
+                        </span>
+                    </div>
+                </div>                
+
+            </div>
+
+            <div id="josman-sidebar">
+                <div id="josman-internal-sidebar" class="josman-sidebar-block"><ul class="josman-tree"><li><div class="josman-sidebar-page-title josman-sidebar-selected">Usage</div><ul class="josman-tree"><div><a href="#getting-started">Getting started</a></div><div><a href="#search-ckan">Search ckan</a></div><div><a href="#write-in-ckan">Write in Ckan</a></div><div><a href="#json-serialization">JSON Serialization</a></div><div><a href="#timestamps">Timestamps</a></div><div><a href="#dcat">DCAT</a></div><div><a href="#logging">Logging</a></div></ul></li><li><div class="josman-sidebar-page-title"><a href="CHANGES.html">Release notes</a></div><ul class="josman-tree"></ul></li></ul></div>
+
+
+
+                <div id="josman-sidebar-managed-block" class="josman-sidebar-block">
+
+                    <div id="josman-javadoc-link" class="josman-sidebar-page-title"><a class="josman-external-link" href="javadoc/index.html" target="_blank">Javadoc</a></div>
+                    <!-- <div><a href="CHANGES.html">Release notes</a></div> -->              
+                </div>
+
+
+            </div>
+
+            <div id="josman-content">
+                <div id="josman-internal-content"><p>This release allows to search Ckan, write into it and convert CKAN metadata into DCAT format. If you are upgrading from previous version, see <a href="CHANGES.html">Release notes</a>.</p><h3><a href="#getting-started" name="getting-started">Getting started</a></h3><p><strong>With Maven</strong>: If you use Maven as build system, put this in the <code>dependencies</code> section of your <code>pom.xml</code>:</p>
+<pre><code class="xml">    &lt;dependency&gt;
+        &lt;groupId&gt;eu.trentorise.opendata&lt;/groupId&gt;
+        &lt;artifactId&gt;jackan&lt;/artifactId&gt;
+        &lt;version&gt;0.4.1&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre><p><strong>Without Maven</strong>: you can download Jackan jar and its dependencies <a href="../releases/jackan-0.4.1.zip" target="_blank"> from here</a>, then copy the jars to your project classpath.</p><p>In case updates are available, version numbers follow <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.</p><h3><a href="#search-ckan" name="search-ckan">Search ckan</a></h3><h4><a href="#get-the-dataset-list-of-dati-trentino-it-" name="get-the-dataset-list-of-dati-trentino-it-">Get the dataset list of dati.trentino.it:</a></h4><p>Code can be found in <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp1.java" target="_blank">TestApp1.java</a></p>
+<pre><code class="java"><br>import eu.trentorise.opendata.jackan.CkanClient;
+
+public class TestApp1 {
+
+    public static void main(String[] args) {
+
+        CkanClient cc = new CkanClient("http://dati.trentino.it");
+        System.out.println(cc.getDatasetList());
+
+    }
+}
+
+</code></pre><h4><a href="#get-list-of-first-10-datasets-of-dati-trentino-it-and-print-their-resources-" name="get-list-of-first-10-datasets-of-dati-trentino-it-and-print-their-resources-">Get list of first 10 datasets of dati.trentino.it and print their resources:</a></h4><p>Code can be found in <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp2.java" target="_blank">TestApp2.java</a></p>
+<pre><code class="java"><br>    import eu.trentorise.opendata.jackan.CkanClient;
+    import eu.trentorise.opendata.jackan.model.CkanDataset;
+    import eu.trentorise.opendata.jackan.model.CkanResource;
+    import java.util.List;
+
+    public class TestApp2 {
+
+        public static void main(String[] args) {
+
+            CkanClient cc = new CkanClient("http://dati.trentino.it");
+
+            List&lt;String&gt; ds = cc.getDatasetList(10, 0);
+
+            for (String s : ds) {
+                System.out.println();
+                System.out.println("DATASET: " + s);
+                CkanDataset d = cc.getDataset(s);
+                System.out.println("  RESOURCES:");
+                for (CkanResource r : d.getResources()) {
+                    System.out.println("    " + r.getName());
+                    System.out.println("    FORMAT: " + r.getFormat());
+                    System.out.println("       URL: " + r.getUrl());
+                }
+            }
+
+        }
+
+    }
+
+</code></pre><p>Should give something like this:</p>
+<pre><code><br>    DATASET: abitazioni
+      RESOURCES:
+        abitazioni
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?idind=133&amp;info=d&amp;fmt=json
+        abitazioni
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113651/_lcmGkp.csv
+        numero-di-abitazioni
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?ntab=Sub_Numero_Abitazioni&amp;info=d&amp;fmt=json
+        numero-di-abitazioni
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113652/_yWBmJG.csv
+
+    DATASET: abitazioni-occupate
+      RESOURCES:
+        abitazioni-occupate
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?idind=134&amp;info=d&amp;fmt=json
+        abitazioni-occupate
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113653/_iaMMc2.csv
+        numero-di-abitazioni-occupate
+        FORMAT: JSON
+           URL: http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/exp.aspx?ntab=Sub_Numero_Abitazioni_Occupate&amp;info=d&amp;fmt=json
+        numero-di-abitazioni-occupate
+        FORMAT: CSV
+           URL: http://dati.trentino.it/storage/f/2013-06-16T113654/__lLACk.csv
+
+    ...
+
+</code></pre><h4><a href="#search-datasets-filtering-by-tags-and-groups-" name="search-datasets-filtering-by-tags-and-groups-">Search datasets filtering by tags and groups:</a></h4><p>Code can be found in <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/test/java/eu/trentorise/opendata/jackan/test/ckan/TestApp3.java" target="_blank">TestApp3.java</a></p>
+<pre><code class="java"><br>import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.CkanQuery;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import java.util.List;
+
+public class TestApp3 {
+
+    public static void main(String[] args) {
+
+        CkanClient cc = new CkanClient("http://dati.trentino.it");        
+        CkanQuery query = CkanQuery.filter().byGroupNames("turismo").byTagNames("ristoranti");
+        List&lt;CkanDataset&gt; filteredDatasets = cc.searchDatasets(query, 10, 0).getResults();
+
+        for (CkanDataset d : filteredDatasets) {
+            System.out.println();
+            System.out.println("DATASET: " + d.getName());
+        }
+    }
+}
+</code></pre><p>Should give something like this:</p>
+<pre><code><br>DATASET: osterie-tipiche-trentine
+
+DATASET: poi-trento
+
+DATASET: punti-di-interesse-valsugana
+
+DATASET: poi-altopiano-di-pine-e-valle-di-cembra
+
+DATASET: punti-di-ristoro-vivifiemme-2013
+</code></pre><h3><a href="#write-in-ckan" name="write-in-ckan">Write in Ckan</a></h3><h4><a href="#supported-operations" name="supported-operations">Supported operations</a></h4><p>First, a brief recap of operations for writing offered by ckan:</p>
+<ul>
+  <li><strong>create</strong>: in ckan creation often acts more as <em>upsert</em>, that is, if object with existing id/name already exists it is updated</li>
+  <li><strong>update</strong>: update completely replaces stuff on server, and if you don't send a list or set it to null it gets emptied on the server. This can problematic for example when updating datasets containg a list of resources.</li>
+  <li><strong>patch</strong>: added in Ckan 2.3 for less destructive updates. Jackan does not implement <code>patch</code> operations so far and instead offers so-called <code>patch-update</code> operations that emulate <code>patch</code> but only by calling <code>update</code> (so they work also in ckan &lt; 2.3)</li>
+  <li><strong>delete</strong>: marks objects as as non-visible in the website, but they will still be retrievable with the webapi if you know the ids. To really delete things <code>purge</code> operations would need to be implemented.</li>
+  <li><strong>purge</strong>: this one <em>really</em> deletes stuff</li>
+</ul><p>Currently Jackan supports:</p>
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>create</th>
+      <th>update</th>
+      <th>patch </th>
+      <th>patch update </th>
+      <th>delete</th>
+      <th>purge </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Resource </td>
+      <td>X* </td>
+      <td>X* </td>
+      <td> </td>
+      <td>X* </td>
+      <td>X </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Dataset </td>
+      <td>X </td>
+      <td>X </td>
+      <td> </td>
+      <td>X </td>
+      <td>X </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Group </td>
+      <td>X </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Organization </td>
+      <td>X </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>User </td>
+      <td>X </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Tag </td>
+      <td>X </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Vocabulary </td>
+      <td>X </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table><p>*Resource <code>create</code> and <code>update</code> change only metadata, the don't allow uploading/modifying files.</p><h4><a href="#data-validation" name="data-validation">Data validation</a></h4><p>Sometimes Ckan forgets to properly validate input. For example, at least with Ckan 2.2 we have been able to create resources with empty id :-/ To prevent writing such garbage we extended default <code>CkanClient</code> with <code>CheckedCkanClient</code>, which is more picky about possibly inconsistent input. If you also care about data integrity you might want to use the Checked client or extend it with your own validation rules when writing into Ckan. To try how different clients behave against the extensive Jackan test suite when running tests we set the client client class to use as parameter <code>jackan.test.ckan.client-class=eu.trentorise.opendata.jackan.CheckedCkanClient</code> in <code>conf/jackan.test.properties</code><br>Maybe in the future we will implement also <a href="http://beanvalidation.org/" target="_blank">java.validation api</a> support.</p><h4><a href="#what-we-post" name="what-we-post">What we POST</a></h4><p>All writable classes have an ancestor with <code>"Base"</code> appended to the Ckan object name, like <code>CkanDatasetBase</code>.<br>When writing Jackan sends to Ckan only the non-null fields of such base classes (except for patch-update, which is more sophisticated). Notice CKAN instances might have <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html" target="_blank"> custom data schemas</a> that force presence of custom properties among ‘regular’ ones. In this case, they go to java <code>others</code> hashmap and when serialized are put into the main json body (Note that to further complicate things there is also an <code>extras</code>field).</p><h4><a href="#examples-for-writing" name="examples-for-writing">Examples for writing</a></h4><p>Many test cases for writing can be found in <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/test/java/eu/trentorise/opendata/jackan/test/ckan/" target="_blank">WriteCkan*IT.java</a> files. Here we just report a couple of them.</p><h5><a href="#write-a-dataset" name="write-a-dataset">Write a dataset</a></h5>
+<pre><code class="java"> 	  // here we use CheckedCkanClient for extra safety
+        CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
+
+        CkanDatasetBase dataset = new CkanDatasetBase();
+        dataset.setName("my-cool-dataset-" + new Random().nextLong());
+        // notice Jackan will only send field 'name' as it is non-null
+        CkanDataset createdDataset = myClient.createDataset(dataset);
+
+        checkNotEmpty(createdDataset.getId(), "Invalid dataset id!");
+        assertEquals(dataset.getName(), createdDataset.getName());
+        System.out.println("Dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
+
+</code></pre><h5><a href="#patch-update-a-dataset" name="patch-update-a-dataset">Patch update a dataset</a></h5><p>Shows Jackan-specific patch-update functionality, in this case for changing tags assigned to a dataset (and also shows that new free tags can be created at dataset creation)</p>
+<pre><code class="java">        // here we use CheckedCkanClient for extra safety
+        CkanClient myClient = new CheckedCkanClient("http://put-your-catalog.org", "put your ckan api key token");
+
+		// we create a dataset with one tag 'cool'
+        CkanDatasetBase dataset = new CkanDatasetBase("my-dataset-" + new Random().nextLong());
+        List&lt;CkanTag&gt; tags_1 = new ArrayList();
+        tags_1.add(new CkanTag("cool"));
+        dataset.setTags(tags_1);
+        CkanDataset createdDataset = myClient.createDataset(dataset);
+
+        // now we assign a new array with one tag ["amazing"] 
+        List&lt;CkanTag&gt; tags_2 = new ArrayList();
+        tags_2.add(new CkanTag("amazing"));
+        createdDataset.setTags(tags_2);
+
+        // let's patch-update, jackan will take care of merging tags to prevent erasure of 'cool'
+        CkanDataset updatedDataset = myClient.patchUpdateDataset(createdDataset);
+
+        assert 2 == updatedDataset.getTags().size(); //  'amazing' has been added to ['cool']
+        System.out.println("Merged tags = "
+                + updatedDataset.getTags().get(0).getName()
+                + ", " + updatedDataset.getTags().get(1).getName());
+
+        System.out.println("Updated dataset is available online at " + CkanClient.makeDatasetURL(myClient.getCatalogURL(), dataset.getName()));
+</code></pre><h3><a href="#json-serialization" name="json-serialization">JSON Serialization</a></h3><p>For ser/deserializing JSON there are two kinds of configurations, a default one for reading from ckan and one for writing (that is, POSTing). Most probably you are interested in the default one.</p><p>Jackson library annotations are used to automatically convert to/from JSON using Jackson's <code>ObjectMapper</code> object. Notice that although field names of Java objects are camelcase (like <code>authorEmail</code>), serialized fields follows CKAN API stlye and use underscores (like <code>author_email</code>).</p><h4><a href="#default-json-ser-deserialization" name="default-json-ser-deserialization">Default JSON Ser/deserialization</a></h4><p>Here is an example of serialization/deserialization:</p>
+<pre><code class="java">		// your Jackson ObjectMapper
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        CkanClient.configureObjectMapper(objectMapper);
+        
+        CkanDataset dataset = new CkanDataset();
+        dataset.setName("hello");
+        
+        String json = objectMapper.writeValueAsString(dataset);
+
+        System.out.println("json = " +  json);
+
+        CkanDataset reconstructed = objectMapper.readValue(json, CkanDataset.class);
+        
+        assert "hello".equals(reconstructed.getName());
+</code></pre><p>For more fine-grained control you can just register <code>JackanModule</code> into your Jackson object mapper:</p>
+<pre><code class="java">        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JackanModule());
+</code></pre><h4><a href="#posting-json" name="posting-json">Posting JSON</a></h4><p>This more advanced usage is for the case you want to do your own POST operations (create/update/delete/purge) to ckan (or maybe extend Jackan :-) ...</p><p>Notice for this you might need a different object mapper for each class you intend to post, so to be able to configure each mapper in a fine-grained way. You can find an example for datasets in method <code>CkanClient.configureObjectMapperForPosting</code>:</p>
+<pre><code class="java">        ObjectMapper mapperForDatasetPosting = new ObjectMapper();
+        CkanClient.configureObjectMapperForPosting(mapperForDatasetPosting, CkanDatasetBase.class);
+                
+        CkanDataset dataset = new CkanDataset("random-name-" + new Random().nextLong());
+        
+        // this would be the POST body. 
+        String json = mapperForDatasetPosting.writeValueAsString(dataset);
+</code></pre><h3><a href="#timestamps" name="timestamps">Timestamps</a></h3><p>CKAN uses timestamps in a format like <code>1970-01-01T01:00:00.000010</code>. In the client we store them as <code>java.sql.Timestamp</code> so to be able to preserve the microseconds. To parse/format Ckan timestamps, use</p>
+<pre><code class="java">    CkanClient.formatTimestamp(new Timestamp(123));
+    CkanClient.parseTimestamp("1970-01-01T01:00:00.000010");
+</code></pre><h3><a href="#dcat" name="dcat">DCAT</a></h3><p><a href="http://www.w3.org/TR/vocab-dcat/" target="_blank">DCAT</a> is an emerging W3C standard for representing catalog metadata. For this reason, when we use Jackan we usually convert Ckan objects to their DCAT representation, which gives us a consistent well defined view of open data catalogs.</p><p>There has long been a plugin for ckan to serve metadata as rdf in <a href="http://www.w3.org/TR/vocab-dcat/" target="_blank">DCAT format</a>, but <a href="https://lists.okfn.org/pipermail/ckan-dev/2015-July/009164.html" target="_blank">according to maintainer (July 2015):</a><br><code>
+Historically you have been able to access an RDF representation of a CKAN
+dataset metadata by navigating to /dataset/{id}.rdf or /dataset/{id}.n3.
+These were rendered using templates, and were outdated, incomplete and
+broken [1].
+</code><br>Situation on ckan side is getting much better with the <a href="https://github.com/ckan/ckanext-dcat" target="_blank">new version of the plugin </a> in progress, but we cannot expect all CKAN instances around the world to adopt it now. So currently we provide a class to convert from CKAN objects to their DCAT equivalent called <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a>. It will convert a <code>CkanDataset</code> to a <code>DcatDataset</code> and a <code>CkanResource</code> to a <code>DcatDistribution</code> <a href="https://github.com/ckan/ckanext-dcat#rdf-dcat-to-ckan-dataset-mapping" target="_blank"> according to this mapping</a>.</p><p>Examples code:</p>
+<pre><code class="java">        DcatFactory dcatFactory = new DcatFactory();
+
+        CkanDataset ckanDataset = new CkanDataset("my-dataset");
+        DcatDataset dcatDataset
+                = dcatFactory.makeDataset(
+                        ckanDataset,
+                        "http://dati.trentino.it",
+                        Locale.ITALIAN); // default locale of metadata
+
+        CkanResource ckanResource = new CkanResource(
+        "http://my-department.org/expenses.csv",
+        "my-dataset");
+
+        DcatDistribution dcatDistribution
+                = dcatFactory.makeDistribution(
+                        ckanResource,
+                        "http://dati.trentino.it",
+                        "my-dataset", // owner dataset id
+                        "cc-zero", // license id
+                        Locale.ITALIAN); // default locale of metadata
+</code></pre><p>To extract more stuff during conversion, you can use <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/main/java/eu.trentorise.opendata.jackan.dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="https://github.com/opendatatrentino/jackan/blob/jackan-0.4.1/src/main/java/eu.trentorise.opendata.jackan.dcat/DcatFactory"> DcatFactory</a> and override the extract* and/or postProcess* methods.</p><p>todo write about serializing Dcat to json?</p><h3><a href="#logging" name="logging">Logging</a></h3><p>Jackan uses native Java logging system (JUL). If you also use JUL in your application and want to see Jackan logs, you can take inspiration from <a href="https://github.com/opendatatrentino/jackan/blob/master/src/test/resources/tod.commons.logging.properties">jackan test logging properties</a>. If you have an application which uses SLF4J logging system, you can route logging with <a href="http://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j" target="_blank">JUL to SLF4J bridge</a>, just remember <a href="http://stackoverflow.com/questions/9117030/jul-to-slf4j-bridge" target="_blank"> to programmatically install it first. </a></p></div>
+            </div>
+
+        </div>        
+        <script src="../js/jquery-1.11.2.min.js"></script>
+        <!-- <script src="../js/bootstrap-3.3.4.min.js"></script> -->
+
+        <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-1.11.2.min.js"></script>
+        <!-- quick and silly hack to get the file -->
+        <script src="website-template/js/jquery-3.3.4.min.js"></script>
+        <script>
+            // idotic CSS in style doesn't work, so use jquery instead: 
+            // also would like pre code but this will select code and won't work. There aren't selectors for parents
+
+            $("pre").css("max-width", "680px").css("overflow-x", "auto");
+
+            /* We don't support this yet...
+             $('.josman-tree-toggle').click(function () {
+             $(this).parent().children('ul.tree').toggle(200);
+             return false;
+             });
+             */
+        </script>
+    </body>
+</html>

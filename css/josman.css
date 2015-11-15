@@ -56,7 +56,9 @@ body {
 }                     
 
 .josman-sidebar-selected {
-    background: linear-gradient(to bottom, #F2F2EA 0%, #FBFAF7 100%, #ffffff 0%) repeat scroll 0 0 rgba(0, 0, 0, 0)
+	    /*background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(214, 228, 231, 1), rgba(0, 0, 0, 0)) repeat scroll 0 0 !important;*/
+		background: rgba(0, 0, 0, 0) linear-gradient(to right, rgba(214, 228, 231, 1), rgba(214, 228, 231, 0.8), rgba(0, 0, 0, 0)) repeat scroll 0 0; 
+ /*   background: rgba(0, 0, 0, 0) linear-gradient(to right, rgba(255, 255, 255, 1), rgba(250, 250, 250, 0.5), rgba(0, 0, 0, 0)) repeat scroll 0 0; */
 }
 
 .josman-sidebar-block {
@@ -81,7 +83,7 @@ body {
 }
 
 .josman-sidebar-page-title a {    
-       color: black !important; // need to replicate from div otherwise doesn't work :-/'
+       color: black !important; /* need to replicate from div otherwise doesn't work :-/' */
        
 }
 
@@ -122,31 +124,33 @@ body {
 
 #josman-nav-header a {
     text-decoration: none;
-    background-color:#fff;
-    border-color:lightgray;
-    // border-top-style: solid;
-    // border-left-style: solid;
-    // border-right-style: solid;
-    border-style: solid;
-    border-width: 1px;
-    //border-top-left-radius: 15px;
-    //border-top-right-radius: 15px;
+    background:linear-gradient(to bottom, rgba(255,255,255, 1), rgba(0, 0, 0, 0)) repeat scroll 0 0;    
+    /* border-top-style: solid; */
+    /* border-left-style: solid; */
+    /* border-right-style: solid; */
+    /* border-style: solid; */
+    /* border-width: 1px; */
+    /* border-top-left-radius: 15px; */
+    /* border-top-right-radius: 15px; */
     border-radius: 5px;
     margin:8px;
     padding:5px;
     display:inline;
+	color:black;
+}
+
+#josman-nav-header a:visited{
+
+	color:black;
 }
 
 #josman-nav-header a:hover{
-    background-color:#eee;
-    border-color:lightgray;
-    // border-top-style: solid;
-    // border-left-style: solid;
-    // border-right-style: solid;
-    border-style: solid;
-    border-width: 1px;
-    //border-top-left-radius: 15px;
-    //border-top-right-radius: 15px;
+    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(214, 228, 231, 1), rgba(0, 0, 0, 0)) repeat scroll 0 0;
+    /* border-top-style: solid; */
+    /* border-left-style: solid; */
+    /* border-right-style: solid; */
+    /*border-top-left-radius: 15px; */
+    /*border-top-right-radius: 15px; */
     border-radius: 5px;
     margin:8px;
     padding:5px;
@@ -173,7 +177,7 @@ body {
 }
 
 .josman-tag-selected {
-    background-color:#ffeec1 !important;
+    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(214, 228, 231, 1), rgba(0, 0, 0, 0)) repeat scroll 0 0 !important;
 }
 
 pre {                
