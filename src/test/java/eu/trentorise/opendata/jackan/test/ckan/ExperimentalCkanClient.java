@@ -17,6 +17,8 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,10 +44,22 @@ import org.apache.http.impl.client.DefaultHttpClient;
  */
 class ExperimentalCkanClient extends CkanClient {
 
+    private ExperimentalCkanClient(){
+        super();
+    }
+    
     public ExperimentalCkanClient(String URL, String token) {
         super(URL, token);
     }
-
+    
+    /**
+     * Returns a builder instance. The builder is not threadsafe and you can use
+     * one builder instance to build only one client instance.
+     */
+    public static CkanClient.Builder builder() {
+        return CkanClient.newBuilder(new ExperimentalCkanClient());
+    }
+    
     /**
      * Uploads a file using file storage api, which I think is deprecated. As of
      * Aug 2015, coesn't work neither with demo.ckan.org nor dati.trentino

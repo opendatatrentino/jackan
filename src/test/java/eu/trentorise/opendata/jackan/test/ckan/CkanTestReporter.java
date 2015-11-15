@@ -439,7 +439,7 @@ public class CkanTestReporter {
                     ._th();
                 int passedByName = runSuite.getPassedTestsByName(testName)
                                          .size();
-                html.td(errClass(passedByName, catalogs.size()))
+                html.td()
                     .b()
                     .write(passedByName + "/" + catalogs.size())                                                     
                     ._b()

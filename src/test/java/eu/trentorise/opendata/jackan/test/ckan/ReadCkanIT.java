@@ -131,47 +131,7 @@ public class ReadCkanIT {
         objectMapper = null;
     }
 
-    @Test
-    public void testBuilder(){
-        
-        String myProxy = "http://a.b/c";
-        
-        assertEquals(DATI_TRENTINO,
-                     CkanClient.builder()
-                         .setCatalogUrl(DATI_TRENTINO)
-                         .build()
-                         .getCatalogUrl());
-        
-        assertEquals(myProxy,
-                CkanClient.builder()
-                    .setCatalogUrl(DATI_TRENTINO)
-                    .setProxy(myProxy)
-                    .build()
-                    .getProxy());
-        
-        assertEquals(1,
-                CkanClient.builder()
-                    .setCatalogUrl(DATI_TRENTINO)
-                    .setTimeout(1)
-                    .build()
-                    .getTimeout());
-        
-        try {
-            CkanClient.builder()
-            .setCatalogUrl(DATI_TRENTINO)
-            .setTimeout(0)            
-            .build();
-            Assert.fail("shouldn't arrive here!");
-        } catch (Exception ex){           
-        }
-        
-        try {
-            CkanClient.builder().build();
-            Assert.fail("shouldn't arrive here!");
-        } catch (Exception ex){           
-        }
-               
-    }      
+ 
 
     /**
      * todo we should do some ckan internal version detector (sic)

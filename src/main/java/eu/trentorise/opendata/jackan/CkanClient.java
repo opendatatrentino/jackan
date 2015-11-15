@@ -335,6 +335,8 @@ public class CkanClient {
         return new Builder(new CkanClient());
     }
 
+
+
     /**
      * Builder for the client. The builder is not threadsafe and you can use one
      * builder instance to build only one client instance.
@@ -346,14 +348,14 @@ public class CkanClient {
         private CkanClient client;
         private boolean created;
 
-        protected CkanClient getClient(){
+        protected CkanClient getClient() {
             return client;
         }
-        
-        protected boolean getCreated(){
+
+        protected boolean getCreated() {
             return created;
         }
-        
+
         protected void checkNotCreated() {
             if (created) {
                 throw new IllegalStateException("Builder was already used to create a client!");
@@ -393,16 +395,21 @@ public class CkanClient {
          */
         public Builder setProxy(@Nullable String proxyUrl) {
             checkNotCreated();
+            
             if (proxyUrl == null) {
                 this.client.proxy = null;
             } else {
                 URI uri;
                 try {
-                    uri = new URI(proxyUrl);
+                    uri = new URI(proxyUrl.trim());
                 } catch (URISyntaxException e) {
                     throw new IllegalArgumentException("Invalid proxy url!", e);
                 }
+                if (!uri.getPath().isEmpty()){
+                    throw new IllegalArgumentException("Proxy host shouldn't have context path! Found instead: " + uri.toString() + " with path " + uri.getPath()); 
+                }
                 this.client.proxy = URIUtils.extractHost(uri);
+                
             }
             return this;
         }
@@ -1705,6 +1712,21 @@ public class CkanClient {
         return proxy.toURI();
     }
 
+    /**
+     * Convenience method to create a Builder with provided client to modify.
+     * <p>
+     * <strong>WARNING:</strong> The passed client will be modified, so
+     * <strong> DO NOT </strong> pass an already built client.
+     * </p>
+     * <p>
+     * The builder is not threadsafe and you can use one builder instance to
+     * build only one client instance.
+     * </p>
+     */
+    protected static CkanClient.Builder newBuilder(CkanClient client) {
+        return new Builder(client);
+    }    
+    
 }
 
 class DatasetResponse extends CkanResponse {

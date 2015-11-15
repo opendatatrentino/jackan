@@ -69,7 +69,7 @@ public class CheckedCkanClient extends CkanClient {
      * one builder instance to build only one client instance.
      */
     public static CkanClient.Builder builder() {
-        return new CkanClient.Builder(new CheckedCkanClient());
+        return CkanClient.newBuilder(new CheckedCkanClient());
     }
 
     private void checkUrl(String url, String prependedErrorMessage) {
