@@ -17,7 +17,7 @@ package eu.trentorise.opendata.jackan.dcat;
 
 import com.google.common.annotations.Beta;
 import eu.trentorise.opendata.commons.Dict;
-import eu.trentorise.opendata.jackan.exceptions.NotFoundException;
+import eu.trentorise.opendata.jackan.exceptions.JackanNotFoundException;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanGroup;
@@ -107,11 +107,11 @@ public class GreedyDcatFactory extends DcatFactory {
         try {
             return super.extractModified(resource);
         }
-        catch (NotFoundException ex) {
+        catch (JackanNotFoundException ex) {
             if (!isTrimmedEmpty(resource.getLastModified())) {
                 return resource.getLastModified();
             } else {
-                throw new NotFoundException("Couldn't find modified nor lastModified valid fields in resource!", ex);
+                throw new JackanNotFoundException("Couldn't find modified nor lastModified valid fields in resource!", ex);
             }
         }
     }

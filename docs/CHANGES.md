@@ -21,6 +21,7 @@ November 15th, 2015
 - Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
 - shaded dependencies not directly exposed in api (ie. apache http client)
 - improved test reporter
+- jackan test config lookup now walks directory tree (but still logging config is searched only in project root :-/
 
 - upgraded:
 	* traceprov to 0.3.0
@@ -37,6 +38,7 @@ BREAKING CHANGES:
 
 - now requiring at least Java 7 
 - renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model
+- moved JackanException to eu/trentorise/opendata/jackan/exceptions package.
 - renamed URL to Url in functions and fields. i.e. catalogURL -> catalogUrl, CkanClient.makeDatasetURL -> makeDatasetUrl, ...
 - renamed and split `CkanGroupStructure` into `CkanGroupOrgBase` and `CkanGroupOrg`
 - now Joda `DateTime` is not used anymore, for timestamps now we use `java.sql.Timestamp`

@@ -20,7 +20,7 @@ import eu.trentorise.opendata.jackan.model.CkanResponse;
 
 /**
  * Thrown when Ckan tells us something was not found. Notice this is not related
- * to more generic {@link NotFoundException}
+ * to more generic {@link JackanNotFoundException}
  *
  * @author David Leoni
  */

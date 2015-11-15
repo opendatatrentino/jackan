@@ -20,9 +20,14 @@ import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEm
 import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.CkanClient.Builder;
+import eu.trentorise.opendata.jackan.exceptions.JackanException;
+import eu.trentorise.opendata.jackan.exceptions.JackanNotFoundException;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
@@ -30,7 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
-
 
 /**
  *
@@ -43,7 +47,7 @@ public class JackanTestConfig {
     /**
      * Path to file containing jackan testing specific properties
      */
-    public static final String TEST_PROPERTIES_PATH = "conf/jackan.test.properties";
+    public static final String TEST_PROPERTIES_PATH = "jackan.test.properties";
 
     private static final String OUTPUT_CKAN_PROPERTY = "jackan.test.ckan.output";
     private static final String OUTPUT_CKAN_TOKEN_PROPERTY = "jackan.test.ckan.output-token";
@@ -68,9 +72,9 @@ public class JackanTestConfig {
      * By default tests will use {@link CheckedCkanClient}
      */
     private String clientClass;
-        
+
     private String proxy;
-    
+
     private int timeout = CkanClient.DEFAULT_TIMEOUT;
 
     private TodConfig todConfig;
@@ -80,7 +84,8 @@ public class JackanTestConfig {
     }
 
     /**
-     * @throws IllegalStateException if {@link #loadLogConfig()} didn't succeed.
+     * @throws IllegalStateException
+     *             if {@link #loadLogConfig()} didn't succeed.
      */
     public String getOutputCkan() {
         if (initialized) {
@@ -91,7 +96,8 @@ public class JackanTestConfig {
     }
 
     /**
-     * @throws IllegalStateException if {@link #loadLogConfig()} didn't succeed.
+     * @throws IllegalStateException
+     *             if {@link #loadLogConfig()} didn't succeed.
      */
     public String getOutputCkanToken() {
         if (initialized) {
@@ -107,115 +113,235 @@ public class JackanTestConfig {
         } else {
             throw new IllegalStateException("Jackan testing system was not properly initialized!");
         }
-        
+
     }
-    
-    
+
+    private static File confDir;
+
+    /**
+     * Walks the parent directories until finds the conf folder.
+     *
+     * @return the conf folder
+     * @throws JackanNotFoundException
+     *             if folder is not found.
+     */
+    private static File findConfDir() {
+
+        if (confDir == null) {
+
+            File directory = new File(System.getProperty("user.dir"));
+
+            boolean reachedFileSystemRoot = false;
+            while (!reachedFileSystemRoot) {
+                File candidateConf = new File(directory.getAbsolutePath() + File.separator + "conf");
+
+                System.out.println("Trying conf candidate " + candidateConf.getAbsolutePath());
+
+                if (directory.isDirectory() && directory.exists() && candidateConf.isDirectory()
+                        && candidateConf.exists()) {
+
+                    System.out.println("Found conf folder at " + candidateConf.getAbsolutePath());
+                    confDir = candidateConf;
+                    return confDir;
+                } else {
+                    File parent = directory.getParentFile();
+                    if (parent != null) {
+                        directory = parent;
+                    } else {
+                        reachedFileSystemRoot = true;
+                    }
+                }
+            }
+
+            throw new JackanException("Couldn't find conf folder!");
+        } else {
+            return confDir;
+        }
+    }
+
+    /**
+     * First searches in conf/ directory, then continues search in conf
+     * directories walking up to file system root.
+     *
+     * @param filepath
+     *            Relative filepath with file name and extension included. i.e.
+     *            abc/myfile.xml, which will be first searched in
+     *            conf/abc/myfile.xml
+     * @throws JackanNotFoundException
+     *             if no file is found
+     */
+    private static File findConfFile(String filepath) {
+        checkNotEmpty(filepath, "Invalid filepath!");
+
+        File confDir = findConfDir();
+        File candFile = new File(confDir + File.separator + filepath);
+
+        if (candFile.exists()) {
+            return candFile;
+        } else {
+            /*
+             * candFile = new File( confDir + File.separator + ".." +
+             * File.separator + "conf-template" + File.separator + filepath); if
+             * (candFile.exists()) { return candFile; }
+             */
+            throw new JackanNotFoundException("Can't find file " + filepath + " in conf dir: " + confDir);
+        }
+
+    }
+
+    /**
+     * Loads file.
+     *
+     * @param filepath
+     *            relative or absolute path with complete file name, i.e.
+     *            /etc/bla.xml or ../../bla.xml
+     * @throws JackanNotFoundException
+     *             if file is not found
+     * @throws JackanException
+     *             on generic error
+     */
+    private InputStream loadConfFile(File file) {
+
+        if (!file.exists()) {
+            throw new JackanException("Logback filepath " + file + " does not reference a file that exists");
+        } else {
+            if (!file.isFile()) {
+                throw new JackanException("Logback filepath " + file + " exists, but does not reference a file");
+            } else {
+                if (!file.canRead()) {
+                    throw new JackanException(
+                            "Logback filepath " + file + " exists and is a file, but cannot be read.");
+                } else {
+
+                    try {
+                        return new FileInputStream(file);
+                    } catch (FileNotFoundException e) {
+                        throw new JackanNotFoundException("Couldn't find file " + file);
+                    }
+
+                }
+            }
+        }
+    }
 
     /**
      * Loads logging config (see {@link TodConfig#loadLogConfig()}) and
-     * configuration for writing tests at path {@link #TEST_PROPERTIES_PATH}
+     * configuration for writing tests at path {@link #TEST_PROPERTIES_PATH}.
+     * NOTE: The latter config is searched in a smarter way by looking in the
+     * first conf/ folder found walking along directory tree.
      */
     public void loadConfig() {
         TodConfig.loadLogConfig(this.getClass());
 
         Logger logger = Logger.getLogger(JackanTestConfig.class.getName());
-        //final InputStream inputStream = JackanTestConfig.class.getResourceAsStream("/" + TEST_PROPERTIES_PATH);                
+        // final InputStream inputStream =
+        // JackanTestConfig.class.getResourceAsStream("/" +
+        // TEST_PROPERTIES_PATH);
 
         FileInputStream inputStream = null;
 
         try {
 
+            File jackanConfFile;
             try {
-                inputStream = new FileInputStream(TEST_PROPERTIES_PATH);
-                logger.log(Level.INFO, "Loaded test configuration file {0}", TEST_PROPERTIES_PATH);
-            }
-            catch (Exception ex) {
-                throw new IOException("Couldn't load Jackan test config file " + TEST_PROPERTIES_PATH + ", to enable writing tests please copy src/test/resources/jackan.test.properties to conf folder in the project root and edit as needed!", ex);
+                jackanConfFile = findConfFile(TEST_PROPERTIES_PATH);
+                inputStream = new FileInputStream(jackanConfFile);
+                logger.log(Level.INFO, "Loaded test configuration file {0}", jackanConfFile);
+            } catch (Exception ex) {
+                throw new IOException(
+                        "Couldn't load Jackan test config file " + TEST_PROPERTIES_PATH
+                                + ", to enable writing tests please copy src/test/resources/jackan.test.properties to conf folder in the project root and edit as needed!",
+                        ex);
             }
 
             properties = new Properties();
             properties.load(inputStream);
-            
-            @Nullable String timeoutString = properties.getProperty(TIMEOUT_PROPERTY);
-            if (timeoutString != null){
+
+            @Nullable
+            String timeoutString = properties.getProperty(TIMEOUT_PROPERTY);
+            if (timeoutString != null) {
                 timeout = Integer.parseInt(timeoutString);
             }
-            
+
             proxy = properties.getProperty(PROXY_PROPERTY);
-                        
+
             outputCkan = properties.getProperty(OUTPUT_CKAN_PROPERTY);
-            if (outputCkan == null || outputCkan.trim().isEmpty()) {
-                throw new IOException("Couldn't find property " + OUTPUT_CKAN_PROPERTY + " in configuration file " + TEST_PROPERTIES_PATH);
+            if (outputCkan == null || outputCkan.trim()
+                                                .isEmpty()) {
+                throw new IOException("Couldn't find property " + OUTPUT_CKAN_PROPERTY + " in configuration file "
+                        + jackanConfFile);
             } else {
                 logger.log(Level.INFO, "Will use {0} for CKAN write tests", outputCkan);
             }
 
             outputCkanToken = properties.getProperty(OUTPUT_CKAN_TOKEN_PROPERTY);
-            if (outputCkanToken == null || outputCkanToken.trim().isEmpty()) {
-                throw new IOException("COULDN'T FIND PROPERTY " + OUTPUT_CKAN_TOKEN_PROPERTY + " IN CONFIGURATION FILE " + TEST_PROPERTIES_PATH);
+            if (outputCkanToken == null || outputCkanToken.trim()
+                                                          .isEmpty()) {
+                throw new IOException("COULDN'T FIND PROPERTY " + OUTPUT_CKAN_TOKEN_PROPERTY + " IN CONFIGURATION FILE "
+                        + jackanConfFile);
             } else {
                 logger.log(Level.INFO, "Will use token {0} for CKAN write tests", outputCkanToken);
             }
 
             clientClass = properties.getProperty(CLIENT_CLASS_PROPERTY);
-            if (clientClass == null || clientClass.trim().isEmpty()) {
+            if (clientClass == null || clientClass.trim()
+                                                  .isEmpty()) {
                 clientClass = CheckedCkanClient.class.getName();
                 logger.log(Level.INFO, "Will use default client class {0} for writing", clientClass);
             } else {
                 clientClass = clientClass.trim();
                 logger.log(Level.INFO, "Will use client class {0} for writing", clientClass);
             }
-            
-            
+
             // let's see if it doesn't explode..
             try {
                 makeClientInstanceForWriting(clientClass);
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 throw new Exception("Could not make test instance for client class " + clientClass, ex);
-            }            
-                        
+            }
+
             initialized = true;
 
-        }
-        catch (Exception e) {
-            logger.log(Level.SEVERE, "JACKAN ERROR - COULDN'T INITIALIZE TEST ENVIRONMENT PROPERLY! INTEGRATION TESTS (ESPECIALLY FOR WRITING) MIGHT FAIL BECAUSE OF THIS!!", e);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,
+                    "JACKAN ERROR - COULDN'T INITIALIZE TEST ENVIRONMENT PROPERLY! INTEGRATION TESTS (ESPECIALLY FOR WRITING) MIGHT FAIL BECAUSE OF THIS!!",
+                    e);
         }
 
     }
 
     /**
-     * Returns a default client instance for writing.     
+     * Returns a default client instance for writing.
      */
     public CkanClient makeClientInstanceForWriting() {
         return makeClientInstanceForWriting(clientClass);
     }
-    
+
     public CkanClient makeClientInstanceForWriting(String clientClass) {
         checkNotEmpty(clientClass, "Invalid class string!");
-        
+
         Class forName;
         try {
             forName = Class.forName(clientClass);
+        } catch (Exception ex) {
+            throw new RuntimeException("Couldn't find client class " + clientClass + "!", ex);
         }
-        catch (Exception ex) {
-            throw new RuntimeException("Couldn't find client class " + clientClass + "!", ex);        
-        }
-        
+
         Method method;
         CkanClient.Builder builder;
         try {
             method = forName.getMethod("builder");
-            builder =  (Builder) method.invoke(null);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            builder = (Builder) method.invoke(null);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException ex) {
             throw new RuntimeException("Could not find builder() static method in client class " + clientClass, ex);
         }
-        
-        return builder.setCatalogUrl(outputCkan) 
-                .setCkanToken(outputCkanToken)
-                .setProxy(proxy)
-                .setTimeout(timeout)
-                .build();                             
+
+        return builder.setCatalogUrl(outputCkan)
+                      .setCkanToken(outputCkanToken)
+                      .setProxy(proxy)
+                      .setTimeout(timeout)
+                      .build();
     }
 
     /**

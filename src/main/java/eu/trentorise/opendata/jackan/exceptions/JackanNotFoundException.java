@@ -21,19 +21,19 @@ package eu.trentorise.opendata.jackan.exceptions;
  *
  * @author David Leoni <david.leoni@unitn.it>
  */
-public class NotFoundException extends JackanException {
+public class JackanNotFoundException extends JackanException {
 
     /**
-     * Creates the NotFoundException using the provided message
+     * Creates the JackanNotFoundException using the provided message
      */
-    public NotFoundException(String msg) {
+    public JackanNotFoundException(String msg) {
         super(msg);
     }
 
     /**
-     * Creates the NotFoundException using the provided message and throwable
+     * Creates the JackanNotFoundException using the provided message and throwable
      */
-    public NotFoundException(String msg, Throwable tr) {
+    public JackanNotFoundException(String msg, Throwable tr) {
         super(msg, tr);
     }
 

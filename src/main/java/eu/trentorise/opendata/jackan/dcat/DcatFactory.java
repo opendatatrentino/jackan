@@ -32,7 +32,7 @@ import eu.trentorise.opendata.commons.PeriodOfTime;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
-import eu.trentorise.opendata.jackan.exceptions.NotFoundException;
+import eu.trentorise.opendata.jackan.exceptions.JackanNotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanTag;
 import eu.trentorise.opendata.traceprov.TraceProvModule;
@@ -135,7 +135,7 @@ public class DcatFactory {
 	/**
 	 * i.e. "[\"ca\", \"en\", \"es\"]"
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -155,7 +155,7 @@ public class DcatFactory {
 	 * Like {@link #extractFieldAsString(CkanDataset, String)} but also checks
 	 * for trimmed non-emptiness.
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -164,7 +164,7 @@ public class DcatFactory {
 		String ret = extractFieldAsString(dataset, field).trim();
 
 		if (ret.isEmpty()) {
-			throw new NotFoundException("Couldn't find valid non-empty field " + field + " in CkanDataset");
+			throw new JackanNotFoundException("Couldn't find valid non-empty field " + field + " in CkanDataset");
 		} else {
 			return ret;
 		}
@@ -174,7 +174,7 @@ public class DcatFactory {
 	 * Like {@link #extractFieldAsString(CkanResource, String)} but also checks
 	 * for trimmed non-emptiness.
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -183,7 +183,7 @@ public class DcatFactory {
 		String ret = extractFieldAsString(resource, field).trim();
 
 		if (ret.isEmpty()) {
-			throw new NotFoundException("Couldn't find valid non-empty field " + field + " in CkanResource!");
+			throw new JackanNotFoundException("Couldn't find valid non-empty field " + field + " in CkanResource!");
 		} else {
 			return ret;
 		}
@@ -192,9 +192,9 @@ public class DcatFactory {
 	/**
 	 * Searches a field in {@link CkanDataset#getOthers() } and then in
 	 * {@link CkanDataset#getExtras() }. If search fails throws
-	 * NotFoundException, even if field is found but has null value.
+	 * JackanNotFoundException, even if field is found but has null value.
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -217,16 +217,16 @@ public class DcatFactory {
 		}
 
 		if (candidateString == null) {
-			throw new NotFoundException("Can't find string field " + field + "!");
+			throw new JackanNotFoundException("Can't find string field " + field + "!");
 		}
 		return candidateString;
 	}
 
 	/**
 	 * Searches a field in {@link CkanResource#getOthers() }. If search fails
-	 * throws NotFoundException, even if field is found but has null value.
+	 * throws JackanNotFoundException, even if field is found but has null value.
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -245,7 +245,7 @@ public class DcatFactory {
 		}
 
 		if (candidateString == null) {
-			throw new NotFoundException("Can't find string field " + field + "!");
+			throw new JackanNotFoundException("Can't find string field " + field + "!");
 		}
 		return candidateString;
 	}
@@ -253,9 +253,9 @@ public class DcatFactory {
 	/**
 	 * Searches a field in {@link CkanDataset#getOthers() } and then in
 	 * {@link CkanDataset#getExtras() }. If search fails throws
-	 * NotFoundException, even if field is found but has null value.
+	 * JackanNotFoundException, even if field is found but has null value.
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -276,7 +276,7 @@ public class DcatFactory {
 		}
 
 		if (candidateObject == null) {
-			throw new NotFoundException("Can't find object field " + field + "!");
+			throw new JackanNotFoundException("Can't find object field " + field + "!");
 		}
 		return candidateObject;
 	}
@@ -285,7 +285,7 @@ public class DcatFactory {
 	 * Tries to extract a string field from a CkanDataset and casts it to target
 	 * type
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -303,7 +303,7 @@ public class DcatFactory {
 	 * @see #extractField(eu.trentorise.opendata.jackan.model.CkanDataset,
 	 *      java.lang.String, com.fasterxml.jackson.core.type.TypeReference)
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -341,7 +341,7 @@ public class DcatFactory {
 	 */
 	private GeoJson calcGeoJson(String name, String description, String id, String spatialDump) {
 		if (name.isEmpty() && description.isEmpty()) {
-			throw new NotFoundException("Could not find valid dataset spatial field nor natural language name!");
+			throw new JackanNotFoundException("Could not find valid dataset spatial field nor natural language name!");
 		}
 		if (name.isEmpty() && !description.isEmpty()) {
 			return Feature.builder().setProperties(ImmutableMap.of("description", spatialDump)).setId(id).build();
@@ -360,7 +360,7 @@ public class DcatFactory {
 	}
 
 	/**
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             if spatial is not found
 	 * @throws JackanException
 	 *             for other errors.
@@ -378,20 +378,20 @@ public class DcatFactory {
 		try {
 			id = extractFieldAsNonEmptyString(dataset, "spatial_uri").trim();
 			logger.info("Found dataset 'spatial_uri' field, will set it to '@id' field of GeoJSON-LD");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find dataset 'spatial_uri' field");
 		}
 
 		try {
 			name = extractFieldAsNonEmptyString(dataset, "spatial_text").trim();
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info(
 					"Couldn't find dataset 'spatial_text' field (should hold the natural language name of the place)");
 		}
 
 		try {
 			spatial = extractFieldAsNonEmptyString(dataset, "spatial");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Could not find dataset 'spatial' field");
 
 		}
@@ -422,7 +422,7 @@ public class DcatFactory {
 	 * @param locale
 	 *            the locale of the theme names. If unknown pass
 	 *            {@link Locale#ROOT}
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             if needed fields are missing.
 	 * @throws JackanException
 	 *             on generic error
@@ -435,7 +435,7 @@ public class DcatFactory {
 		try {
 			candidateLabels = extractField(dataset, "theme", new TypeReference<List<String>>() {
 			});
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			return ret;
 		}
 		for (String s : candidateLabels) {
@@ -463,7 +463,7 @@ public class DcatFactory {
 	 * @param catalogUrl
 	 *            i.e. http://dati.trentino.it
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -473,14 +473,14 @@ public class DcatFactory {
 		String uri = "";
 		try {
 			uri = extractFieldAsNonEmptyString(dataset, URI_FIELD);
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 		}
 
 		if (isTrimmedEmpty(uri)) {
 			if (!isTrimmedEmpty(dataset.getId())) {
 				return CkanClient.makeDatasetUrl(catalogUrl, dataset.getId());
 			} else {
-				throw new NotFoundException("Couldn't find any valid dataset uri!");
+				throw new JackanNotFoundException("Couldn't find any valid dataset uri!");
 			}
 		} else {
 			return uri;
@@ -491,7 +491,7 @@ public class DcatFactory {
 	 * Returns a string with values trying to respect ISO 8601 format for time
 	 * intervals: https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -502,17 +502,17 @@ public class DcatFactory {
 
 		try {
 			start = extractFieldAsNonEmptyString(dataset, "temporal_start").trim();
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid dataset field 'temporal_start'");
 		}
 		try {
 			end = extractFieldAsNonEmptyString(dataset, "temporal_end").trim();
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid dataset field 'temporal_end'");
 		}
 
 		if (start.isEmpty() && end.isEmpty()) {
-			throw new NotFoundException("Couldn't find any valid temporal information!");
+			throw new JackanNotFoundException("Couldn't find any valid temporal information!");
 		}
 
 		try {
@@ -525,7 +525,7 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -534,23 +534,23 @@ public class DcatFactory {
 
 		try {
 			return extractFieldAsNonEmptyString(dataset, "identifier");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 		}
 		try {
 			return extractFieldAsNonEmptyString(dataset, "guid");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 		}
 
 		if (!isTrimmedEmpty(dataset.getId())) {
 			return dataset.getId().trim();
 		}
 
-		throw new NotFoundException("Couldn't find any valid identifier in the dataset!");
+		throw new JackanNotFoundException("Couldn't find any valid identifier in the dataset!");
 	}
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -558,17 +558,17 @@ public class DcatFactory {
 	protected String extractIssued(CkanDataset dataset) {
 		try {
 			return extractFieldAsNonEmptyString(dataset, ISSUED);
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			if (dataset.getMetadataCreated() != null) {
 				return CkanClient.formatTimestamp(dataset.getMetadataCreated());
 			}
 		}
-		throw new NotFoundException("Couldn't find valid 'issued' field");
+		throw new JackanNotFoundException("Couldn't find valid 'issued' field");
 	}
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -576,12 +576,12 @@ public class DcatFactory {
 	protected String extractModified(CkanDataset dataset) {
 		try {
 			return extractFieldAsString(dataset, MODIFIED);
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			if (dataset.getMetadataModified() != null) {
 				return CkanClient.formatTimestamp(dataset.getMetadataModified());
 			}
 		}
-		throw new NotFoundException("Couldn't find valid 'modified' field");
+		throw new JackanNotFoundException("Couldn't find valid 'modified' field");
 	}
 
 	/**
@@ -589,7 +589,7 @@ public class DcatFactory {
 	 * dataset, without resorting to ckan group, organization or maintainer as
 	 * fallback.
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -600,19 +600,19 @@ public class DcatFactory {
 
 		try {
 			pubBuilder.setUri(extractFieldAsNonEmptyString(dataset, "publisher_uri").trim());
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid field 'publisher_uri'");
 		}
 
 		try {
 			pubBuilder.setName(Dict.of(locale, extractFieldAsNonEmptyString(dataset, "publisher_name").trim()));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid field 'publisher_name'");
 		}
 
 		try {
 			pubBuilder.setMbox(extractFieldAsNonEmptyString(dataset, "publisher_email").trim());
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid field 'publisher_email'");
 
 			String candidateTitle = "";
@@ -628,14 +628,14 @@ public class DcatFactory {
 
 		try {
 			pubBuilder.setHomepage(extractFieldAsNonEmptyString(dataset, "publisher_url").trim());
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid field 'publisher_url' for publisher homepage");
 		}
 
 		FoafAgent ret = pubBuilder.build();
 
 		if (ret.equals(FoafAgent.of())) {
-			throw new NotFoundException("Couldn't find any valid field for a publisher!");
+			throw new JackanNotFoundException("Couldn't find any valid field for a publisher!");
 		} else {
 			return ret;
 		}
@@ -643,7 +643,7 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -654,14 +654,14 @@ public class DcatFactory {
 
 		try {
 			cpb.setUri(extractFieldAsNonEmptyString(dataset, "contact_uri"));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logger.info("Couldn't find valid dataset contact uri, skipping it.");
 		}
 
 		String candidateContactName = "";
 		try {
 			candidateContactName = extractFieldAsNonEmptyString(dataset, "contact_name");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			if (dataset.getMaintainer() != null && !dataset.getMaintainer().trim().isEmpty()) {
 				candidateContactName = dataset.getMaintainer().trim();
 			} else if (dataset.getAuthor() != null && !dataset.getAuthor().trim().isEmpty()) {
@@ -677,7 +677,7 @@ public class DcatFactory {
 		String candidateContactEmail = "";
 		try {
 			candidateContactEmail = extractFieldAsNonEmptyString(dataset, "contact_email");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			if (dataset.getMaintainer() != null && !dataset.getMaintainer().trim().isEmpty()) {
 				candidateContactEmail = dataset.getMaintainerEmail().trim();
 			} else if (dataset.getAuthor() != null && !dataset.getAuthor().trim().isEmpty()) {
@@ -692,7 +692,7 @@ public class DcatFactory {
 
 		VCard ret = cpb.build();
 		if (ret.equals(VCard.of())) {
-			throw new NotFoundException("Couldn't find any valid contact info in dataset!");
+			throw new JackanNotFoundException("Couldn't find any valid contact info in dataset!");
 		} else {
 			return ret;
 		}
@@ -700,7 +700,7 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -709,7 +709,7 @@ public class DcatFactory {
 
 		List<String> ret = new ArrayList();
 		if (dataset.getTags() == null) {
-			throw new NotFoundException("Found null tags!");
+			throw new JackanNotFoundException("Found null tags!");
 		} else {
 			for (CkanTag tag : dataset.getTags()) {
 				if (tag != null && !isTrimmedEmpty(tag.getName())) {
@@ -734,7 +734,7 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -743,7 +743,7 @@ public class DcatFactory {
 		String s = trim(dataset.getTitle());
 
 		if (s.isEmpty()) {
-			throw new NotFoundException("Couldn't find valid title!");
+			throw new JackanNotFoundException("Couldn't find valid title!");
 		} else {
 			return Dict.of(locale, s);
 		}
@@ -752,7 +752,7 @@ public class DcatFactory {
 	/**
 	 * @param locale
 	 *            if unknown pass {@link Locale#ROOT}
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -761,7 +761,7 @@ public class DcatFactory {
 		String s = trim(dataset.getNotes());
 
 		if (s.isEmpty()) {
-			throw new NotFoundException("Couldn't find valid notes!");
+			throw new JackanNotFoundException("Couldn't find valid notes!");
 		} else {
 			return Dict.of(locale, s);
 		}
@@ -774,7 +774,7 @@ public class DcatFactory {
 
 	protected String extractLandingPage(CkanDataset dataset) {
 		if (isTrimmedEmpty(dataset.getUrl())) {
-			throw new NotFoundException("Couldn't find valid url field in dataset!");
+			throw new JackanNotFoundException("Couldn't find valid url field in dataset!");
 		} else {
 			return dataset.getUrl();
 		}
@@ -831,7 +831,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setAccrualPeriodicity(extractAccrualPeriodicity(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("accrualPeriodicity");
 		} catch (Exception ex) {
 			logDatasetCantExtract("accrualPeriodicity", ex);
@@ -839,7 +839,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setContactPoint(extractContactPoint(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("contactPoint");
 		} catch (Exception ex) {
 			logDatasetCantExtract("contactPoint", ex);
@@ -847,7 +847,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setDescription(extractDescription(dataset, locale));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("description");
 		} catch (Exception ex) {
 			logDatasetCantExtract("description", ex);
@@ -866,7 +866,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setIdentifier(extractIdentifier(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("identifier");
 		} catch (Exception ex) {
 			logDatasetCantExtract("identifier", ex);
@@ -874,7 +874,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setIssued(extractIssued(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind(ISSUED);
 		} catch (Exception ex) {
 			logDatasetCantExtract(ISSUED, ex);
@@ -882,7 +882,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setKeywords(extractKeywords(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("keywords");
 		} catch (Exception ex) {
 			logDatasetCantExtract("keywords", ex);
@@ -891,7 +891,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setLandingPage(extractLandingPage(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("landingPage");
 		} catch (Exception ex) {
 			logDatasetCantExtract("landingPage", ex);
@@ -899,7 +899,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setLanguages(extractLanguages(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("language");
 			if (!Locale.ROOT.equals(locale)) {
 				logger.log(Level.INFO, "Setting language field to provided locale {0}", locale);
@@ -915,7 +915,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setModified(extractModified(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind(MODIFIED);
 		} catch (Exception ex) {
 			logDatasetCantExtract(MODIFIED, ex);
@@ -923,7 +923,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setPublisher(extractPublisher(dataset, locale));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("publisher");
 		} catch (Exception ex) {
 			logDatasetCantExtract("publisher", ex);
@@ -931,7 +931,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setSpatial(extractSpatial(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("spatial");
 		} catch (Exception ex) {
 			logDatasetCantExtract("spatial", ex);
@@ -939,7 +939,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setTemporal(extractTemporal(dataset));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("temporal");
 		} catch (Exception ex) {
 			logDatasetCantExtract("temporal", ex);
@@ -947,7 +947,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setThemes(extractThemes(dataset, locale, sanitizedCatalogUrl));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind("theme");
 		} catch (Exception ex) {
 			logDatasetCantExtract("theme", ex);
@@ -955,7 +955,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setTitle(extractTitle(dataset, locale));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind(TITLE);
 		} catch (Exception ex) {
 			logDatasetCantExtract(TITLE, ex);
@@ -963,7 +963,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setUri(extractUri(dataset, sanitizedCatalogUrl));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDatasetCantFind(URI_FIELD);
 		} catch (Exception ex) {
 			logDatasetCantExtract(URI_FIELD, ex);
@@ -1002,7 +1002,7 @@ public class DcatFactory {
 	 *            i.e. http://dati.trentino.it
 	 * @param datasetId
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1013,7 +1013,7 @@ public class DcatFactory {
 
 		try {
 			candidateUri = extractFieldAsString(resource, URI_FIELD).trim();
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 
 		}
 
@@ -1021,7 +1021,7 @@ public class DcatFactory {
 			if (isNotEmpty(catalogUrl) && isNotEmpty(datasetId) && isNotEmpty(resource.getId())) {
 				return CkanClient.makeResourceUrl(catalogUrl, datasetId, resource.getId());
 			} else {
-				throw new NotFoundException("Couldn't find valid 'uri' for resource!");
+				throw new JackanNotFoundException("Couldn't find valid 'uri' for resource!");
 			}
 		} else {
 			return candidateUri;
@@ -1053,7 +1053,7 @@ public class DcatFactory {
 	}
 
 	/**
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1063,7 +1063,7 @@ public class DcatFactory {
 	}
 
 	/**
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1073,7 +1073,7 @@ public class DcatFactory {
 	}
 
 	/**
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1082,12 +1082,12 @@ public class DcatFactory {
 		if (!isTrimmedEmpty(resource.getUrl())) {
 			return resource.getUrl().trim();
 		} else {
-			throw new NotFoundException("Couldn't find valid access url!");
+			throw new JackanNotFoundException("Couldn't find valid access url!");
 		}
 	}
 
 	/**
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1097,14 +1097,14 @@ public class DcatFactory {
 	}
 
 	/**
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
 	 */
 	protected int extractByteSize(CkanResource resource) {
 		if (isTrimmedEmpty(resource.getSize())) {
-			throw new NotFoundException("Couldn't find valid size in resource!");
+			throw new JackanNotFoundException("Couldn't find valid size in resource!");
 		}
 		try {
 			return Integer.parseInt(resource.getSize());
@@ -1117,7 +1117,7 @@ public class DcatFactory {
 	/**
 	 * @param locale
 	 *            if unknown pass {@link Locale#ROOT}
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1126,7 +1126,7 @@ public class DcatFactory {
 		String s = trim(dataset.getDescription());
 
 		if (s.isEmpty()) {
-			throw new NotFoundException("Couldn't find valid description!");
+			throw new JackanNotFoundException("Couldn't find valid description!");
 		} else {
 			return Dict.of(locale, s);
 		}
@@ -1134,14 +1134,14 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
 	 */
 	protected String extractFormat(CkanResource resource) {
 		if (isTrimmedEmpty(resource.getFormat())) {
-			throw new NotFoundException("Couldn't find a valid format!");
+			throw new JackanNotFoundException("Couldn't find a valid format!");
 		} else {
 			return resource.getFormat().trim();
 		}
@@ -1151,7 +1151,7 @@ public class DcatFactory {
 	 * @param license
 	 *            value used if resource does not already have a license field.
 	 *            If unknown pass the empty string.
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1159,15 +1159,15 @@ public class DcatFactory {
 	protected String extractLicense(CkanResource resource, String license) {
 		try {
 			extractFieldAsNonEmptyString(resource, "license");
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			if (isNotEmpty(license)) {
 				return license;
 			} else {
-				throw new NotFoundException("Couldn't find valid license in resource!", ex);
+				throw new JackanNotFoundException("Couldn't find valid license in resource!", ex);
 			}
 		}
 		if (isTrimmedEmpty(license)) {
-			throw new NotFoundException("Couldn't find a valid license!");
+			throw new JackanNotFoundException("Couldn't find a valid license!");
 		} else {
 			return license.trim();
 		}
@@ -1176,14 +1176,14 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
 	 */
 	protected String extractMediaType(CkanResource resource) {
 		if (isTrimmedEmpty(resource.getMimetype())) {
-			throw new NotFoundException("Couldn't find a valid media type!");
+			throw new JackanNotFoundException("Couldn't find a valid media type!");
 		} else {
 			return resource.getMimetype();
 		}
@@ -1192,7 +1192,7 @@ public class DcatFactory {
 
 	/**
 	 *
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1204,7 +1204,7 @@ public class DcatFactory {
 	/**
 	 * @param locale
 	 *            if unknown pass {@link Locale#ROOT}
-	 * @throws NotFoundException
+	 * @throws JackanNotFoundException
 	 *             when not found
 	 * @throws JackanException
 	 *             on generic error
@@ -1212,7 +1212,7 @@ public class DcatFactory {
 	protected Dict extractTitle(CkanResource resource, Locale locale) {
 		if (isTrimmedEmpty(resource.getName())) {
 			logger.info("Couldn't find valid distribution title, skipping it");
-			throw new NotFoundException("Couldn't find a valid title!");
+			throw new JackanNotFoundException("Couldn't find a valid title!");
 		} else {
 			return Dict.of(locale, resource.getName().trim());
 		}
@@ -1259,7 +1259,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setUri(extractUri(resource, sanitizedCatalogUrl, datasetIdOrName));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind(URI_FIELD);
 		} catch (Exception ex) {
 			logDistribCantExtract(URI_FIELD, ex);
@@ -1267,7 +1267,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setAccessURL(extractAccessUrl(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("accessURL");
 		} catch (Exception ex) {
 			logDistribCantExtract("accessURL", ex);
@@ -1275,7 +1275,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setDownloadURL(extractDownloadUrl(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("downloadURL");
 		} catch (Exception ex) {
 			logDistribCantExtract("downloadURL", ex);
@@ -1283,7 +1283,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setByteSize(extractByteSize(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("byteSize");
 		} catch (Exception ex) {
 			logDistribCantExtract("byteSize", ex);
@@ -1293,7 +1293,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setDescription(extractDescription(resource, locale));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("description");
 		} catch (Exception ex) {
 			logDistribCantExtract("description", ex);
@@ -1301,7 +1301,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setFormat(extractFormat(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("format");
 		} catch (Exception ex) {
 			logDistribCantExtract("format", ex);
@@ -1309,7 +1309,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setIssued(extractIssued(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind(ISSUED);
 		} catch (Exception ex) {
 			logDistribCantExtract(ISSUED, ex);
@@ -1317,7 +1317,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setLicense(extractLicense(resource, license));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("license");
 		} catch (Exception ex) {
 			logDistribCantExtract("license", ex);
@@ -1325,7 +1325,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setModified(extractModified(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind(MODIFIED);
 		} catch (Exception ex) {
 			logDistribCantExtract(MODIFIED, ex);
@@ -1333,7 +1333,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setMediaType(extractMediaType(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("mediaType");
 		} catch (Exception ex) {
 			logDistribCantExtract("mediaType", ex);
@@ -1341,7 +1341,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setRights(extractRights(resource));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind("rights");
 		} catch (Exception ex) {
 			logDistribCantExtract("rights", ex);
@@ -1349,7 +1349,7 @@ public class DcatFactory {
 
 		try {
 			ddb.setTitle(extractTitle(resource, locale));
-		} catch (NotFoundException ex) {
+		} catch (JackanNotFoundException ex) {
 			logDistribCantFind(TITLE);
 		} catch (Exception ex) {
 			logDistribCantExtract(TITLE, ex);
