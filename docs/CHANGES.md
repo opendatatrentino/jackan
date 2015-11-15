@@ -4,9 +4,14 @@ JACKAN RELEASE NOTES
 
 Project website: http://opendatatrentino.github.io/jackan  
 
-<br/>
 
-#### 0.4.1   
+### 0.4.2
+
+November 15th, 2015
+
+- fixed apache commons-logging not being included in jar
+
+### 0.4.1   
 
 November 15th, 2015
 
@@ -47,10 +52,10 @@ BREAKING CHANGES:
 - renamed `TrackingSummary` into `CkanTrackingSummary`
 
 
-#### 0.3.1  -  19 January 2015
+### 0.3.1  -  19 January 2015
 
 - implemented reading and searching from CKAN
 
-#### 0.2.0  
+### 0.2.0  
 
 - deprecated version - it's a legacy release for projects depending on it
