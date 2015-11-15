@@ -117,6 +117,14 @@ public class JackanTestConfig {
     }
 
     private static File confDir;
+    private static File defaultConfDir;
+
+    private static boolean isDefaultConfDir(File dir) {
+        
+        return (dir.isDirectory() && dir.listFiles().length == 1 && dir.listFiles()[0].getName()
+                                                                 .toLowerCase()
+                                                                 .endsWith("readme.txt"));
+    }
 
     /**
      * Walks the parent directories until finds the conf folder.
@@ -138,12 +146,16 @@ public class JackanTestConfig {
                 System.out.println("Trying conf candidate " + candidateConf.getAbsolutePath());
 
                 if (directory.isDirectory() && directory.exists() && candidateConf.isDirectory()
-                        && candidateConf.exists()) {
+                        && candidateConf.exists() && !isDefaultConfDir(candidateConf)) {
 
                     System.out.println("Found conf folder at " + candidateConf.getAbsolutePath());
                     confDir = candidateConf;
                     return confDir;
                 } else {
+                    if (isDefaultConfDir(candidateConf)) {
+                        defaultConfDir = candidateConf;
+                    }
+
                     File parent = directory.getParentFile();
                     if (parent != null) {
                         directory = parent;
@@ -152,8 +164,11 @@ public class JackanTestConfig {
                     }
                 }
             }
-
-            throw new JackanException("Couldn't find conf folder!");
+            String msg = "";
+            if (defaultConfDir != null) {
+                msg += " (but found default conf directory at " + defaultConfDir + " with only README.txt inside)";
+            }
+            throw new JackanException("Couldn't find conf folder! " + msg);
         } else {
             return confDir;
         }
@@ -268,8 +283,8 @@ public class JackanTestConfig {
             outputCkan = properties.getProperty(OUTPUT_CKAN_PROPERTY);
             if (outputCkan == null || outputCkan.trim()
                                                 .isEmpty()) {
-                throw new IOException("Couldn't find property " + OUTPUT_CKAN_PROPERTY + " in configuration file "
-                        + jackanConfFile);
+                throw new IOException(
+                        "Couldn't find property " + OUTPUT_CKAN_PROPERTY + " in configuration file " + jackanConfFile);
             } else {
                 logger.log(Level.INFO, "Will use {0} for CKAN write tests", outputCkan);
             }
