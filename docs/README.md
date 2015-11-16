@@ -17,7 +17,7 @@ This release allows to search Ckan, write into it and convert CKAN metadata into
     </dependency>
 ```
 
-**Without Maven**: you can download Jackan jar and its dependencies <a href="../releases/jackan-#{version}.zip" target="_blank"> from here</a>, then copy the jars to your project classpath.
+**Without Maven**: you can download Jackan jar and its dependencies <a href="../releases/download/jackan-#{version}/jackan-#{version}.zip" target="_blank"> from here</a>, then copy the jars to your project classpath.
 
 
 In case updates are available, version numbers follow <a href="http://semver.org/" target="_blank">semantic versioning</a> rules.
