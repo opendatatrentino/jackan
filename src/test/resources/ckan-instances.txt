@@ -97,7 +97,7 @@ http://data.edostate.gov.ng/
 Energy Data eXchange
 https://edx.netl.doe.gov/
 EU Open Data
-http://open-data.europa.eu/data/api
+http://open-data.europa.eu/data/
 Geospatial Information Clearinghouse
 http://ckan.gsi.go.jp/
 Glasgow Open Data
