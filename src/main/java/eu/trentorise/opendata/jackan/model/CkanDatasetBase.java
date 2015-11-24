@@ -29,10 +29,10 @@ import javax.annotation.Nullable;
  *
  * In Ckan terminology it is also known as 'package'.
  *
- * {@link CkanDatasetBase} holds fields that can be sent when
- * <a href="http://docs.ckan.org/en/latest/api/index.html?#ckan.logic.action.create.package_create" target="_blank">creating
- * a dataset,</a>, while {@link CkanDataset} holds more fields that can be
- * returned with searches.
+ * {@link CkanDatasetBase} holds fields that can be sent when <a href=
+ * "http://docs.ckan.org/en/latest/api/index.html?#ckan.logic.action.create.package_create"
+ * target="_blank">creating a dataset,</a>, while {@link CkanDataset} holds more
+ * fields that can be returned with searches.
  *
  * This class initializes nothing to fully preserve all we get from ckan. In
  * practice, all fields of retrieved resources can be null except maybe
@@ -78,8 +78,9 @@ public class CkanDatasetBase {
      * Constructor with the minimal set of attributes required to successfully
      * create a dataset on the server.
      *
-     * @param name the dataset name (contains no spaces and has dashes as
-     * separators, i.e. "limestone-pavement-orders")
+     * @param name
+     *            the dataset name (contains no spaces and has dashes as
+     *            separators, i.e. "limestone-pavement-orders")
      */
     public CkanDatasetBase(String name) {
         this();
@@ -87,8 +88,8 @@ public class CkanDatasetBase {
     }
 
     /**
-     * CKAN instances might have
-     * <a href="http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
+     * CKAN instances might have <a href=
+     * "http://docs.ckan.org/en/latest/extensions/adding-custom-fields.html">
      * custom data schemas</a> that force presence of custom properties among
      * 'regular' ones. In this case, they go to 'others' field. Note that to
      * further complicate things there is also an {@link #getExtras() extras}
@@ -141,9 +142,10 @@ public class CkanDatasetBase {
 
     /**
      * Notice that if the dataset was obtained with a
-     * {@link eu.trentorise.opendata.jackan.CkanClient#getDataset(java.lang.String)} call, the returned group
-     * won't have all the params you would get with a
-     * {@link eu.trentorise.opendata.jackan.CkanClient#getGroup(java.lang.String)} call.
+     * {@link eu.trentorise.opendata.jackan.CkanClient#getDataset(java.lang.String)}
+     * call, the returned group won't have all the params you would get with a
+     * {@link eu.trentorise.opendata.jackan.CkanClient#getGroup(java.lang.String)}
+     * call.
      */
     public List<CkanGroup> getGroups() {
         return groups;
@@ -154,9 +156,8 @@ public class CkanDatasetBase {
     }
 
     /**
-     * Regular place where to put custom metadata. See also
-     * {@link #getOthers()}. Note also extras can be in CkanDataset but not in
-     * CkanResource.
+     * Regular place where to put custom metadata. See also {@link #getOthers()}
+     * . Note also extras can be in CkanDataset but not in CkanResource.
      */
     public List<CkanPair> getExtras() {
         return extras;
@@ -387,20 +388,20 @@ public class CkanDatasetBase {
         this.version = version;
     }
 
-     /**
+    /**
      * Returns the id if non-empty, the name otherwise
      */
     @Nullable
-    public String idOrName() {        
+    public String idOrName() {
         return isNotEmpty(getId()) ? getId() : getName();
     }
-    
+
     /**
      * Returns the name if non-empty, the id otherwise
      */
     @Nullable
-    public String nameOrId() {       
-                
+    public String nameOrId() {
+
         return isNotEmpty(getName()) ? getName() : getId();
     }
 
