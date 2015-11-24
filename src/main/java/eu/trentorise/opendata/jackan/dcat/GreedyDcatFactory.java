@@ -53,7 +53,7 @@ public class GreedyDcatFactory extends DcatFactory {
     /**
      * Searches for themes in 'theme' field, and falls back to groups and then
      * organizations. If it still finds nothing returns the empty array without
-     * throwing exceptions.
+     * throwing eu.trentorise.opendata.commons.exceptions.
      */
     @Override
     protected List<SkosConcept> extractThemes(CkanDataset dataset, Locale locale, String catalogUrl) {

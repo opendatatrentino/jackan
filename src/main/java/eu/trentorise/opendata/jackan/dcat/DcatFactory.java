@@ -798,7 +798,7 @@ public class DcatFactory {
 
 	/**
 	 * Converts a CkanDataset to a DcatDataset. If the dataset contains erroneus
-	 * fields the converter should just skip them without throwing exceptions.
+	 * fields the converter should just skip them without throwing eu.trentorise.opendata.commons.exceptions.
 	 *
 	 * @param dataset
 	 *            must be non null, but it may have missing or null fields.
@@ -1221,7 +1221,7 @@ public class DcatFactory {
 	/**
 	 * Converts a Ckan resource to a DcatDistribution. If the resource contains
 	 * erroneus fields the converter should just skip them without throwing
-	 * exceptions.
+	 * eu.trentorise.opendata.commons.exceptions.
 	 *
 	 *
 	 * @param resource

@@ -20,7 +20,7 @@ November 15th, 2015
 - implemented DcatFactory for conversion to Dcat, see [ckan to dcat mappings](README.md#dcat)
 - split Ckan models into two (i.e. CkanDataset now extends CkanDatasetBase, and the Base is used when writing into Ckan)
 - now creating release zip with jar and dependencies
-- added many exceptions (all inherit from JackanException)
+- added many eu.trentorise.opendata.commons.exceptions (all inherit from JackanException)
 - set default timeout to 15 secs
 - added reading licences 
 - Adapted to [josman]( https://github.com/opendatatrentino/josman) docs structure
@@ -43,7 +43,7 @@ BREAKING CHANGES:
 
 - now requiring at least Java 7 
 - renamed namespace eu/trentorise/opendata/jackan/ckan to eu/trentorise/opendata/jackan/model
-- moved JackanException to eu/trentorise/opendata/jackan/exceptions package.
+- moved JackanException to eu/trentorise/opendata/jackan/eu.trentorise.opendata.commons.exceptions package.
 - renamed URL to Url in functions and fields. i.e. catalogURL -> catalogUrl, CkanClient.makeDatasetURL -> makeDatasetUrl, ...
 - renamed and split `CkanGroupStructure` into `CkanGroupOrgBase` and `CkanGroupOrg`
 - now Joda `DateTime` is not used anymore, for timestamps now we use `java.sql.Timestamp`
