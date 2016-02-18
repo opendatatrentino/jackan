@@ -335,8 +335,6 @@ public class CkanClient {
         return new Builder(new CkanClient());
     }
 
-
-
     /**
      * Builder for the client. The builder is not threadsafe and you can use one
      * builder instance to build only one client instance.
@@ -395,7 +393,7 @@ public class CkanClient {
          */
         public Builder setProxy(@Nullable String proxyUrl) {
             checkNotCreated();
-            
+
             if (proxyUrl == null) {
                 this.client.proxy = null;
             } else {
@@ -405,11 +403,13 @@ public class CkanClient {
                 } catch (URISyntaxException e) {
                     throw new IllegalArgumentException("Invalid proxy url!", e);
                 }
-                if (!uri.getPath().isEmpty()){
-                    throw new IllegalArgumentException("Proxy host shouldn't have context path! Found instead: " + uri.toString() + " with path " + uri.getPath()); 
+                if (!uri.getPath()
+                        .isEmpty()) {
+                    throw new IllegalArgumentException("Proxy host shouldn't have context path! Found instead: "
+                            + uri.toString() + " with path " + uri.getPath());
                 }
                 this.client.proxy = URIUtils.extractHost(uri);
-                
+
             }
             return this;
         }
@@ -651,8 +651,10 @@ public class CkanClient {
     /**
      * Returns the URL of dataset page in the catalog website.
      *
-     * Valid URLs have this format with the name:
-     * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013
+     * Valid URLs have this format with the name: <a href=
+     * "http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013"
+     * target="_blank"> http://dati.trentino.it/dataset/impianti-di-risalita-
+     * vivifiemme-2013 </a>
      *
      * @param datasetIdOrName
      *            either the dataset's {@link CkanDataset#getId() alphanumerical
@@ -673,9 +675,10 @@ public class CkanClient {
      * Returns the URL of resource page in the catalog website.
      *
      * Valid URLs have this format with the dataset name
-     * 'impianti-di-risalita-vivifiemme-2013':
-     * http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/
-     * resource/779d1d9d-9370-47f4-a194-1b0328c32f02
+     * 'impianti-di-risalita-vivifiemme-2013': <a href=
+     * "http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02"
+     * target="_blank"> http://dati.trentino.it/dataset/impianti-di-risalita-
+     * vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02</a>
      *
      * @param catalogUrl
      *            i.e. http://dati.trentino.it
@@ -693,29 +696,29 @@ public class CkanClient {
         checkCatalogUrl(catalogUrl);
         checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
         checkNotEmpty(resourceId, "invalid resource id");
-        return TodUtils.removeTrailingSlash(catalogUrl) + "/" + datasetIdOrName + "/resource/" + resourceId;
+        return makeDatasetUrl(catalogUrl, datasetIdOrName) + "/resource/" + resourceId;
     }
 
     /**
      *
-     * Given some group parameters, reconstruct the URL of group page in the
-     * catalog website.
+     * Reconstructs the URL of group page in the catalog website.
      *
      * Valid URLs have this format with the group name
      * 'gestione-del-territorio':
      *
-     * http://dati.trentino.it/group/gestione-del-territorio
+     * <a href="http://dati.trentino.it/group/gestione-del-territorio" target=
+     * "_blank"> http://dati.trentino.it/group/gestione-del-territorio </a>
      *
      * @param catalogUrl
      *            i.e. http://dati.trentino.it
-     * @param groupNameOrId
-     *            the group name as in {@link CkanGroup#getName()} (preferred),
-     *            or the group's alphanumerical id.
+     * @param groupIdOrName
+     *            the group's alphanumerical id (preferred as more stable) or
+     *            the group name as in {@link CkanGroup#getName()}.
      */
-    public static String makeGroupUrl(String catalogUrl, String groupNameOrId) {
+    public static String makeGroupUrl(String catalogUrl, String groupIdOrName) {
         checkCatalogUrl(catalogUrl);
-        checkNotEmpty(groupNameOrId, "invalid group identifier");
-        return TodUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupNameOrId;
+        checkNotEmpty(groupIdOrName, "invalid group identifier");
+        return TodUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupIdOrName;
     }
 
     /**
@@ -726,18 +729,19 @@ public class CkanClient {
      * Valid URLs have this format with the organization name
      * 'comune-di-trento':
      *
-     * http://dati.trentino.it/organization/comune-di-trento
+     * <a href="http://dati.trentino.it/organization/comune-di-trento" target=
+     * "_blank"> http://dati.trentino.it/organization/comune-di-trento </a>
      *
      * @param catalogUrl
      *            i.e. http://dati.trentino.it
-     * @param orgNameOrId
-     *            the group name as in {@link CkanOrganization#getName()}
-     *            (preferred), or the group's alphanumerical id.
+     * @param orgIdOrName
+     *            the organization's alphanumerical id (preferred as more stable), 
+     *            or the name as in {@link CkanOrganization#getName()}            
      */
-    public static String makeOrganizationUrl(String catalogUrl, String orgNameOrId) {
+    public static String makeOrganizationUrl(String catalogUrl, String orgIdOrName) {
         checkCatalogUrl(catalogUrl);
-        checkNotEmpty(orgNameOrId, "invalid organization identifier");
-        return TodUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgNameOrId;
+        checkNotEmpty(orgIdOrName, "invalid organization identifier");
+        return TodUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgIdOrName;
     }
 
     /**
@@ -1725,8 +1729,8 @@ public class CkanClient {
      */
     protected static CkanClient.Builder newBuilder(CkanClient client) {
         return new Builder(client);
-    }    
-    
+    }
+
 }
 
 class DatasetResponse extends CkanResponse {

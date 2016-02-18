@@ -19,6 +19,7 @@ import eu.trentorise.opendata.commons.BuildInfo;
 import eu.trentorise.opendata.commons.TodConfig;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TRENTINO;
 
 import java.util.Random;
 
@@ -54,34 +55,37 @@ public class Tests {
         assertNotEquals(new Random().nextLong(), new Random().nextLong());
     }    
     
+
+    
+    
     @Test
     public void testBuilder(){
         
         String myProxy = "http://a.b:123";
         
-        assertEquals(ReadCkanIT.DATI_TRENTINO,
+        assertEquals(DATI_TRENTINO,
                      CkanClient.builder()
-                         .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+                         .setCatalogUrl(DATI_TRENTINO)
                          .build()
                          .getCatalogUrl());
         
         assertEquals(myProxy,
                 CkanClient.builder()
-                    .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+                    .setCatalogUrl(DATI_TRENTINO)
                     .setProxy(myProxy)
                     .build()
                     .getProxy());
         
         assertEquals("http://a.b:123",
                 CkanClient.builder()
-                    .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+                    .setCatalogUrl(DATI_TRENTINO)
                     .setProxy("http://a.b:123 ")
                     .build()
                     .getProxy());
         
         try {
             CkanClient.builder()
-            .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+            .setCatalogUrl(DATI_TRENTINO)
             .setProxy("http://a.b/")            
             .build();
             Assert.fail("shouldn't arrive here!");
@@ -90,7 +94,7 @@ public class Tests {
         
         try {
             CkanClient.builder()
-            .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+            .setCatalogUrl(DATI_TRENTINO)
             .setProxy("http://a.b/c")            
             .build();
             Assert.fail("shouldn't arrive here!");
@@ -100,14 +104,14 @@ public class Tests {
         
         assertEquals(1,
                 CkanClient.builder()
-                    .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+                    .setCatalogUrl(DATI_TRENTINO)
                     .setTimeout(1)
                     .build()
                     .getTimeout());
         
         try {
             CkanClient.builder()
-            .setCatalogUrl(ReadCkanIT.DATI_TRENTINO)
+            .setCatalogUrl(DATI_TRENTINO)
             .setTimeout(0)            
             .build();
             Assert.fail("shouldn't arrive here!");
@@ -120,5 +124,35 @@ public class Tests {
         } catch (Exception ex){           
         }
                
-    }      
+    }
+    
+    @Test
+    public void testMakeResourceUrl(){
+        String catalogUrl = "http://dati.trentino.it";
+        String datasetName = "impianti-di-risalita-vivifiemme-2013";
+        String resourceId = "779d1d9d-9370-47f4-a194-1b0328c32f02";
+        
+        assertEquals("http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02",
+                CkanClient.makeResourceUrl(catalogUrl, datasetName, resourceId));        
+    }
+
+    @Test
+    public void testMakeDatasetUrl(){
+        
+        assertEquals("http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013",
+                CkanClient.makeDatasetUrl(DATI_TRENTINO, "impianti-di-risalita-vivifiemme-2013"));        
+    }
+    
+    @Test
+    public void testMakeGroupUrl(){
+        assertEquals("http://dati.trentino.it/group/gestione-del-territorio",
+                CkanClient.makeGroupUrl(DATI_TRENTINO, "gestione-del-territorio"));        
+    }
+    
+    @Test
+    public void testMakeOrganizationUrl(){                      
+        assertEquals("http://dati.trentino.it/organization/comune-di-trento",
+                CkanClient.makeOrganizationUrl(DATI_TRENTINO, "comune-di-trento"));        
+    }
+
 }
