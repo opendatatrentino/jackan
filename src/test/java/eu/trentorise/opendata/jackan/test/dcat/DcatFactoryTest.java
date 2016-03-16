@@ -26,7 +26,7 @@ import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
 import java.util.Locale;
 import java.util.UUID;
 
-import junitparams.JUnitParamsRunner;
+import eu.trentorise.opendata.jackan.test.JackanTestRunner;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @author David Leoni
  * @since 0.4.1
  */
-@RunWith(JUnitParamsRunner.class)
+@RunWith(JackanTestRunner.class)
 public class DcatFactoryTest {
 
     private static final String CATALOG_URL = "https://github.com/opendatatrentino/jackan";

@@ -40,7 +40,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 import static junitparams.JUnitParamsRunner.$;
-import junitparams.JUnitParamsRunner;
+import eu.trentorise.opendata.jackan.test.JackanTestRunner;
 import junitparams.Parameters;
 import org.apache.http.HttpHost;
 import org.junit.After;
@@ -59,7 +59,7 @@ import org.junit.runner.RunWith;
  *
  * @author David Leoni
  */
-@RunWith(JUnitParamsRunner.class)
+@RunWith(JackanTestRunner.class)
 public class ReadCkanIT {
 
     public static final Logger logger = Logger.getLogger(ReadCkanIT.class.getName());

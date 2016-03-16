@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import junitparams.JUnitParamsRunner;
+import eu.trentorise.opendata.jackan.test.JackanTestRunner;
 import static junitparams.JUnitParamsRunner.$;
 import org.junit.After;
 import org.junit.Before;
@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
  * @author David Leoni
  * @since 0.4.1
  */
-@RunWith(JUnitParamsRunner.class)
+@RunWith(JackanTestRunner.class)
 public abstract class WriteCkanTest {
 
     public static final String JACKAN_URL = "http://opendatatrentino.github.io/jackan/";

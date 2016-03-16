@@ -29,7 +29,7 @@ import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.TEST_ELEMENTS;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import junitparams.JUnitParamsRunner;
+import eu.trentorise.opendata.jackan.test.JackanTestRunner;
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.Parameters;
 import org.junit.After;
@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
  * @author David Leoni
  * @since 0.4.1
  */
-@RunWith(JUnitParamsRunner.class)
+@RunWith(JackanTestRunner.class)
 public class DcatFactoryIT {
 
     /**
