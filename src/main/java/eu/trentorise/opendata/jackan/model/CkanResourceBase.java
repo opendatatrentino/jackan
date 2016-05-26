@@ -17,9 +17,17 @@ package eu.trentorise.opendata.jackan.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
+
+import java.io.*;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 /**
@@ -40,7 +48,10 @@ import javax.annotation.Nullable;
  * @author David Leoni
  * @since 0.4.1
  */
+@JsonIgnoreProperties({"upload"})
 public class CkanResourceBase {
+
+    private static final Logger LOG = Logger.getLogger(CkanResourceBase.class.getName());
 
     private String cacheLastUpdated;
     private String cacheUrl;
@@ -57,6 +68,7 @@ public class CkanResourceBase {
     private String revisionId;
     private String size;
     private String url;
+    private File upload;
 
     private Timestamp webstoreLastUpdated;
 
@@ -381,6 +393,33 @@ public class CkanResourceBase {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public File getUpload() {
+        return upload;
+    }
+
+    /**
+     * A file to be added to the resourse.
+     *
+     * Automatically calculates and set size, format and mimetype of the file.
+     */
+    public void setUpload(File upload) {
+        this.upload = upload;
+        this.size = String.valueOf(upload.length());
+        try (InputStream is = new FileInputStream(upload);
+             BufferedInputStream bis = new BufferedInputStream(is);) {
+            AutoDetectParser parser = new AutoDetectParser();
+            Metadata md = new Metadata();
+            md.add(Metadata.RESOURCE_NAME_KEY, upload.getName());
+            MediaType mediaType = parser.getDetector().detect(bis, md);
+            this.mimetype = mediaType.getBaseType().toString();
+            this.format = mediaType.getSubtype();
+        } catch (FileNotFoundException e) {
+            LOG.log(Level.WARNING, "Unable to load file {0}", upload.getName());
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to detect mime type and format for file " + upload.getName() + " : {1}", e);
+        }
     }
 
     /**

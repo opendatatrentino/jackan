@@ -243,6 +243,12 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
 			<version>4.3.1</version>
+
+		<!-- to auto-detect mime type of uploaded resources -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>1.13</version>
 		</dependency>
 
 		<!-- ***************************** STUFF FOR TESTING ******************************** -->

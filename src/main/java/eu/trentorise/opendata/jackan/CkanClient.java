@@ -20,13 +20,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static eu.trentorise.opendata.commons.TodUtils.removeTrailingSlash;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,6 +76,7 @@ import eu.trentorise.opendata.jackan.model.CkanUser;
 import eu.trentorise.opendata.jackan.model.CkanUserBase;
 import eu.trentorise.opendata.jackan.model.CkanVocabulary;
 import eu.trentorise.opendata.jackan.model.CkanVocabularyBase;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 /**
  * Client to access a ckan instance. Threadsafe.
@@ -631,6 +630,74 @@ public class CkanClient {
     }
 
     /**
+     * Update the data associated to the given resource.
+     *
+     * @param responseType
+     *            a descendant of CkanResponse
+     * @param path
+     *            something like /api/3/action/package_create
+     * @param resource
+     *            a {@link CkanResourceBase} object with a data file set in the {@link CkanResourceBase#upload} field
+     *
+     */
+    private <T extends CkanResponse> T postHttpResourceFile(Class<T> responseType, String path, CkanResourceBase resource) {
+        checkNotNull(responseType);
+        checkNotNull(path);
+        checkNotNull(resource);
+        checkNotNull(resource.getUpload());
+
+        String fullUrl = calcFullUrl(path, new Object[] {});
+
+        T ckanResponse;
+        String returnedText;
+
+        try {
+            LOG.log(Level.FINE, "Posting to url {0}", fullUrl);
+            Request request = Request.Post(fullUrl);
+
+            configureRequest(request);
+
+            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+                .addBinaryBody("upload", resource.getUpload(),
+                    ContentType.create("application/octet-stream", Charset.forName("UTF-8")), resource.getUpload().getName())
+                .addTextBody("id", resource.getId(), ContentType.TEXT_PLAIN)
+                .addTextBody("url", "upload", ContentType.TEXT_PLAIN)
+                .addTextBody("package_id", resource.getPackageId(), ContentType.TEXT_PLAIN)
+                .addTextBody("format", resource.getFormat(), ContentType.TEXT_PLAIN)
+                .addTextBody("mimetype", resource.getMimetype(), ContentType.TEXT_PLAIN)
+                .addTextBody("size", resource.getSize(), ContentType.TEXT_PLAIN);
+            if (resource.getLastModified() != null)
+                entityBuilder.addTextBody("last_modified", resource.getLastModified(), ContentType.TEXT_PLAIN);
+            entityBuilder.setCharset(Charset.forName("UTF-8"));
+
+            Response response = request.body(entityBuilder.build()).execute();
+
+            InputStream stream = response.returnResponse()
+                .getEntity()
+                .getContent();
+
+            try (InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8)) {
+                returnedText = CharStreams.toString(reader);
+            }
+        } catch (Exception ex) {
+            throw new CkanException("Error while performing a POST! Request url is:" + fullUrl, this, ex);
+        }
+
+        try {
+            ckanResponse = getObjectMapper().readValue(returnedText, responseType);
+        } catch (Exception ex) {
+            throw new CkanException(
+                "Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
+        }
+
+        if (!ckanResponse.isSuccess()) {
+            throwCkanException("Error while performing a POST! Request url is:" + fullUrl, ckanResponse);
+        }
+        return ckanResponse;
+
+    }
+
+    /**
      * Returns the catalog URL (normalized).
      */
     public String getCatalogUrl() {
@@ -928,8 +995,20 @@ public class CkanClient {
                     this, e);
 
         }
-        return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json,
+
+        if (resource.getUpload() == null) {
+            return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json,
                 ContentType.APPLICATION_JSON).result;
+        } else {
+            // Could not find a way to create a resource with an attached file without enumerating all the resource
+            // fields so doing it in two steps :
+            //   First, create the resource as usual
+            //   Then, update it with the file
+            CkanResource resourceResponse = postHttp(ResourceResponse.class, "/api/3/action/resource_create", json,
+                ContentType.APPLICATION_JSON).result;
+            resource.setId(resourceResponse.getId());
+            return postHttpResourceFile(ResourceResponse.class, "/api/3/action/resource_update", resource).result;
+        }
     }
 
     /**
@@ -1009,6 +1088,20 @@ public class CkanClient {
         return postHttp(ResourceResponse.class, "/api/3/action/resource_update", json,
                 ContentType.APPLICATION_JSON).result;
 
+    }
+
+    /**
+     * Update the data file associated to this resource.
+     *
+     * @param resource
+     *            a {@link CkanResourceBase} object with a data file set in the {@link CkanResourceBase#upload} field
+     */
+    public synchronized CkanResource updateResourceData(CkanResourceBase resource) {
+        checkNotNull(resource);
+        checkNotNull(resource.getUpload(), "Need a non empty file");
+        checkToken("Tried to update resource" + resource.getName());
+
+        return postHttpResourceFile(ResourceResponse.class, "/api/3/action/resource_update", resource).result;
     }
 
     /**

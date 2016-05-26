@@ -17,19 +17,21 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.jackan.model.CkanResourceBase;
-import eu.trentorise.opendata.jackan.model.CkanState;
+import eu.trentorise.opendata.jackan.model.*;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
+
+import java.io.File;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junitparams.Parameters;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 /**
@@ -74,6 +76,28 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertEquals(resource.getOthers(), retRes.getOthers());
 
         LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
+    }
+
+    @Test
+    public void testCreateWithFile() {
+        CkanDataset dataset = createRandomDataset();
+
+        CkanResourceBase resource = new CkanResourceBase("upload", dataset.getId());
+        resource.setUpload(new File(JackanTestConfig.of().getResourceFile()));
+
+        CkanResource retRes = client.createResource(resource);
+
+        checkNotEmpty(retRes.getId(), "Invalid created resource id!");
+        assertNotEquals("upload", retRes.getUrl());
+        assertTrue(retRes.getUrl().startsWith("http"));
+        assertEquals(resource.getMimetype(), retRes.getMimetype());
+        assertEquals(resource.getMimetype().toLowerCase(), retRes.getMimetype().toLowerCase());
+        assertEquals(resource.getSize(), retRes.getSize());
+
+        LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
+
+        client.deleteResource(retRes.getId());
+        client.deleteDataset(dataset.getId());
     }
 
     /**
@@ -271,6 +295,32 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         resource.setState(CkanState.deleted);
         CkanResource retResource1 = client.patchUpdateResource(resource);
         assertEquals(CkanState.active, retResource1.getState());
+
+    }
+
+    @Test
+    public void testUpdateResourceData() {
+        CkanDataset dataset = createRandomDataset();
+
+        CkanResourceBase resource = new CkanResourceBase("upload", dataset.getId());
+        resource.setUpload(new File(JackanTestConfig.of().getResourceFile()));
+
+        CkanResource retRes = client.createResource(resource);
+
+        retRes.setUpload(new File(JackanTestConfig.of().getAlternateResourceFile()));
+
+        CkanResource retRes2 = client.updateResourceData(retRes);
+
+        assertNotEquals("upload", retRes2.getUrl());
+        assertTrue(retRes2.getUrl().startsWith("http"));
+        assertEquals(retRes.getMimetype(), retRes2.getMimetype());
+        assertEquals(retRes.getMimetype().toLowerCase(), retRes2.getMimetype().toLowerCase());
+        assertEquals(retRes.getSize(), retRes2.getSize());
+
+        LOG.log(Level.INFO, "Updated resource with id {0} in catalog {1}", new Object[]{retRes2.getId(), JackanTestConfig.of().getOutputCkan()});
+
+        client.deleteResource(retRes2.getId());
+        client.deleteDataset(dataset.getId());
 
     }
 
