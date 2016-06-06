@@ -17,37 +17,33 @@ package eu.trentorise.opendata.jackan.dcat;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.commons.Dict;
-import eu.trentorise.opendata.traceprov.dcat.DcatDistribution;
-import java.util.Locale;
-import java.util.logging.Level;
 import com.google.common.annotations.Beta;
-import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableMap;
-import eu.trentorise.opendata.commons.TodUtils;
+import eu.trentorise.opendata.commons.Dict;
 import eu.trentorise.opendata.commons.PeriodOfTime;
-
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
+import eu.trentorise.opendata.commons.TodUtils;
+import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.exceptions.JackanNotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.model.CkanTag;
 import eu.trentorise.opendata.traceprov.TraceProvModule;
-import eu.trentorise.opendata.traceprov.dcat.DcatDataset;
-import eu.trentorise.opendata.traceprov.dcat.FoafAgent;
-import eu.trentorise.opendata.traceprov.dcat.SkosConcept;
-import eu.trentorise.opendata.traceprov.dcat.SkosConceptScheme;
-import eu.trentorise.opendata.traceprov.dcat.VCard;
+import eu.trentorise.opendata.traceprov.dcat.*;
 import eu.trentorise.opendata.traceprov.geojson.Feature;
 import eu.trentorise.opendata.traceprov.geojson.GeoJson;
+
+import javax.annotation.Nullable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 
 /**
  * Factory to generate Dcat objects from Ckan ones. Conversion is done according
@@ -85,6 +81,25 @@ public class DcatFactory {
 		this.logger = Logger.getLogger(DcatFactory.class.getName());
 		this.objectMapper = new ObjectMapper();
 		TraceProvModule.registerModulesInto(this.objectMapper);
+	}
+
+	/**
+	 * Returns a new string with spaces removed at begin and end. If provided
+	 * string is null returns the empty string.
+	 */
+	protected static String trim(@Nullable String s) {
+		if (s == null) {
+			return "";
+		} else {
+			return s.trim();
+		}
+	}
+
+	/**
+	 * Return true if the provided string is empty after getting trimmed.
+	 */
+	protected static boolean isTrimmedEmpty(@Nullable String s) {
+		return s == null || (s.trim().isEmpty());
 	}
 
 	/**
@@ -429,7 +444,7 @@ public class DcatFactory {
 	 */
 	protected List<SkosConcept> extractThemes(CkanDataset dataset, Locale locale, String catalogUrl) {
 
-		List<SkosConcept> ret = new ArrayList();
+		List<SkosConcept> ret = new ArrayList<>();
 
 		List<String> candidateLabels;
 		try {
@@ -707,7 +722,7 @@ public class DcatFactory {
 	 */
 	protected List<String> extractKeywords(CkanDataset dataset) {
 
-		List<String> ret = new ArrayList();
+		List<String> ret = new ArrayList<>();
 		if (dataset.getTags() == null) {
 			throw new JackanNotFoundException("Found null tags!");
 		} else {
@@ -718,18 +733,6 @@ public class DcatFactory {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Returns a new string with spaces removed at begin and end. If provided
-	 * string is null returns the empty string.
-	 */
-	protected static String trim(@Nullable String s) {
-		if (s == null) {
-			return "";
-		} else {
-			return s.trim();
-		}
 	}
 
 	/**
@@ -1026,13 +1029,6 @@ public class DcatFactory {
 		} else {
 			return candidateUri;
 		}
-	}
-
-	/**
-	 * Return true if the provided string is empty after getting trimmed.
-	 */
-	protected static boolean isTrimmedEmpty(@Nullable String s) {
-		return s == null || (s.trim().isEmpty());
 	}
 
 	/**

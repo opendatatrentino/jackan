@@ -16,6 +16,7 @@
 package eu.trentorise.opendata.jackan;
 
 import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,10 +38,17 @@ public final class CkanQuery {
 
     private CkanQuery() {
         this.text = "";
-        this.groupNames = new ArrayList();
-        this.organizationNames = new ArrayList();
-        this.tagNames = new ArrayList();
-        this.licenseIds = new ArrayList();
+        this.groupNames = new ArrayList<>();
+        this.organizationNames = new ArrayList<>();
+        this.tagNames = new ArrayList<>();
+        this.licenseIds = new ArrayList<>();
+    }
+
+    /**
+     * Factory method to start creating the query.
+     */
+    public static CkanQuery filter() {
+        return new CkanQuery();
     }
 
     /**
@@ -110,13 +118,6 @@ public final class CkanQuery {
     public CkanQuery byLicenseId(String licenseId) {
         this.licenseIds = Lists.newArrayList(licenseId);
         return this;
-    }
-
-    /**
-     * Factory method to start creating the query.
-     */
-    public static CkanQuery filter() {
-        return new CkanQuery();
     }
 
     public String getText() {

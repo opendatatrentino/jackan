@@ -23,33 +23,21 @@ import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import eu.trentorise.opendata.commons.BuildInfo;
 import eu.trentorise.opendata.commons.TodConfig;
+import eu.trentorise.opendata.commons.TodUtils;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import eu.trentorise.opendata.commons.TodUtils;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import org.apache.commons.io.FileUtils;
+import org.rendersnake.HtmlAttributes;
+import org.rendersnake.HtmlCanvas;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
-import static org.rendersnake.HtmlAttributesFactory.class_;
-import static org.rendersnake.HtmlAttributesFactory.href;
-import static org.rendersnake.HtmlAttributesFactory.style;
 
-import org.rendersnake.HtmlAttributes;
-import org.rendersnake.HtmlCanvas;
+import static org.rendersnake.HtmlAttributesFactory.*;
 
 /**
  * Little app to test a list of catalogs and produce an HTML report.
@@ -57,8 +45,6 @@ import org.rendersnake.HtmlCanvas;
  * @author David Leoni
  */
 public class CkanTestReporter {
-
-    private static final Logger logger = Logger.getLogger(CkanTestReporter.class.getName());
 
     /**
      * Tests names from {@link ReadCkanIT}
@@ -69,7 +55,9 @@ public class CkanTestReporter {
             "testGroup", "testOrganizationList", "testOrganization", "testOrganizationNames", "testFormatList",
             "testSearchDatasetsByGroups", "testSearchDatasetsByOrganization", "testSearchDatasetsByTags",
             "testSearchDatasetsByLicenseIds");
-
+    public static final String REPORT_PREFIX = "jackan-scan";
+    public static final String TEST_RESULT_PREFIX = "test-result-";
+    private static final Logger logger = Logger.getLogger(CkanTestReporter.class.getName());
     private static final String ERROR_CLASS = "jackan-error";
     private static final String PASSED_CLASS = "jackan-passed";
     private static final String JACKAN_TABLE_CLASS = "jackan-table";
@@ -175,9 +163,6 @@ public class CkanTestReporter {
         return catalogsBuilder.build();
     }
 
-    public static final String REPORT_PREFIX = "jackan-scan";
-    public static final String TEST_RESULT_PREFIX = "test-result-";
-
     private static TestResult runTest(int testId, CkanClient client, String catalogName, String testName) {
         Optional<Throwable> error;
         ReadCkanIT ckanTests = new ReadCkanIT();
@@ -193,64 +178,11 @@ public class CkanTestReporter {
         return new TestResult(testId, testName, client.getCatalogUrl(), catalogName, error);
     }
 
-    public static class RunSuite {
-
-        private Date startTime;
-        private Date endTime;
-        private ImmutableList<TestResult> results;
-
-        public RunSuite(Date startTime, Date endTime, List<TestResult> results) {
-            this.startTime = startTime;
-            this.endTime = endTime;
-            this.results = ImmutableList.copyOf(results);
-        }
-
-        /**
-         * Returns the number of passed tests under the given name.
-         */
-        public List<TestResult> getPassedTestsByName(String testName) {
-            ImmutableList.Builder<TestResult> retb = ImmutableList.builder();
-            for (TestResult tr : results) {
-                if (tr.passed() && testName.equals(tr.getTestName())) {
-                    retb.add(tr);
-                }
-            }
-            return retb.build();
-        }
-
-        /**
-         * Returns the number of passed tests of provided catalog.
-         */
-        public List<TestResult> getPassedTestsByCatalogUrl(String catalogUrl) {
-            String cat = TodUtils.removeTrailingSlash(catalogUrl);
-            ImmutableList.Builder<TestResult> retb = ImmutableList.builder();
-            for (TestResult tr : results) {
-                if (tr.passed() && cat.equals(tr.getCatalogURL())) {
-                    retb.add(tr);
-                }
-            }
-            return retb.build();
-        }
-
-        public Date getStartTime() {
-            return startTime;
-        }
-
-        public Date getEndTime() {
-            return endTime;
-        }
-
-        public ImmutableList<TestResult> getResults() {
-            return results;
-        }
-
-    }
-
     public static RunSuite runTests(Map<String, String> catalogNames, List<String> testNames) {
 
         Date startTime = new Date();
 
-        Map<String, CkanClient> clients = new HashMap();
+        Map<String, CkanClient> clients = new HashMap<>();
 
         for (Entry<String, String> e : catalogNames.entrySet()) {
             clients.put(e.getKey(), new CkanClient(e.getKey()));
@@ -386,10 +318,10 @@ public class CkanTestReporter {
             labelValue(html, "Started: ", formatDateUpToSecond(runSuite.getStartTime()));
             labelValue(html, "Finished: ", formatDateUpToSecond(runSuite.getEndTime()));
             labelValue(html, "Catalogs scanned: ", Integer.toString(catalogs.keySet()                                                                            .size()));
-            labelValue(html, "Tests per catalog executed: ", Integer.toString(testNames.size()));            
+            labelValue(html, "Tests per catalog executed: ", Integer.toString(testNames.size()));
             html.br()
                 .br();
-                        
+
             Escaper escaper = HtmlEscapers.htmlEscaper();
 
             html.div(class_("outer"))
@@ -441,7 +373,7 @@ public class CkanTestReporter {
                                          .size();
                 html.td()
                     .b()
-                    .write(passedByName + "/" + catalogs.size())                                                     
+                        .write(passedByName + "/" + catalogs.size())
                     ._b()
                     ._td();
 
@@ -479,10 +411,8 @@ public class CkanTestReporter {
         return outputFileContent;
     }
 
-   
-    
     private static int catalogsWithErrors(RunSuite runSuite) {
-        Map<String, Integer> map = new HashMap();
+        Map<String, Integer> map = new HashMap<>();
         for (TestResult tr : runSuite.getResults()){
             if (!tr.passed()){
                 String key = tr.getCatalogURL();
@@ -570,6 +500,59 @@ public class CkanTestReporter {
         } catch (FileNotFoundException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static class RunSuite {
+
+        private Date startTime;
+        private Date endTime;
+        private ImmutableList<TestResult> results;
+
+        public RunSuite(Date startTime, Date endTime, List<TestResult> results) {
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.results = ImmutableList.copyOf(results);
+        }
+
+        /**
+         * Returns the number of passed tests under the given name.
+         */
+        public List<TestResult> getPassedTestsByName(String testName) {
+            ImmutableList.Builder<TestResult> retb = ImmutableList.builder();
+            for (TestResult tr : results) {
+                if (tr.passed() && testName.equals(tr.getTestName())) {
+                    retb.add(tr);
+                }
+            }
+            return retb.build();
+        }
+
+        /**
+         * Returns the number of passed tests of provided catalog.
+         */
+        public List<TestResult> getPassedTestsByCatalogUrl(String catalogUrl) {
+            String cat = TodUtils.removeTrailingSlash(catalogUrl);
+            ImmutableList.Builder<TestResult> retb = ImmutableList.builder();
+            for (TestResult tr : results) {
+                if (tr.passed() && cat.equals(tr.getCatalogURL())) {
+                    retb.add(tr);
+                }
+            }
+            return retb.build();
+        }
+
+        public Date getStartTime() {
+            return startTime;
+        }
+
+        public Date getEndTime() {
+            return endTime;
+        }
+
+        public ImmutableList<TestResult> getResults() {
+            return results;
+        }
+
     }
 
 }

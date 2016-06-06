@@ -1,13 +1,11 @@
 package eu.trentorise.opendata.jackan.test;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import junitparams.JUnitParamsRunner;
 import org.junit.runner.Description;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
-import eu.trentorise.opendata.jackan.test.JackanTestRunner;
-import junitparams.JUnitParamsRunner;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Runs tests as {@link JUnitParamsRunner} would, with a <a href="https://github.com/opendatatrentino/jackan/issues/25" 

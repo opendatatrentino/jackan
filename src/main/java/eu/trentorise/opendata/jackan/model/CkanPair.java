@@ -15,7 +15,7 @@
  */
 package eu.trentorise.opendata.jackan.model;
 
-import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
  */
 public class CkanPair {
 
+    @Nonnull
     private String key;
 
     @Nullable
@@ -33,22 +34,23 @@ public class CkanPair {
     public CkanPair() {
     }
 
-    public CkanPair(String key, @Nullable String value) {
+    public CkanPair(@Nonnull String key, @Nullable String value) {
         this.key = key;
         this.value = value;
     }
 
+    @Nonnull
     public String getKey() {
-        return key;
+        return this.key;
     }
 
-    public void setKey(String key) {
+    public void setKey(@Nonnull String key) {
         this.key = key;
     }
 
     @Nullable
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(@Nullable String value) {
@@ -57,28 +59,21 @@ public class CkanPair {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.key);
-        hash = 97 * hash + Objects.hashCode(this.value);
-        return hash;
+        int result = key.hashCode();
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final CkanPair other = (CkanPair) obj;
-        if (!Objects.equals(this.key, other.key)) {
-            return false;
-        }
-        if (!Objects.equals(this.value, other.value)) {
-            return false;
-        }
-        return true;
+    public boolean equals(@Nullable Object o) {
+        if (o == null) return false;
+        if (this == o) return true;
+        if (!(o instanceof CkanPair)) return false;
+
+        CkanPair ckanPair = (CkanPair) o;
+
+        return key.equals(ckanPair.key)
+                && (value != null ? value.equals(ckanPair.value) : ckanPair.value == null);
     }
 
 }

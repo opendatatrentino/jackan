@@ -17,41 +17,29 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.CkanQuery;
+import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
-import eu.trentorise.opendata.jackan.model.CkanGroup;
-import eu.trentorise.opendata.jackan.model.CkanLicense;
-import eu.trentorise.opendata.jackan.model.CkanOrganization;
-import eu.trentorise.opendata.jackan.CkanQuery;
-import eu.trentorise.opendata.jackan.model.CkanError;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.jackan.model.CkanTag;
-import eu.trentorise.opendata.jackan.model.CkanUser;
+import eu.trentorise.opendata.jackan.model.*;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
+import eu.trentorise.opendata.jackan.test.JackanTestRunner;
+import junitparams.Parameters;
+import org.junit.*;
+import org.junit.runner.RunWith;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static junitparams.JUnitParamsRunner.$;
-import eu.trentorise.opendata.jackan.test.JackanTestRunner;
-import junitparams.Parameters;
-import org.apache.http.HttpHost;
-import org.junit.After;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 /**
  * Performs integration tests. Many tests here are also used by
@@ -63,26 +51,6 @@ import org.junit.runner.RunWith;
 public class ReadCkanIT {
 
     public static final Logger logger = Logger.getLogger(ReadCkanIT.class.getName());
-
-    public static String DATI_TRENTINO = "http://dati.trentino.it";
-    public static String DATI_TOSCANA = "http://dati.toscana.it";
-    public static String DATI_MATERA = "http://dati.comune.matera.it";
-    public static String DATA_GOV_UK = "http://data.gov.uk";
-    public static String DATA_GOV_US = "http://catalog.data.gov";
-
-    /** for testing timeouts */
-    public static String UNREACHABLE_HOST = "http://10.0.0.0";
-    
-    /**
-     * National Oceanic and Atmospheric Administration (United States)
-     */
-    public static String NOAA_GOV_US = "https://data.noaa.gov";
-
-    /**
-     * Unfortunately this one uses old api version, we can't use it.
-     */
-    public static String DATI_PIEMONTE = "http://www.dati.piemonte.it/rpapisrv/api/rest";
-
     public static final String LAGHI_MONITORATI_TRENTO_NAME = "laghi-monitorati-trento-143675";
     public static final String LAGHI_MONITORATI_TRENTO_ID = "3745b44c-751f-40b3-8e97-ccd725bfbe8a";
     public static final String LAGHI_MONITORATI_TRENTO_XML_RESOURCE_NAME = "Metadati in formato XML";
@@ -90,15 +58,32 @@ public class ReadCkanIT {
     public static final String PRODOTTI_CERTIFICATI_RESOURCE_ID = "fe507a10-4c49-4b18-8bf6-6705198cfd42";
     public static final String POLITICHE_SVILUPPO_ORGANIZATION_NAME = "pat-s-sviluppo-rurale";
     public static final String AGRICOLTURA_GROUP_NAME = "agricoltura";
-
-    private Multimap<String, String> datasetList = LinkedListMultimap.create();
-
+    public static String DATI_TRENTINO = "http://dati.trentino.it";
+    public static String DATI_TOSCANA = "http://dati.toscana.it";
+    public static String DATI_MATERA = "http://dati.comune.matera.it";
+    public static String DATA_GOV_UK = "http://data.gov.uk";
+    public static String DATA_GOV_US = "http://catalog.data.gov";
+    /** for testing timeouts */
+    public static String UNREACHABLE_HOST = "http://10.0.0.0";
+    /**
+     * National Oceanic and Atmospheric Administration (United States)
+     */
+    public static String NOAA_GOV_US = "https://data.noaa.gov";
+    /**
+     * Unfortunately this one uses old api version, we can't use it.
+     */
+    public static String DATI_PIEMONTE = "http://www.dati.piemonte.it/rpapisrv/api/rest";
     public static int TEST_ELEMENTS = 5;
-
+    private Multimap<String, String> datasetList = LinkedListMultimap.create();
     /**
      * Object mapper for reading
      */
     private ObjectMapper objectMapper;
+
+    @BeforeClass
+    public static void setUpClass() {
+        JackanTestConfig.of().loadConfig();
+    }
 
     /**
      * All reading tests will be tried with all these catalogs.
@@ -107,17 +92,12 @@ public class ReadCkanIT {
         return $(
                 $(new CkanClient(DATI_TRENTINO)),
                 $(new CkanClient(DATI_TOSCANA))
-        //$(new CkanClient(NOAA_GOV_US))                
+                //$(new CkanClient(NOAA_GOV_US))
         /*,
          $(new CkanClient(DATI_MATERA)),
          $(new CkanClient(DATA_GOV_UK)),
          $(new CkanClient(DATA_GOV_US)) */
         );
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-        JackanTestConfig.of().loadConfig();
     }
 
     @Before
@@ -181,7 +161,7 @@ public class ReadCkanIT {
         List<String> dsl = client.getDatasetList(TEST_ELEMENTS, 0);
         assertTrue(dsl.size() > 0);
 
-        List<FailedResourceException> failedResources = new ArrayList();
+        List<FailedResourceException> failedResources = new ArrayList<>();
 
         for (String datasetName : dsl.subList(0, Math.min(dsl.size(), TEST_ELEMENTS))) {
             CkanDataset dataset = client.getDataset(datasetName);

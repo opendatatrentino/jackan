@@ -18,6 +18,7 @@ package eu.trentorise.opendata.jackan.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class CkanError {
     /**
      * Holds fields we can't foresee
      */
-    private Map<String, Object> others = new HashMap();    
+    private Map<String, Object> others = new HashMap<>();
 
     @Override
     public String toString() {

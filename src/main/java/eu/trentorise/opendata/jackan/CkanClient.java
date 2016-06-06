@@ -15,36 +15,6 @@
  */
 package eu.trentorise.opendata.jackan;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static eu.trentorise.opendata.commons.TodUtils.removeTrailingSlash;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.annotation.Nullable;
-
-import org.apache.http.HttpHost;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Response;
-import org.apache.http.client.utils.URIUtils;
-import org.apache.http.entity.ContentType;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -54,30 +24,35 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
-
 import eu.trentorise.opendata.commons.TodUtils;
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.exceptions.CkanValidationException;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
-import eu.trentorise.opendata.jackan.model.CkanDatasetRelationship;
-import eu.trentorise.opendata.jackan.model.CkanError;
-import eu.trentorise.opendata.jackan.model.CkanGroup;
-import eu.trentorise.opendata.jackan.model.CkanGroupOrgBase;
-import eu.trentorise.opendata.jackan.model.CkanLicense;
-import eu.trentorise.opendata.jackan.model.CkanOrganization;
-import eu.trentorise.opendata.jackan.model.CkanPair;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.jackan.model.CkanResourceBase;
-import eu.trentorise.opendata.jackan.model.CkanResponse;
-import eu.trentorise.opendata.jackan.model.CkanTag;
-import eu.trentorise.opendata.jackan.model.CkanTagBase;
-import eu.trentorise.opendata.jackan.model.CkanUser;
-import eu.trentorise.opendata.jackan.model.CkanUserBase;
-import eu.trentorise.opendata.jackan.model.CkanVocabulary;
-import eu.trentorise.opendata.jackan.model.CkanVocabularyBase;
+import eu.trentorise.opendata.jackan.model.*;
+import org.apache.http.HttpHost;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.ContentType;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static eu.trentorise.opendata.commons.TodUtils.removeTrailingSlash;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 
 /**
  * Client to access a ckan instance. Threadsafe.
@@ -149,12 +124,9 @@ public class CkanClient {
     private static final Logger LOG = Logger.getLogger(CkanClient.class.getName());
 
     private static final String COULDNT_JSONIZE = "Couldn't jsonize the provided ";
-
+    private static final Map<String, ObjectMapper> OBJECT_MAPPERS_FOR_POSTING = new HashMap<>();
     @Nullable
     private static ObjectMapper objectMapper;
-
-    private static final Map<String, ObjectMapper> OBJECT_MAPPERS_FOR_POSTING = new HashMap();
-
     private String catalogUrl;
 
     @Nullable
@@ -166,34 +138,35 @@ public class CkanClient {
     /** connection timeout in millisecs */
     private int timeout;
 
-    @JsonSerialize(as = CkanResourceBase.class)
-    private abstract static class CkanResourceForPosting {
+    protected CkanClient() {
+        this.timeout = DEFAULT_TIMEOUT;
+        this.catalogUrl = "";
     }
 
-    @JsonSerialize(as = CkanDatasetBase.class)
-    private abstract static class CkanDatasetForPosting {
+    /**
+     * Creates a Ckan client with null token
+     *
+     * @param catalogUrl the catalog url i.e. http://data.gov.uk. Internally, it will
+     *                   be stored in a normalized format (to avoid i.e. trailing
+     *                   slashes).
+     */
+    public CkanClient(String catalogUrl) {
+        this();
+        checkNotEmpty(catalogUrl, "invalid ckan catalog url");
+        this.catalogUrl = removeTrailingSlash(catalogUrl);
     }
 
-    @JsonSerialize(as = CkanGroupOrgBase.class)
-    private abstract static class CkanGroupOrgForPosting {
-    }
-
-    @JsonSerialize(as = GroupForDatasetPosting.class)
-    abstract static class GroupForDatasetPosting extends CkanGroupOrgBase {
-
-        @JsonIgnore
-        @Override
-        public List<CkanUser> getUsers() {
-            return super.getUsers();
-        }
-    }
-
-    @JsonSerialize(as = CkanUserBase.class)
-    private abstract static class CkanUserForPosting {
-    }
-
-    @JsonSerialize(as = CkanTagBase.class)
-    private abstract static class CkanTagForPosting {
+    /**
+     * Creates a Ckan client with null token
+     *
+     * @param catalogUrl the catalog url i.e. http://data.gov.uk. Internally, it will
+     *                   be stored in a normalized format (to avoid i.e. trailing
+     *                   slashes).
+     * @param ckanToken  the token used for authorization in ckan api
+     */
+    public CkanClient(String catalogUrl, @Nullable String ckanToken) {
+        this(catalogUrl);
+        this.ckanToken = ckanToken;
     }
 
     /**
@@ -282,157 +255,227 @@ public class CkanClient {
     }
 
     /**
-     * The timeout expressed in milliseconds. By default it is
-     * {@link #DEFAULT_TIMEOUT}.
-     */
-    public int getTimeout() {
-        return timeout;
-    }
-
-    protected CkanClient() {
-        this.timeout = DEFAULT_TIMEOUT;
-        this.catalogUrl = "";
-    }
-
-    /**
-     * Creates a Ckan client with null token
-     * 
-     * @param catalogUrl
-     *            the catalog url i.e. http://data.gov.uk. Internally, it will
-     *            be stored in a normalized format (to avoid i.e. trailing
-     *            slashes).
-     */
-    public CkanClient(String catalogUrl) {
-        this();
-        checkNotEmpty(catalogUrl, "invalid ckan catalog url");
-        this.catalogUrl = removeTrailingSlash(catalogUrl);
-    }
-
-    /**
-     * Creates a Ckan client with null token
-     * 
-     * @param catalogUrl
-     *            the catalog url i.e. http://data.gov.uk. Internally, it will
-     *            be stored in a normalized format (to avoid i.e. trailing
-     *            slashes).
-     * @param ckanToken
-     *            the token used for authorization in ckan api
-     * 
-     */
-    public CkanClient(String catalogUrl, @Nullable String ckanToken) {
-        this(catalogUrl);
-        this.ckanToken = ckanToken;
-    }
-
-    /**
      * Returns a new client builder.
-     * 
+     *
      * The builder is not threadsafe and you can use one builder instance to
      * build only one client instance.
-     * 
+     *
      */
     public static CkanClient.Builder builder() {
         return new Builder(new CkanClient());
     }
 
+    private static void checkCatalogUrl(String catalogUrl) {
+        checkNotEmpty(catalogUrl, "invalid catalog url");
+    }
+
     /**
-     * Builder for the client. The builder is not threadsafe and you can use one
-     * builder instance to build only one client instance.
-     * 
-     * @author David Leoni
+     * Returns the URL of dataset page in the catalog website.
      *
+     * Valid URLs have this format with the name: <a href=
+     * "http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013"
+     * target="_blank"> http://dati.trentino.it/dataset/impianti-di-risalita-
+     * vivifiemme-2013 </a>
+     *
+     * @param datasetIdOrName
+     *            either the dataset's {@link CkanDataset#getId() alphanumerical
+     *            id} (preferred as it is more stable) or the
+     *            {@link CkanDataset#getName() dataset name}
+     *
+     * @param catalogUrl
+     *            i.e. http://dati.trentino.it
      */
-    public static class Builder {
-        private CkanClient client;
-        private boolean created;
+    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {
+        checkCatalogUrl(catalogUrl);
+        checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
+        return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdOrName;
+    }
 
-        protected CkanClient getClient() {
-            return client;
-        }
+    /**
+     *
+     * Returns the URL of resource page in the catalog website.
+     *
+     * Valid URLs have this format with the dataset name
+     * 'impianti-di-risalita-vivifiemme-2013': <a href=
+     * "http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02"
+     * target="_blank"> http://dati.trentino.it/dataset/impianti-di-risalita-
+     * vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02</a>
+     *
+     * @param catalogUrl
+     *            i.e. http://dati.trentino.it
+     * @param datasetIdOrName
+     *            either the dataset's alphanumerical {@link CkanDataset#getId()
+     *            id} (preferred as it is more stable) or the
+     *            {@link CkanDataset#getName() dataset name}
+     *
+     * @param resourceId
+     *            the {@link CkanResource#getId() alphanumerical id} of the
+     *            resource (DON'T use {@link CkanResource#getName() resource
+     *            name})
+     */
+    public static String makeResourceUrl(String catalogUrl, String datasetIdOrName, String resourceId) {
+        checkCatalogUrl(catalogUrl);
+        checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
+        checkNotEmpty(resourceId, "invalid resource id");
+        return makeDatasetUrl(catalogUrl, datasetIdOrName) + "/resource/" + resourceId;
+    }
 
-        protected boolean getCreated() {
-            return created;
-        }
+    /**
+     *
+     * Reconstructs the URL of group page in the catalog website.
+     *
+     * Valid URLs have this format with the group name
+     * 'gestione-del-territorio':
+     *
+     * <a href="http://dati.trentino.it/group/gestione-del-territorio" target=
+     * "_blank"> http://dati.trentino.it/group/gestione-del-territorio </a>
+     *
+     * @param catalogUrl
+     *            i.e. http://dati.trentino.it
+     * @param groupIdOrName
+     *            the group's alphanumerical id (preferred as more stable) or
+     *            the group name as in {@link CkanGroup#getName()}.
+     */
+    public static String makeGroupUrl(String catalogUrl, String groupIdOrName) {
+        checkCatalogUrl(catalogUrl);
+        checkNotEmpty(groupIdOrName, "invalid group identifier");
+        return TodUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupIdOrName;
+    }
 
-        protected void checkNotCreated() {
-            if (created) {
-                throw new IllegalStateException("Builder was already used to create a client!");
+    /**
+     *
+     * Given some organization parameters, reconstruct the URL of organization
+     * page in the catalog website.
+     *
+     * Valid URLs have this format with the organization name
+     * 'comune-di-trento':
+     *
+     * <a href="http://dati.trentino.it/organization/comune-di-trento" target=
+     * "_blank"> http://dati.trentino.it/organization/comune-di-trento </a>
+     *
+     * @param catalogUrl
+     *            i.e. http://dati.trentino.it
+     * @param orgIdOrName
+     *            the organization's alphanumerical id (preferred as more stable),
+     *            or the name as in {@link CkanOrganization#getName()}
+     */
+    public static String makeOrganizationUrl(String catalogUrl, String orgIdOrName) {
+        checkCatalogUrl(catalogUrl);
+        checkNotEmpty(orgIdOrName, "invalid organization identifier");
+        return TodUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgIdOrName;
+    }
+
+    /**
+     * @param fqPrefix
+     *            either "" or " AND "
+     * @param list
+     *            list of names of ckan objects
+     */
+    private static String appendNamesList(String fqPrefix, String key, List<String> list, StringBuilder fq) {
+        checkNotNull(fqPrefix, "Need a valid prefix!");
+        checkNotNull(key, "Need a valid key!");
+        checkNotNull(list, "Need a valid list!");
+        checkNotNull(fq, "Need a valid string builder!");
+
+        if (list.size() > 0) {
+            fq.append(fqPrefix)
+                    .append("(");
+            String prefix = "";
+            for (String n : list) {
+                fq.append(prefix)
+                        .append(key)
+                        .append(":");
+                fq.append('"' + n + '"');
+                prefix = " AND ";
             }
+            fq.append(")");
+            return " AND ";
+        } else {
+            return "";
         }
 
-        protected Builder(CkanClient client) {
-            checkNotNull(client);
-            this.client = client;
-            this.created = false;
+    }
+
+    /**
+     * Parses a Ckan timestamp into a Java Timestamp.
+     *
+     * @throws IllegalArgumentException
+     *             if timestamp can't be parsed.
+     * @see #formatTimestamp(java.sql.Timestamp) for the inverse process.
+     * @since 0.4.1
+     */
+    public static Timestamp parseTimestamp(String timestamp) {
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Found null timestamp!");
         }
 
-        /**
-         * Sets the catalog url i.e. http://data.gov.uk.
-         * 
-         * Internally, it will be stored in a normalized format (to avoid i.e.
-         * trailing slashes).
-         */
-        public Builder setCatalogUrl(String catalogUrl) {
-            checkNotCreated();
-            checkNotEmpty(catalogUrl, "invalid ckan catalog url");
-            this.client.catalogUrl = removeTrailingSlash(catalogUrl);
-            return this;
+        if (NONE.equals(timestamp)) {
+            throw new IllegalArgumentException("Found timestamp with 'None' inside!");
         }
 
-        /**
-         * Sets the private token string for ckan repository
-         */
-        public Builder setCkanToken(@Nullable String ckanToken) {
-            checkNotCreated();
-            this.client.ckanToken = ckanToken;
-            return this;
+        return Timestamp.valueOf(timestamp.replace("T", " "));
+    }
+
+    /**
+     * Formats a timestamp according to {@link #CKAN_TIMESTAMP_PATTERN}, with
+     * precision up to microseconds.
+     *
+     * @see #parseTimestamp(java.lang.String) for the inverse process.
+     * @since 0.4.1
+     */
+    @Nullable
+    public static String formatTimestamp(Timestamp timestamp) {
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Found null timestamp!");
         }
+        Timestamp ret = Timestamp.valueOf(timestamp.toString());
+        ret.setNanos((timestamp.getNanos() / 1000) * 1000);
+        return Strings.padEnd(ret.toString()
+                        .replace(" ", "T"),
+                "1970-01-01T01:00:00.000001".length(), '0');
+    }
 
-        /**
-         * Sets the proxy used to perform GET and POST calls
-         */
-        public Builder setProxy(@Nullable String proxyUrl) {
-            checkNotCreated();
-
-            if (proxyUrl == null) {
-                this.client.proxy = null;
-            } else {
-                URI uri;
-                try {
-                    uri = new URI(proxyUrl.trim());
-                } catch (URISyntaxException e) {
-                    throw new IllegalArgumentException("Invalid proxy url!", e);
-                }
-                if (!uri.getPath()
-                        .isEmpty()) {
-                    throw new IllegalArgumentException("Proxy host shouldn't have context path! Found instead: "
-                            + uri.toString() + " with path " + uri.getPath());
-                }
-                this.client.proxy = URIUtils.extractHost(uri);
-
-            }
-            return this;
+    /**
+     * @params s a string to encode in a format suitable for URLs.
+     */
+    private static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8")
+                    .replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException ex) {
+            throw new JackanException("Unsupported encoding", ex);
         }
+    }
 
-        /**
-         * Sets the connection timeout expressed as number of milliseconds. Must
-         * be greater than zero, otherwise IllegalArgumentException is thrown.
-         *
-         * @throws IllegalArgumentException
-         *             is value is less than 1.
-         */
-        public Builder setTimeout(int timeout) {
-            checkNotCreated();
-            checkArgument(timeout > 0, "Timeout must be > 0 ! Found instead %s", timeout);
-            this.client.timeout = timeout;
-            return this;
+    public static List<CkanPair> extrasMapToList(Map<String, String> map) {
+        List<CkanPair> extrasList = new ArrayList<>(map.size());
+        for (String key : map.keySet()) {
+            extrasList.add(new CkanPair(key, map.get(key)));
         }
+        return extrasList;
+    }
 
-        public CkanClient build() {
-            checkNotEmpty(this.client.catalogUrl, "Invalid catalog url!");
-            this.created = true;
-            return this.client;
-        }
+    /**
+     * Convenience method to create a Builder with provided client to modify.
+     * <p>
+     * <strong>WARNING:</strong> The passed client will be modified, so
+     * <strong> DO NOT </strong> pass an already built client.
+     * </p>
+     * <p>
+     * The builder is not threadsafe and you can use one builder instance to
+     * build only one client instance.
+     * </p>
+     */
+    protected static CkanClient.Builder newBuilder(CkanClient client) {
+        return new Builder(client);
+    }
+
+    /**
+     * The timeout expressed in milliseconds. By default it is
+     * {@link #DEFAULT_TIMEOUT}.
+     */
+    public int getTimeout() {
+        return timeout;
     }
 
     @Override
@@ -644,106 +687,6 @@ public class CkanClient {
         return ckanToken;
     }
 
-    private static void checkCatalogUrl(String catalogUrl) {
-        checkNotEmpty(catalogUrl, "invalid catalog url");
-    }
-
-    /**
-     * Returns the URL of dataset page in the catalog website.
-     *
-     * Valid URLs have this format with the name: <a href=
-     * "http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013"
-     * target="_blank"> http://dati.trentino.it/dataset/impianti-di-risalita-
-     * vivifiemme-2013 </a>
-     *
-     * @param datasetIdOrName
-     *            either the dataset's {@link CkanDataset#getId() alphanumerical
-     *            id} (preferred as it is more stable) or the
-     *            {@link CkanDataset#getName() dataset name}
-     *
-     * @param catalogUrl
-     *            i.e. http://dati.trentino.it
-     */
-    public static String makeDatasetUrl(String catalogUrl, String datasetIdOrName) {
-        checkCatalogUrl(catalogUrl);
-        checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
-        return removeTrailingSlash(catalogUrl) + "/dataset/" + datasetIdOrName;
-    }
-
-    /**
-     *
-     * Returns the URL of resource page in the catalog website.
-     *
-     * Valid URLs have this format with the dataset name
-     * 'impianti-di-risalita-vivifiemme-2013': <a href=
-     * "http://dati.trentino.it/dataset/impianti-di-risalita-vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02"
-     * target="_blank"> http://dati.trentino.it/dataset/impianti-di-risalita-
-     * vivifiemme-2013/resource/779d1d9d-9370-47f4-a194-1b0328c32f02</a>
-     *
-     * @param catalogUrl
-     *            i.e. http://dati.trentino.it
-     * @param datasetIdOrName
-     *            either the dataset's alphanumerical {@link CkanDataset#getId()
-     *            id} (preferred as it is more stable) or the
-     *            {@link CkanDataset#getName() dataset name}
-     *
-     * @param resourceId
-     *            the {@link CkanResource#getId() alphanumerical id} of the
-     *            resource (DON'T use {@link CkanResource#getName() resource
-     *            name})
-     */
-    public static String makeResourceUrl(String catalogUrl, String datasetIdOrName, String resourceId) {
-        checkCatalogUrl(catalogUrl);
-        checkNotEmpty(datasetIdOrName, "invalid dataset identifier");
-        checkNotEmpty(resourceId, "invalid resource id");
-        return makeDatasetUrl(catalogUrl, datasetIdOrName) + "/resource/" + resourceId;
-    }
-
-    /**
-     *
-     * Reconstructs the URL of group page in the catalog website.
-     *
-     * Valid URLs have this format with the group name
-     * 'gestione-del-territorio':
-     *
-     * <a href="http://dati.trentino.it/group/gestione-del-territorio" target=
-     * "_blank"> http://dati.trentino.it/group/gestione-del-territorio </a>
-     *
-     * @param catalogUrl
-     *            i.e. http://dati.trentino.it
-     * @param groupIdOrName
-     *            the group's alphanumerical id (preferred as more stable) or
-     *            the group name as in {@link CkanGroup#getName()}.
-     */
-    public static String makeGroupUrl(String catalogUrl, String groupIdOrName) {
-        checkCatalogUrl(catalogUrl);
-        checkNotEmpty(groupIdOrName, "invalid group identifier");
-        return TodUtils.removeTrailingSlash(catalogUrl) + "/group/" + groupIdOrName;
-    }
-
-    /**
-     *
-     * Given some organization parameters, reconstruct the URL of organization
-     * page in the catalog website.
-     *
-     * Valid URLs have this format with the organization name
-     * 'comune-di-trento':
-     *
-     * <a href="http://dati.trentino.it/organization/comune-di-trento" target=
-     * "_blank"> http://dati.trentino.it/organization/comune-di-trento </a>
-     *
-     * @param catalogUrl
-     *            i.e. http://dati.trentino.it
-     * @param orgIdOrName
-     *            the organization's alphanumerical id (preferred as more stable), 
-     *            or the name as in {@link CkanOrganization#getName()}            
-     */
-    public static String makeOrganizationUrl(String catalogUrl, String orgIdOrName) {
-        checkCatalogUrl(catalogUrl);
-        checkNotEmpty(orgIdOrName, "invalid organization identifier");
-        return TodUtils.removeTrailingSlash(catalogUrl) + "/organization/" + orgIdOrName;
-    }
-
     /**
      * Returns list of dataset names like i.e. limestone-pavement-orders
      *
@@ -787,7 +730,7 @@ public class CkanClient {
                                        // gives { "version": 1} ....
             try {
                 return getApiVersion(i);
-            } catch (Exception ex) {
+            } catch (Exception ignore) {
 
             }
         }
@@ -986,7 +929,7 @@ public class CkanClient {
 
         CkanResource origResource = getResource(resource.getId());
         // others
-        Map<String, Object> newOthers = new HashMap();
+        Map<String, Object> newOthers = new HashMap<>();
 
         if (origResource.getOthers() != null) {
             newOthers.putAll(origResource.getOthers());
@@ -1012,7 +955,7 @@ public class CkanClient {
     }
 
     /**
-     * 
+     *
      * Marks a resource as 'deleted'.
      *
      * Note this will just set resource state to
@@ -1230,88 +1173,6 @@ public class CkanClient {
     }
 
     /**
-     * @param fqPrefix
-     *            either "" or " AND "
-     * @param list
-     *            list of names of ckan objects
-     */
-    private static String appendNamesList(String fqPrefix, String key, List<String> list, StringBuilder fq) {
-        checkNotNull(fqPrefix, "Need a valid prefix!");
-        checkNotNull(key, "Need a valid key!");
-        checkNotNull(list, "Need a valid list!");
-        checkNotNull(fq, "Need a valid string builder!");
-
-        if (list.size() > 0) {
-            fq.append(fqPrefix)
-              .append("(");
-            String prefix = "";
-            for (String n : list) {
-                fq.append(prefix)
-                  .append(key)
-                  .append(":");
-                fq.append('"' + n + '"');
-                prefix = " AND ";
-            }
-            fq.append(")");
-            return " AND ";
-        } else {
-            return "";
-        }
-
-    }
-
-    /**
-     * Parses a Ckan timestamp into a Java Timestamp.
-     *
-     * @throws IllegalArgumentException
-     *             if timestamp can't be parsed.
-     * @see #formatTimestamp(java.sql.Timestamp) for the inverse process.
-     * @since 0.4.1
-     */
-    public static Timestamp parseTimestamp(String timestamp) {
-        if (timestamp == null) {
-            throw new IllegalArgumentException("Found null timestamp!");
-        }
-
-        if (NONE.equals(timestamp)) {
-            throw new IllegalArgumentException("Found timestamp with 'None' inside!");
-        }
-
-        return Timestamp.valueOf(timestamp.replace("T", " "));
-    }
-
-    /**
-     * Formats a timestamp according to {@link #CKAN_TIMESTAMP_PATTERN}, with
-     * precision up to microseconds.
-     *
-     * @see #parseTimestamp(java.lang.String) for the inverse process.
-     * @since 0.4.1
-     */
-    @Nullable
-    public static String formatTimestamp(Timestamp timestamp) {
-        if (timestamp == null) {
-            throw new IllegalArgumentException("Found null timestamp!");
-        }
-        Timestamp ret = Timestamp.valueOf(timestamp.toString());
-        ret.setNanos((timestamp.getNanos() / 1000) * 1000);
-        return Strings.padEnd(ret.toString()
-                                 .replace(" ", "T"),
-                "1970-01-01T01:00:00.000001".length(), '0');
-    }
-
-    /**
-     * @params s a string to encode in a format suitable for URLs.
-     */
-    private static String urlEncode(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8")
-                             .replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException ex) {
-            throw new JackanException("Unsupported encoding", ex);
-        }
-    }
-
-    /**
      * Search datasets according to the provided query.
      *
      * @param query
@@ -1438,15 +1299,6 @@ public class CkanClient {
 
     }
 
-    public static List<CkanPair> extrasMapToList(Map<String, String> map) {
-        ArrayList ret = new ArrayList();
-
-        for (String key : map.keySet()) {
-            ret.add(new CkanPair(key, map.get(key)));
-        }
-        return ret;
-    }
-
     private void mergeResources(@Nullable List<CkanResource> resourcesToMerge, List<CkanResource> targetResources) {
         if (resourcesToMerge != null) {
             for (CkanResource resourceToMerge : resourcesToMerge) {
@@ -1554,7 +1406,7 @@ public class CkanClient {
         CkanDataset origDataset = getDataset(dataset.idOrName());
 
         // others
-        Map<String, Object> newOthers = new HashMap();
+        Map<String, Object> newOthers = new HashMap<>();
 
         if (origDataset.getOthers() != null) {
             newOthers.putAll(origDataset.getOthers());
@@ -1568,7 +1420,7 @@ public class CkanClient {
         if (dataset.getExtras() == null) {
             dataset.setExtras(origDataset.getExtras());
         } else {
-            Map<String, String> newExtras = new HashMap();
+            Map<String, String> newExtras = new HashMap<>();
 
             if (origDataset.getExtras() != null) {
                 newExtras.putAll(origDataset.getExtrasAsHashMap());
@@ -1580,31 +1432,31 @@ public class CkanClient {
         }
 
         // resources
-        List<CkanResource> newResources = new ArrayList();
+        List<CkanResource> newResources = new ArrayList<>();
         mergeResources(origDataset.getResources(), newResources);
         mergeResources(dataset.getResources(), newResources);
         dataset.setResources(newResources);
 
         // groups
-        List<CkanGroup> newGroups = new ArrayList();
+        List<CkanGroup> newGroups = new ArrayList<>();
         mergeGroups(origDataset.getGroups(), newGroups);
         mergeGroups(dataset.getGroups(), newGroups);
         dataset.setGroups(newGroups);
 
         // tags
-        List<CkanTag> newTags = new ArrayList();
+        List<CkanTag> newTags = new ArrayList<>();
         mergeTags(origDataset.getTags(), newTags);
         mergeTags(dataset.getTags(), newTags);
         dataset.setTags(newTags);
 
         // relationships as subject
-        List<CkanDatasetRelationship> newRelationshipsAsSubject = new ArrayList();
+        List<CkanDatasetRelationship> newRelationshipsAsSubject = new ArrayList<>();
         mergeRelationships(origDataset.getRelationshipsAsSubject(), newRelationshipsAsSubject);
         mergeRelationships(dataset.getRelationshipsAsSubject(), newRelationshipsAsSubject);
         dataset.setRelationshipsAsSubject(newRelationshipsAsSubject);
 
         // relationships as object
-        List<CkanDatasetRelationship> newRelationshipsAsObject = new ArrayList();
+        List<CkanDatasetRelationship> newRelationshipsAsObject = new ArrayList<>();
         mergeRelationships(origDataset.getRelationshipsAsObject(), newRelationshipsAsObject);
         mergeRelationships(dataset.getRelationshipsAsObject(), newRelationshipsAsObject);
         dataset.setRelationshipsAsObject(newRelationshipsAsObject);
@@ -1716,19 +1568,133 @@ public class CkanClient {
         return proxy.toURI();
     }
 
+    @JsonSerialize(as = CkanResourceBase.class)
+    private abstract static class CkanResourceForPosting {
+    }
+
+    @JsonSerialize(as = CkanDatasetBase.class)
+    private abstract static class CkanDatasetForPosting {
+    }
+
+    @JsonSerialize(as = CkanGroupOrgBase.class)
+    private abstract static class CkanGroupOrgForPosting {
+    }
+
+    @JsonSerialize(as = GroupForDatasetPosting.class)
+    abstract static class GroupForDatasetPosting extends CkanGroupOrgBase {
+
+        @JsonIgnore
+        @Override
+        public List<CkanUser> getUsers() {
+            return super.getUsers();
+        }
+    }
+
+    @JsonSerialize(as = CkanUserBase.class)
+    private abstract static class CkanUserForPosting {
+    }
+
+    @JsonSerialize(as = CkanTagBase.class)
+    private abstract static class CkanTagForPosting {
+    }
+
     /**
-     * Convenience method to create a Builder with provided client to modify.
-     * <p>
-     * <strong>WARNING:</strong> The passed client will be modified, so
-     * <strong> DO NOT </strong> pass an already built client.
-     * </p>
-     * <p>
-     * The builder is not threadsafe and you can use one builder instance to
-     * build only one client instance.
-     * </p>
+     * Builder for the client. The builder is not threadsafe and you can use one
+     * builder instance to build only one client instance.
+     *
+     * @author David Leoni
+     *
      */
-    protected static CkanClient.Builder newBuilder(CkanClient client) {
-        return new Builder(client);
+    public static class Builder {
+        private CkanClient client;
+        private boolean created;
+
+        protected Builder(CkanClient client) {
+            checkNotNull(client);
+            this.client = client;
+            this.created = false;
+        }
+
+        protected CkanClient getClient() {
+            return client;
+        }
+
+        protected boolean getCreated() {
+            return created;
+        }
+
+        protected void checkNotCreated() {
+            if (created) {
+                throw new IllegalStateException("Builder was already used to create a client!");
+            }
+        }
+
+        /**
+         * Sets the catalog url i.e. http://data.gov.uk.
+         * <p>
+         * Internally, it will be stored in a normalized format (to avoid i.e.
+         * trailing slashes).
+         */
+        public Builder setCatalogUrl(String catalogUrl) {
+            checkNotCreated();
+            checkNotEmpty(catalogUrl, "invalid ckan catalog url");
+            this.client.catalogUrl = removeTrailingSlash(catalogUrl);
+            return this;
+        }
+
+        /**
+         * Sets the private token string for ckan repository
+         */
+        public Builder setCkanToken(@Nullable String ckanToken) {
+            checkNotCreated();
+            this.client.ckanToken = ckanToken;
+            return this;
+        }
+
+        /**
+         * Sets the proxy used to perform GET and POST calls
+         */
+        public Builder setProxy(@Nullable String proxyUrl) {
+            checkNotCreated();
+
+            if (proxyUrl == null) {
+                this.client.proxy = null;
+            } else {
+                URI uri;
+                try {
+                    uri = new URI(proxyUrl.trim());
+                } catch (URISyntaxException e) {
+                    throw new IllegalArgumentException("Invalid proxy url!", e);
+                }
+                if (!uri.getPath()
+                        .isEmpty()) {
+                    throw new IllegalArgumentException("Proxy host shouldn't have context path! Found instead: "
+                            + uri.toString() + " with path " + uri.getPath());
+                }
+                this.client.proxy = URIUtils.extractHost(uri);
+
+            }
+            return this;
+        }
+
+        /**
+         * Sets the connection timeout expressed as number of milliseconds. Must
+         * be greater than zero, otherwise IllegalArgumentException is thrown.
+         *
+         * @throws IllegalArgumentException is value is less than 1.
+         */
+        public Builder setTimeout(int timeout) {
+            checkNotCreated();
+            checkArgument(timeout > 0, "Timeout must be > 0 ! Found instead %s", timeout);
+            this.client.timeout = timeout;
+            return this;
+        }
+
+        public CkanClient build() {
+            checkNotEmpty(this.client.catalogUrl, "Invalid catalog url!");
+            this.created = true;
+            return this.client;
+        }
     }
 
 }

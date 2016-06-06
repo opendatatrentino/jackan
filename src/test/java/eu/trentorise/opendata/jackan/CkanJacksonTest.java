@@ -16,28 +16,21 @@
 package eu.trentorise.opendata.jackan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanOrganization;
-import eu.trentorise.opendata.jackan.model.CkanResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.TodConfig;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
+import eu.trentorise.opendata.jackan.model.CkanResource;
+import org.junit.*;
 
-import java.io.*;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Random;
-import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * White box testing (uses same package as CkanClient)
@@ -83,7 +76,7 @@ public class CkanJacksonTest {
     }
     
     @Test
-    public void jacksonExample() throws JsonProcessingException, IOException {
+    public void jacksonExample() throws IOException {
         
         // your Jackson ObjectMapper
         ObjectMapper objectMapper = new ObjectMapper();
@@ -101,7 +94,7 @@ public class CkanJacksonTest {
     }
 
     @Test
-    public void jacksonModuleExample() throws JsonProcessingException, IOException {
+    public void jacksonModuleExample() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JackanModule());
     }
@@ -129,24 +122,21 @@ public class CkanJacksonTest {
         try {
             CkanClient.formatTimestamp(null);
             Assert.fail();
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ignore) {
 
         }
 
         try {
             CkanClient.parseTimestamp(null);
             Assert.fail();
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ignore) {
 
         }
 
         try {
             CkanClient.parseTimestamp("bla");
             Assert.fail();
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ignore) {
 
         }
     }
@@ -193,20 +183,6 @@ public class CkanJacksonTest {
         CkanResource r = om.readValue(json, CkanResource.class);
 
         assertTrue(r.getSize().equals(""));
-    }
-
-    static public class TimestampWrapper {
-
-        private Timestamp timestamp;
-
-        public Timestamp getTimestamp() {
-            return timestamp;
-        }
-
-        public void setTimestamp(Timestamp timestamp) {
-            this.timestamp = timestamp;
-        }
-
     }
 
     @Test
@@ -271,7 +247,7 @@ public class CkanJacksonTest {
     @Test
     public void testWriteOrganization() throws IOException {
 
-        CkanOrganization cg = new CkanOrganization();        
+        CkanOrganization cg = new CkanOrganization();
         String json = objectMapper.writeValueAsString(cg);
         assertEquals(true, new ObjectMapper().readTree(json).get("is_organization").asBoolean());
     }
@@ -288,6 +264,20 @@ public class CkanJacksonTest {
         CkanDataset cd = objectMapper.readValue(json, CkanDataset.class);
         assertEquals("n", cd.getName());
         assertEquals(1, cd.getOthers().get("z"));
+    }
+
+    static public class TimestampWrapper {
+
+        private Timestamp timestamp;
+
+        public Timestamp getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(Timestamp timestamp) {
+            this.timestamp = timestamp;
+        }
+
     }
 
 }

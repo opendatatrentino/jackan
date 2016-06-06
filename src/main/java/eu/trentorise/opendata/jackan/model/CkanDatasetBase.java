@@ -445,7 +445,6 @@ public class CkanDatasetBase {
      */
     @Nullable
     public String nameOrId() {       
-                
         return isNotEmpty(getName()) ? getName() : getId();
     }
 

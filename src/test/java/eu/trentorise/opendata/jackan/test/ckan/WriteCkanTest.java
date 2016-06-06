@@ -16,25 +16,20 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanGroup;
-import eu.trentorise.opendata.jackan.model.CkanOrganization;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.jackan.model.CkanTag;
-import eu.trentorise.opendata.jackan.model.CkanUser;
-import eu.trentorise.opendata.jackan.model.CkanVocabulary;
+import eu.trentorise.opendata.jackan.model.*;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Logger;
 import eu.trentorise.opendata.jackan.test.JackanTestRunner;
-import static junitparams.JUnitParamsRunner.$;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Logger;
+
+import static junitparams.JUnitParamsRunner.$;
 
 /**
  * Performs integration tests. Many tests here are also used by
@@ -51,6 +46,16 @@ public abstract class WriteCkanTest {
     public static final String TEST_RESOURCE_ID = "81f579fe-7f10-4fa2-94f2-0011898dc78c";
 
     private static final Logger LOG = Logger.getLogger(WriteCkanTest.class.getName());
+    protected CkanClient client;
+    protected CkanClient datiTrentinoClient;
+
+    public WriteCkanTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() {
+        JackanTestConfig.of().loadConfig();
+    }
 
     protected Object[] wrongDatasetNames() {
         return $(
@@ -89,17 +94,8 @@ public abstract class WriteCkanTest {
                 $("123"));
     }
 
-    protected CkanClient client;
-
-    protected CkanClient datiTrentinoClient;
-
-    @BeforeClass
-    public static void setUpClass() {
-        JackanTestConfig.of().loadConfig();
-    }
-
     @Before
-    public void setUp() {                        
+    public void setUp() {
         client = JackanTestConfig.of().makeClientInstanceForWriting();
         datiTrentinoClient = new CkanClient(ReadCkanIT.DATI_TRENTINO);
     }
@@ -109,9 +105,6 @@ public abstract class WriteCkanTest {
         client = null;
     }
 
-    public WriteCkanTest() {
-    }
-
     protected CkanDataset createRandomDataset() {
         CkanDataset ckanDataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
         return client.createDataset(ckanDataset);
@@ -119,7 +112,7 @@ public abstract class WriteCkanTest {
 
     protected CkanDataset createRandomDataset(int numResources) {
         CkanDataset ckanDataset = new CkanDataset("test-dataset-jackan-" + UUID.randomUUID().getMostSignificantBits());
-        List<CkanResource> resources = new ArrayList();
+        List<CkanResource> resources = new ArrayList<>();
         for (int i = 0; i < numResources; i++) {
             resources.add(new CkanResource(JACKAN_URL + "test-resources/#" + UUID.randomUUID().toString(), null));
 
@@ -146,7 +139,7 @@ public abstract class WriteCkanTest {
     }
 
     protected CkanVocabulary createRandomVocabulary() {
-        CkanVocabulary voc = new CkanVocabulary("test-vocabulary-" + randomUUID(), new ArrayList());
+        CkanVocabulary voc = new CkanVocabulary("test-vocabulary-" + randomUUID(), new ArrayList<CkanTag>());
         return client.createVocabulary(voc);
     }
     

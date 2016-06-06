@@ -17,15 +17,8 @@ package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Iterator;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,6 +28,11 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Iterator;
 
 /**
  * This client include features that probably... just don't work
@@ -59,7 +57,11 @@ class ExperimentalCkanClient extends CkanClient {
     public static CkanClient.Builder builder() {
         return CkanClient.newBuilder(new ExperimentalCkanClient());
     }
-    
+
+    public static ExperimentalCkanClient of(CkanClient client) {
+        return new ExperimentalCkanClient(client.getCatalogUrl(), client.getCkanToken());
+    }
+
     /**
      * Uploads a file using file storage api, which I think is deprecated. As of
      * Aug 2015, coesn't work neither with demo.ckan.org nor dati.trentino
@@ -116,7 +118,7 @@ class ExperimentalCkanClient extends CkanClient {
                  if (fieldName.equals("key")) {
                  filekey = fieldValue;
                  }
-                 mpEntity.addPart(fieldName, new StringBody(fieldValue, "multipart/form-data", Charset.forName("UTF-8")));                    
+                 mpEntity.addPart(fieldName, new StringBody(fieldValue, "multipart/form-data", Charset.forName("UTF-8")));
                  }
                  */
                 //	assure that we got the file key
@@ -145,9 +147,5 @@ class ExperimentalCkanClient extends CkanClient {
         catch (IOException ioe) {
             throw new RuntimeException("failed to upload file to CKAN Storage ", ioe);
         }
-    }
-
-    public static ExperimentalCkanClient of(CkanClient client) {
-        return new ExperimentalCkanClient(client.getCatalogUrl(), client.getCkanToken());
     }
 }

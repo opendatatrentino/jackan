@@ -17,28 +17,28 @@ package eu.trentorise.opendata.jackan.test.dcat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.dcat.DcatFactory;
 import eu.trentorise.opendata.jackan.dcat.GreedyDcatFactory;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import eu.trentorise.opendata.jackan.test.ckan.FailedResourceException;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TOSCANA;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TRENTINO;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.TEST_ELEMENTS;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import eu.trentorise.opendata.jackan.test.JackanTestRunner;
-import static junitparams.JUnitParamsRunner.$;
+import eu.trentorise.opendata.jackan.test.ckan.FailedResourceException;
 import junitparams.Parameters;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.*;
+import static junitparams.JUnitParamsRunner.$;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * To try out the factory with data in the wild
@@ -102,7 +102,7 @@ public class DcatFactoryIT {
         List<String> dsl = client.getDatasetList(TEST_ELEMENTS, 0);
         assertTrue(dsl.size() > 0);
 
-        List<FailedResourceException> failedResources = new ArrayList();
+        List<FailedResourceException> failedResources = new ArrayList<>();
 
         for (String datasetName : dsl.subList(0, Math.min(dsl.size(), TEST_ELEMENTS))) {
             CkanDataset dataset = client.getDataset(datasetName);
