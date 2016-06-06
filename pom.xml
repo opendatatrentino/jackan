@@ -12,6 +12,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+
 	<parent>
 		<groupId>eu.trentorise.opendata</groupId>
 		<artifactId>tod-super-pom</artifactId>
@@ -35,6 +36,7 @@
 		<tag>HEAD</tag>
 	</scm>
 
+
 	<repositories>
 		<!--  so it picks superpom snapshot without complaining -->
         <repository>
@@ -44,6 +46,7 @@
          	<snapshots><enabled>true</enabled></snapshots>
         </repository>        
     </repositories>
+
 
 	<profiles>
 		<profile>
@@ -72,7 +75,7 @@
 
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
+						<version>2.5.5</version>
 						<configuration>
 							<descriptor>src/assembly/bin.xml</descriptor>
 							<finalName>${project.artifactId}-${project.version}</finalName>
@@ -93,41 +96,48 @@
 		</profile>
 	</profiles>
 
+
 	<build>
 		<plugins>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>animal-sniffer-maven-plugin</artifactId>
+				<version>1.15</version>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.10</version>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4.1</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.4.1</version>
+				<version>2.4.3</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -162,17 +172,19 @@
 				</executions>
 			</plugin>
 
-
 			<plugin>
 				<groupId>eu.trentorise.opendata</groupId>
 				<artifactId>josman-maven-plugin</artifactId>
+				<version>0.7.0</version>
 			</plugin>
+
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
 				<version>0.12</version>
 				<configuration>
 					<merge>true</merge>
+					<message>github-site-maven-plugin</message>
 				</configuration>
 
 			</plugin>
@@ -181,10 +193,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.19.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
 			</plugin>
 
 		</plugins>
@@ -287,7 +301,6 @@
 	</dependencies>
 
 
-
 	<reporting>
 		<plugins>
 
@@ -309,4 +322,6 @@
 
 		</plugins>
 	</reporting>
+
+
 </project>
