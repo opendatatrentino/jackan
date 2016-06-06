@@ -25,14 +25,16 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import static eu.trentorise.opendata.jackan.CkanClient.formatTimestamp;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static eu.trentorise.opendata.jackan.CkanClient.formatTimestamp;
 
 /**
  * Custom Jackson module to serialize/deserialize as JSON Ckan objects with
@@ -125,7 +127,7 @@ public class JackanModule extends SimpleModule {
             }
 
             LOG.log(Level.SEVERE, "Unrecognized token {0} for 'packages' field, returning an empty array.", t.asString());
-            return new ArrayList();
+            return new ArrayList<>();
         }
     }
 

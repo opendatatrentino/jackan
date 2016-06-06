@@ -22,6 +22,9 @@ package eu.trentorise.opendata.jackan.model;
  * @author David Leoni
  */
 public enum CkanCapacity {
-
-    MEMBER, EDITOR, ADMIN, PUBLIC, PRIVATE;
+    MEMBER,
+    EDITOR,
+    ADMIN,
+    PUBLIC,
+    PRIVATE
 }

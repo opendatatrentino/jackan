@@ -17,10 +17,11 @@ package eu.trentorise.opendata.jackan.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+
+import javax.annotation.Nullable;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 /**
  *
@@ -73,25 +74,6 @@ public class CkanResourceBase {
      */
     private Map<String, Object> others;
 
-    /**
-     * The dataset this resource belongs to. Not present when getting resources
-     * but needed when creating them.
-     */
-    @Nullable
-    public String getPackageId() {
-        return packageId;
-    }
-
-    /**
-     * The dataset id the resource belongs to. Not present when getting
-     * resources but needed when creating them.
-     *
-     * @param packageId the dataset this resource belongs to.
-     */
-    public void setPackageId(@Nullable String packageId) {
-        this.packageId = packageId;
-    }
-
     public CkanResourceBase() {
     }
 
@@ -108,6 +90,25 @@ public class CkanResourceBase {
             String packageId) {
         this();
         this.url = url;
+        this.packageId = packageId;
+    }
+
+    /**
+     * The dataset this resource belongs to. Not present when getting resources
+     * but needed when creating them.
+     */
+    @Nullable
+    public String getPackageId() {
+        return packageId;
+    }
+
+    /**
+     * The dataset id the resource belongs to. Not present when getting
+     * resources but needed when creating them.
+     *
+     * @param packageId the dataset this resource belongs to.
+     */
+    public void setPackageId(@Nullable String packageId) {
         this.packageId = packageId;
     }
 
@@ -143,7 +144,7 @@ public class CkanResourceBase {
     @JsonAnySetter
     public void putOthers(String name, Object value) {
         if (others == null) {
-            others = new HashMap();
+            others = new HashMap<>();
         }
         others.put(name, value);
     }

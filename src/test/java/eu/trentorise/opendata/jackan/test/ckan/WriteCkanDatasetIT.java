@@ -16,34 +16,28 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import com.google.common.collect.Lists;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.exceptions.JackanException;
-import eu.trentorise.opendata.jackan.SearchResults;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
-import eu.trentorise.opendata.jackan.model.CkanGroup;
-import eu.trentorise.opendata.jackan.model.CkanOrganization;
-import eu.trentorise.opendata.jackan.model.CkanPair;
 import eu.trentorise.opendata.jackan.CkanQuery;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.jackan.model.CkanState;
-import eu.trentorise.opendata.jackan.model.CkanTag;
+import eu.trentorise.opendata.jackan.SearchResults;
+import eu.trentorise.opendata.jackan.exceptions.JackanException;
+import eu.trentorise.opendata.jackan.model.*;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
-import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
-import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
+import junitparams.Parameters;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import junitparams.Parameters;
-import org.junit.Assert;
+
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
+import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_DATASET_NAME;
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  *
@@ -98,13 +92,13 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         CkanDatasetBase dataset = new CkanDatasetBase("my-dataset-" + new Random().nextLong());
 
         // we create a dataset with one tag 'cool'
-        List<CkanTag> tags_1 = new ArrayList();
+        List<CkanTag> tags_1 = new ArrayList<>();
         tags_1.add(new CkanTag("cool"));
         dataset.setTags(tags_1);
         CkanDataset createdDataset = myClient.createDataset(dataset);
 
         // now we assign a new array with one tag ["amazing"] 
-        List<CkanTag> tags_2 = new ArrayList();
+        List<CkanTag> tags_2 = new ArrayList<>();
         tags_2.add(new CkanTag("amazing"));
         createdDataset.setTags(tags_2);
 
@@ -341,7 +335,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
 
         CkanDataset dataset = datiTrentinoClient.getDataset(PRODOTTI_CERTIFICATI_DATASET_NAME);
 
-        dataset.setExtras(new ArrayList()); // dati.trentino has custom schemas and merges metadata among regular fields
+        dataset.setExtras(new ArrayList<CkanPair>()); // dati.trentino has custom schemas and merges metadata among regular fields
 
         dataset.setId(null);
         dataset.setName("prodotti-certificati-" + UUID.randomUUID().getMostSignificantBits());

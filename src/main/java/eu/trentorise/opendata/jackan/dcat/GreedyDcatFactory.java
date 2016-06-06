@@ -17,15 +17,15 @@ package eu.trentorise.opendata.jackan.dcat;
 
 import com.google.common.annotations.Beta;
 import eu.trentorise.opendata.commons.Dict;
-import eu.trentorise.opendata.jackan.exceptions.JackanNotFoundException;
 import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.exceptions.JackanNotFoundException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanGroup;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import eu.trentorise.opendata.jackan.model.CkanResource;
-import static eu.trentorise.opendata.jackan.dcat.DcatFactory.isTrimmedEmpty;
 import eu.trentorise.opendata.traceprov.dcat.SkosConcept;
 import eu.trentorise.opendata.traceprov.dcat.SkosConceptScheme;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -67,7 +67,7 @@ public class GreedyDcatFactory extends DcatFactory {
         catch (Exception ex) {
         }
 
-        ArrayList<SkosConcept> ret = new ArrayList();
+        ArrayList<SkosConcept> ret = new ArrayList<>();
         LOG.info("Couldn't fine 'theme' field in dataset, will try to extract themes froum groups");
 
         if (dataset.getGroups() != null) {

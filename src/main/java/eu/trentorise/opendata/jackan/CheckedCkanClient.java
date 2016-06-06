@@ -17,22 +17,18 @@ package eu.trentorise.opendata.jackan;
 
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.exceptions.CkanValidationException;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
-import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
-import eu.trentorise.opendata.jackan.model.CkanGroup;
-import eu.trentorise.opendata.jackan.model.CkanLicense;
-import eu.trentorise.opendata.jackan.model.CkanOrganization;
-import eu.trentorise.opendata.jackan.model.CkanResource;
-import eu.trentorise.opendata.jackan.model.CkanResourceBase;
+import eu.trentorise.opendata.jackan.model.*;
+
+import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
+import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 
 /**
  * This client performs additional checks when writing to CKAN to ensure written
@@ -112,7 +108,7 @@ public class CheckedCkanClient extends CkanClient {
                 throw new CkanValidationException(
                         "Jackan validation failed! Tried to create organization with existing id! " + org.getId(),
                         this);
-            } catch (CkanNotFoundException ex) {
+            } catch (CkanNotFoundException ignore) {
 
             }
         }
@@ -141,7 +137,7 @@ public class CheckedCkanClient extends CkanClient {
                 throw new CkanValidationException(
                         "Jackan validation failed! Tried to create resource with existing id! " + resource.getId(),
                         this);
-            } catch (CkanNotFoundException ex) {
+            } catch (CkanNotFoundException ignore) {
 
             }
         }
@@ -191,7 +187,7 @@ public class CheckedCkanClient extends CkanClient {
                 getGroup(group.getId());
                 throw new CkanValidationException(
                         "Jackan validation failed! Tried to create group with existing id! " + group.getId(), this);
-            } catch (CkanNotFoundException ex) {
+            } catch (CkanNotFoundException ignore) {
 
             }
         }
