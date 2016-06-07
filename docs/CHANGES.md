@@ -1,8 +1,16 @@
 
-JACKAN RELEASE NOTES
----------------------
+JACKAN #{version} RELEASE NOTES
+-----------------------------------
 
-Project website: http://opendatatrentino.github.io/jackan  
+http://opendatatrentino.github.io/jackan  
+
+
+### 0.4.3 todo 
+
+todo date 
+
+- Added some adder method to CkanDatasetBase 
+          by Raul Hidalgo Caballero https://github.com/opendatatrentino/jackan/pull/31 
 
 
 ### 0.4.2

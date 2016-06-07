@@ -160,7 +160,10 @@ public class CkanDatasetBase {
 
     /**
      * Adds CkanGroups
+     * 
      * @param ckanGroups The CkanGroups elements
+     * 
+     * @since 0.4.3
      */
     public void addGroups(CkanGroup... ckanGroups) {
         if (this.groups == null) {
@@ -201,7 +204,10 @@ public class CkanDatasetBase {
 
     /**
      * Adds CkanExtras
+     * 
      * @param extras The CkanExtra elements
+     * 
+     * @since 0.4.3
      */
     public void addExtras(CkanPair... extras) {
         if (this.extras == null) {
@@ -332,7 +338,10 @@ public class CkanDatasetBase {
 
     /**
      * Adds CkanResources
+     * 
      * @param resources The CkanResources elements
+     * 
+     * @since 0.4.3
      */
     public void addCkanResources(CkanResource... resources) {
         if (this.resources == null) {
@@ -373,6 +382,8 @@ public class CkanDatasetBase {
      * Adds CkanTag
      *
      * @param tags The CkanTags elements
+     * 
+     * @since 0.4.3
      */
     public void addTags(CkanTag... tags) {
         if (this.tags == null) {
