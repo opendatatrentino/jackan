@@ -18,11 +18,16 @@ package eu.trentorise.opendata.jackan.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import static eu.trentorise.opendata.commons.TodUtils.isNotEmpty;
 
 /**
  * A Ckan Dataset, which in turn holds Ckan Resources.
@@ -118,7 +123,7 @@ public class CkanDatasetBase {
     @JsonAnySetter
     public void putOthers(String name, Object value) {
         if (others == null) {
-            others = new HashMap();
+            others = new HashMap<>();
         }
         others.put(name, value);
     }
@@ -154,6 +159,20 @@ public class CkanDatasetBase {
     }
 
     /**
+     * Adds CkanGroups
+     * 
+     * @param ckanGroups The CkanGroups elements
+     * 
+     * @since 0.4.3
+     */
+    public void addGroups(CkanGroup... ckanGroups) {
+        if (this.groups == null) {
+            this.groups = new ArrayList<>(ckanGroups.length);
+        }
+        Collections.addAll(this.groups, ckanGroups);
+    }
+
+    /**
      * Regular place where to put custom metadata. See also
      * {@link #getOthers()}. Note also extras can be in CkanDataset but not in
      * CkanResource.
@@ -163,11 +182,18 @@ public class CkanDatasetBase {
     }
 
     /**
+     * See {@link #getExtras()}
+     */
+    public void setExtras(List<CkanPair> extras) {
+        this.extras = extras;
+    }
+
+    /**
      * Always returns a non-null map (which might be empty)
      */
     @JsonIgnore
     public Map<String, String> getExtrasAsHashMap() {
-        HashMap<String, String> hm = new HashMap();
+        HashMap<String, String> hm = new HashMap<>();
         if (extras != null) {
             for (CkanPair cp : extras) {
                 hm.put(cp.getKey(), cp.getValue());
@@ -177,10 +203,17 @@ public class CkanDatasetBase {
     }
 
     /**
-     * See {@link #getExtras()}
+     * Adds CkanExtras
+     * 
+     * @param extras The CkanExtra elements
+     * 
+     * @since 0.4.3
      */
-    public void setExtras(List<CkanPair> extras) {
-        this.extras = extras;
+    public void addExtras(CkanPair... extras) {
+        if (this.extras == null) {
+            this.extras = new ArrayList<>(extras.length);
+        }
+        Collections.addAll(this.extras, extras);
     }
 
     /**
@@ -296,11 +329,25 @@ public class CkanDatasetBase {
     }
 
     public List<CkanResource> getResources() {
-        return resources;
+        return this.resources;
     }
 
     public void setResources(List<CkanResource> resources) {
         this.resources = resources;
+    }
+
+    /**
+     * Adds CkanResources
+     * 
+     * @param resources The CkanResources elements
+     * 
+     * @since 0.4.3
+     */
+    public void addCkanResources(CkanResource... resources) {
+        if (this.resources == null) {
+            this.resources = new ArrayList<>(resources.length);
+        }
+        Collections.addAll(this.resources, resources);
     }
 
     /**
@@ -329,6 +376,20 @@ public class CkanDatasetBase {
 
     public void setTags(List<CkanTag> tags) {
         this.tags = tags;
+    }
+
+    /**
+     * Adds CkanTag
+     *
+     * @param tags The CkanTags elements
+     * 
+     * @since 0.4.3
+     */
+    public void addTags(CkanTag... tags) {
+        if (this.tags == null) {
+            this.tags = new ArrayList<>(tags.length);
+        }
+        Collections.addAll(this.tags, tags);
     }
 
     /**
@@ -387,20 +448,20 @@ public class CkanDatasetBase {
         this.version = version;
     }
 
-     /**
+    /**
      * Returns the id if non-empty, the name otherwise
      */
     @Nullable
-    public String idOrName() {        
+    public String idOrName() {
         return isNotEmpty(getId()) ? getId() : getName();
     }
-    
+
     /**
      * Returns the name if non-empty, the id otherwise
      */
     @Nullable
-    public String nameOrId() {       
-                
+    public String nameOrId() {
+
         return isNotEmpty(getName()) ? getName() : getId();
     }
 
