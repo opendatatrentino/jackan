@@ -18,6 +18,7 @@ package eu.trentorise.opendata.jackan.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
@@ -402,23 +403,38 @@ public class CkanResourceBase {
     /**
      * A file to be added to the resourse.
      *
-     * Automatically calculates and set size, format and mimetype of the file.
+     * @param upload
+     *     the file to upload. its size is automatically set. if passed a null file, reset upload and size fields.
+     * @param guessMimeTypeAndFormat
+     *     whether automatic guessing of mime type and format is done.
+     *
+     * @throws JackanException
+     *     if asked for automatic guessing of mime type and format but those could not be guessed.
      */
-    public void setUpload(File upload) {
-        this.upload = upload;
-        this.size = String.valueOf(upload.length());
-        try (InputStream is = new FileInputStream(upload);
-             BufferedInputStream bis = new BufferedInputStream(is);) {
-            AutoDetectParser parser = new AutoDetectParser();
-            Metadata md = new Metadata();
-            md.add(Metadata.RESOURCE_NAME_KEY, upload.getName());
-            MediaType mediaType = parser.getDetector().detect(bis, md);
-            this.mimetype = mediaType.getBaseType().toString();
-            this.format = mediaType.getSubtype();
-        } catch (FileNotFoundException e) {
-            LOG.log(Level.WARNING, "Unable to load file {0}", upload.getName());
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, "Unable to detect mime type and format for file " + upload.getName() + " : {1}", e);
+    public void setUpload(File upload, boolean guessMimeTypeAndFormat) {
+        if (upload == null) {
+            this.upload = null;
+            this.size = null;
+        } else {
+            this.upload = upload;
+            this.size = String.valueOf(upload.length());
+            if (guessMimeTypeAndFormat) {
+                try (InputStream is = new FileInputStream(upload);
+                     BufferedInputStream bis = new BufferedInputStream(is);) {
+                    AutoDetectParser parser = new AutoDetectParser();
+                    Metadata md = new Metadata();
+                    md.add(Metadata.RESOURCE_NAME_KEY, upload.getName());
+                    MediaType mediaType = parser.getDetector().detect(bis, md);
+                    this.mimetype = mediaType.getBaseType().toString();
+                    this.format = mediaType.getSubtype().toUpperCase();
+                } catch (FileNotFoundException e) {
+                    LOG.log(Level.WARNING, "Unable to load file {0}", upload.getName());
+                    throw new JackanException("Unable to load file " + upload.getName(), e);
+                } catch (IOException e) {
+                    LOG.log(Level.WARNING, "Unable to detect mime type and format for file " + upload.getName(), e);
+                    throw new JackanException("Unable to detect mime type and format for file " + upload.getName(), e);
+                }
+            }
         }
     }
 

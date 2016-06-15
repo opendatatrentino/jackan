@@ -83,7 +83,10 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanDataset dataset = createRandomDataset();
 
         CkanResourceBase resource = new CkanResourceBase("upload", dataset.getId());
-        resource.setUpload(new File(JackanTestConfig.of().getResourceFile()));
+        resource.setUpload(new File(JackanTestConfig.of().getResourceFile()), true);
+
+        assertEquals("CSV", resource.getFormat());
+        assertEquals("text/csv", resource.getMimetype());
 
         CkanResource retRes = client.createResource(resource);
 
@@ -91,7 +94,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertNotEquals("upload", retRes.getUrl());
         assertTrue(retRes.getUrl().startsWith("http"));
         assertEquals(resource.getMimetype(), retRes.getMimetype());
-        assertEquals(resource.getMimetype().toLowerCase(), retRes.getMimetype().toLowerCase());
+        assertEquals(resource.getFormat().toLowerCase(), retRes.getFormat().toLowerCase());
         assertEquals(resource.getSize(), retRes.getSize());
 
         LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
@@ -109,12 +112,12 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         try {
             file = File.createTempFile("test-largefile-jackan-" + UUID.randomUUID().getMostSignificantBits(), ".txt");
             RandomAccessFile randomFile = new RandomAccessFile(file, "rw");
-            randomFile.setLength(1024 * 1024 * 100);
+            randomFile.setLength(10000000);
         } catch (java.io.IOException e) {
             LOG.log(Level.SEVERE, "Could not set size of random access file", e);
             fail("Could not set size of random access file");
         }
-        resource.setUpload(file);
+        resource.setUpload(file, false);
 
         CkanResource retRes;
         try {
@@ -331,18 +334,18 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanDataset dataset = createRandomDataset();
 
         CkanResourceBase resource = new CkanResourceBase("upload", dataset.getId());
-        resource.setUpload(new File(JackanTestConfig.of().getResourceFile()));
+        resource.setUpload(new File(JackanTestConfig.of().getResourceFile()), true);
 
         CkanResource retRes = client.createResource(resource);
 
-        retRes.setUpload(new File(JackanTestConfig.of().getAlternateResourceFile()));
+        retRes.setUpload(new File(JackanTestConfig.of().getAlternateResourceFile()), true);
 
         CkanResource retRes2 = client.updateResourceData(retRes);
 
         assertNotEquals("upload", retRes2.getUrl());
         assertTrue(retRes2.getUrl().startsWith("http"));
         assertEquals(retRes.getMimetype(), retRes2.getMimetype());
-        assertEquals(retRes.getMimetype().toLowerCase(), retRes2.getMimetype().toLowerCase());
+        assertEquals(retRes.getFormat().toLowerCase(), retRes2.getFormat().toLowerCase());
         assertEquals(retRes.getSize(), retRes2.getSize());
 
         LOG.log(Level.INFO, "Updated resource with id {0} in catalog {1}", new Object[]{retRes2.getId(), JackanTestConfig.of().getOutputCkan()});
