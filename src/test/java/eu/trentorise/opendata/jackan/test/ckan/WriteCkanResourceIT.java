@@ -16,6 +16,8 @@
 package eu.trentorise.opendata.jackan.test.ckan;
 
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
+
+import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.model.*;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
@@ -23,15 +25,13 @@ import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIF
 import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junitparams.Parameters;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -98,6 +98,34 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
         client.deleteResource(retRes.getId());
         client.deleteDataset(dataset.getId());
+    }
+
+    @Test
+    public void testCreateWithLargeFile() {
+        CkanDataset dataset = createRandomDataset();
+
+        CkanResourceBase resource = new CkanResourceBase("upload", dataset.getId());
+        File file = null;
+        try {
+            file = File.createTempFile("test-largefile-jackan-" + UUID.randomUUID().getMostSignificantBits(), ".txt");
+            RandomAccessFile randomFile = new RandomAccessFile(file, "rw");
+            randomFile.setLength(1024 * 1024 * 100);
+        } catch (java.io.IOException e) {
+            LOG.log(Level.SEVERE, "Could not set size of random access file", e);
+            fail("Could not set size of random access file");
+        }
+        resource.setUpload(file);
+
+        CkanResource retRes;
+        try {
+            retRes = client.createResource(resource);
+            client.deleteResource(retRes.getId());
+        } catch (CkanException e) {
+            LOG.log(Level.SEVERE, "Could not write large file", e);
+            fail("Could not write large file !");
+        } finally {
+            client.deleteDataset(dataset.getId());
+        }
     }
 
     /**
