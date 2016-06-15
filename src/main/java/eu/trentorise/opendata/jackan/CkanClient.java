@@ -645,6 +645,7 @@ public class CkanClient {
         checkNotNull(path);
         checkNotNull(resource);
         checkNotNull(resource.getUpload());
+        checkNotNull(resource.getPackageId());
 
         String fullUrl = calcFullUrl(path, new Object[] {});
 
@@ -660,14 +661,18 @@ public class CkanClient {
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addBinaryBody("upload", resource.getUpload(),
                     ContentType.create("application/octet-stream", Charset.forName("UTF-8")), resource.getUpload().getName())
+                .addTextBody("size", resource.getSize(), ContentType.TEXT_PLAIN)
                 .addTextBody("id", resource.getId(), ContentType.TEXT_PLAIN)
                 .addTextBody("url", "upload", ContentType.TEXT_PLAIN)
-                .addTextBody("package_id", resource.getPackageId(), ContentType.TEXT_PLAIN)
-                .addTextBody("format", resource.getFormat(), ContentType.TEXT_PLAIN)
-                .addTextBody("mimetype", resource.getMimetype(), ContentType.TEXT_PLAIN)
-                .addTextBody("size", resource.getSize(), ContentType.TEXT_PLAIN);
+                .addTextBody("package_id", resource.getPackageId(), ContentType.TEXT_PLAIN);
+
+            if (resource.getFormat() != null)
+                entityBuilder.addTextBody("format", resource.getFormat(), ContentType.TEXT_PLAIN);
+            if (resource.getMimetype() != null)
+                entityBuilder.addTextBody("mimetype", resource.getMimetype(), ContentType.TEXT_PLAIN);
             if (resource.getLastModified() != null)
                 entityBuilder.addTextBody("last_modified", resource.getLastModified(), ContentType.TEXT_PLAIN);
+
             entityBuilder.setCharset(Charset.forName("UTF-8"));
 
             Response response = request.body(entityBuilder.build()).execute();
