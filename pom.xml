@@ -243,6 +243,7 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
 			<version>4.3.1</version>
+		</dependency>
 
 		<!-- to auto-detect mime type of uploaded resources -->
 		<dependency>
