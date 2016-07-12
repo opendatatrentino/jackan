@@ -54,6 +54,8 @@ public class JackanTestConfig {
     private static final String CLIENT_CLASS_PROPERTY = "jackan.test.ckan.client-class";
     private static final String PROXY_PROPERTY = "jackan.test.ckan.proxy";
     private static final String TIMEOUT_PROPERTY = "jackan.test.ckan.timeout";
+    private static final String RESOURCE_FILE = "jackan.test.ckan.resource-file";
+    private static final String ALTERNATE_RESOURCE_FILE = "jackan.test.ckan.alternate-resource-file";
 
     private Properties properties;
     private boolean initialized = false;
@@ -76,6 +78,10 @@ public class JackanTestConfig {
     private String proxy;
 
     private int timeout = CkanClient.DEFAULT_TIMEOUT;
+
+    private String resourceFile;
+
+    private String alternateResourceFile;
 
     private TodConfig todConfig;
 
@@ -114,6 +120,20 @@ public class JackanTestConfig {
             throw new IllegalStateException("Jackan testing system was not properly initialized!");
         }
 
+    }
+
+    public String getResourceFile() {
+        if (initialized)
+            return resourceFile;
+        else
+            throw new IllegalStateException("Jackan testing system was not properly initialized!");
+    }
+
+    public String getAlternateResourceFile() {
+        if (initialized)
+            return alternateResourceFile;
+        else
+            throw new IllegalStateException("Jackan testing system was not properly initialized!");
     }
 
     private static File confDir;
@@ -307,6 +327,20 @@ public class JackanTestConfig {
                 clientClass = clientClass.trim();
                 logger.log(Level.INFO, "Will use client class {0} for writing", clientClass);
             }
+
+            resourceFile = properties.getProperty(RESOURCE_FILE);
+            if (resourceFile == null || resourceFile.trim().isEmpty())
+                throw new IOException("COULDN'T FIND PROPERTY " + RESOURCE_FILE + " IN CONFIGURATION FILE "
+                    + jackanConfFile);
+            else
+                logger.log(Level.INFO, "Will use file {0} for CKAN resource write tests", resourceFile);
+
+            alternateResourceFile = properties.getProperty(ALTERNATE_RESOURCE_FILE);
+            if (alternateResourceFile == null || alternateResourceFile.trim().isEmpty())
+                throw new IOException("COULDN'T FIND PROPERTY " + ALTERNATE_RESOURCE_FILE + " IN CONFIGURATION FILE "
+                    + jackanConfFile);
+            else
+                logger.log(Level.INFO, "Will use alternate file {0} for CKAN resource write tests", alternateResourceFile);
 
             // let's see if it doesn't explode..
             try {

@@ -245,6 +245,13 @@
 			<version>4.3.1</version>
 		</dependency>
 
+		<!-- to auto-detect mime type of uploaded resources -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>1.13</version>
+		</dependency>
+
 		<!-- ***************************** STUFF FOR TESTING ******************************** -->
 
 		<dependency>
