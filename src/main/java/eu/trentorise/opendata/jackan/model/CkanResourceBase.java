@@ -17,9 +17,18 @@ package eu.trentorise.opendata.jackan.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import eu.trentorise.opendata.jackan.exceptions.JackanException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
+
+import java.io.*;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 /**
@@ -40,7 +49,10 @@ import javax.annotation.Nullable;
  * @author David Leoni
  * @since 0.4.1
  */
+@JsonIgnoreProperties({"upload"})
 public class CkanResourceBase {
+
+    private static final Logger LOG = Logger.getLogger(CkanResourceBase.class.getName());
 
     private String cacheLastUpdated;
     private String cacheUrl;
@@ -57,6 +69,7 @@ public class CkanResourceBase {
     private String revisionId;
     private String size;
     private String url;
+    private File upload;
 
     private Timestamp webstoreLastUpdated;
 
@@ -74,8 +87,8 @@ public class CkanResourceBase {
     private Map<String, Object> others;
 
     /**
-     * The dataset this resource belongs to. Not present when getting resources
-     * but needed when creating them.
+     * The dataset this resource belongs to. Latest ckan give it back, but older ones 
+     * may return {@code null}. Required when creating resources.
      */
     @Nullable
     public String getPackageId() {
@@ -83,9 +96,9 @@ public class CkanResourceBase {
     }
 
     /**
-     * The dataset id the resource belongs to. Not present when getting
-     * resources but needed when creating them.
-     *
+     * The dataset this resource belongs to. Latest ckan give it back, but older ones 
+     * may return {@code null}. Required when creating resources.
+     * 
      * @param packageId the dataset this resource belongs to.
      */
     public void setPackageId(@Nullable String packageId) {
@@ -381,6 +394,69 @@ public class CkanResourceBase {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     * The file to be added to the resource. See {@link #setUpload(File, boolean)} for further info.
+     * 
+     * @since 0.4.3
+     */ 
+    public File getUpload() {
+        return upload;
+    }       
+
+    /**
+     * Sets the file to upload.
+     *    
+     * @param upload the File to upload.
+     * @deprecated Put here only to have a bean-style setter, 
+     * if possible prefer calling {@link #setUpload(File, boolean)}
+     * 
+     * @since 0.4.3
+     */
+    public void setUpload(@Nullable File upload){
+        this.setUpload(upload, false);
+    }
+    
+    /**
+     * A file to be added to the resource.
+     *
+     * @param upload
+     *     the file to upload. Its {@link #getSize() size} is automatically set. If passed file is {@code null},
+     *     reset upload and size fields.
+     * @param guessMimeTypeAndFormat
+     *     whether automatic guessing of {@link #getMimetype() mime type} and {@link #getFormat() format} is done.
+     *
+     * @throws JackanException
+     *     if asked for automatic guessing of mime type and format but those could not be guessed.
+     *     
+     * @since 0.4.3
+     */
+    public void setUpload(@Nullable File upload, boolean guessMimeTypeAndFormat) {
+        if (upload == null) {
+            this.upload = null;
+            this.size = null;
+        } else {
+            this.upload = upload;
+            this.size = String.valueOf(upload.length());
+            if (guessMimeTypeAndFormat) {
+                try (InputStream is = new FileInputStream(upload);
+                     BufferedInputStream bis = new BufferedInputStream(is);) {
+                    AutoDetectParser parser = new AutoDetectParser();
+                    Metadata md = new Metadata();
+                    md.add(Metadata.RESOURCE_NAME_KEY, upload.getName());
+                    MediaType mediaType = parser.getDetector().detect(bis, md);
+                    this.mimetype = mediaType.getBaseType().toString();
+                    this.format = mediaType.getSubtype().toUpperCase();
+                } catch (FileNotFoundException e) {
+                    LOG.log(Level.WARNING, "Unable to load file {0}", upload.getName());
+                    throw new JackanException("Unable to load file " + upload.getName(), e);
+                } catch (IOException e) {
+                    LOG.log(Level.WARNING, "Unable to detect mime type and format for file " + upload.getName(), e);
+                    throw new JackanException("Unable to detect mime type and format for file " + upload.getName(), e);
+                }
+            }
+        }
     }
 
     /**

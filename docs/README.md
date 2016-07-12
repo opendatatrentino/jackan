@@ -190,12 +190,12 @@ Currently Jackan supports:
 |Tag            |X      |       |        |              |       |      |
 |Vocabulary     |X      |       |        |              |       |      |
 
-*Resource `create` and `update` change only metadata, the don't allow uploading/modifying files.
+*Resource `create` and `update` also allow uploading/modifying files. To upload files you will need a recent version of Ckan (we tested it and worked with 2.5.2 in <a href="http://demo.ckan.org" target="_blank">demo.ckan.org</a>, but couldn't make it work with version 2.2a)
 
 
 #### Data validation
 
-Sometimes Ckan forgets to properly validate input. For example, at least with Ckan 2.2 we have been able to create resources with empty id :-/  To prevent writing such garbage we extended default `CkanClient` with `CheckedCkanClient`, which is more picky about possibly inconsistent input. If you also care about data integrity you might want to use the Checked client or extend it with your own validation rules when writing into Ckan. To try how different clients behave against the extensive Jackan test suite when running tests we set the client client class to use as parameter `jackan.test.ckan.client-class=eu.trentorise.opendata.jackan.CheckedCkanClient` in `conf/jackan.test.properties`
+Sometimes Ckan forgets to properly validate input. For example, at least with Ckan 2.2a we have been able to create resources with empty id :-/  To prevent writing such garbage we extended default `CkanClient` with `CheckedCkanClient`, which is more picky about possibly inconsistent input. If you also care about data integrity you might want to use the Checked client or extend it with your own validation rules when writing into Ckan. To try how different clients behave against the extensive Jackan test suite when running tests we set the client client class to use as parameter `jackan.test.ckan.client-class=eu.trentorise.opendata.jackan.CheckedCkanClient` in `conf/jackan.test.properties`
 Maybe in the future we will implement also <a href="http://beanvalidation.org/" target="_blank" >java.validation api</a> support.
 
 #### What we POST

@@ -146,8 +146,11 @@ public class CheckedCkanClient extends CkanClient {
             }
         }
 
-        checkUrl(resource.getUrl(),
-                "Jackan validation error! Tried to create resource " + resource.getId() + " with wrong url!");
+        // Only check for URL if no file is given
+        // If a file is given, the URL field is statically set to "upload"
+        if (resource.getUpload() == null)
+           checkUrl(resource.getUrl(),
+                    "Jackan validation error! Tried to create resource " + resource.getId() + " with wrong url!");
 
         return super.createResource(resource);
     }

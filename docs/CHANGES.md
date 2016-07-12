@@ -9,9 +9,20 @@ http://opendatatrentino.github.io/jackan
 
 todo date 
 
+- Implemented Upload of a resource's data file (creation and update)		  
+		  by Benoit Orihuela, https://github.com/opendatatrentino/jackan/pull/34		  
 - Added some adder method to CkanDatasetBase 
-          by Raul Hidalgo Caballero https://github.com/opendatatrentino/jackan/pull/31 
+          by Raul Hidalgo Caballero, https://github.com/opendatatrentino/jackan/pull/31
 
+BREAKING CHANGES:
+
+- only for Jackan developers: when upgrading jackan, in your `/conf/jackan.test.properties` remember to add these lines:
+
+```
+		jackan.test.ckan.resource-file=./src/test/resources/french-cheeses-dataset.csv
+		jackan.test.ckan.alternate-resource-file=./src/test/resources/french-cheeses-dataset-2.csv
+```		
+             
 
 ### 0.4.2
 
