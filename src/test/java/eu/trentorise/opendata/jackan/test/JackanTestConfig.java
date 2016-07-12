@@ -122,6 +122,9 @@ public class JackanTestConfig {
 
     }
 
+    /**
+     * @since 0.4.3
+     */    
     public String getResourceFile() {
         if (initialized)
             return resourceFile;
@@ -129,6 +132,9 @@ public class JackanTestConfig {
             throw new IllegalStateException("Jackan testing system was not properly initialized!");
     }
 
+    /**
+     * @since 0.4.3
+     */
     public String getAlternateResourceFile() {
         if (initialized)
             return alternateResourceFile;

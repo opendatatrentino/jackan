@@ -87,8 +87,8 @@ public class CkanResourceBase {
     private Map<String, Object> others;
 
     /**
-     * The dataset this resource belongs to. Not present when getting resources
-     * but needed when creating them.
+     * The dataset this resource belongs to. Latest ckan give it back, but older ones 
+     * may return {@code null}. Required when creating resources.
      */
     @Nullable
     public String getPackageId() {
@@ -96,9 +96,9 @@ public class CkanResourceBase {
     }
 
     /**
-     * The dataset id the resource belongs to. Not present when getting
-     * resources but needed when creating them.
-     *
+     * The dataset this resource belongs to. Latest ckan give it back, but older ones 
+     * may return {@code null}. Required when creating resources.
+     * 
      * @param packageId the dataset this resource belongs to.
      */
     public void setPackageId(@Nullable String packageId) {
@@ -396,22 +396,43 @@ public class CkanResourceBase {
         this.url = url;
     }
 
+    /**
+     * The file to be added to the resource. See {@link #setUpload(File, boolean)} for further info.
+     * 
+     * @since 0.4.3
+     */ 
     public File getUpload() {
         return upload;
-    }
+    }       
 
     /**
-     * A file to be added to the resourse.
+     * Sets the file to upload.
+     *    
+     * @param upload the File to upload.
+     * @deprecated Put here only to have a bean-style setter, 
+     * if possible prefer calling {@link #setUpload(File, boolean)}
+     * 
+     * @since 0.4.3
+     */
+    public void setUpload(@Nullable File upload){
+        this.setUpload(upload, false);
+    }
+    
+    /**
+     * A file to be added to the resource.
      *
      * @param upload
-     *     the file to upload. its size is automatically set. if passed a null file, reset upload and size fields.
+     *     the file to upload. Its {@link #getSize() size} is automatically set. If passed file is {@code null},
+     *     reset upload and size fields.
      * @param guessMimeTypeAndFormat
-     *     whether automatic guessing of mime type and format is done.
+     *     whether automatic guessing of {@link #getMimetype() mime type} and {@link #getFormat() format} is done.
      *
      * @throws JackanException
      *     if asked for automatic guessing of mime type and format but those could not be guessed.
+     *     
+     * @since 0.4.3
      */
-    public void setUpload(File upload, boolean guessMimeTypeAndFormat) {
+    public void setUpload(@Nullable File upload, boolean guessMimeTypeAndFormat) {
         if (upload == null) {
             this.upload = null;
             this.size = null;

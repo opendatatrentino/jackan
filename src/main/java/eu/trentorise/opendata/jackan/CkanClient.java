@@ -639,6 +639,7 @@ public class CkanClient {
      * @param resource
      *            a {@link CkanResourceBase} object with a data file set in the {@link CkanResourceBase#upload} field
      *
+     * @throws CkanException
      */
     private <T extends CkanResponse> T postHttpResourceFile(Class<T> responseType, String path, CkanResourceBase resource) {
         checkNotNull(responseType);
@@ -1100,10 +1101,14 @@ public class CkanClient {
      *
      * @param resource
      *            a {@link CkanResourceBase} object with a data file set in the {@link CkanResourceBase#upload} field
+     * @throws CkanException
+     *                 
+     * @since 0.4.3
+     * 
      */
     public synchronized CkanResource updateResourceData(CkanResourceBase resource) {
         checkNotNull(resource);
-        checkNotNull(resource.getUpload(), "Need a non empty file");
+        checkNotNull(resource.getUpload(), "Need a non null file in resource.getUpload() !");
         checkToken("Tried to update resource" + resource.getName());
 
         return postHttpResourceFile(ResourceResponse.class, "/api/3/action/resource_update", resource).result;

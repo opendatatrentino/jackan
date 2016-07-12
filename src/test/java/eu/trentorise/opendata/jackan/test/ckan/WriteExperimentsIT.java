@@ -28,10 +28,5 @@ public class WriteExperimentsIT extends WriteCkanTest {
 
     private static final Logger LOG = Logger.getLogger(WriteExperimentsIT.class.getName());
 
-    @Test
-    @Ignore
-    public void testUploadFile() {
-        String ret = ExperimentalCkanClient.of(client).uploadFile("abc", "jackan-test-file-" + randomUUID());
-        LOG.fine("Uploaded resource " + ret);
-    }
+   
 }

@@ -54,7 +54,8 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
         checkNotEmpty(retRes.getId(), "Invalid created resource id!");
         assertEquals(resource.getUrl(), retRes.getUrl());
-        assertEquals(null, retRes.getPackageId()); // because this won't be present in the result
+        // latest ckan gives back packageId! 
+        // assertEquals(null, retRes.getPackageId()); // because this won't be present in the result
 
         LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
     }
@@ -78,6 +79,9 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
     }
 
+    /**
+     * @since 0.4.3
+     */
     @Test
     public void testCreateWithFile() {
         CkanDataset dataset = createRandomDataset();
@@ -103,6 +107,9 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         client.deleteDataset(dataset.getId());
     }
 
+    /**
+     * @since 0.4.3
+     */
     @Test
     public void testCreateWithLargeFile() {
         CkanDataset dataset = createRandomDataset();
@@ -329,6 +336,9 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
     }
 
+    /**
+     * @since 0.4.3
+     */
     @Test
     public void testUpdateResourceData() {
         CkanDataset dataset = createRandomDataset();
