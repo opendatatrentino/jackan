@@ -22,7 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * For list of errors see <a href="https://github.com/ckan/ckan/blob/master/ckan/controllers/api.py">api.py</a>
+ * For list of errors see <a href="https://github.com/ckan/ckan/blob/master/ckan/controllers/api.py">controllers/api.py</a>.
+ * For error descriptions see <a href="https://github.com/ckan/ckan/blob/master/ckan/logic/__init__.py">logic/__init__.py</a> 
+ * 
  * @author David Leoni
  */
 public class CkanError {
@@ -63,7 +65,7 @@ public class CkanError {
     }
 
     /**
-     * todo what are possible types?
+     * For types, see {@link CkanError class description}
      */
     @JsonProperty("__type")
     public String getType() {

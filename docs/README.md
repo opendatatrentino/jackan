@@ -174,7 +174,7 @@ First, a brief recap of operations for writing offered by ckan:
 * **create**: in ckan creation often acts more as _upsert_, that is, if object with existing id/name already exists it is updated
 * **update**: update completely replaces stuff on server, and if you don't send a list or set it to null it gets emptied on the server. This can problematic for example when updating datasets containg a list of resources.
 * **patch**: added in Ckan 2.3 for less destructive updates. Jackan does not implement `patch` operations so far and instead offers so-called `patch-update` operations that emulate `patch` but only by calling `update` (so they work also in ckan < 2.3) 
-* **delete**: marks objects as as non-visible in the website, but they will still be retrievable with the webapi if you know the ids. To really delete things `purge` operations would need to be implemented. 
+* **delete**: marks objects as non-visible in the website and api. To really delete things `purge` operations would need to be implemented. 
 * **purge**: this one _really_ deletes stuff
 
 Currently Jackan supports:

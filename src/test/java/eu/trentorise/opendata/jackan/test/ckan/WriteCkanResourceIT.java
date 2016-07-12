@@ -18,12 +18,11 @@ package eu.trentorise.opendata.jackan.test.ckan;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
+import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.model.*;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.PRODOTTI_CERTIFICATI_RESOURCE_ID;
-import static eu.trentorise.opendata.jackan.test.ckan.WriteCkanTest.JACKAN_URL;
-
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.UUID;
@@ -55,7 +54,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         checkNotEmpty(retRes.getId(), "Invalid created resource id!");
         assertEquals(resource.getUrl(), retRes.getUrl());
         // latest ckan gives back packageId! 
-        // assertEquals(null, retRes.getPackageId()); // because this won't be present in the result
+        // assertEquals(null, retRes.getPackageId()); 
 
         LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
     }
@@ -67,14 +66,15 @@ public class WriteCkanResourceIT extends WriteCkanTest {
 
         CkanResourceBase resource = new CkanResourceBase(JACKAN_URL, dataset.getId());
 
+
         resource.putOthers("x", "y");
 
         CkanResource retRes = client.createResource(resource);
 
         checkNotEmpty(retRes.getId(), "Invalid created resource id!");
         assertEquals(resource.getUrl(), retRes.getUrl());
-        assertEquals(null, retRes.getPackageId()); // because this won't be present in the result
-        assertEquals(resource.getOthers(), retRes.getOthers());
+        // Checking inclusion, as i.e. from demo.ckan.org we might get extra gifts like 'datastore_active=false'
+        Tests.checkIsIncluded(resource.getOthers(), retRes.getOthers());
 
         LOG.log(Level.INFO, "Created resource with id {0} in catalog {1}", new Object[]{retRes.getId(), JackanTestConfig.of().getOutputCkan()});
     }
@@ -258,7 +258,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         assertEquals(retRes1.getUrl(), retRes2.getUrl());
         assertEquals("abc", retRes2.getDescription());
         assertEquals("123", retRes2.getSize());
-        assertEquals(resource.getOthers(), retRes2.getOthers());
+        Tests.checkIsIncluded(resource.getOthers(), retRes2.getOthers());
         assertEquals(null, retRes2.getOwner());  // owner is not among api docs for creation, so hopefully was jsonignored when sending retRes1            
     }
 
@@ -307,7 +307,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanDataset dataset2 = createRandomDataset();
         resource.setPackageId(dataset2.getId());
         CkanResource retResource2 = client.patchUpdateResource(retResource1);
-        assertEquals(null, retResource2.getPackageId());
+        
 
         boolean found = false;
         CkanDataset newDataset1 = client.getDataset(dataset1.getId());
@@ -366,23 +366,22 @@ public class WriteCkanResourceIT extends WriteCkanTest {
     }
 
     /**
-     * Shows resources are just marked as 'deleted', but still accessible from
-     * webapi.
-     */
+     * Shows what happens when resources are marked as 'deleted'
+     */ 
     @Test
     public void testDelete() {
         CkanDataset dataset = createRandomDataset(1);
         String resourceId = dataset.getResources().get(0).getId();
         client.deleteResource(resourceId);
 
-        CkanResource retResource = client.getResource(resourceId);
-        assertEquals(CkanState.deleted, retResource.getState());
+        try {
+            nonAdminClient.getResource(resourceId);
+            Assert.fail("Shouldn't find a deleted resource!");
+        } catch (CkanNotFoundException ex){
+            
+        }        
     }
 
-    /**
-     * Shows resources are just marked as 'deleted', but still accessible from
-     * webapi.
-     */
     @Test
     public void testDeleteNonExisting() {
         String resourceId = UUID.randomUUID().toString();
@@ -390,7 +389,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
             client.deleteResource(resourceId);
             Assert.fail("Shouldn't be possible to delete non existing resource!");
         }
-        catch (JackanException ex) {
+        catch (CkanNotFoundException ex) {
 
         }
 

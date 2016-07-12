@@ -90,6 +90,7 @@ public abstract class WriteCkanTest {
     }
 
     protected CkanClient client;
+    protected CkanClient nonAdminClient;
 
     protected CkanClient datiTrentinoClient;
 
@@ -101,6 +102,7 @@ public abstract class WriteCkanTest {
     @Before
     public void setUp() {                        
         client = JackanTestConfig.of().makeClientInstanceForWriting();
+        nonAdminClient = JackanTestConfig.of().makeClientInstanceForWriting(false);
         datiTrentinoClient = new CkanClient(ReadCkanIT.DATI_TRENTINO);
     }
 

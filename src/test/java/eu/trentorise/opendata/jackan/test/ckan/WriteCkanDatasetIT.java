@@ -19,6 +19,9 @@ import com.google.common.collect.Lists;
 import static eu.trentorise.opendata.commons.validation.Preconditions.checkNotEmpty;
 import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.exceptions.CkanAuthorizationException;
+import eu.trentorise.opendata.jackan.exceptions.CkanException;
+import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import eu.trentorise.opendata.jackan.SearchResults;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
@@ -396,7 +399,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     /**
-     * Shows that if we set resources to null on update they don't get destroyed
+     * Shows that if we set resources to {@code null} on update they don't get destroyed
      * on the server.
      */
     @Test
@@ -649,36 +652,64 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
         CkanDataset retDataset = client.patchUpdateDataset(dataset);
         assertEquals(CkanState.deleted, retDataset.getState());
 
-        client.getDataset(dataset.getId());
+        try {
+            nonAdminClient.getDataset(dataset.getId());
+            Assert.fail("Shoudn't be authorized!");
+        } catch (CkanAuthorizationException ex){
+            
+        }
         assertEquals(CkanState.deleted, retDataset.getState());
     }
 
     /**
-     * Shows datasets are just marked as 'deleted', but still accessible from
-     * webapi. Also resources within will still be active.
+     * Shows datasets are just marked as 'deleted'
      */
     @Test
     public void testDeleteById() {
         CkanDataset dataset = createRandomDataset(1);
         client.deleteDataset(dataset.getId());
 
-        CkanDataset retDataset = client.getDataset(dataset.getId());
-        assertEquals(CkanState.deleted, retDataset.getState());
-        assertEquals(CkanState.active, retDataset.getResources().get(0).getState());
+        String resId = dataset.getResources().get(0).getId();
+        
+        try {
+            nonAdminClient.getDataset(dataset.getId());
+            Assert.fail("Shouldn't be authorized to get dataset with id: " + dataset.getId());
+            // assertEquals(CkanState.deleted, retDataset.getState());            
+        } catch (CkanAuthorizationException ex){
+            
+        }
+        try {
+            nonAdminClient.getResource(resId);
+            Assert.fail("Shouldn't be authorized to get resource with id: " + resId);           
+        } catch (CkanAuthorizationException ex){
+            
+        }  
     }
 
     /**
-     * Shows datasets are just marked as 'deleted', but still accessible from
-     * webapi. Also resources within will still be active.
+     * Shows datasets are just marked as 'deleted'. Also resources within will still be active.
      */
     @Test
     public void testDeleteByName() {
         CkanDataset dataset = createRandomDataset(1);
+                
+        String resId = dataset.getResources().get(0).getId();
+                
         client.deleteDataset(dataset.getName());
 
-        CkanDataset retDataset = client.getDataset(dataset.getId());
-        assertEquals(CkanState.deleted, retDataset.getState());
-        assertEquals(CkanState.active, retDataset.getResources().get(0).getState());
+        try {
+            nonAdminClient.getDataset(dataset.getId());
+            Assert.fail("Shouldn't be authorized to get dataset with id: " + dataset.getId());
+            // assertEquals(CkanState.deleted, retDataset.getState());            
+        } catch (CkanAuthorizationException ex){
+            
+        }
+        try {
+            nonAdminClient.getResource(resId);
+            Assert.fail("Shouldn't be authorized to get resource with id: " + resId);           
+        } catch (CkanAuthorizationException ex){
+            
+        }        
     }
 
     /**
@@ -692,7 +723,7 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
             client.deleteResource(resourceId);
             Assert.fail("Shouldn't be possible to delete non existing resource!");
         }
-        catch (JackanException ex) {
+        catch (CkanNotFoundException ex) {
 
         }
 

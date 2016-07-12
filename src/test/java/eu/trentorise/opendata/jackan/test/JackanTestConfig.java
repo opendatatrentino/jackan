@@ -367,12 +367,37 @@ public class JackanTestConfig {
 
     /**
      * Returns a default client instance for writing.
+     * 
+     * @deprecated {@link #makeClientInstanceForWriting(boolean)} instead
      */
     public CkanClient makeClientInstanceForWriting() {
-        return makeClientInstanceForWriting(clientClass);
+        return makeClientInstanceForWriting(true);
     }
 
+    
+    /**
+     * Returns a default client instance for writing.
+     * 
+     * @param includeToken if {@code true} includes the token present in configuration.
+     * @since 0.4.3
+     */
+    public CkanClient makeClientInstanceForWriting(boolean includeToken) {
+        return makeClientInstanceForWriting(clientClass, includeToken);
+    }
+
+    /**
+     * @deprecated use {@link #makeClientInstanceForWriting(String, boolean)} instead
+     */
     public CkanClient makeClientInstanceForWriting(String clientClass) {
+        return makeClientInstanceForWriting(clientClass, true);
+    }
+    
+    /**
+     * @param includeToken if {@code true} includes the token present in configuration. 
+     * 
+     * @since 0.4.3
+     */
+    public CkanClient makeClientInstanceForWriting(String clientClass, boolean includeToken) {
         checkNotEmpty(clientClass, "Invalid class string!");
 
         Class forName;
@@ -392,11 +417,15 @@ public class JackanTestConfig {
             throw new RuntimeException("Could not find builder() static method in client class " + clientClass, ex);
         }
 
-        return builder.setCatalogUrl(outputCkan)
-                      .setCkanToken(outputCkanToken)
+        builder.setCatalogUrl(outputCkan)                      
                       .setProxy(proxy)
-                      .setTimeout(timeout)
-                      .build();
+                      .setTimeout(timeout);
+        if (includeToken){
+            builder.setCkanToken(outputCkanToken);
+        } 
+
+        return builder.build();
+            
     }
 
     /**

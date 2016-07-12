@@ -20,11 +20,13 @@ import eu.trentorise.opendata.jackan.model.CkanResponse;
 import javax.annotation.Nullable;
 
 /**
- * Runtime exception for ckan-related problems.
+ * Runtime exception for ckan-related problems. For possible cases description, see {@link eu.trentorise.opendata.jackan.model.CkanError CkanError}
+ * 
  * @author David Leoni
  */
 public class CkanException extends JackanException {
-
+    
+    
     @Nullable
     private CkanResponse ckanResponse = null;
     @Nullable

@@ -54,6 +54,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 
 import eu.trentorise.opendata.commons.TodUtils;
+import eu.trentorise.opendata.jackan.exceptions.CkanAuthorizationException;
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
 import eu.trentorise.opendata.jackan.exceptions.CkanValidationException;
@@ -544,7 +545,7 @@ public class CkanClient {
     }
 
     /**
-     * Throws CkanException or a subclass of it according to CkanError#getType()
+     * Throws {@link CkanException} or a subclass of it according to {@link CkanError#getType()}
      *
      * @throws CkanException
      * @since 0.4.1
@@ -554,11 +555,14 @@ public class CkanClient {
                                                            .getType() != null) {
             switch (ckanResponse.getError()
                                 .getType()) {
-            case CkanError.NOT_FOUND_ERROR:
-                throw new CkanNotFoundException(msg, ckanResponse, this);
-            case CkanError.VALIDATION_ERROR:
-                throw new CkanValidationException(msg, ckanResponse, this);
+                case CkanError.NOT_FOUND_ERROR:
+                    throw new CkanNotFoundException(msg, ckanResponse, this);            
+                case CkanError.VALIDATION_ERROR:
+                    throw new CkanValidationException(msg, ckanResponse, this);            
+                case CkanError.AUTHORIZATION_ERROR:
+                    throw new CkanAuthorizationException(msg, ckanResponse, this);
             }
+            
         }
 
         throw new CkanException(msg, ckanResponse, this);
@@ -870,7 +874,7 @@ public class CkanClient {
     /**
      * Returns the given api number
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     private synchronized int getApiVersion(int number) {
@@ -898,8 +902,11 @@ public class CkanClient {
      *            either the dataset name (i.e. certified-products) or the
      *            alphanumerical id (i.e. 22eea137-9fc3-4222-a716-bac22cc2039a)
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if dataset is missing             
+             
      */
     public synchronized CkanDataset getDataset(String idOrName) {
         checkNotNull(idOrName, "Need a valid id or name!");
@@ -912,7 +919,7 @@ public class CkanClient {
     }
 
     /**
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<CkanUser> getUserList() {
@@ -922,8 +929,10 @@ public class CkanClient {
     /**
      * @param id
      *            i.e. 'admin'
-     * @throws JackanException
+     * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if user is missing                          
      */
     public synchronized CkanUser getUser(String id) {
         checkNotNull(id, "Need a valid id!");
@@ -967,8 +976,10 @@ public class CkanClient {
      *            The alphanumerical id of the resource, such as
      *            d0892ada-b8b9-43b6-81b9-47a86be126db.
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if resource is missing             
      */
     public synchronized CkanResource getResource(String id) {
         checkNotNull(id, "Need a valid id!");
@@ -1116,12 +1127,11 @@ public class CkanClient {
 
     /**
      * 
-     * Marks a resource as 'deleted'.
+     * Marks a resource as {@code 'deleted'}.
      *
      * Note this will just set resource state to
      * {@link eu.trentorise.opendata.jackan.model.CkanState#deleted} and make it
-     * inaccessible from the website, but you will still be able to get the
-     * resource with the web api.
+     * inaccessible from the website and api. 
      *
      * @param id
      *            The alphanumerical id of the resource, such as
@@ -1129,6 +1139,8 @@ public class CkanClient {
      *
      * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if trying to delete non-existing resource             
      * @since 0.4.1
      */
     public synchronized void deleteResource(String id) {
@@ -1145,7 +1157,7 @@ public class CkanClient {
      * Notice that organizations will <i>not</i> be returned by this method. To
      * get them, use {@link #getOrganizationList() } instead.
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<CkanGroup> getGroupList() {
@@ -1155,7 +1167,7 @@ public class CkanClient {
     /**
      * Return group names, like i.e. management-of-territory
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<String> getGroupNames() {
@@ -1170,8 +1182,10 @@ public class CkanClient {
      *            either the group name (i.e. hospitals-in-trento-district) or
      *            the group alphanumerical id (i.e.
      *            55bb5fbd-7a7c-4eb8-8b1a-1192a5504421)
-     * @throws JackanException
+     * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if group is missing             
      */
     public synchronized CkanGroup getGroup(String idOrName) {
         checkNotNull(idOrName, "Need a valid id or name!");
@@ -1184,7 +1198,7 @@ public class CkanClient {
      *
      * @see #getGroupList()
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<CkanOrganization> getOrganizationList() {
@@ -1194,7 +1208,7 @@ public class CkanClient {
     /**
      * Returns all the resource formats available in the catalog.
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized Set<String> getFormats() {
@@ -1202,7 +1216,7 @@ public class CkanClient {
     }
 
     /**
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<String> getOrganizationNames() {
@@ -1217,8 +1231,10 @@ public class CkanClient {
      *            or the alphanumerical id (i.e.
      *            232cad97-ecf2-447d-9656-63899023887f). Do not pass it a group
      *            id.
-     * @throws JackanException
+     * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if organization is missing             
      */
     public synchronized CkanOrganization getOrganization(String idOrName) {
         checkNotNull(idOrName, "Need a valid id or name!");
@@ -1258,7 +1274,7 @@ public class CkanClient {
      * Evaluation", "tourism-satellite-account". We think names SHOULD be
      * lowercase with minuses instead of spaces, but in some cases they aren't.
      *
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<CkanTag> getTagList() {
@@ -1269,7 +1285,7 @@ public class CkanClient {
      * Returns tags containing the string given in query.
      *
      * @param query
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<String> getTagNamesList(String query) {
@@ -1278,7 +1294,7 @@ public class CkanClient {
     }
 
     /**
-     * @throws JackanException
+     * @throws CkanException
      *             on error
      */
     public synchronized List<String> getTagNamesList() {
@@ -1728,13 +1744,11 @@ public class CkanClient {
     }
 
     /**
-     * Marks a dataset as 'deleted'.
+     * Marks a dataset as {@code 'deleted'}.
      *
      * Note this will just set dataset state to
      * {@link eu.trentorise.opendata.jackan.model.CkanState#deleted} and make it
-     * inaccessible from the website, but you will still be able to get the
-     * dataset with the web api. Resources contained within will still be
-     * 'active'.
+     * inaccessible from the website and api. 
      *
      * @param nameOrId
      *            either the dataset name (i.e. apple-production) or the the
@@ -1742,7 +1756,11 @@ public class CkanClient {
      *
      * @throws CkanException
      *             on error
+     * @throws CkanNotFoundException
+     *             if dataset is not found
+
      */
+    // todo check if permissions change accessibility from api
     public synchronized void deleteDataset(String nameOrId) {
         checkNotNull(nameOrId, "Need a valid name or id!");
 

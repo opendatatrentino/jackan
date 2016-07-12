@@ -19,26 +19,26 @@ import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanResponse;
 
 /**
- * Thrown when Ckan tells us something was not in the proper format.
+ * Exception raised when the user is not authorized to call the action.
  *
  * @author David Leoni
+ * @since 0.4.3
  */
-public class CkanValidationException extends CkanException {
+public class CkanAuthorizationException extends CkanException {   
 
-
-    public CkanValidationException(String msg, CkanClient client, Throwable ex) {
+    public CkanAuthorizationException(String msg, CkanClient client, Throwable ex) {
         super(msg, client, ex);
     }    
     
-    public CkanValidationException(String msg, CkanClient client) {
+    public CkanAuthorizationException(String msg, CkanClient client) {
         super(msg, client);
     }
     
-    public CkanValidationException(String msg, CkanResponse ckanResponse, CkanClient client) {
+    public CkanAuthorizationException(String msg, CkanResponse ckanResponse, CkanClient client) {
         super(msg, ckanResponse, client);
     }
 
-    public CkanValidationException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
+    public CkanAuthorizationException(String msg, CkanResponse ckanResponse, CkanClient client, Throwable ex) {
         super(msg, ckanResponse, client, ex);
     }
 

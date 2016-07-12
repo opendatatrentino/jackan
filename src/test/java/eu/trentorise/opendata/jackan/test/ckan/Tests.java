@@ -21,7 +21,10 @@ import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TRENTINO;
 
+import java.util.Map;
 import java.util.Random;
+
+import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -32,7 +35,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Non-ckan related tests.
+ * Non-ckan related tests and test utilities
+ * 
  * @author David Leoni
  */
 public class Tests {
@@ -155,4 +159,19 @@ public class Tests {
                 CkanClient.makeOrganizationUrl(DATI_TRENTINO, "comune-di-trento"));        
     }
 
+    /**
+     * Checks {@code map1} is included in {@code map2}
+     * 
+     * @since 0.4.3
+     */
+    public static void checkIsIncluded(@Nullable Map map1, 
+                                       @Nullable Map map2){
+        
+        assertTrue("map1 is " + map1 + " while map2 is " + map2,!( map1 == null ^ map2 == null));
+        
+        for (Object key : map1.keySet()){
+            assertTrue("map2 should doesn't key " + key, map2.containsKey(key));
+            assertEquals(map1.get(key), map2.get(key));
+        }
+    }
 }
