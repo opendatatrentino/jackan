@@ -11,23 +11,21 @@ RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" targ
 
 #### About
 
-Java client library for CKAN catalogs. Features:
+Java client library for CKAN catalogs.
+
+|**Usage**|**License**|**Roadmap**|**Contributing**|
+|-----------|---------|-----------|----------------|
+| See [docs](docs) |Business-friendly [Apache License v2.0](LICENSE.txt) | See [project milestones](../../milestones) | See [the wiki](../../wiki)|
+
+
+**Features:**
 
   * allows reading and (<a href="docs/README.md#supported-operations" target="_blank">to some degree</a>) writing in Ckan  
+  * uses ckan api v3  
   * dependency handling with Maven
-  * liberal Apache 2.0 license
   * well documented
-  * unit tested with proper integration tests
-  * uses ckan api v3    
+  * unit tested with proper integration tests    
   * supports Java 7+
-
-Usage: See [docs](docs)
-
-Roadmap: See [project milestones](../../milestones)
-
-License: business-friendly [Apache License v2.0](LICENSE.txt)
-
-Contributing: See [the wiki](../../wiki)
 
 #### Compatibility
 
@@ -61,6 +59,8 @@ Main devs:
 
 Contributors:
 
+* Benoit Orihuela http://twitter.com/bobeal
+* Raul Hidalgo Caballero https://github.com/deinok
 * David Moravek http://davidmoravek.cz/
 * Florent André https://github.com/florent-andre
 
