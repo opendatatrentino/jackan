@@ -60,6 +60,7 @@ Main devs:
 Contributors:
 
 * Benoit Orihuela http://twitter.com/bobeal
+* Henning Bredel https://github.com/ridoo
 * Raul Hidalgo Caballero https://github.com/deinok
 * David Moravek http://davidmoravek.cz/
 * Florent André https://github.com/florent-andre

@@ -10,10 +10,12 @@ http://opendatatrentino.github.io/jackan
 todo date 
 
 - Implemented Upload of a resource's data file (creation and update)		  
-		  by Benoit Orihuela, https://github.com/opendatatrentino/jackan/pull/34		  
+		by Benoit Orihuela, https://github.com/opendatatrentino/jackan/pull/34		  
 - Added some adder method to CkanDatasetBase 
-          by Raul Hidalgo Caballero, https://github.com/opendatatrentino/jackan/pull/31
-
+		by Raul Hidalgo Caballero, https://github.com/opendatatrentino/jackan/pull/31
+- Upgraded Apache http libs to 4.4.1 to allow SNI
+		by Henning Bredel, https://github.com/opendatatrentino/jackan/pull/38 
+  
 BREAKING CHANGES:
 
 - only for Jackan developers: when upgrading jackan, in your `/conf/jackan.test.properties` remember to add these lines:
