@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import static junitparams.JUnitParamsRunner.$;
 import eu.trentorise.opendata.jackan.test.JackanTestRunner;
@@ -436,6 +437,21 @@ public class ReadCkanIT {
             
         }
         
+    }
+
+    /**
+     * Preliminary testcase for Https issues.
+     * 
+     * See https://github.com/opendatatrentino/jackan/issues/39
+     * 
+     * @since 0.4.3
+     */
+    @Test
+    public void testHttps(){
+        CkanClient client = new CkanClient("https://datahub.io", null);
+        List<String> dsl = client.getDatasetList(100,0);
+        assertTrue(dsl.size() > 0);       
+        logger.log(Level.FINE, dsl.toString());
     }
     
 }
