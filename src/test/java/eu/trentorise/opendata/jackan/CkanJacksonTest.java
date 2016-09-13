@@ -21,6 +21,7 @@ import eu.trentorise.opendata.jackan.model.CkanOrganization;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.commons.TodConfig;
+import eu.trentorise.opendata.commons.internal.org.apache.commons.lang3.time.FastDateFormat;
 import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 import eu.trentorise.opendata.jackan.model.CkanOrganization;
 
@@ -28,6 +29,7 @@ import java.io.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -120,34 +122,63 @@ public class CkanJacksonTest {
     
     @Test
     public void testTimestampParser() {
-        String sts = "1970-01-01T01:00:00.000010";
-        Timestamp ts = new Timestamp(0);
-        ts.setNanos(10000);
-        assertEquals(sts, CkanClient.formatTimestamp(ts));
-        assertEquals(ts, CkanClient.parseTimestamp(sts));
 
+        TimeZone defaultTimezone = TimeZone.getDefault();
+        
         try {
-            CkanClient.formatTimestamp(null);
-            Assert.fail();
-        }
-        catch (IllegalArgumentException ex) {
+            LOG.info("Setting system timezone to: Europe/Rome..");         
+            TimeZone.setDefault(TimeZone.getTimeZone("Europe/Rome"));
+    
+            String sts = "1970-01-01T00:00:00.000010";
+            Timestamp ts1 = new Timestamp(0);
+            assertEquals(0, ts1.getTime());
+            assertEquals(0, ts1.getNanos());
+            ts1.setNanos(10000); // = 10 microsecs
+            assertEquals(sts, CkanClient.formatTimestamp(ts1));
+            
+            Timestamp ts2 = new Timestamp(0);
+            ts2.setNanos(1000000); // = 1 millisec
+            assertEquals("1970-01-01T00:00:00.001000", CkanClient.formatTimestamp(ts2));
+            
+            assertEquals(ts1.getTime(), CkanClient.parseTimestamp(sts).getTime());
+            assertEquals(ts1.getNanos(), CkanClient.parseTimestamp(sts).getNanos());
+            assertEquals(0, CkanClient.parseTimestamp("1970-01-01T00:00:00").getTime());
+            assertEquals(0, CkanClient.parseTimestamp("1970-01-01T00:00:00").getNanos());
+            assertEquals(1, CkanClient.parseTimestamp("1970-01-01T00:00:00.001000").getTime());
+            assertEquals(1000000, CkanClient.parseTimestamp("1970-01-01T00:00:00.001000").getNanos());
+            
 
-        }
+            assertEquals(1, CkanClient.parseTimestamp("1970-01-01T00:00:00.001").getTime());
+            assertEquals(1000000, CkanClient.parseTimestamp("1970-01-01T00:00:00.001").getNanos());
 
-        try {
-            CkanClient.parseTimestamp(null);
-            Assert.fail();
+    
+            try {
+                CkanClient.formatTimestamp(null);
+                Assert.fail("Shouldn't arrive here!");
+            }
+            catch (IllegalArgumentException ex) {
+    
+            }
+    
+            try {
+                CkanClient.parseTimestamp(null);
+                Assert.fail("Shouldn't arrive here!");
+            }
+            catch (IllegalArgumentException ex) {
+    
+            }
+    
+            try {
+                CkanClient.parseTimestamp("bla");
+                Assert.fail("Shouldn't arrive here!");
+            }
+            catch (IllegalArgumentException ex) {
+    
+            }
         }
-        catch (IllegalArgumentException ex) {
-
-        }
-
-        try {
-            CkanClient.parseTimestamp("bla");
-            Assert.fail();
-        }
-        catch (IllegalArgumentException ex) {
-
+        finally {
+            LOG.info("Restoring timezone to local default: " + defaultTimezone.getID());
+            TimeZone.setDefault(defaultTimezone);
         }
     }
 

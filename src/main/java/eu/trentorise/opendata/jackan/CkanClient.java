@@ -26,12 +26,16 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +58,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 
 import eu.trentorise.opendata.commons.TodUtils;
+import eu.trentorise.opendata.commons.internal.org.apache.commons.lang3.time.FastDateFormat;
 import eu.trentorise.opendata.jackan.exceptions.CkanAuthorizationException;
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.exceptions.CkanNotFoundException;
@@ -545,7 +550,8 @@ public class CkanClient {
     }
 
     /**
-     * Throws {@link CkanException} or a subclass of it according to {@link CkanError#getType()}
+     * Throws {@link CkanException} or a subclass of it according to
+     * {@link CkanError#getType()}
      *
      * @throws CkanException
      * @since 0.4.1
@@ -555,14 +561,14 @@ public class CkanClient {
                                                            .getType() != null) {
             switch (ckanResponse.getError()
                                 .getType()) {
-                case CkanError.NOT_FOUND_ERROR:
-                    throw new CkanNotFoundException(msg, ckanResponse, this);            
-                case CkanError.VALIDATION_ERROR:
-                    throw new CkanValidationException(msg, ckanResponse, this);            
-                case CkanError.AUTHORIZATION_ERROR:
-                    throw new CkanAuthorizationException(msg, ckanResponse, this);
+            case CkanError.NOT_FOUND_ERROR:
+                throw new CkanNotFoundException(msg, ckanResponse, this);
+            case CkanError.VALIDATION_ERROR:
+                throw new CkanValidationException(msg, ckanResponse, this);
+            case CkanError.AUTHORIZATION_ERROR:
+                throw new CkanAuthorizationException(msg, ckanResponse, this);
             }
-            
+
         }
 
         throw new CkanException(msg, ckanResponse, this);
@@ -641,11 +647,13 @@ public class CkanClient {
      * @param path
      *            something like /api/3/action/package_create
      * @param resource
-     *            a {@link CkanResourceBase} object with a data file set in the {@link CkanResourceBase#upload} field
+     *            a {@link CkanResourceBase} object with a data file set in the
+     *            {@link CkanResourceBase#upload} field
      *
      * @throws CkanException
      */
-    private <T extends CkanResponse> T postHttpResourceFile(Class<T> responseType, String path, CkanResourceBase resource) {
+    private <T extends CkanResponse> T postHttpResourceFile(Class<T> responseType, String path,
+            CkanResourceBase resource) {
         checkNotNull(responseType);
         checkNotNull(path);
         checkNotNull(resource);
@@ -664,12 +672,21 @@ public class CkanClient {
             configureRequest(request);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-                .addBinaryBody("upload", resource.getUpload(),
-                    ContentType.create("application/octet-stream", Charset.forName("UTF-8")), resource.getUpload().getName())
-                .addTextBody("size", resource.getSize(), ContentType.TEXT_PLAIN)
-                .addTextBody("id", resource.getId(), ContentType.TEXT_PLAIN)
-                .addTextBody("url", "upload", ContentType.TEXT_PLAIN)
-                .addTextBody("package_id", resource.getPackageId(), ContentType.TEXT_PLAIN);
+                                                                         .addBinaryBody("upload", resource.getUpload(),
+                                                                                 ContentType.create(
+                                                                                         "application/octet-stream",
+                                                                                         Charset.forName("UTF-8")),
+                                                                                 resource.getUpload()
+                                                                                         .getName())
+                                                                         .addTextBody("size", resource.getSize(),
+                                                                                 ContentType.TEXT_PLAIN)
+                                                                         .addTextBody("id", resource.getId(),
+                                                                                 ContentType.TEXT_PLAIN)
+                                                                         .addTextBody("url", "upload",
+                                                                                 ContentType.TEXT_PLAIN)
+                                                                         .addTextBody("package_id",
+                                                                                 resource.getPackageId(),
+                                                                                 ContentType.TEXT_PLAIN);
 
             if (resource.getFormat() != null)
                 entityBuilder.addTextBody("format", resource.getFormat(), ContentType.TEXT_PLAIN);
@@ -680,11 +697,12 @@ public class CkanClient {
 
             entityBuilder.setCharset(Charset.forName("UTF-8"));
 
-            Response response = request.body(entityBuilder.build()).execute();
+            Response response = request.body(entityBuilder.build())
+                                       .execute();
 
             InputStream stream = response.returnResponse()
-                .getEntity()
-                .getContent();
+                                         .getEntity()
+                                         .getContent();
 
             try (InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8)) {
                 returnedText = CharStreams.toString(reader);
@@ -697,7 +715,7 @@ public class CkanClient {
             ckanResponse = getObjectMapper().readValue(returnedText, responseType);
         } catch (Exception ex) {
             throw new CkanException(
-                "Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
+                    "Couldn't interpret json returned by the server! Returned text was: " + returnedText, this, ex);
         }
 
         if (!ckanResponse.isSuccess()) {
@@ -812,8 +830,9 @@ public class CkanClient {
      * @param catalogUrl
      *            i.e. http://dati.trentino.it
      * @param orgIdOrName
-     *            the organization's alphanumerical id (preferred as more stable), 
-     *            or the name as in {@link CkanOrganization#getName()}            
+     *            the organization's alphanumerical id (preferred as more
+     *            stable),
+     *            or the name as in {@link CkanOrganization#getName()}
      */
     public static String makeOrganizationUrl(String catalogUrl, String orgIdOrName) {
         checkCatalogUrl(catalogUrl);
@@ -905,8 +924,8 @@ public class CkanClient {
      * @throws CkanException
      *             on error
      * @throws CkanNotFoundException
-     *             if dataset is missing             
-             
+     *             if dataset is missing
+     * 
      */
     public synchronized CkanDataset getDataset(String idOrName) {
         checkNotNull(idOrName, "Need a valid id or name!");
@@ -932,7 +951,7 @@ public class CkanClient {
      * @throws CkanException
      *             on error
      * @throws CkanNotFoundException
-     *             if user is missing                          
+     *             if user is missing
      */
     public synchronized CkanUser getUser(String id) {
         checkNotNull(id, "Need a valid id!");
@@ -979,7 +998,7 @@ public class CkanClient {
      * @throws CkanException
      *             on error
      * @throws CkanNotFoundException
-     *             if resource is missing             
+     *             if resource is missing
      */
     public synchronized CkanResource getResource(String id) {
         checkNotNull(id, "Need a valid id!");
@@ -1015,14 +1034,15 @@ public class CkanClient {
 
         if (resource.getUpload() == null) {
             return postHttp(ResourceResponse.class, "/api/3/action/resource_create", json,
-                ContentType.APPLICATION_JSON).result;
+                    ContentType.APPLICATION_JSON).result;
         } else {
-            // Could not find a way to create a resource with an attached file without enumerating all the resource
+            // Could not find a way to create a resource with an attached file
+            // without enumerating all the resource
             // fields so doing it in two steps :
-            //   First, create the resource as usual
-            //   Then, update it with the file
+            // First, create the resource as usual
+            // Then, update it with the file
             CkanResource resourceResponse = postHttp(ResourceResponse.class, "/api/3/action/resource_create", json,
-                ContentType.APPLICATION_JSON).result;
+                    ContentType.APPLICATION_JSON).result;
             resource.setId(resourceResponse.getId());
             return postHttpResourceFile(ResourceResponse.class, "/api/3/action/resource_update", resource).result;
         }
@@ -1111,9 +1131,10 @@ public class CkanClient {
      * Update the data file associated to this resource.
      *
      * @param resource
-     *            a {@link CkanResourceBase} object with a data file set in the {@link CkanResourceBase#upload} field
+     *            a {@link CkanResourceBase} object with a data file set in the
+     *            {@link CkanResourceBase#upload} field
      * @throws CkanException
-     *                 
+     * 
      * @since 0.4.3
      * 
      */
@@ -1131,7 +1152,7 @@ public class CkanClient {
      *
      * Note this will just set resource state to
      * {@link eu.trentorise.opendata.jackan.model.CkanState#deleted} and make it
-     * inaccessible from the website and api. 
+     * inaccessible from the website and api.
      *
      * @param id
      *            The alphanumerical id of the resource, such as
@@ -1140,7 +1161,7 @@ public class CkanClient {
      * @throws CkanException
      *             on error
      * @throws CkanNotFoundException
-     *             if trying to delete non-existing resource             
+     *             if trying to delete non-existing resource
      * @since 0.4.1
      */
     public synchronized void deleteResource(String id) {
@@ -1185,7 +1206,7 @@ public class CkanClient {
      * @throws CkanException
      *             on error
      * @throws CkanNotFoundException
-     *             if group is missing             
+     *             if group is missing
      */
     public synchronized CkanGroup getGroup(String idOrName) {
         checkNotNull(idOrName, "Need a valid id or name!");
@@ -1234,7 +1255,7 @@ public class CkanClient {
      * @throws CkanException
      *             on error
      * @throws CkanNotFoundException
-     *             if organization is missing             
+     *             if organization is missing
      */
     public synchronized CkanOrganization getOrganization(String idOrName) {
         checkNotNull(idOrName, "Need a valid id or name!");
@@ -1380,13 +1401,18 @@ public class CkanClient {
     }
 
     /**
-     * Parses a Ckan timestamp into a Java Timestamp.
-     *
+     * Parses a {@link #CKAN_TIMESTAMP_PATTERN Ckan timestamp} into a Java Timestamp.
+     * For resilience, it also accepts patterns without fractional part and with 
+     * only millisecs.
+     * 
      * @throws IllegalArgumentException
      *             if timestamp can't be parsed.
      * @see #formatTimestamp(java.sql.Timestamp) for the inverse process.
      * @since 0.4.1
      */
+    // NOTE: 
+    // - Timestamp.valueOf can't be used as it is locale timezone dependent...
+    // - new Timestamp(long) internally stores time without millisecs, and millisecs go to nano part  
     public static Timestamp parseTimestamp(String timestamp) {
         if (timestamp == null) {
             throw new IllegalArgumentException("Found null timestamp!");
@@ -1396,26 +1422,76 @@ public class CkanClient {
             throw new IllegalArgumentException("Found timestamp with 'None' inside!");
         }
 
-        return Timestamp.valueOf(timestamp.replace("T", " "));
+        String[] tokens = timestamp.split("\\.");
+        String withoutFractional;
+      
+        int nanoSecs;
+        
+        if (tokens.length == 2) {
+            withoutFractional = tokens[0];
+            
+            int factor;
+            if (tokens[1].length() == 6){
+                factor = 1000;
+            } else if (tokens[1].length() == 3){
+                factor = 1000000;
+            } else {
+                throw new IllegalArgumentException("Couldn0t parse timestamp:" + timestamp 
+                                            + "  ! unsupported fractional length: " + tokens[1].length());
+            }
+            try {
+                nanoSecs = Integer.parseInt(tokens[1]) * factor;
+                
+            } catch (NumberFormatException ex){
+                throw new IllegalArgumentException("Couldn0t parse timestamp:" + timestamp 
+                        + "  ! invalid fractional part:" + tokens[1]);                
+            }
+
+        } else if (tokens.length == 1){
+            withoutFractional = timestamp;
+            nanoSecs = 0;           
+        } else {
+            throw new IllegalArgumentException("Error while parsing timestamp:" + timestamp);
+        }
+        
+        try {
+            DateFormat formatter = new SimpleDateFormat(CKAN_NO_MILLISECS_PATTERN);
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            long time = formatter.parse(withoutFractional).getTime();                                               
+            Timestamp ret = new Timestamp(time);
+            ret.setNanos(nanoSecs);
+            return ret;
+
+        } catch (ParseException ex) {
+            throw new IllegalArgumentException("Error while parsing timestamp:" + timestamp, ex);
+        }
+
     }
 
     /**
      * Formats a timestamp according to {@link #CKAN_TIMESTAMP_PATTERN}, with
      * precision up to microseconds.
      *
+     * @throws IllegalArgumentException
+     *             if timestamp can't be parsed.
      * @see #parseTimestamp(java.lang.String) for the inverse process.
      * @since 0.4.1
      */
-    @Nullable
+    // NOTE: Timestamp.toString can't be used as it is locale timezone dependent...        
     public static String formatTimestamp(Timestamp timestamp) {
+                
         if (timestamp == null) {
             throw new IllegalArgumentException("Found null timestamp!");
         }
-        Timestamp ret = Timestamp.valueOf(timestamp.toString());
-        ret.setNanos((timestamp.getNanos() / 1000) * 1000);
-        return Strings.padEnd(ret.toString()
-                                 .replace(" ", "T"),
-                "1970-01-01T01:00:00.000001".length(), '0');
+        DateFormat formatter = new SimpleDateFormat(CKAN_NO_MILLISECS_PATTERN);
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String withoutFractional = formatter.format(timestamp);
+
+        int micros = timestamp.getNanos() / 1000;
+        String microsString = Strings.padStart(Integer.toString(micros), 6, '0');       
+
+        return withoutFractional + "." + microsString;      
+
     }
 
     /**
@@ -1748,7 +1824,7 @@ public class CkanClient {
      *
      * Note this will just set dataset state to
      * {@link eu.trentorise.opendata.jackan.model.CkanState#deleted} and make it
-     * inaccessible from the website and api. 
+     * inaccessible from the website and api.
      *
      * @param nameOrId
      *            either the dataset name (i.e. apple-production) or the the
@@ -1758,7 +1834,7 @@ public class CkanClient {
      *             on error
      * @throws CkanNotFoundException
      *             if dataset is not found
-
+     * 
      */
     // todo check if permissions change accessibility from api
     public synchronized void deleteDataset(String nameOrId) {
