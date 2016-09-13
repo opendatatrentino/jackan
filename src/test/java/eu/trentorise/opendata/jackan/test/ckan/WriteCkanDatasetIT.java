@@ -150,14 +150,16 @@ public class WriteCkanDatasetIT extends WriteCkanTest {
     }
 
     /**
-     * Checks it is possible to create a dataset as 'deleted'
+     * Shows attempts to create a dataset as deleted are ignored.
+     * 
+     * (behaviours changed over time, last checked on demo.ckan.org at v2.5.2)
      */
     @Test
     public void testCreateAsDeleted() {
         CkanDatasetBase dataset = new CkanDatasetBase(randomUUID());
         dataset.setState(CkanState.deleted);
         CkanDataset retDataset = client.createDataset(dataset);
-        assertEquals(CkanState.deleted, retDataset.getState());
+        assertEquals(CkanState.active, retDataset.getState());
     }
 
     @Test
