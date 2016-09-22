@@ -41,6 +41,13 @@ import org.junit.Test;
  */
 public class Tests {
 
+    /**
+     * All files generated in tests will have this prefix. 
+     * 
+     * @since 0.4.3
+     */
+    public static final String JACKAN_TEST_PREFIX = "jackan-test-";
+
     @BeforeClass
     public static void setUpClass() {
         TodConfig.loadLogConfig(Tests.class);

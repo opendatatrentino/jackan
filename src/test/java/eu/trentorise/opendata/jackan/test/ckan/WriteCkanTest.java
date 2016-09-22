@@ -34,6 +34,8 @@ import static junitparams.JUnitParamsRunner.$;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 
 /**
@@ -51,6 +53,10 @@ public abstract class WriteCkanTest {
     public static final String TEST_RESOURCE_ID = "81f579fe-7f10-4fa2-94f2-0011898dc78c";
 
     private static final Logger LOG = Logger.getLogger(WriteCkanTest.class.getName());
+    
+    @Rule
+    public TemporaryFolder tempFolder= new TemporaryFolder();
+
 
     protected Object[] wrongDatasetNames() {
         return $(

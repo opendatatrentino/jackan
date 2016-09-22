@@ -41,7 +41,7 @@ import org.junit.Test;
 public class WriteCkanResourceIT extends WriteCkanTest {
 
     private static final Logger LOG = Logger.getLogger(WriteCkanResourceIT.class.getName());
-
+    
     @Test
     public void testCreateMinimal() {
 
@@ -117,7 +117,7 @@ public class WriteCkanResourceIT extends WriteCkanTest {
         CkanResourceBase resource = new CkanResourceBase("upload", dataset.getId());
         File file = null;
         try {
-            file = File.createTempFile("test-largefile-jackan-" + UUID.randomUUID().getMostSignificantBits(), ".txt");
+            file = tempFolder.newFile(Tests.JACKAN_TEST_PREFIX + "largefile.txt");
             RandomAccessFile randomFile = new RandomAccessFile(file, "rw");
             randomFile.setLength(10000000);
         } catch (java.io.IOException e) {
