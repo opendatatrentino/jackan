@@ -434,6 +434,7 @@ public class CkanClient {
         }
 
         public CkanClient build() {
+            checkNotCreated();
             checkNotEmpty(this.client.catalogUrl, "Invalid catalog url!");
             this.created = true;
             return this.client;

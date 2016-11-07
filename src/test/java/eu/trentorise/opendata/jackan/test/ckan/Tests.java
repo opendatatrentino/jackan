@@ -64,10 +64,7 @@ public class Tests {
     @Test
     public void testRandom(){
         assertNotEquals(new Random().nextLong(), new Random().nextLong());
-    }    
-    
-
-    
+    }            
     
     @Test
     public void testBuilder(){
@@ -101,6 +98,16 @@ public class Tests {
             .build();
             Assert.fail("shouldn't arrive here!");
         } catch (IllegalArgumentException ex){           
+        }
+
+        CkanClient.Builder buildTwice = CkanClient.builder()
+        .setCatalogUrl(DATI_TRENTINO);            
+        buildTwice.build();
+
+        try {
+            buildTwice.build();
+            Assert.fail("shouldn't arrive here!");
+        } catch (IllegalStateException ex){           
         }
         
         try {
