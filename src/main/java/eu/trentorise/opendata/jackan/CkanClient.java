@@ -166,7 +166,7 @@ public class CkanClient {
     private String ckanToken;
 
     @Nullable
-    private HttpHost proxy;
+    private String proxy;
 
     /** connection timeout in millisecs */
     private int timeout;
@@ -395,27 +395,19 @@ public class CkanClient {
 
         /**
          * Sets the proxy used to perform GET and POST calls
+         * 
+         * @param proxyUri the proxy used by the client, usually in a format with 
+         * address and port like {@code my.own-proxy.org:1234} 
          */
-        public Builder setProxy(@Nullable String proxyUrl) {
+        public Builder setProxy(@Nullable String proxyUri) {
             checkNotCreated();
 
-            if (proxyUrl == null) {
+            if (proxyUri == null) {
                 this.client.proxy = null;
             } else {
-                URI uri;
-                try {
-                    uri = new URI(proxyUrl.trim());
-                } catch (URISyntaxException e) {
-                    throw new IllegalArgumentException("Invalid proxy url!", e);
-                }
-                if (!uri.getPath()
-                        .isEmpty()) {
-                    throw new IllegalArgumentException("Proxy host shouldn't have context path! Found instead: "
-                            + uri.toString() + " with path " + uri.getPath());
-                }
-                this.client.proxy = URIUtils.extractHost(uri);
-
+                this.client.proxy = TodUtils.removeTrailingSlash(proxyUri);
             }
+            
             return this;
         }
 
@@ -1905,13 +1897,14 @@ public class CkanClient {
     }
 
     /**
-     * Returns the proxy used by the client.
+     * Returns the proxy used by the client, usually in a format with 
+     * address and port like my.own-proxy.org:1234
      *
      * @since 0.4.1
      */
     @Nullable
     public String getProxy() {
-        return proxy.toURI();
+        return proxy;
     }
 
     /**

@@ -21,6 +21,8 @@ import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.test.JackanTestConfig;
 import static eu.trentorise.opendata.jackan.test.ckan.ReadCkanIT.DATI_TRENTINO;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Map;
 import java.util.Random;
 
@@ -66,10 +68,13 @@ public class Tests {
         assertNotEquals(new Random().nextLong(), new Random().nextLong());
     }            
     
+        
+    // todo add more stuff for the wrong proxy urls 
+    // like a.b:23/bla and  a.b  (is it wrong??)
     @Test
     public void testBuilder(){
         
-        String myProxy = "http://a.b:123";
+        String myProxy = "a.b:123";
         
         assertEquals(DATI_TRENTINO,
                      CkanClient.builder()
@@ -84,21 +89,12 @@ public class Tests {
                     .build()
                     .getProxy());
         
-        assertEquals("http://a.b:123",
+        assertEquals("http://" +myProxy,
                 CkanClient.builder()
                     .setCatalogUrl(DATI_TRENTINO)
                     .setProxy("http://a.b:123 ")
                     .build()
-                    .getProxy());
-        
-        try {
-            CkanClient.builder()
-            .setCatalogUrl(DATI_TRENTINO)
-            .setProxy("http://a.b/")            
-            .build();
-            Assert.fail("shouldn't arrive here!");
-        } catch (IllegalArgumentException ex){           
-        }
+                    .getProxy());               
 
         CkanClient.Builder buildTwice = CkanClient.builder()
         .setCatalogUrl(DATI_TRENTINO);            
@@ -108,17 +104,7 @@ public class Tests {
             buildTwice.build();
             Assert.fail("shouldn't arrive here!");
         } catch (IllegalStateException ex){           
-        }
-        
-        try {
-            CkanClient.builder()
-            .setCatalogUrl(DATI_TRENTINO)
-            .setProxy("http://a.b/c")            
-            .build();
-            Assert.fail("shouldn't arrive here!");
-        } catch (IllegalArgumentException ex){           
-        }
-        
+        }              
         
         assertEquals(1,
                 CkanClient.builder()
@@ -140,8 +126,7 @@ public class Tests {
             CkanClient.builder().build();
             Assert.fail("shouldn't arrive here!");
         } catch (Exception ex){           
-        }
-               
+        }              
     }
     
     @Test
@@ -188,4 +173,46 @@ public class Tests {
             assertEquals(map1.get(key), map2.get(key));
         }
     }
+    
+
+    /**
+     * 
+     * 
+     * Returns a free port number on localhost.
+     * 
+     * <p>Heavily inspired from org.eclipse.jdt.launching.SocketUtil (to avoid a dependency to JDT just because of this).
+     * Slightly improved with close() missing in JDT. And throws exception instead of returning -1.
+     * </p>
+     * 
+     * <p>
+     *  (taken from https://gist.github.com/vorburger/3429822)
+     * </p>
+     * 
+     * @return a free port number on localhost
+     * @throws IllegalStateException if unable to find a free port
+     * @since 0.4.3
+     */
+    public static int findFreePort() {
+        ServerSocket socket = null;
+        try {
+            socket = new ServerSocket(0);
+            socket.setReuseAddress(true);
+            int port = socket.getLocalPort();
+            try {
+                socket.close();
+            } catch (IOException e) {
+                // Ignore IOException on close()
+            }
+            return port;
+        } catch (IOException e) { 
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        throw new IllegalStateException("Could not find a free TCP/IP port to start embedded Jetty HTTP Server on");
+    }    
 }

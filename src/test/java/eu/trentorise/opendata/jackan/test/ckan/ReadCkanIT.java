@@ -53,6 +53,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.littleshoot.proxy.HttpProxyServer;
+import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 
 /**
  * Performs integration tests. Many tests here are also used by
@@ -70,6 +72,8 @@ public class ReadCkanIT {
     public static String DATI_MATERA = "http://dati.comune.matera.it";
     public static String DATA_GOV_UK = "http://data.gov.uk";
     public static String DATA_GOV_US = "http://catalog.data.gov";
+    public static String DATAHUB_IO = "http://datahub.io";
+    
 
     /** for testing timeouts */
     public static String UNREACHABLE_HOST = "http://10.0.0.0";
@@ -449,9 +453,47 @@ public class ReadCkanIT {
     @Test
     public void testHttps(){
         CkanClient client = new CkanClient("https://datahub.io", null);
-        List<String> dsl = client.getDatasetList(100,0);
+        List<String> dsl = client.getDatasetList(10,0);
         assertTrue(dsl.size() > 0);       
         logger.log(Level.FINE, dsl.toString());
     }
+
+    /**
+     * @since 0.4.3
+     */
+    public Object[] localhosts() {
+        return $(
+                $("localhost"),
+                $("127.0.0.1"),
+                $("http://localhost")
+        );
+    }
+    
+    
+    /**
+     * Test cases for https://github.com/opendatatrentino/jackan/pull/12
+     * @since 0.4.3
+     */      
+    @Test
+    @Parameters(method = "localhosts")
+    public void testHttpProxy(String localhost){
+        int port = Tests.findFreePort();
+        HttpProxyServer server =
+                DefaultHttpProxyServer.bootstrap()
+                    .withPort(port)
+                    .start();
+        try {
+            CkanClient client = CkanClient.builder()
+            .setCatalogUrl(DATAHUB_IO)
+            .setProxy(localhost + ":" + port)
+            .build();
+            
+            List<String> dsl = client.getDatasetList(10,0);
+            assertTrue(dsl.size() > 0);
+        } finally {
+            server.stop();    
+        }        
+    }
+    
     
 }
