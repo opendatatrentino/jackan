@@ -18,6 +18,7 @@ package eu.trentorise.opendata.jackan.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.io.Files;
 import eu.trentorise.opendata.jackan.exceptions.JackanException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -70,6 +71,7 @@ public class CkanResourceBase {
     private String size;
     private String url;
     private File upload;
+    private byte[] uploadByte;
 
     private Timestamp webstoreLastUpdated;
 
@@ -403,7 +405,16 @@ public class CkanResourceBase {
      */ 
     public File getUpload() {
         return upload;
-    }       
+    }
+
+    /**
+     * The array byte to be added to the resource. See {@link #setUploadByte(byte[])} for further info.
+     *
+     * @since 0.4.3
+     */
+    public byte[] getUploadByte() {
+        return uploadByte;
+    }
 
     /**
      * Sets the file to upload.
@@ -442,6 +453,7 @@ public class CkanResourceBase {
             if (guessMimeTypeAndFormat) {
                 try (InputStream is = new FileInputStream(upload);
                      BufferedInputStream bis = new BufferedInputStream(is);) {
+                    this.uploadByte = Files.toByteArray(upload);
                     AutoDetectParser parser = new AutoDetectParser();
                     Metadata md = new Metadata();
                     md.add(Metadata.RESOURCE_NAME_KEY, upload.getName());
@@ -458,6 +470,23 @@ public class CkanResourceBase {
             }
         }
     }
+
+    /**
+     * A array byte to be added to the resource.
+     *
+     * @since 0.4.3
+     */
+    public void setUploadByte(byte[] uploadByte) {
+        if (uploadByte == null) {
+            this.upload = null;
+            this.size = null;
+        } else {
+            this.uploadByte = uploadByte;
+            this.size = String.valueOf(uploadByte.length);
+        }
+    }
+
+
 
     /**
      * Ckan always refers to UTC timezone

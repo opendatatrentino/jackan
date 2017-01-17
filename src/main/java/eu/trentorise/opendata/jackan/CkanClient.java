@@ -650,7 +650,7 @@ public class CkanClient {
         checkNotNull(responseType);
         checkNotNull(path);
         checkNotNull(resource);
-        checkNotNull(resource.getUpload());
+        checkNotNull(resource.getUploadByte());
         checkNotNull(resource.getPackageId());
 
         String fullUrl = calcFullUrl(path, new Object[] {});
@@ -665,12 +665,11 @@ public class CkanClient {
             configureRequest(request);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-                                                                         .addBinaryBody("upload", resource.getUpload(),
-                                                                                 ContentType.create(
-                                                                                         "application/octet-stream",
+                                                                         .addBinaryBody("upload", resource.getUploadByte(),
+                                                                                 ContentType.create("application/octet-stream",
                                                                                          Charset.forName("UTF-8")),
-                                                                                 resource.getUpload()
-                                                                                         .getName())
+                                                                                 resource.getName()
+                                                                         )
                                                                          .addTextBody("size", resource.getSize(),
                                                                                  ContentType.TEXT_PLAIN)
                                                                          .addTextBody("id", resource.getId(),
@@ -1133,7 +1132,7 @@ public class CkanClient {
      */
     public synchronized CkanResource updateResourceData(CkanResourceBase resource) {
         checkNotNull(resource);
-        checkNotNull(resource.getUpload(), "Need a non null file in resource.getUpload() !");
+        //checkNotNull(resource.getUploadByte(), "Need a non null file in resource.getUpload() !");
         checkToken("Tried to update resource" + resource.getName());
 
         return postHttpResourceFile(ResourceResponse.class, "/api/3/action/resource_update", resource).result;
