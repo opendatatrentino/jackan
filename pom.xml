@@ -26,6 +26,11 @@
 	<url>https://github.com/opendatatrentino/jackan</url>
 	<description>Java client to access CKAN repositories. </description>
 
+	<organization>
+		<name>KiD Foundation</name>
+		<url>http://kidf.eu</url>
+	</organization>
+
 
 	<scm>
 		<url>${project.url}</url>

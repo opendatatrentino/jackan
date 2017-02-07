@@ -47,7 +47,7 @@ Main dependencies are
 #### Projects using Jackan
 
 * [OpenDataRise](https://github.com/opendatatrentino/OpenDataRise): power tool to cleanse and semantify open data, based on OpenRefine
-* [Ckanalyze](https://github.com/opendatatrentino/CKANalyze): Tool to perform statistics on CKAN datasets written in Java.
+* [Ckanalyze](https://github.com/opendatatrentino/CKANalyze): Tool to perform statistics on CKAN datasets written in Java
 
 
 #### Credits
@@ -66,6 +66,12 @@ Contributors:
 * Florent André https://github.com/florent-andre
 
 We also wish to thank our very first beta tester Giulio Pilotto https://about.me/giuliopilotto
+
+Made possible thanks to:
+
+&emsp;<a href="http://dati.trentino.it" target="_blank"> <img src="docs/img/tod-logo.png" width="80px" style="vertical-align:middle;"> </a> &emsp;&emsp;&emsp;&emsp;<a href="http://dati.trentino.it" target="_blank"> Open Data In Trentino Project </a>  
+
+&emsp;<a href="http://kidf.eu" target="_blank"> <img style="vertical-align:middle;" width="140px" src="docs/img/kidf-scientia.png"> </a> &emsp; <a href="http://kidf.eu" target="_blank"> Knowledge in Diversity Foundation </a> <br/>
 
 
 

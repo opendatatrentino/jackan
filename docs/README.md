@@ -359,7 +359,7 @@ Examples code:
                         Locale.ITALIAN); // default locale of metadata
 ```
 
-To extract more stuff during conversion, you can use <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/DcatFactory"> DcatFactory</a> and override the extract* and/or postProcess* methods.
+To extract more stuff during conversion, you can use <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/GreedyDcatFactory"> GreedyDcatFactory</a> or extend <a href="../src/main/java/eu/trentorise/opendata/jackan/dcat/DcatFactory"> DcatFactory</a> and override the `extract*` and/or `postProcess*` methods.
 
 
 ### Logging

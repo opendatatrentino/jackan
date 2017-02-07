@@ -1,11 +1,11 @@
 
-JACKAN #{version} RELEASE NOTES
+  JACKAN   ${project.version}   RELEASE NOTES
 -----------------------------------
 
 http://opendatatrentino.github.io/jackan  
 
 
-### 0.4.3 todo 
+### 0.4.3 
 
 todo date 
 
@@ -14,17 +14,12 @@ todo date
 - Added some adder method to CkanDatasetBase 
 		by Raul Hidalgo Caballero, https://github.com/opendatatrentino/jackan/pull/31
 - Upgraded Apache http libs to 4.4.1 to allow SNI
-		by Henning Bredel, https://github.com/opendatatrentino/jackan/pull/38 
-  
-BREAKING CHANGES:
-
-- only for Jackan developers: when upgrading jackan, in your `/conf/jackan.test.properties` remember to add these lines:
-
-```
-		jackan.test.ckan.resource-file=./src/test/resources/french-cheeses-dataset.csv
-		jackan.test.ckan.alternate-resource-file=./src/test/resources/french-cheeses-dataset-2.csv
-```		
-             
+		by Henning Bredel, https://github.com/opendatatrentino/jackan/pull/38                
+- Upgraded Josman Maven Plugin to 0.8.0
+- Fixed CkanClient.makeResourceUrl returning broken url : https://github.com/opendatatrentino/jackan/issues/24
+- Fixed formatTimestamp being timezone dependant : https://github.com/opendatatrentino/jackan/issues/40
+- Fixed single parametrized tests bug in Eclipse: https://github.com/opendatatrentino/jackan/issues/25
+ 
 
 ### 0.4.2
 
@@ -73,7 +68,9 @@ BREAKING CHANGES:
 - renamed `TrackingSummary` into `CkanTrackingSummary`
 
 
-### 0.3.1  -  19 January 2015
+### 0.3.1  
+
+January 19th, 2015
 
 - implemented reading and searching from CKAN
 
