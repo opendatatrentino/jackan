@@ -1,5 +1,5 @@
 
-  JACKAN   ${project.version}   RELEASE NOTES
+ JACKAN ${project.version} RELEASE NOTES
 -----------------------------------
 
 http://opendatatrentino.github.io/jackan  
