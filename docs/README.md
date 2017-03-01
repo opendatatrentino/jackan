@@ -5,6 +5,13 @@ RELEASE DOCS ARE ON THE <a href="http://opendatatrentino.github.io/jackan/" targ
 
 This release allows to search Ckan, write into it and convert CKAN metadata into DCAT format. If you are upgrading from previous version, see [Release notes](CHANGES.md).
 
+### Compatibility
+
+_Latest integration report is <a href="http://opendatatrentino.github.io/jackan/reports/latest/" target="_blank">here</a>_
+
+Jackan supports installations of CKAN >= 2.2a. Although officially the web api version used is always the _v3_, unfortunately CKAN instances behave quite differently from each other according to their software version and particular configuration. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, [let us know](https://github.com/opendatatrentino/jackan/issues), if the error occurs in several catalogs we might devote some time to fix it.
+
+
 ### Getting started
 
 **With Maven**: If you use Maven as build system, put this in the `dependencies` section of your `pom.xml`:
@@ -163,6 +170,8 @@ DATASET: poi-altopiano-di-pine-e-valle-di-cembra
 
 DATASET: punti-di-ristoro-vivifiemme-2013
 ```
+
+
 
 ### Write in Ckan
 
