@@ -21,17 +21,13 @@ Java client library for CKAN catalogs.
 **Features:**
 
   * allows reading and (<a href="docs/README.md#supported-operations" target="_blank">to some degree</a>) writing in Ckan  
-  * uses ckan api v3  
+  * uses ckan api v3
+  * [supports](docs/README.md#compatibility) CKAN >= 2.2a (see <a href="http://opendatatrentino.github.io/jackan/reports/latest/" target="_blank">latest integration report</a>)  
   * dependency handling with Maven
   * well documented
   * unit tested with proper integration tests    
   * supports Java 7+
 
-#### Compatibility
-
-_Latest integration report is <a href="http://opendatatrentino.github.io/jackan/reports/latest/" target="_blank">here</a>_
-
-Jackan supports installations of CKAN >= 2.2a. Although officially the web api version used is always the _v3_, unfortunately CKAN instances behave quite differently from each other according to their software version. So we periodically test Jackan against a list of existing catalogs all over the world. If you're experiencing problems with Jackan, [let us know](https://github.com/opendatatrentino/jackan/issues), if the error occurs in several catalogs we might devote some time to fix it.
 
 #### Dependencies
 
@@ -41,7 +37,6 @@ Main dependencies are
 * Apache HTTP client 
 * <a href="http://opendatatrentino.github.io/traceprov" target="_blank">TraceProv</a> for conversion to DCAT
 * Guava as toolbox
-
 
 
 #### Projects using Jackan
